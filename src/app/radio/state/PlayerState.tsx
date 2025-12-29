@@ -63,8 +63,10 @@ export function PlayerProvider({ children }: PlayerProviderProps) {
   });
 
   const actions: PlayerActions = {
+    /**
+     * Set the current station and reset playback position
+     */
     setStation: useCallback((stationId: string) => {
-      // TODO: implement station selection logic
       setState((prev) => ({
         ...prev,
         currentStationId: stationId,
@@ -73,30 +75,37 @@ export function PlayerProvider({ children }: PlayerProviderProps) {
       }));
     }, []),
 
+    /**
+     * Set playing state to true (actual audio control handled by audio element)
+     */
     play: useCallback(() => {
-      // TODO: implement play logic
       setState((prev) => ({
         ...prev,
         isPlaying: true,
       }));
     }, []),
 
+    /**
+     * Set playing state to false (does not clear current station)
+     */
     pause: useCallback(() => {
-      // TODO: implement pause logic
       setState((prev) => ({
         ...prev,
         isPlaying: false,
       }));
     }, []),
 
+    /**
+     * Jump to a specific track in the playlist
+     */
     setTrackIndex: useCallback((index: number) => {
-      // TODO: implement track index logic
       setState((prev) => ({
         ...prev,
         currentTrackIndex: index,
         currentTime: 0,
       }));
     }, []),
+
 
     setCurrentTime: useCallback((time: number) => {
       // TODO: implement time update logic

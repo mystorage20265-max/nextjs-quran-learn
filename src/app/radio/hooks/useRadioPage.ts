@@ -1,12 +1,13 @@
 import { useState, useEffect, useMemo, useContext } from 'react';
 import { PlayerContext } from '../state/PlayerState';
 import { useFavorites } from '../components/FavoritesManager';
-import stationsData from '../data/stations.json';
+// import stationsData from '../data/stations.json'; // REMOVED
 import { loadRadioData } from '../lib/loaders';
 import { buildPlaylist } from '../lib/playlist';
-import { fetchReciters, mapReciterToStation } from '../lib/api';
-import { fetchRadioStations } from '../lib/api/radios';
+import { fetchReciters, mapReciterToStation, fetchStations } from '../lib/api'; // Added fetchStations
+// import { fetchRadioStations } from '../lib/api/radios'; // REMOVED - duplicate
 import { addToRecentlyPlayed } from '../components/RecentlyPlayed';
+import { Station } from '../lib/types';
 
 export type SortOption = 'name' | 'recent' | 'popular';
 export type FilterType = 'all' | 'live' | 'recorded';
@@ -20,8 +21,8 @@ export function useRadioPage() {
     const [activeCategory, setActiveCategory] = useState<string>('all');
 
     // Station States
-    const [allStations, setAllStations] = useState<any[]>(stationsData);
-    const [liveStations, setLiveStations] = useState<any[]>([]);
+    const [allStations, setAllStations] = useState<Station[]>([]);
+    const [liveStations, setLiveStations] = useState<Station[]>([]);
     const [isLoading, setIsLoading] = useState(false);
 
     // Audio States
@@ -34,34 +35,32 @@ export function useRadioPage() {
     useEffect(() => {
         async function loadData() {
             try {
-                const [reciters, radios] = await Promise.all([
+                // Fetch curated stations and reciters
+                const [reciters, stationsResponse] = await Promise.all([
                     fetchReciters(),
-                    fetchRadioStations()
+                    fetchStations()
                 ]);
 
-                // Process Reciters
+                // Map reciters to "Stations"
+                let reciterStations: Station[] = [];
                 if (reciters && reciters.length > 0) {
-                    const apiStations = reciters.map(mapReciterToStation);
-                    const localIds = new Set(stationsData.map(s => s.id));
-                    const newStations = apiStations.filter(s => !localIds.has(s.id));
-                    const combined = [...stationsData, ...newStations];
-                    setAllStations(combined);
+                    reciterStations = reciters.map(mapReciterToStation);
                 }
 
-                // Process Radios
-                if (radios && radios.length > 0) {
-                    const mappedRadios = radios.map(r => ({
-                        id: `live-${r.id}`,
-                        title: r.name,
-                        subtitle: '24/7 Live Radio',
-                        tags: ['Live', 'Radio'],
-                        imageUrl: 'https://img.freepik.com/free-vector/radio-flat-icon_1262-18776.jpg',
-                        reciters: [],
-                        type: 'live',
-                        streamUrl: r.url
-                    }));
-                    setLiveStations(mappedRadios);
-                }
+                // Get curated stations
+                const curated = stationsResponse.curatedStations || [];
+
+                // Combine: Curated first, then Reciters
+                const combined = [...curated, ...reciterStations];
+                setAllStations(combined);
+
+                // Set Live Stations (Curated can be considered 'live' if they have streams, 
+                // but for now we separate based on type if needed, or just use Curated as 'Featured')
+                // Real Quran.com API doesn't give 'live' radio streams easily via public API v4
+                // but we can create some if we had URLs.
+                // For now, let's treat 'curated' as special stations.
+                setLiveStations(curated);
+
             } catch (error) {
                 console.error("Failed to load radio data", error);
             }
@@ -194,7 +193,7 @@ export function useRadioPage() {
                     id: stationId,
                     title: station.title,
                     subtitle: station.subtitle || 'Murattal',
-                    imageUrl: station.imageUrl || ''
+                    imageUrl: station.image || ''
                 });
             }
 

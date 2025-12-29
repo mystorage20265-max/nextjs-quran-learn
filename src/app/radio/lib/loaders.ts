@@ -1,5 +1,6 @@
-import { fetchChapters, Chapter } from './api/chapters';
-import { fetchReciters, Reciter } from './api';
+import { fetchChapters } from './api';
+import { fetchReciters } from './api';
+import { Chapter, Reciter } from './types';
 
 export type AudioFile = {
   reciterId: number;
@@ -26,7 +27,7 @@ export async function loadRadioData(reciterId: number): Promise<RadioDataBundle>
 
     let audio: AudioFile[] = [];
 
-    if (reciter && reciter.relative_path) {
+    if (reciter && reciter.link) {
       // Construct audio URLs using Quran.com pattern
       // Pattern: https://download.quranicaudio.com/quran/{relative_path}/{surah_id_padded}.mp3
       audio = chapters.map(chapter => {
@@ -34,13 +35,13 @@ export async function loadRadioData(reciterId: number): Promise<RadioDataBundle>
         return {
           reciterId: reciter.id,
           surahId: chapter.id,
-          url: `https://download.quranicaudio.com/quran/${reciter.relative_path}/${paddedId}.mp3`,
+          url: `https://download.quranicaudio.com/quran/${reciter.link}/${paddedId}.mp3`,
           surahName: chapter.name_simple
         };
       });
     } else {
-      // Fallback or legacy handling if needed, but for now return empty if no relative_path
-      console.warn(`No relative_path found for reciter ${reciterId}`);
+      // Fallback or legacy handling if needed, but for now return empty if no link
+      console.warn(`No relative_path/link found for reciter ${reciterId}`);
     }
 
     return { chapters, reciter, audio };

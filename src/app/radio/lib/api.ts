@@ -1,149 +1,119 @@
-// API Configuration - Using Backend Routes
-const BACKEND_API_BASE = '/api/radio';
+import { fetchQuranReciters, fetchQuranStations, fetchQuranChapters, getAudioUrl, mapReciterToStation } from './quran-api';
+import { Reciter, Station, Chapter, AudioData } from './types';
 
-export interface Reciter {
-  id: number;
-  name: string;
-  arabicName?: string;
-  style?: string;
-  imageUrl?: string;
-  link?: string;
-}
+// Re-export mapReciterToStation
+export { mapReciterToStation };
 
-export interface Station {
-  id: string;
-  title: string;
-  description: string;
-  image: string;
-  featured?: boolean;
-  type?: 'curated' | 'reciter' | 'surah' | 'juz';
-  content?: string;
-}
+// Re-export types
+export * from './types';
 
-export interface Chapter {
-  id: number;
-  revelation_order: number;
-  revelation_place: string;
-  name_simple: string;
-  name_complex: string;
-  name_arabic: string;
-  verses_count: number;
-  pages: number[];
-}
+// === CACHING LAYER ===
+// Module-level cache for frequently accessed data
+let cachedReciters: Reciter[] | null = null;
+let cachedChapters: Chapter[] | null = null;
+let lastReciterFetch = 0;
+let lastChapterFetch = 0;
 
-export interface Juz {
-  id: number;
-  juz_number: number;
-  verses_count: number;
-  verses_range: string;
+const RECITER_CACHE_TTL = 30 * 60 * 1000; // 30 minutes
+const CHAPTER_CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours
+
+/**
+ * Get cached reciters or fetch fresh
+ */
+async function getCachedReciters(): Promise<Reciter[]> {
+  const now = Date.now();
+  if (cachedReciters && (now - lastReciterFetch) < RECITER_CACHE_TTL) {
+    return cachedReciters;
+  }
+  cachedReciters = await fetchQuranReciters();
+  lastReciterFetch = now;
+  return cachedReciters;
 }
 
 /**
- * Fetch all reciters from backend API
+ * Get cached chapters or fetch fresh
+ */
+async function getCachedChapters(): Promise<Chapter[]> {
+  const now = Date.now();
+  if (cachedChapters && (now - lastChapterFetch) < CHAPTER_CACHE_TTL) {
+    return cachedChapters;
+  }
+  const chapters = await fetchQuranChapters();
+  cachedChapters = chapters as Chapter[];
+  lastChapterFetch = now;
+  return cachedChapters;
+}
+
+/**
+ * Clear cache (useful for testing or manual refresh)
+ */
+export function clearApiCache(): void {
+  cachedReciters = null;
+  cachedChapters = null;
+  lastReciterFetch = 0;
+  lastChapterFetch = 0;
+}
+
+/**
+ * Fetch all reciters using Quran.com API (cached)
  */
 export async function fetchReciters(): Promise<Reciter[]> {
-  try {
-    const response = await fetch(`${BACKEND_API_BASE}/reciters`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch reciters: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data.data || [];
-  } catch (error) {
-    console.error('Error fetching reciters:', error);
-    return [];
-  }
+  return getCachedReciters();
 }
 
 /**
- * Fetch all chapters/surahs from backend API
+ * Fetch all chapters/surahs (cached)
  */
 export async function fetchChapters(): Promise<Chapter[]> {
-  try {
-    const response = await fetch(`${BACKEND_API_BASE}/chapters`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch chapters: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data.data || [];
-  } catch (error) {
-    console.error('Error fetching chapters:', error);
-    return [];
-  }
+  return getCachedChapters();
 }
 
 /**
- * Fetch radio stations from backend API
+ * Fetch radio stations
+ * Adapts the quran-api response to the expected structure in page.tsx
  */
 export async function fetchStations(): Promise<{ curatedStations: Station[]; allStations: Station[] }> {
-  try {
-    const response = await fetch(`${BACKEND_API_BASE}/stations`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch stations: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return {
-      curatedStations: data.data.curatedStations || [],
-      allStations: data.data.allStations || [],
-    };
-  } catch (error) {
-    console.error('Error fetching stations:', error);
-    return { curatedStations: [], allStations: [] };
-  }
+  const stations = await fetchQuranStations();
+  return {
+    curatedStations: stations,
+    allStations: stations,
+  };
 }
 
 /**
  * Fetch audio URLs for a specific reciter and surah
+ * Uses cached reciters and chapters for efficiency
  */
 export async function fetchAudio(
   reciterId: number,
   surahNumber: number,
-  verseStart?: number,
-  verseEnd?: number
-): Promise<any> {
+  _verseStart?: number,
+  _verseEnd?: number
+): Promise<AudioData> {
   try {
-    const params = new URLSearchParams({
-      reciterId: reciterId.toString(),
-      surahNumber: surahNumber.toString(),
-    });
+    // Use cached data instead of refetching
+    const [reciters, chapters] = await Promise.all([
+      getCachedReciters(),
+      getCachedChapters(),
+    ]);
 
-    if (verseStart) params.append('verseStart', verseStart.toString());
-    if (verseEnd) params.append('verseEnd', verseEnd.toString());
+    const reciter = reciters.find(r => r.id === reciterId || r.originalReciterId === reciterId);
 
-    const response = await fetch(`${BACKEND_API_BASE}/audio?${params.toString()}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch audio: ${response.status}`);
+    if (!reciter) {
+      throw new Error(`Reciter with ID ${reciterId} not found`);
     }
 
-    const data = await response.json();
-    return data.data;
+    const audioUrl = await getAudioUrl(reciter.originalReciterId || reciterId, surahNumber);
+    const surah = chapters.find(c => c.id === surahNumber);
+
+    return {
+      audioUrls: [audioUrl],
+      surahName: surah?.name_simple || `Surah ${surahNumber}`,
+      surahNumber: surahNumber,
+      reciterName: reciter.name,
+      totalVerses: surah?.verses_count || 0,
+      verses: []
+    };
   } catch (error) {
     console.error('Error fetching audio:', error);
     throw error;
@@ -151,92 +121,16 @@ export async function fetchAudio(
 }
 
 /**
- * Convert CDN audio URL to proxy URL for CORS compatibility
+ * Search radio stations
  */
-export function getProxiedAudioUrl(cdnUrl: string): string {
-  try {
-    const encoded = encodeURIComponent(cdnUrl);
-    return `/api/radio/audio-proxy?url=${encoded}`;
-  } catch (error) {
-    console.error('Error proxying audio URL:', error);
-    return cdnUrl; // Fallback to direct URL
-  }
+export async function searchRadio(query: string, type: 'all' | 'surah' | 'reciter' = 'all'): Promise<Station[]> {
+  if (!query.trim()) return [];
+
+  const reciters = await getCachedReciters();
+  const lowerQuery = query.toLowerCase();
+
+  return reciters
+    .filter(r => r.name.toLowerCase().includes(lowerQuery))
+    .map(mapReciterToStation);
 }
 
-/**
- * Convert array of CDN URLs to proxied URLs
- */
-export function getProxiedAudioUrls(cdnUrls: string[]): string[] {
-  return cdnUrls.map((url) => getProxiedAudioUrl(url));
-}
-
-/**
- * Search for surahs and reciters
- */
-export async function searchRadio(
-  query: string,
-  type: 'all' | 'surah' | 'reciter' = 'all'
-): Promise<any> {
-  try {
-    const params = new URLSearchParams({
-      q: query,
-      type: type,
-    });
-
-    const response = await fetch(`${BACKEND_API_BASE}/search?${params.toString()}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`Search failed: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data.results;
-  } catch (error) {
-    console.error('Error searching radio:', error);
-    throw error;
-  }
-}
-
-/**
- * Fetch all Juzs
- */
-export async function fetchJuzs(): Promise<Juz[]> {
-  try {
-    const response = await fetch(`${BACKEND_API_BASE}/juzs`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch juzs: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data.data || [];
-  } catch (error) {
-    console.error('Error fetching juzs:', error);
-    return [];
-  }
-}
-
-/**
- * Map reciter to station format
- */
-export function mapReciterToStation(reciter: Reciter): Station {
-  return {
-    id: reciter.id.toString(),
-    title: reciter.name,
-    description: reciter.style || 'Murattal',
-    image: reciter.imageUrl || `https://static.qurancdn.com/images/reciters/${reciter.id}/profile.png`,
-    featured: false,
-    type: 'reciter',
-    content: 'all',
-  };
-}
