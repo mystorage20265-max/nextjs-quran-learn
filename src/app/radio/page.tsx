@@ -311,7 +311,9 @@ export default function AdvancedRadioPage() {
       }
 
       const reciterId = reciter.originalReciterId || reciter.id;
-      const audioData = await fetchAudio(reciterId, 1);
+      // Random surah from 1-114 (all 114 surahs of the Quran)
+      const randomSurah = Math.floor(Math.random() * 114) + 1;
+      const audioData = await fetchAudio(reciterId, randomSurah);
 
       if (audioData.audioUrls && audioData.audioUrls[0]) {
         audioRef.current.src = audioData.audioUrls[0];
@@ -354,7 +356,9 @@ export default function AdvancedRadioPage() {
         return;
       }
 
-      const audioData = await fetchAudio(7, 1); // Default to Mishary for curated
+      // Random surah from 1-114 for curated stations
+      const randomSurah = Math.floor(Math.random() * 114) + 1;
+      const audioData = await fetchAudio(7, randomSurah); // Default to Mishary for curated
       if (audioData.audioUrls && audioData.audioUrls[0]) {
         audioRef.current.src = audioData.audioUrls[0];
         setPlayingSource({
@@ -452,8 +456,22 @@ export default function AdvancedRadioPage() {
 
           {/* Search */}
           <div className="radio-search">
-            <div className="relative">
-              <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div style={{ position: 'relative' }}>
+              <svg
+                style={{
+                  position: 'absolute',
+                  left: '16px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  width: '20px',
+                  height: '20px',
+                  color: '#9ca3af',
+                  pointerEvents: 'none'
+                }}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
               <input
