@@ -653,31 +653,262 @@
     }
 }
 
-/* ============ RESPONSIVE ============ */
-@media (max-width: 768px) {
+/* ============ RESPONSIVE - COMPREHENSIVE ============ */
+
+/* Large Desktop (1400px+) */
+@media (min-width: 1400px) {
+    .rq-container {
+        max-width: 1400px;
+    }
+
     .rq-surah-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .rq-verses {
+        max-width: 1000px;
+    }
+}
+
+/* Desktop (1024px - 1400px) - Default styles apply */
+
+/* Tablet (768px - 1024px) */
+@media (max-width: 1024px) {
+    .rq-surah-grid {
+        grid-template-columns: repeat(2, 1fr);
     }
 
     .rq-hero h1 {
-        font-size: 1.75rem;
+        font-size: 2rem;
+    }
+
+    .rq-surah-title {
+        font-size: 2.5rem;
+    }
+
+    .rq-reading-text {
+        font-size: 28px;
+        line-height: 2.5;
+    }
+
+    .rq-audio-player {
+        padding: var(--rq-spacing-md);
+    }
+
+    .rq-player-btn {
+        width: 44px;
+        height: 44px;
+    }
+
+    .rq-info-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Mobile (480px - 768px) */
+@media (max-width: 768px) {
+    .read-quran-page {
+        padding-top: 70px;
+    }
+
+    .rq-container {
+        padding: 0 var(--rq-spacing-md);
+    }
+
+    .rq-surah-grid {
+        grid-template-columns: 1fr;
+        gap: var(--rq-spacing-sm);
+    }
+
+    .rq-hero {
+        padding: var(--rq-spacing-lg) var(--rq-spacing-md);
+        margin-bottom: var(--rq-spacing-lg);
+    }
+
+    .rq-hero h1 {
+        font-size: 1.5rem;
+    }
+
+    .rq-hero p {
+        font-size: 0.95rem;
+    }
+
+    .rq-search-container {
+        margin: var(--rq-spacing-md) auto;
+    }
+
+    .rq-search {
+        padding: var(--rq-spacing-sm) var(--rq-spacing-md);
+    }
+
+    .rq-search input {
+        font-size: 0.95rem;
+    }
+
+    .rq-tabs {
+        gap: var(--rq-spacing-xs);
+        margin-bottom: var(--rq-spacing-lg);
+        overflow-x: auto;
+        justify-content: flex-start;
+        padding-bottom: var(--rq-spacing-sm);
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .rq-tab {
+        padding: var(--rq-spacing-xs) var(--rq-spacing-md);
+        font-size: 0.85rem;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+
+    .rq-surah-card {
+        padding: var(--rq-spacing-sm) var(--rq-spacing-md);
+    }
+
+    .rq-surah-number {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+
+    .rq-surah-name-en {
+        font-size: 0.95rem;
+    }
+
+    .rq-surah-name-ar {
+        font-size: 1.1rem;
+    }
+
+    .rq-surah-meta {
+        flex-wrap: wrap;
+        gap: var(--rq-spacing-sm);
+        font-size: 0.8rem;
     }
 
     .rq-surah-header {
-        padding: var(--rq-spacing-lg);
+        padding: var(--rq-spacing-md);
+        border-radius: var(--rq-radius-md);
     }
 
     .rq-surah-title {
         font-size: 2rem;
     }
 
+    .rq-surah-title-en {
+        font-size: 1.2rem;
+    }
+
+    .rq-surah-subtitle {
+        font-size: 0.9rem;
+    }
+
+    .rq-bismillah {
+        font-size: 1.5rem;
+        padding: var(--rq-spacing-md);
+    }
+
+    .rq-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+        padding: var(--rq-spacing-sm);
+        gap: var(--rq-spacing-sm);
+    }
+
+    .rq-toolbar-group {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .rq-toolbar-btn {
+        font-size: 0.85rem;
+        padding: var(--rq-spacing-sm);
+    }
+
+    .rq-mode-toggle {
+        margin-bottom: var(--rq-spacing-md);
+    }
+
+    .rq-mode-btn {
+        padding: var(--rq-spacing-xs) var(--rq-spacing-md);
+        font-size: 0.85rem;
+    }
+
+    .rq-info-panel {
+        padding: var(--rq-spacing-md);
+    }
+
+    .rq-info-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--rq-spacing-sm);
+    }
+
+    .rq-info-item {
+        padding: var(--rq-spacing-sm);
+    }
+
+    .rq-info-value {
+        font-size: 1rem;
+    }
+
+    .rq-verse {
+        padding: var(--rq-spacing-md);
+    }
+
     .rq-verse-arabic {
-        font-size: 24px;
+        font-size: 22px;
+        line-height: 2;
+    }
+
+    .rq-verse-number {
+        width: 28px;
+        height: 28px;
+        font-size: 0.75rem;
+    }
+
+    .rq-verse-translation {
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+
+    /* Always show actions on mobile */
+    .rq-verse-actions {
+        opacity: 1;
+        justify-content: flex-start;
+    }
+
+    .rq-verse-action-btn {
+        width: 40px;
+        height: 40px;
+    }
+
+    .rq-reading-mode {
+        padding: var(--rq-spacing-md);
+    }
+
+    .rq-reading-text {
+        font-size: 22px;
+        line-height: 2.2;
+    }
+
+    .rq-reading-verse-marker {
+        width: 24px;
+        height: 24px;
+        font-size: 0.7rem;
     }
 
     .rq-audio-player {
         flex-wrap: wrap;
         padding: var(--rq-spacing-sm) var(--rq-spacing-md);
+        padding-bottom: calc(var(--rq-spacing-md) + env(safe-area-inset-bottom));
+    }
+
+    .rq-player-info {
+        order: 1;
+        flex: 1;
+    }
+
+    .rq-player-controls {
+        order: 2;
     }
 
     .rq-player-progress {
@@ -686,15 +917,173 @@
         margin-top: var(--rq-spacing-sm);
     }
 
+    .rq-player-btn {
+        width: 44px;
+        height: 44px;
+    }
+
+    .rq-player-btn.secondary {
+        width: 36px;
+        height: 36px;
+    }
+
     .rq-settings-panel {
         width: 100%;
         right: -100%;
     }
+}
 
-    .rq-tabs {
-        overflow-x: auto;
-        justify-content: flex-start;
-        padding-bottom: var(--rq-spacing-sm);
+/* Small Mobile (< 480px) */
+@media (max-width: 480px) {
+    .rq-container {
+        padding: 0 var(--rq-spacing-sm);
+    }
+
+    .rq-hero h1 {
+        font-size: 1.25rem;
+    }
+
+    .rq-hero p {
+        font-size: 0.85rem;
+    }
+
+    .rq-search {
+        padding: var(--rq-spacing-xs) var(--rq-spacing-sm);
+    }
+
+    .rq-search input {
+        font-size: 0.9rem;
+    }
+
+    .rq-tab {
+        padding: var(--rq-spacing-xs) var(--rq-spacing-sm);
+        font-size: 0.8rem;
+    }
+
+    .rq-surah-card {
+        padding: var(--rq-spacing-sm);
+    }
+
+    .rq-surah-number {
+        width: 36px;
+        height: 36px;
+        font-size: 0.9rem;
+        margin-right: var(--rq-spacing-sm);
+    }
+
+    .rq-surah-name-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2px;
+    }
+
+    .rq-surah-name-ar {
+        align-self: flex-end;
+    }
+
+    .rq-surah-title {
+        font-size: 1.75rem;
+    }
+
+    .rq-surah-title-en {
+        font-size: 1rem;
+    }
+
+    .rq-info-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .rq-info-value {
+        font-size: 0.9rem;
+    }
+
+    .rq-info-label {
+        font-size: 0.75rem;
+    }
+
+    .rq-verse-arabic {
+        font-size: 20px;
+    }
+
+    .rq-verse-translation {
+        font-size: 0.9rem;
+    }
+
+    .rq-verse-action-btn {
+        width: 36px;
+        height: 36px;
+    }
+
+    .rq-reading-text {
+        font-size: 20px;
+        line-height: 2;
+    }
+
+    .rq-player-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+
+    .rq-player-btn.secondary {
+        width: 32px;
+        height: 32px;
+    }
+
+    .rq-player-verse {
+        font-size: 0.85rem;
+    }
+
+    .rq-player-surah {
+        font-size: 0.75rem;
+    }
+}
+
+/* Touch-friendly adjustments for all mobile */
+@media (hover: none) and (pointer: coarse) {
+    .rq-verse-actions {
+        opacity: 1;
+    }
+
+    .rq-verse-action-btn {
+        min-width: 44px;
+        min-height: 44px;
+    }
+
+    .rq-tab {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+    }
+
+    .rq-surah-card {
+        min-height: 72px;
+    }
+
+    .rq-toolbar-btn {
+        min-height: 44px;
+    }
+}
+
+/* Handle notch/safe areas on newer phones */
+@supports (padding-top: env(safe-area-inset-top)) {
+    .rq-audio-player {
+        padding-bottom: calc(var(--rq-spacing-md) + env(safe-area-inset-bottom));
+    }
+}
+
+/* Landscape mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+    .rq-hero {
+        padding: var(--rq-spacing-md) var(--rq-spacing-lg);
+    }
+
+    .rq-surah-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .rq-audio-player {
+        padding: var(--rq-spacing-sm) var(--rq-spacing-lg);
     }
 }
 
