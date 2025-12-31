@@ -356,9 +356,11 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                             key={verse.id}
                             className={`rq-verse ${currentVerse === verse.verse_number ? 'playing' : ''}`}
                         >
+                            {/* Verse number in top left */}
+                            <span className="rq-verse-number-corner">{verse.verse_number}</span>
+
                             <div className="rq-verse-arabic" style={{ fontSize: `${fontSize}px` }}>
                                 {verse.text_uthmani}
-                                <span className="rq-verse-number">{verse.verse_number}</span>
                             </div>
                             <div className="rq-verse-translation">
                                 {verse.translations?.[0]?.text || 'Translation not available'}

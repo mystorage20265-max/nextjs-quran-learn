@@ -358,7 +358,10 @@
 }
 
 .rq-verse {
+    position: relative;
     padding: var(--rq-spacing-lg);
+    padding-left: 60px;
+    /* Space for the corner number */
     border-bottom: 1px solid var(--rq-border);
     transition: var(--rq-transition);
 }
@@ -372,6 +375,25 @@
     border-left: 4px solid var(--rq-primary);
 }
 
+/* Verse number in top left corner */
+.rq-verse-number-corner {
+    position: absolute;
+    top: var(--rq-spacing-md);
+    left: var(--rq-spacing-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, var(--rq-primary) 0%, var(--rq-primary-dark) 100%);
+    color: white;
+    border-radius: 50%;
+    font-size: 0.9rem;
+    font-weight: 700;
+    font-family: system-ui, -apple-system, sans-serif;
+    box-shadow: 0 2px 8px rgba(0, 168, 132, 0.3);
+}
+
 .rq-verse-arabic {
     font-family: 'Amiri Quran', 'Scheherazade New', serif;
     font-size: var(--rq-arabic-size);
@@ -382,6 +404,7 @@
     margin-bottom: var(--rq-spacing-md);
 }
 
+/* Keep old inline number style for reading mode if needed */
 .rq-verse-number {
     display: inline-flex;
     align-items: center;
