@@ -155,18 +155,59 @@ export async function getChapter(chapterId: number): Promise<Chapter> {
 
 /**
  * Get verses for a chapter with translations
+ * Uses alquran.cloud API which reliably returns translations
  */
 export async function getVerses(
     chapterId: number,
-    translationId: number = 131, // Dr. Mustafa Khattab - The Clear Quran
+    translationId: string = 'en.sahih', // Sahih International
     page: number = 1,
     perPage: number = 50
 ): Promise<VersesResponse> {
     try {
-        const url = `${API_BASE}/verses/by_chapter/${chapterId}?language=en&words=false&translations=${translationId}&fields=text_uthmani&page=${page}&per_page=${perPage}`;
+        // Use alquran.cloud API which returns translations inline
+        const ALQURAN_API = 'https://api.alquran.cloud/v1';
+
+        // Fetch both Arabic and translation
+        const url = `${ALQURAN_API}/surah/${chapterId}/editions/quran-uthmani,${translationId}`;
         const response = await fetchWithRetry(url);
-        const data: VersesResponse = await response.json();
-        return data;
+        const data = await response.json();
+
+        if (data.code !== 200 || !data.data) {
+            throw new Error('Failed to fetch verses');
+        }
+
+        const arabicData = data.data[0];
+        const translationData = data.data[1];
+
+        // Merge Arabic and translations
+        const verses: VerseWithTranslation[] = arabicData.ayahs.map((ayah: any, index: number) => ({
+            id: ayah.number,
+            verse_key: `${chapterId}:${ayah.numberInSurah}`,
+            verse_number: ayah.numberInSurah,
+            hizb_number: ayah.hizbQuarter || 1,
+            rub_el_hizb_number: 1,
+            ruku_number: ayah.ruku || 1,
+            manzil_number: ayah.manzil || 1,
+            sajdah_number: ayah.sajda ? ayah.number : null,
+            page_number: ayah.page || 1,
+            juz_number: ayah.juz || 1,
+            text_uthmani: ayah.text,
+            translations: [{
+                resource_id: 20,
+                text: translationData?.ayahs?.[index]?.text || 'Translation not available'
+            }]
+        }));
+
+        return {
+            verses,
+            pagination: {
+                per_page: perPage,
+                current_page: page,
+                next_page: null,
+                total_pages: 1,
+                total_records: verses.length
+            }
+        };
     } catch (error) {
         console.error(`Error fetching verses for chapter ${chapterId}:`, error);
         throw error;
@@ -178,20 +219,10 @@ export async function getVerses(
  */
 export async function getAllVerses(
     chapterId: number,
-    translationId: number = 131
+    translationId: string = 'en.sahih'
 ): Promise<VerseWithTranslation[]> {
-    const allVerses: VerseWithTranslation[] = [];
-    let page = 1;
-    let hasMore = true;
-
-    while (hasMore) {
-        const data = await getVerses(chapterId, translationId, page, 50);
-        allVerses.push(...data.verses);
-        hasMore = data.pagination.next_page !== null;
-        page++;
-    }
-
-    return allVerses;
+    const data = await getVerses(chapterId, translationId);
+    return data.verses;
 }
 
 /**
@@ -235,13 +266,14 @@ export const POPULAR_RECITERS = [
     { id: 10, name: 'Maher Al Muaiqly' },
 ];
 
-// Popular translations
+// Popular translations (alquran.cloud edition identifiers)
 export const TRANSLATIONS = [
-    { id: 131, name: 'Dr. Mustafa Khattab', language: 'English' },
-    { id: 20, name: 'Sahih International', language: 'English' },
-    { id: 85, name: 'Pickthall', language: 'English' },
-    { id: 22, name: 'Yusuf Ali', language: 'English' },
-    { id: 234, name: 'Taqi Usmani', language: 'English' },
-    { id: 97, name: 'Mufti Taqi Usmani', language: 'Urdu' },
-    { id: 161, name: 'Al-Hilali & Khan', language: 'English' },
+    { id: 'en.sahih', name: 'Sahih International', language: 'English' },
+    { id: 'en.pickthall', name: 'Pickthall', language: 'English' },
+    { id: 'en.yusufali', name: 'Yusuf Ali', language: 'English' },
+    { id: 'en.asad', name: 'Muhammad Asad', language: 'English' },
+    { id: 'ur.jalandhry', name: 'Fateh Muhammad Jalandhry', language: 'Urdu' },
+    { id: 'ur.ahmedali', name: 'Ahmed Ali', language: 'Urdu' },
+    { id: 'fr.hamidullah', name: 'Muhammad Hamidullah', language: 'French' },
+    { id: 'es.asad', name: 'Muhammad Asad', language: 'Spanish' },
 ];

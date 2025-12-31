@@ -28,7 +28,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
 
     // Settings
     const [readingMode, setReadingMode] = useState<'translation' | 'reading'>('translation');
-    const [selectedTranslation, setSelectedTranslation] = useState(131);
+    const [selectedTranslation, setSelectedTranslation] = useState('en.sahih');
     const [selectedReciter, setSelectedReciter] = useState(7);
     const [fontSize, setFontSize] = useState(28);
     const [showSettings, setShowSettings] = useState(false);
@@ -37,6 +37,52 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentVerse, setCurrentVerse] = useState<number | null>(null);
     const audioRef = useRef<HTMLAudioElement | null>(null);
+
+    // Bookmarks
+    const [bookmarks, setBookmarks] = useState<string[]>([]);
+    const [showBookmarkToast, setShowBookmarkToast] = useState(false);
+    const [toastMessage, setToastMessage] = useState('');
+
+    // Load bookmarks from localStorage
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem('quran-bookmarks');
+            if (saved) {
+                setBookmarks(JSON.parse(saved));
+            }
+        }
+    }, []);
+
+    // Save bookmarks to localStorage
+    const saveBookmarks = useCallback((newBookmarks: string[]) => {
+        setBookmarks(newBookmarks);
+        if (typeof window !== 'undefined') {
+            localStorage.setItem('quran-bookmarks', JSON.stringify(newBookmarks));
+        }
+    }, []);
+
+    // Toggle bookmark for a verse
+    const toggleBookmark = useCallback((verseKey: string) => {
+        const isBookmarked = bookmarks.includes(verseKey);
+        let newBookmarks: string[];
+
+        if (isBookmarked) {
+            newBookmarks = bookmarks.filter(b => b !== verseKey);
+            setToastMessage('Bookmark removed');
+        } else {
+            newBookmarks = [...bookmarks, verseKey];
+            setToastMessage('Verse bookmarked!');
+        }
+
+        saveBookmarks(newBookmarks);
+        setShowBookmarkToast(true);
+        setTimeout(() => setShowBookmarkToast(false), 2000);
+    }, [bookmarks, saveBookmarks]);
+
+    // Check if verse is bookmarked
+    const isBookmarked = useCallback((verseKey: string) => {
+        return bookmarks.includes(verseKey);
+    }, [bookmarks]);
 
     // Fetch data
     useEffect(() => {
@@ -67,40 +113,90 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
         loadData();
     }, [surahNumber, selectedTranslation]);
 
+    // Calculate global verse number (for audio URL)
+    const getGlobalVerseNumber = useCallback((surahNum: number, verseNum: number): number => {
+        // Verse numbers in the audio CDN are global (1 = Al-Fatiha:1, 8 = Al-Baqarah:1, etc.)
+        // For simplicity, we'll use verse_key format which the CDN also supports
+        const surahVerseOffsets: { [key: number]: number } = {
+            1: 0, 2: 7, 3: 293, 4: 493, 5: 669, 6: 789, 7: 954, 8: 1160, 9: 1235, 10: 1364,
+            // ... simplified - using surah:verse format instead
+        };
+        return (surahVerseOffsets[surahNum] || 0) + verseNum;
+    }, []);
+
     // Play verse audio
     const playVerse = useCallback((verseNumber: number) => {
-        const verseKey = `${surahNumber}:${verseNumber}`;
-        const audioUrl = `https://verses.quran.com/Alafasy/mp3/${verseKey.replace(':', '_')}.mp3`;
+        // Find the verse to get its global ID
+        const verse = verses.find(v => v.verse_number === verseNumber);
+        if (!verse) {
+            console.error('Verse not found:', verseNumber);
+            return;
+        }
+
+        // Use multiple audio source formats
+        // Islamic Network CDN uses global ayah numbers (1-6236)
+        const globalAyahId = verse.id; // This is the global verse number
+        const surahPadded = surahNumber.toString().padStart(3, '0');
+        const versePadded = verseNumber.toString().padStart(3, '0');
+
+        // Try multiple audio sources with different formats
+        const audioUrls = [
+            // Islamic Network - uses global ayah number
+            `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${globalAyahId}.mp3`,
+            // EveryAyah - uses padded surah+verse format
+            `https://everyayah.com/data/Alafasy_128kbps/${surahPadded}${versePadded}.mp3`,
+            // Quran.com verses CDN
+            `https://verses.quran.com/Alafasy/mp3/${surahNumber}_${verseNumber}.mp3`,
+            // Backup: entire surah audio
+            `https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/${surahNumber}.mp3`
+        ];
 
         if (audioRef.current) {
             audioRef.current.pause();
         }
 
-        const audio = new Audio(audioUrl);
-        audioRef.current = audio;
+        let currentUrlIndex = 0;
 
-        audio.onplay = () => {
-            setIsPlaying(true);
-            setCurrentVerse(verseNumber);
-        };
-
-        audio.onended = () => {
-            // Auto-play next verse
-            if (verseNumber < verses.length) {
-                playVerse(verseNumber + 1);
-            } else {
+        const tryNextUrl = () => {
+            if (currentUrlIndex >= audioUrls.length) {
+                console.error('All audio sources failed');
                 setIsPlaying(false);
-                setCurrentVerse(null);
+                return;
             }
+
+            const audio = new Audio(audioUrls[currentUrlIndex]);
+            audioRef.current = audio;
+
+            audio.onplay = () => {
+                setIsPlaying(true);
+                setCurrentVerse(verseNumber);
+            };
+
+            audio.onended = () => {
+                // Auto-play next verse
+                if (verseNumber < verses.length) {
+                    playVerse(verseNumber + 1);
+                } else {
+                    setIsPlaying(false);
+                    setCurrentVerse(null);
+                }
+            };
+
+            audio.onerror = () => {
+                console.warn(`Audio source ${currentUrlIndex + 1} failed, trying next...`);
+                currentUrlIndex++;
+                tryNextUrl();
+            };
+
+            audio.play().catch((err) => {
+                console.warn('Audio play failed:', err);
+                currentUrlIndex++;
+                tryNextUrl();
+            });
         };
 
-        audio.onerror = () => {
-            console.error('Audio failed to load');
-            setIsPlaying(false);
-        };
-
-        audio.play().catch(console.error);
-    }, [surahNumber, verses.length]);
+        tryNextUrl();
+    }, [surahNumber, verses]);
 
     // Stop audio
     const stopAudio = useCallback(() => {
@@ -282,10 +378,32 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                 >
                                     📋
                                 </button>
-                                <button className="rq-verse-action-btn" title="Bookmark">
-                                    🔖
+                                <button
+                                    className={`rq-verse-action-btn ${isBookmarked(verse.verse_key) ? 'active' : ''}`}
+                                    onClick={() => toggleBookmark(verse.verse_key)}
+                                    title={isBookmarked(verse.verse_key) ? 'Remove Bookmark' : 'Bookmark'}
+                                    style={isBookmarked(verse.verse_key) ? { background: 'var(--rq-primary)', color: 'white' } : {}}
+                                >
+                                    {isBookmarked(verse.verse_key) ? '⭐' : '🔖'}
                                 </button>
-                                <button className="rq-verse-action-btn" title="Share">
+                                <button
+                                    className="rq-verse-action-btn"
+                                    onClick={() => {
+                                        const shareText = `${verse.text_uthmani}\n\n${verse.translations?.[0]?.text || ''}\n\n— Quran ${verse.verse_key}`;
+                                        if (navigator.share) {
+                                            navigator.share({
+                                                title: `Quran ${verse.verse_key}`,
+                                                text: shareText,
+                                            }).catch(console.error);
+                                        } else {
+                                            navigator.clipboard.writeText(shareText);
+                                            setToastMessage('Copied to clipboard for sharing!');
+                                            setShowBookmarkToast(true);
+                                            setTimeout(() => setShowBookmarkToast(false), 2000);
+                                        }
+                                    }}
+                                    title="Share"
+                                >
                                     📤
                                 </button>
                             </div>
@@ -401,7 +519,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                     <select
                         className="rq-select"
                         value={selectedTranslation}
-                        onChange={(e) => setSelectedTranslation(parseInt(e.target.value))}
+                        onChange={(e) => setSelectedTranslation(e.target.value)}
                     >
                         {TRANSLATIONS.map((t) => (
                             <option key={t.id} value={t.id}>
@@ -441,6 +559,25 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                     }}
                     onClick={() => setShowSettings(false)}
                 />
+            )}
+
+            {/* Toast Notification */}
+            {showBookmarkToast && (
+                <div style={{
+                    position: 'fixed',
+                    bottom: isPlaying && currentVerse ? '100px' : '24px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    background: 'var(--rq-primary)',
+                    color: 'white',
+                    padding: '12px 24px',
+                    borderRadius: '8px',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+                    zIndex: 2000,
+                    animation: 'fadeIn 0.3s ease'
+                }}>
+                    {toastMessage}
+                </div>
             )}
         </div>
     );
