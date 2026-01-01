@@ -1489,14 +1489,16 @@
     display: flex;
     align-items: center;
     gap: var(--rq-spacing-sm);
-    padding: var(--rq-spacing-sm) var(--rq-spacing-lg);
+    padding: 8px 16px;
+    /* Decrease size */
     background: var(--rq-bg);
     border: 1.5px solid var(--rq-border);
     border-radius: var(--rq-radius-full);
     color: var(--rq-text);
     cursor: pointer;
     transition: all var(--rq-bounce);
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+    /* Slightly smaller text */
     font-weight: 500;
 }
 
@@ -1525,8 +1527,8 @@
 
 /* Settings button - Purple gradient */
 .rq-toolbar-btn.settings-btn {
-    background: var(--rq-purple-gradient);
-    color: white;
+    background: var(--rq-purple-gradient) !important;
+    color: white !important;
     border-color: transparent;
     box-shadow: var(--rq-shadow-md);
     font-weight: 600;
