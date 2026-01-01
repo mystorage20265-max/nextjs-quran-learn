@@ -1,39 +1,59 @@
 /* Read Quran - Complete Standalone Styles */
-/* Premium design matching Quran.com aesthetic */
+/* Premium Quran reading experience with authentic Uthmanic script */
+
+/* ============ KFGQPC UTHMANIC SCRIPT FONT ============ */
+@font-face {
+    font-family: 'KFGQPC Uthmanic Script';
+    src: url('/kfgqpc-uthmanic-script-hafs-regular/KFGQPC Uthmanic Script HAFS Regular/KFGQPC Uthmanic Script HAFS Regular.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Fallback Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Scheherazade+New:wght@400;700&display=swap');
 
 /* ============ CSS VARIABLES ============ */
 :root {
-    /* Primary Colors */
-    --rq-primary: #00A884;
-    --rq-primary-dark: #008F70;
-    --rq-primary-light: #E8F7F4;
+    /* Primary Colors - Serene Islamic Palette */
+    --rq-primary: #1B7B6E;
+    /* Deep Teal - Calm, spiritual */
+    --rq-primary-dark: #156359;
+    --rq-primary-light: #E6F4F2;
 
-    /* Background Colors - Light Theme */
-    --rq-bg: #FAFAFA;
+    /* Gold Accent - Traditional Islamic */
+    --rq-gold: #C4A962;
+    /* Elegant Gold */
+    --rq-gold-light: #F5F0E0;
+
+    /* Background Colors - Clean & Peaceful */
+    --rq-bg: #FAFBFC;
+    /* Soft off-white */
     --rq-bg-card: #FFFFFF;
-    --rq-bg-hover: #F0F0F0;
-    --rq-bg-active: #E8F7F4;
+    --rq-bg-hover: #F4F6F8;
+    --rq-bg-active: #E6F4F2;
 
-    /* Text Colors */
-    --rq-text: #1F2937;
-    --rq-text-secondary: #6B7280;
-    --rq-text-muted: #9CA3AF;
+    /* Text Colors - Readable & Gentle */
+    --rq-text: #2D3748;
+    /* Soft dark */
+    --rq-text-secondary: #5A6778;
+    --rq-text-muted: #8A95A5;
 
     /* Arabic Text */
-    --rq-arabic: #1A1A1A;
-    --rq-arabic-size: 28px;
-    --rq-arabic-line-height: 2.2;
+    --rq-arabic: #1A1F26;
+    --rq-arabic-size: 30px;
+    --rq-arabic-line-height: 2.4;
 
-    /* Borders & Shadows */
-    --rq-border: #E5E7EB;
-    --rq-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-    --rq-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
-    --rq-shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
+    /* Borders & Shadows - Subtle */
+    --rq-border: #E8ECF0;
+    --rq-shadow-sm: 0 1px 3px rgba(27, 123, 110, 0.05);
+    --rq-shadow-md: 0 4px 12px rgba(27, 123, 110, 0.08);
+    --rq-shadow-lg: 0 8px 24px rgba(27, 123, 110, 0.12);
 
     /* Accent Colors */
-    --rq-gold: #D4AF37;
-    --rq-verse-bg: #FFFDE7;
-    --rq-highlight: rgba(0, 168, 132, 0.15);
+    --rq-verse-bg: #FDFCF8;
+    --rq-highlight: rgba(27, 123, 110, 0.12);
+    --rq-playing-bg: linear-gradient(135deg, #E6F4F2 0%, #F5F0E0 100%);
 
     /* Spacing */
     --rq-container-width: 1200px;
@@ -53,39 +73,42 @@
     --rq-radius-full: 9999px;
 }
 
-/* Dark Theme */
+/* Dark Theme - Gentle Night Mode */
 [data-theme="dark"] {
-    --rq-bg: #121212;
-    --rq-bg-card: #1E1E1E;
-    --rq-bg-hover: #2A2A2A;
+    --rq-bg: #0F1419;
+    --rq-bg-card: #1A2027;
+    --rq-bg-hover: #242D36;
     --rq-bg-active: #1A3A35;
-    --rq-text: #E5E5E5;
-    --rq-text-secondary: #A0A0A0;
-    --rq-text-muted: #6B6B6B;
-    --rq-arabic: #FFFFFF;
-    --rq-border: #333333;
-    --rq-verse-bg: #1A2E1A;
-    --rq-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
-    --rq-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.3);
-    --rq-shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.4);
+    --rq-text: #E8ECF0;
+    --rq-text-secondary: #A0AAB8;
+    --rq-text-muted: #6B7785;
+    --rq-arabic: #F5F7FA;
+    --rq-border: #2A3441;
+    --rq-verse-bg: #1A2027;
+    --rq-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
+    --rq-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.25);
+    --rq-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.3);
 }
 
-/* Sepia Theme */
+/* Sepia Theme - Paper-like Reading */
 [data-theme="sepia"] {
-    --rq-bg: #F4ECD8;
-    --rq-bg-card: #FDF8E8;
-    --rq-bg-hover: #EDE4CC;
-    --rq-text: #5C4B35;
-    --rq-text-secondary: #7D6B50;
-    --rq-arabic: #3D2E1C;
-    --rq-border: #D4C5A0;
+    --rq-bg: #F8F4E8;
+    --rq-bg-card: #FFFCF0;
+    --rq-bg-hover: #F0EBD8;
+    --rq-text: #4A4235;
+    --rq-text-secondary: #6B5D48;
+    --rq-arabic: #2D2518;
+    --rq-border: #E0D8C0;
 }
 
-/* ============ ARABIC FONTS ============ */
-@import url('https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Scheherazade+New:wght@400;700&display=swap');
-
-.arabic-text {
-    font-family: 'Amiri Quran', 'Scheherazade New', 'Traditional Arabic', serif;
+/* ============ ARABIC TEXT STYLING ============ */
+.arabic-text,
+.rq-verse-arabic,
+.rq-surah-title,
+.rq-surah-name-ar,
+.rq-bismillah,
+.rq-reading-text {
+    font-family: 'KFGQPC Uthmanic Script', 'Amiri Quran', 'Scheherazade New', 'Traditional Arabic', serif;
     direction: rtl;
     font-size: var(--rq-arabic-size);
     line-height: var(--rq-arabic-line-height);
@@ -589,17 +612,30 @@
 }
 
 .rq-settings-close {
-    width: 36px;
-    height: 36px;
+    width: 44px;
+    height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--rq-bg-hover);
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
     border: none;
     border-radius: 50%;
     cursor: pointer;
-    color: var(--rq-text);
-    font-size: 1.2rem;
+    color: white;
+    font-size: 1.4rem;
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+    transition: var(--rq-transition);
+    flex-shrink: 0;
+}
+
+.rq-settings-close:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+}
+
+.rq-settings-close:active {
+    transform: scale(0.95);
 }
 
 .rq-settings-section {
