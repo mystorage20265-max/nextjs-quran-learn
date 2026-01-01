@@ -425,29 +425,33 @@
 /* ============ SURAH PAGE HEADER ============ */
 .rq-surah-header {
     text-align: center;
-    padding: var(--rq-spacing-xl) var(--rq-spacing-lg);
-    background: linear-gradient(135deg, var(--rq-primary) 0%, #006B5A 100%);
-    color: white;
-    border-radius: var(--rq-radius-lg);
+    padding: var(--rq-spacing-2xl) var(--rq-spacing-lg);
+    background: linear-gradient(135deg, var(--rq-primary) 0%, var(--rq-purple) 100%);
+    color: white !important;
+    border-radius: var(--rq-radius-xl);
     margin-bottom: var(--rq-spacing-xl);
+    box-shadow: var(--rq-shadow-lg);
 }
 
 .rq-surah-title {
     font-family: 'KFGQPC Uthmanic Script', 'Amiri Quran', 'Scheherazade New', 'Traditional Arabic', serif;
-    font-size: 3rem;
+    font-size: 3.5rem;
     margin-bottom: var(--rq-spacing-sm);
+    color: white !important;
 }
 
 .rq-surah-title-en {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     font-weight: 600;
     opacity: 0.95;
     margin-bottom: var(--rq-spacing-xs);
+    color: white !important;
 }
 
 .rq-surah-subtitle {
-    font-size: 1rem;
-    opacity: 0.85;
+    font-size: 1.1rem;
+    opacity: 0.9;
+    color: white !important;
 }
 
 .rq-bismillah {
@@ -857,40 +861,69 @@
 }
 
 .rq-theme-options {
+    background: var(--rq-bg);
+    padding: 6px;
+    border-radius: var(--rq-radius-lg);
     display: flex;
-    gap: var(--rq-spacing-sm);
+    gap: 0;
+    border: 1px solid var(--rq-border);
 }
 
 .rq-theme-btn {
     flex: 1;
     padding: var(--rq-spacing-sm) var(--rq-spacing-md);
-    border: 2px solid var(--rq-border);
-    background: var(--rq-bg-card);
-    border-radius: var(--rq-radius-sm);
+    border: none;
+    background: transparent;
+    border-radius: var(--rq-radius-md);
     cursor: pointer;
-    transition: var(--rq-transition);
-    font-size: 0.9rem;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--rq-text-secondary);
+    position: relative;
+    z-index: 1;
+}
+
+.rq-theme-btn:hover {
+    color: var(--rq-text);
+    background: rgba(0, 0, 0, 0.03);
 }
 
 .rq-theme-btn.active {
-    border-color: var(--rq-primary);
+    background: white;
     color: var(--rq-primary);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: scale(1.02);
+    z-index: 2;
+    border-color: transparent;
 }
 
 .rq-font-slider {
     width: 100%;
     margin-top: var(--rq-spacing-sm);
+    accent-color: var(--rq-primary);
 }
 
 .rq-select {
     width: 100%;
-    padding: var(--rq-spacing-sm) var(--rq-spacing-md);
-    border: 1px solid var(--rq-border);
-    border-radius: var(--rq-radius-sm);
+    padding: var(--rq-spacing-md) var(--rq-spacing-md);
+    border: 2px solid var(--rq-border);
+    border-radius: var(--rq-radius-md);
     background: var(--rq-bg-card);
     color: var(--rq-text);
     font-size: 0.95rem;
     cursor: pointer;
+    transition: all var(--rq-transition);
+}
+
+.rq-select:hover {
+    border-color: var(--rq-primary);
+}
+
+.rq-select:focus {
+    outline: none;
+    border-color: var(--rq-primary);
+    box-shadow: 0 0 0 3px var(--rq-primary-light);
 }
 
 /* ============ LOADING STATES ============ */
@@ -1477,24 +1510,104 @@
 }
 
 /* Play Audio button - Blue gradient */
-.rq-toolbar-btn:first-child:hover,
-.rq-toolbar-btn[class*="play"]:hover {
+.rq-toolbar-btn.play-btn {
     background: var(--rq-primary-gradient);
     color: white;
     border-color: transparent;
-    box-shadow: var(--rq-shadow-glow);
+    box-shadow: var(--rq-shadow-md);
+    font-weight: 600;
 }
 
-/* Settings button - Purple */
-.rq-toolbar-btn:last-child:hover {
+.rq-toolbar-btn.play-btn:hover {
+    box-shadow: var(--rq-shadow-glow);
+    transform: scale(1.05) translateY(-2px);
+}
+
+/* Settings button - Purple gradient */
+.rq-toolbar-btn.settings-btn {
     background: var(--rq-purple-gradient);
     color: white;
     border-color: transparent;
+    box-shadow: var(--rq-shadow-md);
+    font-weight: 600;
+}
+
+.rq-toolbar-btn.settings-btn:hover {
+    transform: scale(1.05) translateY(-2px);
     box-shadow: var(--rq-shadow-purple);
+    filter: brightness(1.1);
 }
 
 .rq-toolbar-btn.active {
     background: var(--rq-primary-gradient);
     color: white;
     border-color: transparent;
+}
+
+/* ============ NAVIGATION & BUTTONS ============ */
+.rq-navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--rq-spacing-xl) 0;
+    margin-top: var(--rq-spacing-xl);
+    border-top: 1px solid var(--rq-border);
+}
+
+/* Back Button (Top) */
+.rq-back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--rq-spacing-sm);
+    padding: var(--rq-spacing-sm) var(--rq-spacing-lg);
+    background: var(--rq-bg-card);
+    color: var(--rq-text-secondary);
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: var(--rq-radius-full);
+    transition: all var(--rq-bounce);
+    margin-bottom: var(--rq-spacing-lg);
+    border: 1.5px solid var(--rq-border);
+    font-size: 0.9rem;
+    box-shadow: var(--rq-shadow-sm);
+}
+
+.rq-back-btn:hover {
+    background: white;
+    color: var(--rq-primary);
+    transform: translateX(-4px);
+    border-color: var(--rq-primary);
+    box-shadow: var(--rq-shadow-md);
+}
+
+/* Nav Buttons (Prev/Next) */
+.rq-nav-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--rq-spacing-md);
+    padding: var(--rq-spacing-md) var(--rq-spacing-xl);
+    background: white;
+    border: 2px solid var(--rq-border);
+    border-radius: var(--rq-radius-xl);
+    color: var(--rq-text);
+    font-weight: 700;
+    font-size: 1rem;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all var(--rq-bounce);
+    min-width: 160px;
+    justify-content: center;
+    box-shadow: var(--rq-shadow-sm);
+}
+
+.rq-nav-btn:hover {
+    transform: translateY(-4px) scale(1.02);
+    background: var(--rq-primary-gradient);
+    color: white;
+    border-color: transparent;
+    box-shadow: var(--rq-shadow-lg);
+}
+
+.rq-nav-btn:active {
+    transform: scale(0.98);
 }

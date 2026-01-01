@@ -271,15 +271,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
             {/* Back Link */}
             <Link
                 href="/read-quran"
-                style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    color: 'var(--rq-text-secondary)',
-                    textDecoration: 'none',
-                    marginBottom: '16px',
-                    fontSize: '0.95rem'
-                }}
+                className="rq-back-btn"
             >
                 ← Back to All Surahs
             </Link>
@@ -338,12 +330,12 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
 
                 <div className="rq-toolbar-group">
                     {/* Play Button */}
-                    <button className="rq-toolbar-btn" onClick={playAll}>
+                    <button className="rq-toolbar-btn play-btn" onClick={playAll}>
                         {isPlaying ? '⏸️ Pause' : '▶️ Play Audio'}
                     </button>
 
                     {/* Settings Button */}
-                    <button className="rq-toolbar-btn" onClick={() => setShowSettings(true)}>
+                    <button className="rq-toolbar-btn settings-btn" onClick={() => setShowSettings(true)}>
                         ⚙️ Settings
                     </button>
                 </div>
@@ -364,13 +356,12 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                         <div
                             key={verse.id}
                             className={`rq-verse ${currentVerse === verse.verse_number ? 'playing' : ''}`}
+                            id={`verse-${verse.verse_number}`}
                         >
                             {/* Verse number in top left */}
                             <span className="rq-verse-number-corner">{verse.verse_number}</span>
 
-                            <div className="rq-verse-arabic" style={{ fontSize: `${fontSize}px` }}>
-                                {verse.text_uthmani}
-                            </div>
+                            <div className="rq-verse-arabic">{verse.text_uthmani}</div>
                             <div className="rq-verse-translation">
                                 {verse.translations?.[0]?.text || 'Translation not available'}
                             </div>
@@ -393,7 +384,6 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                     className={`rq-verse-action-btn ${isBookmarked(verse.verse_key) ? 'active' : ''}`}
                                     onClick={() => toggleBookmark(verse.verse_key)}
                                     title={isBookmarked(verse.verse_key) ? 'Remove Bookmark' : 'Bookmark'}
-                                    style={isBookmarked(verse.verse_key) ? { background: 'var(--rq-primary)', color: 'white' } : {}}
                                 >
                                     {isBookmarked(verse.verse_key) ? '⭐' : '🔖'}
                                 </button>
@@ -408,7 +398,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                             }).catch(console.error);
                                         } else {
                                             navigator.clipboard.writeText(shareText);
-                                            setToastMessage('Copied to clipboard for sharing!');
+                                            setToastMessage('Copied to clipboard!');
                                             setShowBookmarkToast(true);
                                             setTimeout(() => setShowBookmarkToast(false), 2000);
                                         }
@@ -428,7 +418,6 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                 <span key={verse.id}>
                                     {verse.text_uthmani}
                                     <span className="rq-reading-verse-marker">{verse.verse_number}</span>
-                                    {' '}
                                 </span>
                             ))}
                         </div>
@@ -436,27 +425,21 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 )}
             </div>
 
-            {/* Navigation */}
-            <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                padding: '32px 0',
-                marginTop: '32px',
-                borderTop: '1px solid var(--rq-border)'
-            }}>
-                {surahNumber > 1 && (
+            {/* Navigation Buttons */}
+            <div className="rq-navigation">
+                {surahNumber > 1 ? (
                     <Link
                         href={`/read-quran/${surahNumber - 1}`}
-                        className="rq-toolbar-btn"
+                        className="rq-nav-btn prev"
                     >
                         ← Previous Surah
                     </Link>
-                )}
-                <div style={{ flex: 1 }} />
+                ) : <div></div>}
+
                 {surahNumber < 114 && (
                     <Link
                         href={`/read-quran/${surahNumber + 1}`}
-                        className="rq-toolbar-btn"
+                        className="rq-nav-btn next"
                     >
                         Next Surah →
                     </Link>
