@@ -287,7 +287,7 @@
 }
 
 .rq-surah-name-ar {
-    font-family: 'Amiri Quran', serif;
+    font-family: 'KFGQPC Uthmanic Script', 'Amiri Quran', 'Scheherazade New', 'Traditional Arabic', serif;
     font-size: 1.3rem;
     color: var(--rq-arabic);
 }
@@ -316,7 +316,7 @@
 }
 
 .rq-surah-title {
-    font-family: 'Amiri Quran', serif;
+    font-family: 'KFGQPC Uthmanic Script', 'Amiri Quran', 'Scheherazade New', 'Traditional Arabic', serif;
     font-size: 3rem;
     margin-bottom: var(--rq-spacing-sm);
 }
@@ -334,7 +334,7 @@
 }
 
 .rq-bismillah {
-    font-family: 'Amiri Quran', serif;
+    font-family: 'KFGQPC Uthmanic Script', 'Amiri Quran', 'Scheherazade New', 'Traditional Arabic', serif;
     font-size: 2rem;
     text-align: center;
     padding: var(--rq-spacing-lg);
@@ -440,7 +440,7 @@
     font-size: 0.85rem;
     font-weight: 600;
     margin-left: var(--rq-spacing-sm);
-    font-family: 'Amiri Quran', serif;
+    font-family: 'KFGQPC Uthmanic Script', 'Amiri Quran', serif;
 }
 
 .rq-verse-translation {
@@ -1180,7 +1180,7 @@
     font-size: 0.75rem;
     font-weight: 600;
     margin: 0 4px;
-    font-family: 'Amiri Quran', serif;
+    font-family: 'KFGQPC Uthmanic Script', 'Amiri Quran', serif;
     vertical-align: middle;
 }
 
