@@ -4,7 +4,7 @@
 /* ============ KFGQPC UTHMANIC SCRIPT FONT ============ */
 @font-face {
     font-family: 'KFGQPC Uthmanic Script';
-    src: url('/kfgqpc-uthmanic-script-hafs-regular/KFGQPC Uthmanic Script HAFS Regular/KFGQPC Uthmanic Script HAFS Regular.otf') format('opentype');
+    src: url('/fonts/uthmanic.otf') format('opentype');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
@@ -418,7 +418,7 @@
 }
 
 .rq-verse-arabic {
-    font-family: 'Amiri Quran', 'Scheherazade New', serif;
+    font-family: 'KFGQPC Uthmanic Script', 'Amiri Quran', 'Scheherazade New', 'Traditional Arabic', serif;
     font-size: var(--rq-arabic-size);
     line-height: var(--rq-arabic-line-height);
     color: var(--rq-arabic);
@@ -586,10 +586,13 @@
     background: var(--rq-bg-card);
     border-left: 1px solid var(--rq-border);
     box-shadow: var(--rq-shadow-lg);
-    z-index: 1001;
+    z-index: 9999;
+    /* Above navbar */
     transition: right var(--rq-transition);
     overflow-y: auto;
     padding: var(--rq-spacing-lg);
+    padding-top: 90px;
+    /* Space for navbar */
 }
 
 .rq-settings-panel.open {
