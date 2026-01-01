@@ -2,36 +2,27 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { useParams, notFound } from 'next/navigation';
 import '../../styles/learn-quran.css';
 
-interface LessonItem {
-    id?: string;
-    text: string;
-    name?: string;
-    audio?: string;
-    components?: string[];
-}
+export default function LessonDetailPage() {
+    const params = useParams(); // Use generic params first
+    // params can be Record<string, string | string[]>
+    // Safely cast or parse
+    const lessonId = params?.id ? Number(params.id) : null;
 
-interface Lesson {
-    id: number;
-    title: string;
-    description: string;
-    audioBase?: string;
-    items: LessonItem[];
-}
-
-export default function LessonDetailPage({ params }: { params: { id: string } }) {
     const [lesson, setLesson] = useState<Lesson | null>(null);
     const [loading, setLoading] = useState(true);
     const [playingItem, setPlayingItem] = useState<string | null>(null);
     const audioRef = useRef<HTMLAudioElement | null>(null);
 
     useEffect(() => {
+        if (!lessonId) return;
+
         fetch('/data/learn-quran.json')
             .then(res => res.json())
             .then(data => {
-                const found = data.curriculum.lessons.find((l: Lesson) => l.id === Number(params.id));
+                const found = data.curriculum.lessons.find((l: Lesson) => l.id === lessonId);
                 if (found) {
                     setLesson(found);
                 } else {
@@ -43,7 +34,7 @@ export default function LessonDetailPage({ params }: { params: { id: string } })
                 console.error('Failed to load lesson', err);
                 setLoading(false);
             });
-    }, [params.id]);
+    }, [lessonId]);
 
     const playTTS = (text: string) => {
         if ('speechSynthesis' in window) {

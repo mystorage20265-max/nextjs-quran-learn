@@ -1,0 +1,327 @@
+{
+    "curriculum": {
+        "title": "Noorani Qaida",
+        "description": "Learn to Read the Quran in Arabic",
+        "lessons": [
+            {
+                "id": 1,
+                "title": "The Alphabet",
+                "description": "Alphabets are the building blocks so needs special attention. Focus on child's pronunciation and identification of dots on different letters. Have students read from right to left, top to bottom and bottom to top. Moreover, have a practice on bold and light letters.",
+                "audioBase": "/audio/qaida/lesson1/",
+                "items": [
+                    {
+                        "id": "alif",
+                        "text": "ا",
+                        "name": "Alif",
+                        "audio": "01_alif.mp3"
+                    },
+                    {
+                        "id": "ba",
+                        "text": "ب",
+                        "name": "Ba",
+                        "audio": "02_ba.mp3"
+                    },
+                    {
+                        "id": "ta",
+                        "text": "ت",
+                        "name": "Ta",
+                        "audio": "03_ta.mp3"
+                    },
+                    {
+                        "id": "tha",
+                        "text": "ث",
+                        "name": "Tha",
+                        "audio": "04_tha.mp3"
+                    },
+                    {
+                        "id": "jim",
+                        "text": "ج",
+                        "name": "Jim",
+                        "audio": "05_jim.mp3"
+                    },
+                    {
+                        "id": "ha",
+                        "text": "ح",
+                        "name": "Ha",
+                        "audio": "06_ha.mp3"
+                    },
+                    {
+                        "id": "kha",
+                        "text": "خ",
+                        "name": "Kha",
+                        "audio": "07_kha.mp3"
+                    },
+                    {
+                        "id": "dal",
+                        "text": "د",
+                        "name": "Dal",
+                        "audio": "08_dal.mp3"
+                    },
+                    {
+                        "id": "dhal",
+                        "text": "ذ",
+                        "name": "Dhal",
+                        "audio": "09_dhal.mp3"
+                    },
+                    {
+                        "id": "ra",
+                        "text": "ر",
+                        "name": "Ra",
+                        "audio": "10_ra.mp3"
+                    },
+                    {
+                        "id": "za",
+                        "text": "ز",
+                        "name": "Za",
+                        "audio": "11_za.mp3"
+                    },
+                    {
+                        "id": "seen",
+                        "text": "س",
+                        "name": "Seen",
+                        "audio": "12_seen.mp3"
+                    },
+                    {
+                        "id": "sheen",
+                        "text": "ش",
+                        "name": "Sheen",
+                        "audio": "13_sheen.mp3"
+                    },
+                    {
+                        "id": "sad",
+                        "text": "ص",
+                        "name": "Sad",
+                        "audio": "14_sad.mp3"
+                    },
+                    {
+                        "id": "dad",
+                        "text": "ض",
+                        "name": "Dad",
+                        "audio": "15_dad.mp3"
+                    },
+                    {
+                        "id": "tah",
+                        "text": "ط",
+                        "name": "Tah",
+                        "audio": "16_tah.mp3"
+                    },
+                    {
+                        "id": "zah",
+                        "text": "ظ",
+                        "name": "Zah",
+                        "audio": "17_zah.mp3"
+                    },
+                    {
+                        "id": "ain",
+                        "text": "ع",
+                        "name": "Ain",
+                        "audio": "18_ain.mp3"
+                    },
+                    {
+                        "id": "ghain",
+                        "text": "غ",
+                        "name": "Ghain",
+                        "audio": "19_ghain.mp3"
+                    },
+                    {
+                        "id": "fa",
+                        "text": "ف",
+                        "name": "Fa",
+                        "audio": "20_fa.mp3"
+                    },
+                    {
+                        "id": "qaf",
+                        "text": "ق",
+                        "name": "Qaf",
+                        "audio": "21_qaf.mp3"
+                    },
+                    {
+                        "id": "kaf",
+                        "text": "ك",
+                        "name": "Kaf",
+                        "audio": "22_kaf.mp3"
+                    },
+                    {
+                        "id": "lam",
+                        "text": "ل",
+                        "name": "Lam",
+                        "audio": "23_lam.mp3"
+                    },
+                    {
+                        "id": "meem",
+                        "text": "م",
+                        "name": "Meem",
+                        "audio": "24_meem.mp3"
+                    },
+                    {
+                        "id": "noon",
+                        "text": "ن",
+                        "name": "Noon",
+                        "audio": "25_noon.mp3"
+                    },
+                    {
+                        "id": "waw",
+                        "text": "و",
+                        "name": "Waw",
+                        "audio": "26_waw.mp3"
+                    },
+                    {
+                        "id": "ha",
+                        "text": "ه",
+                        "name": "Ha",
+                        "audio": "27_ha.mp3"
+                    },
+                    {
+                        "id": "hamza",
+                        "text": "ء",
+                        "name": "Hamza",
+                        "audio": "28_hamza.mp3"
+                    },
+                    {
+                        "id": "ya",
+                        "text": "ي",
+                        "name": "Ya",
+                        "audio": "29_ya.mp3"
+                    }
+                ]
+            },
+            {
+                "id": 2,
+                "title": "Joint Letters - Part 1",
+                "description": "In this lesson we will learn how the words are formed by joining alphabets. Have your students identify every alphabet in a word e.g. (لا) is actually (ل+ا).",
+                "items": [
+                    {
+                        "text": "لا",
+                        "components": [
+                            "ل",
+                            "ا"
+                        ]
+                    },
+                    {
+                        "text": "بـا",
+                        "components": [
+                            "ب",
+                            "ا"
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": 3,
+                "title": "Joint Letters - Part 2",
+                "description": "In this lesson we will learn how the words are formed by joining alphabets...",
+                "items": []
+            },
+            {
+                "id": 4,
+                "title": "The Disjointed Letters",
+                "description": "These are unique letter combinations that appear in the beginning of 29 surahs...",
+                "items": [
+                    {
+                        "text": "الم"
+                    },
+                    {
+                        "text": "المص"
+                    },
+                    {
+                        "text": "الر"
+                    }
+                ]
+            },
+            {
+                "id": 5,
+                "title": "The Movements (Harakat)",
+                "description": "There are three kinds of movements Fathah ( ـَ ), Kasrah ( ـِ ) and Dhammah ( ـُ ).",
+                "items": [
+                    {
+                        "text": "اَ"
+                    },
+                    {
+                        "text": "اِ"
+                    },
+                    {
+                        "text": "اُ"
+                    }
+                ]
+            },
+            {
+                "id": 6,
+                "title": "The Tanween",
+                "description": "Double Fathah ( ـً ), Double Kasrah ( ـٍ ), and Double Dhammah ( ـٌ ) is called Tanween.",
+                "items": []
+            },
+            {
+                "id": 7,
+                "title": "The Tanween & Movements",
+                "description": "Have students connect letters and practice. If they cannot connect letters correctly, revise the previous lesson.",
+                "items": []
+            },
+            {
+                "id": 8,
+                "title": "Standing Fatha, Kasrah and Dhammah",
+                "description": "Prolong standing Fathah ( ٰ ), standing Kasrah (ٖ) and standing Dhammah (،) equal to one Alif.",
+                "items": []
+            },
+            {
+                "id": 9,
+                "title": "The MaddoLeen",
+                "description": "If the letter before Alif has Fathah, Alif (ا) is called Alif Maddah...",
+                "items": []
+            },
+            {
+                "id": 10,
+                "title": "Exercise of Movement",
+                "description": "If there is Hamzah (ء) after Maddah, maddah will be any of the four kinds.",
+                "items": []
+            },
+            {
+                "id": 11,
+                "title": "The Sukoon and Jazm",
+                "description": "Have students memorize the name and shape of Jazm and also answer these questions.",
+                "items": []
+            },
+            {
+                "id": 12,
+                "title": "The Exercise of Sukoon",
+                "description": "Q: When Ikhfa is done on Noon Sakin and Tanween? A: When they are not followed by Throat letters.",
+                "items": []
+            },
+            {
+                "id": 13,
+                "title": "The Tashdeed",
+                "description": "Answer these questions to your students. Q: What is this symbol ( ـّ ) called? A: Tashdeed.",
+                "items": []
+            },
+            {
+                "id": 14,
+                "title": "Exercises of Tashdeed",
+                "description": "There will always be Ghunna on Meem and Noon Mushadad.",
+                "items": []
+            },
+            {
+                "id": 15,
+                "title": "Tashdeed with Sukoon",
+                "description": "If the alphabet has sukoon and alphabet after that is with tashdeed, then skip alphabet with sukoon...",
+                "items": []
+            },
+            {
+                "id": 16,
+                "title": "Tashdeed with Tashdeed",
+                "description": "When a shaddah follows another shaddah, you assume the tashdeed letter to be not one but two.",
+                "items": []
+            },
+            {
+                "id": 17,
+                "title": "Tashdeed with Harof Madah",
+                "description": "Teach students how to connect letters.(ضاد الف لا م مد ضال لا م لاَ (ضَآلاً)",
+                "items": []
+            },
+            {
+                "id": 18,
+                "title": "Ending of Rules",
+                "description": "If Noon Sakin and Tanween is followed by Yarmalloon Letters (ي ر م ل ن)...",
+                "items": []
+            }
+        ]
+    }
+}

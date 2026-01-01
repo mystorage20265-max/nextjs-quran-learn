@@ -145,11 +145,11 @@ export default function Navbar() {
           </Link>
 
           <Link
-            href="/courses"
-            className={`nav-link ${isActive('/courses') ? 'active' : ''}`}
+            href="/learn-quran"
+            className={`nav-link ${isActive('/learn-quran') ? 'active' : ''}`}
             onClick={closeMenu}
           >
-            <i className="fas fa-book"></i> Courses
+            <i className="fas fa-graduation-cap"></i> Learn Quran
           </Link>
 
           {/* More Features Dropdown */}
@@ -164,6 +164,9 @@ export default function Navbar() {
               <i className={`fas ${isFeaturesOpen ? 'fa-caret-up' : 'fa-caret-down'}`} style={{ marginLeft: 'auto' }} aria-hidden />
             </button>
             <div className={`dropdown-menu ${isFeaturesOpen ? 'active' : ''}`}>
+              <Link href="/courses" className="dropdown-item" onClick={closeMenu}>
+                <i className="fas fa-book"></i> Courses
+              </Link>
               <Link href="/quran" className="dropdown-item" onClick={closeMenu}>
                 <i className="fas fa-quran"></i> Quran Browser
               </Link>

@@ -1,0 +1,298 @@
+@import url('https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;700&family=Amiri:wght@400;700&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+:root {
+    /* Core Palette */
+    --lq-primary: #2563EB;
+    /* Royal Blue */
+    --lq-primary-dark: #1D4ED8;
+    --lq-primary-light: #60A5FA;
+    --lq-secondary: #7C3AED;
+    /* Deep Purple */
+    --lq-secondary-light: #A78BFA;
+
+    --lq-accent: #D97706;
+    /* Warm Gold */
+    --lq-text: #1E293B;
+    /* Deep Slate */
+    --lq-text-secondary: #64748B;
+    --lq-text-muted: #94A3B8;
+
+    --lq-bg: #FFFFFF;
+    /* Pure White */
+    --lq-bg-card: #FFFFFF;
+    --lq-bg-hover: #F8FAFC;
+    --lq-border: #E2E8F0;
+
+    /* Gradients */
+    --lq-primary-gradient: linear-gradient(135deg, #2563EB 0%, #4F46E5 100%);
+    --lq-purple-gradient: linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%);
+    --lq-gold-gradient: linear-gradient(135deg, #D97706 0%, #B45309 100%);
+
+    /* Shadows */
+    --lq-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --lq-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --lq-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --lq-shadow-glow: 0 0 15px rgba(37, 99, 235, 0.3);
+
+    /* Spacing & Radius */
+    --lq-radius-sm: 0.375rem;
+    --lq-radius-md: 0.5rem;
+    --lq-radius-lg: 0.75rem;
+    --lq-radius-xl: 1rem;
+    --lq-radius-2xl: 1.5rem;
+    --lq-radius-full: 9999px;
+
+    --lq-spacing-xs: 4px;
+    --lq-spacing-sm: 8px;
+    --lq-spacing-md: 16px;
+    --lq-spacing-lg: 24px;
+    --lq-spacing-xl: 32px;
+    --lq-spacing-2xl: 48px;
+
+    --lq-bounce: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    --lq-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.learn-quran-page {
+    min-height: 100vh;
+    background: var(--lq-bg);
+    color: var(--lq-text);
+    font-family: 'Outfit', 'Inter', sans-serif;
+    padding-bottom: 80px;
+}
+
+.lq-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--lq-spacing-lg);
+}
+
+/* Hero Section */
+.lq-hero {
+    text-align: center;
+    padding: 60px 0 40px;
+    background: linear-gradient(180deg, rgba(37, 99, 235, 0.05) 0%, rgba(255, 255, 255, 0) 100%);
+    margin-bottom: var(--lq-spacing-xl);
+    border-bottom: 1px solid var(--lq-border);
+}
+
+.lq-hero h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: var(--lq-spacing-md);
+    background: var(--lq-primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.02em;
+}
+
+.lq-hero p {
+    font-size: 1.1rem;
+    color: var(--lq-text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* Lesson Grid */
+.lq-lesson-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--lq-spacing-lg);
+    padding-bottom: var(--lq-spacing-2xl);
+}
+
+/* Lesson Card */
+.lq-card {
+    background: var(--lq-bg-card);
+    border-radius: var(--lq-radius-xl);
+    border: 1px solid var(--lq-border);
+    padding: var(--lq-spacing-lg);
+    transition: all var(--lq-bounce);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+}
+
+.lq-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--lq-shadow-lg);
+    border-color: var(--lq-primary-light);
+}
+
+.lq-card-number {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    font-size: 4rem;
+    font-weight: 900;
+    color: rgba(37, 99, 235, 0.05);
+    z-index: 0;
+    line-height: 1;
+}
+
+.lq-card-content {
+    position: relative;
+    z-index: 1;
+}
+
+.lq-card-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--lq-primary);
+    border-radius: var(--lq-radius-full);
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-bottom: var(--lq-spacing-md);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.lq-card h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: var(--lq-spacing-sm);
+    color: var(--lq-text);
+}
+
+.lq-card p {
+    font-size: 0.9rem;
+    color: var(--lq-text-secondary);
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.lq-card-meta {
+    margin-top: auto;
+    padding-top: var(--lq-spacing-md);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px dashed var(--lq-border);
+}
+
+.lq-btn-start {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--lq-primary);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.lq-btn-start:after {
+    content: '→';
+    transition: transform 0.2s;
+}
+
+.lq-card:hover .lq-btn-start:after {
+    transform: translateX(4px);
+}
+
+/* Detail Page Header */
+.lq-detail-header {
+    background: var(--lq-bg);
+    border-bottom: 1px solid var(--lq-border);
+    padding: var(--lq-spacing-lg) 0;
+    margin-bottom: var(--lq-spacing-lg);
+}
+
+.lq-back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--lq-text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    margin-bottom: var(--lq-spacing-md);
+    transition: color 0.2s;
+}
+
+.lq-back-btn:hover {
+    color: var(--lq-primary);
+}
+
+/* Item Grid (Alphabet/Words) */
+.lq-item-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: var(--lq-spacing-md);
+    padding-bottom: 100px;
+}
+
+.lq-item-card {
+    background: var(--lq-bg-card);
+    border: 2px solid var(--lq-border);
+    border-radius: var(--lq-radius-lg);
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--lq-bounce);
+    position: relative;
+}
+
+.lq-item-card:hover {
+    border-color: var(--lq-primary);
+    transform: scale(1.05);
+    box-shadow: var(--lq-shadow-md);
+}
+
+.lq-item-card.playing {
+    border-color: var(--lq-primary);
+    background: rgba(37, 99, 235, 0.05);
+    box-shadow: var(--lq-shadow-glow);
+    animation: lq-pulse 1.5s infinite;
+}
+
+.lq-item-text {
+    font-family: 'KFGQPC Uthmanic Script', 'Amiri Quran', serif;
+    font-size: 3rem;
+    color: var(--lq-text);
+    margin-bottom: 4px;
+}
+
+.lq-item-name {
+    font-size: 0.8rem;
+    color: var(--lq-text-muted);
+    font-weight: 500;
+}
+
+@keyframes lq-pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4);
+    }
+
+    70% {
+        box-shadow: 0 0 0 10px rgba(37, 99, 235, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(37, 99, 235, 0);
+    }
+}
+
+@media (max-width: 768px) {
+    .lq-hero h1 {
+        font-size: 2rem;
+    }
+
+    .lq-lesson-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .lq-item-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
