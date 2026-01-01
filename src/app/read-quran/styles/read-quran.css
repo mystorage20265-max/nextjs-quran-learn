@@ -483,12 +483,18 @@
     font-weight: 500;
     color: var(--rq-text-secondary);
     cursor: pointer;
-    transition: var(--rq-transition);
+    transition: all var(--rq-bounce);
+}
+
+.rq-mode-btn:hover {
+    color: var(--rq-text);
+    transform: scale(1.05);
 }
 
 .rq-mode-btn.active {
-    background: var(--rq-primary);
+    background: var(--rq-primary-gradient);
     color: white;
+    box-shadow: var(--rq-shadow-sm);
 }
 
 /* ============ VERSE DISPLAY ============ */
@@ -578,29 +584,85 @@
     gap: var(--rq-spacing-sm);
     margin-top: var(--rq-spacing-md);
     opacity: 0;
-    transition: var(--rq-transition);
+    transform: translateY(8px);
+    transition: all var(--rq-transition);
 }
 
 .rq-verse:hover .rq-verse-actions {
     opacity: 1;
+    transform: translateY(0);
 }
 
 .rq-verse-action-btn {
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
     background: var(--rq-bg-card);
-    border: 1px solid var(--rq-border);
-    border-radius: 50%;
+    border: 1.5px solid var(--rq-border);
+    border-radius: var(--rq-radius-sm);
     color: var(--rq-text-secondary);
     cursor: pointer;
-    transition: var(--rq-transition);
+    transition: all var(--rq-bounce);
+    font-size: 1.1rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.rq-verse-action-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: currentColor;
+    opacity: 0;
+    transition: opacity var(--rq-transition);
 }
 
 .rq-verse-action-btn:hover {
+    transform: scale(1.15);
+    box-shadow: var(--rq-shadow-md);
+}
+
+.rq-verse-action-btn:active {
+    transform: scale(0.95);
+}
+
+/* Play button - Blue */
+.rq-verse-action-btn[title="Play"]:hover {
     background: var(--rq-primary);
+    color: white;
+    border-color: var(--rq-primary);
+    box-shadow: var(--rq-shadow-glow);
+}
+
+/* Copy button - Purple */
+.rq-verse-action-btn[title="Copy"]:hover {
+    background: var(--rq-purple);
+    color: white;
+    border-color: var(--rq-purple);
+    box-shadow: var(--rq-shadow-purple);
+}
+
+/* Bookmark button - Gold */
+.rq-verse-action-btn[title="Bookmark"]:hover,
+.rq-verse-action-btn[title="Remove Bookmark"]:hover {
+    background: var(--rq-gold);
+    color: white;
+    border-color: var(--rq-gold);
+    box-shadow: var(--rq-shadow-gold);
+}
+
+/* Bookmarked state */
+.rq-verse-action-btn.active {
+    background: var(--rq-gold) !important;
+    color: white !important;
+    border-color: var(--rq-gold) !important;
+}
+
+/* Share button - Blue gradient */
+.rq-verse-action-btn[title="Share"]:hover {
+    background: linear-gradient(135deg, var(--rq-primary) 0%, var(--rq-purple) 100%);
     color: white;
     border-color: var(--rq-primary);
 }
@@ -644,30 +706,48 @@
 }
 
 .rq-player-btn {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--rq-primary);
+    background: var(--rq-primary-gradient);
     color: white;
     border: none;
     border-radius: 50%;
     cursor: pointer;
-    transition: var(--rq-transition);
-    font-size: 1.2rem;
+    transition: all var(--rq-bounce);
+    font-size: 1.3rem;
+    box-shadow: var(--rq-shadow-glow);
 }
 
 .rq-player-btn:hover {
-    background: var(--rq-primary-dark);
-    transform: scale(1.05);
+    transform: scale(1.1);
+    box-shadow: 0 0 30px rgba(37, 99, 235, 0.3);
+}
+
+.rq-player-btn:active {
+    transform: scale(0.95);
+}
+
+.rq-player-btn.playing {
+    animation: rq-pulse 1.5s ease-in-out infinite;
 }
 
 .rq-player-btn.secondary {
-    width: 40px;
-    height: 40px;
-    background: var(--rq-bg-hover);
+    width: 44px;
+    height: 44px;
+    background: var(--rq-bg-card);
     color: var(--rq-text);
+    border: 1.5px solid var(--rq-border);
+    box-shadow: var(--rq-shadow-xs);
+}
+
+.rq-player-btn.secondary:hover {
+    background: var(--rq-purple-gradient);
+    color: white;
+    border-color: transparent;
+    box-shadow: var(--rq-shadow-purple);
 }
 
 .rq-player-progress {
@@ -1356,42 +1436,65 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: var(--rq-spacing-md);
+    padding: var(--rq-spacing-md) var(--rq-spacing-lg);
     background: var(--rq-bg-card);
     border: 1px solid var(--rq-border);
-    border-radius: var(--rq-radius-md);
+    border-radius: var(--rq-radius-lg);
     margin-bottom: var(--rq-spacing-lg);
     flex-wrap: wrap;
     gap: var(--rq-spacing-md);
+    box-shadow: var(--rq-shadow-sm);
 }
 
 .rq-toolbar-group {
     display: flex;
     align-items: center;
-    gap: var(--rq-spacing-sm);
+    gap: var(--rq-spacing-md);
 }
 
 .rq-toolbar-btn {
     display: flex;
     align-items: center;
-    gap: var(--rq-spacing-xs);
-    padding: var(--rq-spacing-sm) var(--rq-spacing-md);
+    gap: var(--rq-spacing-sm);
+    padding: var(--rq-spacing-sm) var(--rq-spacing-lg);
     background: var(--rq-bg);
-    border: 1px solid var(--rq-border);
-    border-radius: var(--rq-radius-sm);
+    border: 1.5px solid var(--rq-border);
+    border-radius: var(--rq-radius-full);
     color: var(--rq-text);
     cursor: pointer;
-    transition: var(--rq-transition);
+    transition: all var(--rq-bounce);
     font-size: 0.9rem;
+    font-weight: 500;
 }
 
 .rq-toolbar-btn:hover {
-    background: var(--rq-bg-hover);
-    border-color: var(--rq-primary);
+    transform: scale(1.05) translateY(-2px);
+    box-shadow: var(--rq-shadow-md);
+}
+
+.rq-toolbar-btn:active {
+    transform: scale(0.98);
+}
+
+/* Play Audio button - Blue gradient */
+.rq-toolbar-btn:first-child:hover,
+.rq-toolbar-btn[class*="play"]:hover {
+    background: var(--rq-primary-gradient);
+    color: white;
+    border-color: transparent;
+    box-shadow: var(--rq-shadow-glow);
+}
+
+/* Settings button - Purple */
+.rq-toolbar-btn:last-child:hover {
+    background: var(--rq-purple-gradient);
+    color: white;
+    border-color: transparent;
+    box-shadow: var(--rq-shadow-purple);
 }
 
 .rq-toolbar-btn.active {
-    background: var(--rq-primary);
+    background: var(--rq-primary-gradient);
     color: white;
-    border-color: var(--rq-primary);
+    border-color: transparent;
 }

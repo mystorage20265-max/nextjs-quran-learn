@@ -84,6 +84,21 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
         return bookmarks.includes(verseKey);
     }, [bookmarks]);
 
+    // Copy verse to clipboard
+    const copyVerse = useCallback((verse: VerseWithTranslation) => {
+        const textToCopy = `${verse.text_uthmani}\n\n${verse.translations?.[0]?.text || ''}\n\n— Quran ${verse.verse_key}`;
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            setToastMessage('Verse copied to clipboard!');
+            setShowBookmarkToast(true);
+            setTimeout(() => setShowBookmarkToast(false), 2000);
+        }).catch(err => {
+            console.error('Failed to copy:', err);
+            setToastMessage('Failed to copy verse');
+            setShowBookmarkToast(true);
+            setTimeout(() => setShowBookmarkToast(false), 2000);
+        });
+    }, []);
+
     // Fetch data
     useEffect(() => {
         async function loadData() {
@@ -216,12 +231,6 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
             playVerse(1);
         }
     }, [isPlaying, stopAudio, playVerse]);
-
-    // Copy verse
-    const copyVerse = useCallback((verse: VerseWithTranslation) => {
-        const text = `${verse.text_uthmani}\n\n${verse.translations[0]?.text || ''}\n\n— Quran ${surahNumber}:${verse.verse_number}`;
-        navigator.clipboard.writeText(text);
-    }, [surahNumber]);
 
     if (loading) {
         return (
