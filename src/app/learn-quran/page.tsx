@@ -16,7 +16,7 @@ export default function LearnQuranPage() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetch('/data/learn-quran.json')
+        fetch('/api/learn-quran')
             .then(res => res.json())
             .then(data => {
                 setLessons(data.curriculum.lessons);
