@@ -20,15 +20,6 @@ A modern Quran learning and reading platform built with Next.js 15.
 - Tailwind CSS
 - Quran.com API
 
-## Getting Started
-
-```bash
-npm install
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000)
-
 ## Author
 
 **Hamid Kamal** and Team
