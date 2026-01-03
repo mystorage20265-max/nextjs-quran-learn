@@ -53,15 +53,44 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
         }
     }, []);
 
-    // CRITICAL: Cleanup audio on component unmount (fixes dual audio bug)
+    // CRITICAL: Track if component is mounted to prevent zombie callbacks
+    const isMountedRef = useRef(true);
+
+    // CRITICAL: Comprehensive cleanup on component unmount (fixes dual audio bug)
     useEffect(() => {
+        isMountedRef.current = true;
+
         return () => {
+            // Mark as unmounted FIRST to prevent any callbacks
+            isMountedRef.current = false;
+
             // Stop any playing audio when navigating away
             if (audioRef.current) {
+                // Remove all event listeners to prevent callbacks
+                audioRef.current.onplay = null;
+                audioRef.current.onended = null;
+                audioRef.current.onerror = null;
+                audioRef.current.onpause = null;
+                audioRef.current.onloadeddata = null;
+
+                // Stop playback
                 audioRef.current.pause();
-                audioRef.current.src = '';
+                audioRef.current.currentTime = 0;
+
+                // Clear source to stop any loading
+                try {
+                    audioRef.current.src = '';
+                    audioRef.current.load(); // Force stop loading
+                } catch (e) {
+                    // Ignore errors during cleanup
+                }
+
                 audioRef.current = null;
             }
+
+            // Reset state
+            setIsPlaying(false);
+            setCurrentVerse(null);
         };
     }, []);
 
@@ -153,6 +182,11 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
 
     // Play verse audio
     const playVerse = useCallback((verseNumber: number) => {
+        // CRITICAL: Don't play if component is unmounted
+        if (!isMountedRef.current) {
+            return;
+        }
+
         // Find the verse to get its global ID
         const verse = verses.find(v => v.verse_number === verseNumber);
         if (!verse) {
@@ -178,16 +212,28 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
             `https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/${surahNumber}.mp3`
         ];
 
+        // Stop any existing audio first
         if (audioRef.current) {
+            audioRef.current.onplay = null;
+            audioRef.current.onended = null;
+            audioRef.current.onerror = null;
             audioRef.current.pause();
+            audioRef.current = null;
         }
 
         let currentUrlIndex = 0;
 
         const tryNextUrl = () => {
+            // CRITICAL: Check mounted status before any action
+            if (!isMountedRef.current) {
+                return;
+            }
+
             if (currentUrlIndex >= audioUrls.length) {
                 console.error('All audio sources failed');
-                setIsPlaying(false);
+                if (isMountedRef.current) {
+                    setIsPlaying(false);
+                }
                 return;
             }
 
@@ -195,11 +241,18 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
             audioRef.current = audio;
 
             audio.onplay = () => {
-                setIsPlaying(true);
-                setCurrentVerse(verseNumber);
+                // Check if still mounted before updating state
+                if (isMountedRef.current) {
+                    setIsPlaying(true);
+                    setCurrentVerse(verseNumber);
+                }
             };
 
             audio.onended = () => {
+                // Check if still mounted before auto-playing next
+                if (!isMountedRef.current) {
+                    return;
+                }
                 // Auto-play next verse
                 if (verseNumber < verses.length) {
                     playVerse(verseNumber + 1);
@@ -210,12 +263,20 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
             };
 
             audio.onerror = () => {
+                // Check if still mounted before retrying
+                if (!isMountedRef.current) {
+                    return;
+                }
                 console.warn(`Audio source ${currentUrlIndex + 1} failed, trying next...`);
                 currentUrlIndex++;
                 tryNextUrl();
             };
 
             audio.play().catch((err) => {
+                // Check if still mounted before retrying
+                if (!isMountedRef.current) {
+                    return;
+                }
                 console.warn('Audio play failed:', err);
                 currentUrlIndex++;
                 tryNextUrl();
