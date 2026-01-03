@@ -462,15 +462,48 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                 </button>
                                 <button
                                     className="rq-verse-action-btn"
-                                    onClick={() => {
+                                    onClick={async () => {
                                         const shareText = `${verse.text_uthmani}\n\n${verse.translations?.[0]?.text || ''}\n\n— Quran ${verse.verse_key}`;
-                                        if (navigator.share) {
-                                            navigator.share({
-                                                title: `Quran ${verse.verse_key}`,
-                                                text: shareText,
-                                            }).catch(console.error);
+                                        const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}/read-quran/${surahNumber}#verse-${verse.verse_number}` : '';
+
+                                        // Check if Web Share API is available and can share
+                                        if (navigator.share && navigator.canShare) {
+                                            try {
+                                                // Try to share with all parameters for best mobile compatibility
+                                                await navigator.share({
+                                                    title: `Quran ${verse.verse_key} - ${chapter?.name_simple || 'Verse'}`,
+                                                    text: shareText,
+                                                    url: shareUrl,
+                                                });
+                                                setToastMessage('Shared successfully!');
+                                                setShowBookmarkToast(true);
+                                                setTimeout(() => setShowBookmarkToast(false), 2000);
+                                            } catch (err: any) {
+                                                // User cancelled or share failed
+                                                if (err.name !== 'AbortError') {
+                                                    // Only fallback to clipboard if it wasn't user cancellation
+                                                    await navigator.clipboard.writeText(shareText);
+                                                    setToastMessage('Copied to clipboard!');
+                                                    setShowBookmarkToast(true);
+                                                    setTimeout(() => setShowBookmarkToast(false), 2000);
+                                                }
+                                            }
+                                        } else if (navigator.share) {
+                                            // Fallback for browsers with share but no canShare
+                                            try {
+                                                await navigator.share({
+                                                    title: `Quran ${verse.verse_key}`,
+                                                    text: shareText,
+                                                });
+                                            } catch (err) {
+                                                await navigator.clipboard.writeText(shareText);
+                                                setToastMessage('Copied to clipboard!');
+                                                setShowBookmarkToast(true);
+                                                setTimeout(() => setShowBookmarkToast(false), 2000);
+                                            }
                                         } else {
-                                            navigator.clipboard.writeText(shareText);
+                                            // No Web Share API - copy to clipboard
+                                            await navigator.clipboard.writeText(shareText);
                                             setToastMessage('Copied to clipboard!');
                                             setShowBookmarkToast(true);
                                             setTimeout(() => setShowBookmarkToast(false), 2000);
