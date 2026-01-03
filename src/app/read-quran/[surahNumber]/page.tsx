@@ -53,6 +53,18 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
         }
     }, []);
 
+    // CRITICAL: Cleanup audio on component unmount (fixes dual audio bug)
+    useEffect(() => {
+        return () => {
+            // Stop any playing audio when navigating away
+            if (audioRef.current) {
+                audioRef.current.pause();
+                audioRef.current.src = '';
+                audioRef.current = null;
+            }
+        };
+    }, []);
+
     // Save bookmarks to localStorage
     const saveBookmarks = useCallback((newBookmarks: string[]) => {
         setBookmarks(newBookmarks);
