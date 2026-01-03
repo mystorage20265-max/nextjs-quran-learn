@@ -466,44 +466,44 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                         const shareText = `${verse.text_uthmani}\n\n${verse.translations?.[0]?.text || ''}\n\n— Quran ${verse.verse_key}`;
                                         const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}/read-quran/${surahNumber}#verse-${verse.verse_number}` : '';
 
-                                        // Check if Web Share API is available and can share
-                                        if (navigator.share && navigator.canShare) {
+                                        // Try Web Share API first (works on mobile and some desktops)
+                                        if (typeof navigator !== 'undefined' && navigator.share) {
                                             try {
-                                                // Try to share with all parameters for best mobile compatibility
+                                                // Share with URL for best mobile app compatibility
                                                 await navigator.share({
                                                     title: `Quran ${verse.verse_key} - ${chapter?.name_simple || 'Verse'}`,
                                                     text: shareText,
                                                     url: shareUrl,
                                                 });
+                                                // Only show toast if share completed (not cancelled)
                                                 setToastMessage('Shared successfully!');
                                                 setShowBookmarkToast(true);
                                                 setTimeout(() => setShowBookmarkToast(false), 2000);
+                                                return; // Exit early on success
                                             } catch (err: any) {
-                                                // User cancelled or share failed
-                                                if (err.name !== 'AbortError') {
-                                                    // Only fallback to clipboard if it wasn't user cancellation
-                                                    await navigator.clipboard.writeText(shareText);
-                                                    setToastMessage('Copied to clipboard!');
-                                                    setShowBookmarkToast(true);
-                                                    setTimeout(() => setShowBookmarkToast(false), 2000);
+                                                // AbortError = user cancelled, don't show anything
+                                                if (err.name === 'AbortError') {
+                                                    return;
                                                 }
+                                                // NotAllowedError or other = try clipboard fallback
+                                                console.log('Share API failed, trying clipboard:', err.message);
                                             }
-                                        } else if (navigator.share) {
-                                            // Fallback for browsers with share but no canShare
-                                            try {
-                                                await navigator.share({
-                                                    title: `Quran ${verse.verse_key}`,
-                                                    text: shareText,
-                                                });
-                                            } catch (err) {
-                                                await navigator.clipboard.writeText(shareText);
-                                                setToastMessage('Copied to clipboard!');
-                                                setShowBookmarkToast(true);
-                                                setTimeout(() => setShowBookmarkToast(false), 2000);
-                                            }
-                                        } else {
-                                            // No Web Share API - copy to clipboard
-                                            await navigator.clipboard.writeText(shareText);
+                                        }
+
+                                        // Fallback: Copy to clipboard
+                                        try {
+                                            await navigator.clipboard.writeText(shareText + '\n\n' + shareUrl);
+                                            setToastMessage('Copied to clipboard!');
+                                            setShowBookmarkToast(true);
+                                            setTimeout(() => setShowBookmarkToast(false), 2000);
+                                        } catch (clipboardErr) {
+                                            // Last resort fallback for older browsers
+                                            const textArea = document.createElement('textarea');
+                                            textArea.value = shareText + '\n\n' + shareUrl;
+                                            document.body.appendChild(textArea);
+                                            textArea.select();
+                                            document.execCommand('copy');
+                                            document.body.removeChild(textArea);
                                             setToastMessage('Copied to clipboard!');
                                             setShowBookmarkToast(true);
                                             setTimeout(() => setShowBookmarkToast(false), 2000);
