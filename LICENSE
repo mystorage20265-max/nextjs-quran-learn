@@ -1,33 +1,30 @@
-MIT License
+PROPRIETARY LICENSE
 
-Copyright (c) 2024-2026 Hamid Kamal and Team
+Copyright (c) 2024-2026 Hamid Kamal and Team. All Rights Reserved.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+This software and all associated documentation, source code, and intellectual 
+property are the exclusive property of Hamid Kamal and Team.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+ALL RIGHTS RESERVED - NO PERMISSIONS GRANTED
 
-ADDITIONAL RESTRICTIONS:
+WITHOUT prior written authorization from the copyright holder, you may NOT:
 
-1. REVERSE ENGINEERING PROHIBITED - Decompilation, disassembly, or any attempt 
-   to derive the source code structure or algorithms through reverse engineering 
-   is strictly prohibited.
+1. Use, copy, modify, or distribute this software
+2. Decompile, disassemble, or reverse engineer this software
+3. Create derivative works based on this software
+4. Sublicense, sell, rent, or lease this software
+5. Remove or alter any proprietary notices or labels
+6. Use this software for commercial or non-commercial purposes
+7. Share, publish, or make this software available to third parties
 
-2. OWNERSHIP - This software and all associated intellectual property rights 
-   remain the exclusive property of Hamid Kamal and Team.
+UNAUTHORIZED USE, COPYING, OR DISTRIBUTION OF THIS SOFTWARE IS STRICTLY 
+PROHIBITED AND MAY RESULT IN SEVERE CIVIL AND CRIMINAL PENALTIES.
 
-3. ATTRIBUTION - Any use, modification, or distribution must maintain proper 
-   attribution to the original author (Hamid Kamal).
+This software is provided for viewing purposes only. Any use beyond viewing 
+requires explicit written permission from Hamid Kamal.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+For licensing inquiries, contact the repository owner.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND. IN NO EVENT 
+SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY ARISING 
+FROM THE SOFTWARE OR ITS USE.
