@@ -129,14 +129,6 @@ export default function Navbar() {
           </Link>
 
           <Link
-            href="/about"
-            className={`nav-link ${isActive('/about') ? 'active' : ''}`}
-            onClick={closeMenu}
-          >
-            <i className="fas fa-star"></i> About Us
-          </Link>
-
-          <Link
             href="/read-quran"
             className={`nav-link ${isActive('/read-quran') ? 'active' : ''}`}
             onClick={closeMenu}
@@ -152,6 +144,14 @@ export default function Navbar() {
             <i className="fas fa-graduation-cap"></i> Learn Quran
           </Link>
 
+          <Link
+            href="/memorize-quran"
+            className={`nav-link ${isActive('/memorize-quran') ? 'active' : ''}`}
+            onClick={closeMenu}
+          >
+            <i className="fas fa-brain"></i> Memorize Quran
+          </Link>
+
           {/* More Features Dropdown */}
           <div className="nav-dropdown" ref={featuresRef}>
             <button
@@ -164,6 +164,9 @@ export default function Navbar() {
               <i className={`fas ${isFeaturesOpen ? 'fa-caret-up' : 'fa-caret-down'}`} style={{ marginLeft: 'auto' }} aria-hidden />
             </button>
             <div className={`dropdown-menu ${isFeaturesOpen ? 'active' : ''}`}>
+              <Link href="/about" className="dropdown-item" onClick={closeMenu}>
+                <i className="fas fa-info-circle"></i> About Us
+              </Link>
               <Link href="/courses" className="dropdown-item" onClick={closeMenu}>
                 <i className="fas fa-book"></i> Courses
               </Link>

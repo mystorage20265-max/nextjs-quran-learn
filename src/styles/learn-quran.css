@@ -1,0 +1,206 @@
+/* Learn Quran - Premium Glass Skin */
+
+:root {
+    /* Clean White & Gold Palette */
+    --lq-bg-main: #f8fafc;
+    --lq-bg-secondary: #ffffff;
+    --lq-bg-accent: #f0f9ff;
+
+    --lq-text-primary: #1e293b;
+    --lq-text-secondary: #64748b;
+
+    --lq-accent-color: #0d9488;
+    /* Teal-600 */
+    --lq-accent-gold: #fbbf24;
+    /* Amber-400 */
+    --lq-accent-gold-dark: #d97706;
+
+    --glass-border: 1px solid rgba(255, 255, 255, 0.8);
+    --glass-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    --glass-shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+}
+
+body {
+    background-color: var(--lq-bg-main);
+    color: var(--lq-text-primary);
+}
+
+.learn-quran-page {
+    min-height: 100vh;
+    padding-bottom: 5rem;
+}
+
+.lq-detail-header {
+    background: white;
+    padding: 2rem 0;
+    border-bottom: 1px solid #e2e8f0;
+    margin-bottom: 2rem;
+}
+
+.lq-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+.lq-back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--lq-text-secondary);
+    font-weight: 500;
+    margin-bottom: 1rem;
+    transition: color 0.2s;
+}
+
+.lq-back-btn:hover {
+    color: var(--lq-accent-color);
+}
+
+h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--lq-text-primary);
+    margin-bottom: 0.5rem;
+    background: linear-gradient(to right, #0d9488, #0f766e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Grid Layout */
+.lq-item-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 1.5rem;
+}
+
+/* Item Card - The "Glass" Upgrade */
+.lq-item-card {
+    position: relative;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    min-height: 140px;
+    box-shadow: var(--glass-shadow);
+}
+
+.lq-item-card:hover {
+    transform: translateY(-4px);
+    background: white;
+    box-shadow: var(--glass-shadow-hover);
+    border-color: var(--lq-accent-gold);
+}
+
+/* Active State - Gold & Animation */
+.lq-item-card.playing {
+    background: linear-gradient(135deg, white 0%, #fffbeb 100%);
+    border: 2px solid var(--lq-accent-gold);
+    box-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
+    animation: rubberBand 1s both;
+    z-index: 10;
+}
+
+/* Typography */
+.lq-item-text {
+    font-family: 'Amiri', 'Traditional Arabic', serif;
+    font-size: 3rem;
+    line-height: 1.2;
+    color: var(--lq-text-primary);
+    transition: transform 0.3s;
+}
+
+.lq-item-card:hover .lq-item-text,
+.lq-item-card.playing .lq-item-text {
+    transform: scale(1.1);
+    color: var(--lq-accent-gold-dark);
+}
+
+.lq-item-name {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--lq-text-secondary);
+    margin-top: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.7;
+}
+
+.lq-item-card.playing .lq-item-name {
+    color: var(--lq-accent-gold-dark);
+    opacity: 1;
+}
+
+/* Button Styling */
+.lq-btn-start {
+    background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+    color: white;
+    border: none;
+    border-radius: 0.75rem;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 6px -1px rgba(13, 148, 136, 0.3);
+}
+
+.lq-btn-start:hover {
+    transform: scale(1.02);
+    box-shadow: 0 10px 15px -3px rgba(13, 148, 136, 0.4);
+}
+
+.lq-btn-start.playing {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.3);
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Animations */
+@keyframes rubberBand {
+    0% {
+        transform: scale3d(1, 1, 1);
+    }
+
+    30% {
+        transform: scale3d(1.25, 0.75, 1);
+    }
+
+    40% {
+        transform: scale3d(0.75, 1.25, 1);
+    }
+
+    50% {
+        transform: scale3d(1.15, 0.85, 1);
+    }
+
+    65% {
+        transform: scale3d(0.95, 1.05, 1);
+    }
+
+    75% {
+        transform: scale3d(1.05, 0.95, 1);
+    }
+
+    100% {
+        transform: scale3d(1, 1, 1);
+    }
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.8;
+    }
+}

@@ -1,0 +1,178 @@
+/* Glassmorphism Theme - Clean White & Gold */
+:root {
+    /* Palette */
+    --glass-bg-primary: #f8fafc;
+    --glass-bg-gradient: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+
+    /* The "Noor" (Light) Accent */
+    --glass-accent-gold: #fbbf24;
+    --glass-accent-gold-gradient: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+
+    /* The "Peace" (Islam) Accent */
+    --glass-accent-teal: #0f766e;
+
+    /* Card Glass */
+    --glass-card-bg: rgba(255, 255, 255, 0.65);
+    --glass-card-border: 1px solid rgba(255, 255, 255, 0.8);
+    --glass-card-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+    --glass-card-shadow-hover: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+
+    /* Typography */
+    --glass-text-main: #1e293b;
+    --glass-text-muted: #64748b;
+}
+
+body {
+    background: var(--glass-bg-primary);
+    background-image: var(--glass-bg-gradient);
+    color: var(--glass-text-main);
+    min-height: 100vh;
+}
+
+/* Base Container */
+.glass-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Glass Card Utility */
+.glass-card {
+    background: var(--glass-card-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: var(--glass-card-border);
+    box-shadow: var(--glass-card-shadow);
+    border-radius: 1rem;
+    /* Rounded-2xl */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.glass-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--glass-card-shadow-hover);
+    border-color: #fff;
+}
+
+/* Lesson Grid Item */
+.lesson-grid-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 120px;
+    cursor: pointer;
+    /* Font settings for Arabic */
+    font-family: var(--font-arabic);
+    font-size: 2.5rem;
+    line-height: 1.2;
+}
+
+/* Active / Playing State - The "Light" Glow */
+.lesson-grid-item.active {
+    background: var(--glass-accent-gold-gradient);
+    color: white;
+    border-color: transparent;
+    box-shadow: 0 0 20px rgba(251, 191, 36, 0.4);
+    /* Replicating QuranCentral Animation */
+    animation: rubberBand 1s both;
+}
+
+.lesson-grid-item.active .text-sm {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Animations from Animate.css / QuranCentral */
+@keyframes rubberBand {
+    0% {
+        transform: scale3d(1, 1, 1);
+    }
+
+    30% {
+        transform: scale3d(1.25, 0.75, 1);
+    }
+
+    40% {
+        transform: scale3d(0.75, 1.25, 1);
+    }
+
+    50% {
+        transform: scale3d(1.15, 0.85, 1);
+    }
+
+    65% {
+        transform: scale3d(0.95, 1.05, 1);
+    }
+
+    75% {
+        transform: scale3d(1.05, 0.95, 1);
+    }
+
+    100% {
+        transform: scale3d(1, 1, 1);
+    }
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-5px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+/* Utility Animations */
+.animate-float {
+    animation: float 6s ease-in-out infinite;
+}
+
+/* Page Transitions */
+.page-enter {
+    animation: slideUp 0.5s ease-out both;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Play All / Stop Button Glass Style */
+.btn-glass-primary {
+    background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 15px rgba(15, 118, 110, 0.3);
+    transition: all 0.2s ease;
+}
+
+.btn-glass-primary:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 20px rgba(15, 118, 110, 0.4);
+}
+
+.btn-glass-danger {
+    background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+}
+
+.btn-glass-danger:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+}

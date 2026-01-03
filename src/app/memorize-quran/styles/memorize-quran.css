@@ -1,0 +1,502 @@
+/* Memorize Quran Styles - Premium Glassmorphism with Uthmanic Font */
+
+/* ===== UTHMANIC FONT IMPORT ===== */
+@import url('https://fonts.qurancdn.com/v1/fonts/quran/hafs/v1');
+
+/* KFGQPC Uthmanic Script HAFS Font */
+@font-face {
+    font-family: 'KFGQPC Uthmanic Script HAFS';
+    src: url('https://cdn.jsdelivr.net/gh/nicolo/GlyphWiki-Quran-Fonts/fonts/uthman/uthmanic_hafs_v22.woff2') format('woff2'),
+        url('https://fonts.qurancdn.com/v1/fonts/quran/hafs/v1/QCF_P001.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Alternative: Amiri Quran */
+@import url('https://fonts.googleapis.com/css2?family=Amiri+Quran&display=swap');
+
+/* ===== ROOT VARIABLES ===== */
+:root {
+    --memorize-primary: #1a5f4a;
+    --memorize-secondary: #d4af37;
+    --memorize-bg-start: #f8faf9;
+    --memorize-bg-end: #e8f0ed;
+    --memorize-glass: rgba(255, 255, 255, 0.85);
+    --memorize-glass-border: rgba(255, 255, 255, 0.5);
+    --memorize-shadow: 0 8px 32px rgba(26, 95, 74, 0.15);
+    --memorize-text: #1f2937;
+    --memorize-text-light: #6b7280;
+    --memorize-verse-bg: rgba(26, 95, 74, 0.05);
+    --memorize-active: #d4af37;
+    --uthmani-font: 'KFGQPC Uthmanic Script HAFS', 'Amiri Quran', 'Traditional Arabic', serif;
+}
+
+/* ===== PAGE CONTAINER ===== */
+.memorize-page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--memorize-bg-start) 0%, var(--memorize-bg-end) 100%);
+    padding: 2rem;
+    padding-top: 100px;
+}
+
+.memorize-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* ===== HEADER ===== */
+.memorize-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.memorize-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--memorize-primary);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.memorize-title-arabic {
+    font-family: var(--uthmani-font);
+    font-size: 2rem;
+    color: var(--memorize-secondary);
+}
+
+.memorize-subtitle {
+    color: var(--memorize-text-light);
+    font-size: 1.1rem;
+}
+
+/* ===== CONTROLS PANEL ===== */
+.memorize-controls {
+    background: var(--memorize-glass);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--memorize-glass-border);
+    border-radius: 20px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--memorize-shadow);
+}
+
+.controls-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.control-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--memorize-text);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.control-label i {
+    color: var(--memorize-primary);
+}
+
+.control-select,
+.control-input {
+    padding: 0.75rem 1rem;
+    border: 2px solid rgba(26, 95, 74, 0.2);
+    border-radius: 12px;
+    background: white;
+    font-size: 1rem;
+    color: var(--memorize-text);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.control-select:focus,
+.control-input:focus {
+    outline: none;
+    border-color: var(--memorize-primary);
+    box-shadow: 0 0 0 3px rgba(26, 95, 74, 0.1);
+}
+
+.control-select option {
+    padding: 0.5rem;
+}
+
+/* ===== VERSE RANGE PICKER ===== */
+.verse-range {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.verse-range input {
+    width: 80px;
+    text-align: center;
+}
+
+.verse-range-separator {
+    color: var(--memorize-text-light);
+    font-weight: 600;
+}
+
+/* ===== PLAYER CONTROLS ===== */
+.player-controls {
+    background: var(--memorize-glass);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--memorize-glass-border);
+    border-radius: 20px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--memorize-shadow);
+}
+
+.player-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.player-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.player-btn-primary {
+    background: linear-gradient(135deg, var(--memorize-primary) 0%, #2d8a6e 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(26, 95, 74, 0.3);
+}
+
+.player-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(26, 95, 74, 0.4);
+}
+
+.player-btn-secondary {
+    background: white;
+    color: var(--memorize-primary);
+    border: 2px solid var(--memorize-primary);
+}
+
+.player-btn-secondary:hover {
+    background: var(--memorize-primary);
+    color: white;
+}
+
+.player-btn-active {
+    background: linear-gradient(135deg, var(--memorize-secondary) 0%, #c9a227 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+}
+
+.player-btn i {
+    font-size: 1.1rem;
+}
+
+/* Loop/Repeat Settings */
+.loop-settings {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(26, 95, 74, 0.1);
+}
+
+.loop-setting {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--memorize-text);
+}
+
+.loop-setting input[type="number"] {
+    width: 60px;
+    padding: 0.5rem;
+    border: 2px solid rgba(26, 95, 74, 0.2);
+    border-radius: 8px;
+    text-align: center;
+}
+
+.loop-setting input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--memorize-primary);
+    cursor: pointer;
+}
+
+/* ===== VERSE DISPLAY ===== */
+.verses-container {
+    background: var(--memorize-glass);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--memorize-glass-border);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: var(--memorize-shadow);
+}
+
+.verses-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.verse-card {
+    background: var(--memorize-verse-bg);
+    border-radius: 16px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 2px solid transparent;
+}
+
+.verse-card:hover {
+    background: rgba(26, 95, 74, 0.08);
+    transform: translateY(-2px);
+}
+
+.verse-card.active {
+    border-color: var(--memorize-active);
+    background: rgba(212, 175, 55, 0.1);
+    animation: pulseGold 2s infinite;
+}
+
+@keyframes pulseGold {
+
+    0%,
+    100% {
+        box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4);
+    }
+
+    50% {
+        box-shadow: 0 0 20px 5px rgba(212, 175, 55, 0.2);
+    }
+}
+
+.verse-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.verse-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--memorize-primary) 0%, #2d8a6e 100%);
+    color: white;
+    border-radius: 50%;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.verse-play-btn {
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    background: var(--memorize-secondary);
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.verse-play-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+}
+
+/* ===== ARABIC TEXT - UTHMANIC ===== */
+.verse-arabic {
+    font-family: var(--uthmani-font);
+    font-size: 2.2rem;
+    line-height: 2.5;
+    direction: rtl;
+    text-align: right;
+    color: var(--memorize-text);
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 12px;
+    word-spacing: 0.2em;
+    letter-spacing: 0.02em;
+}
+
+/* Verse end marker */
+.verse-arabic .verse-end {
+    font-family: var(--uthmani-font);
+    color: var(--memorize-primary);
+    margin-right: 0.5rem;
+}
+
+/* ===== TRANSLATION ===== */
+.verse-translation {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: var(--memorize-text-light);
+    padding-left: 1rem;
+    border-left: 3px solid var(--memorize-primary);
+}
+
+/* ===== PROGRESS BAR ===== */
+.memorize-progress {
+    margin-top: 2rem;
+    padding: 1rem;
+    background: rgba(26, 95, 74, 0.05);
+    border-radius: 12px;
+}
+
+.progress-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--memorize-text);
+}
+
+.progress-bar {
+    height: 8px;
+    background: rgba(26, 95, 74, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--memorize-primary) 0%, var(--memorize-secondary) 100%);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+/* ===== LOADING STATE ===== */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    gap: 1rem;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(26, 95, 74, 0.1);
+    border-top-color: var(--memorize-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.loading-text {
+    color: var(--memorize-text-light);
+    font-size: 1.1rem;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .memorize-page {
+        padding: 1rem;
+        padding-top: 80px;
+    }
+
+    .memorize-title {
+        font-size: 1.8rem;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .controls-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .verse-arabic {
+        font-size: 1.6rem;
+        line-height: 2.2;
+    }
+
+    .player-buttons {
+        gap: 0.5rem;
+    }
+
+    .player-btn {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .loop-settings {
+        flex-direction: column;
+        gap: 1rem;
+    }
+}
+
+/* ===== DARK MODE SUPPORT ===== */
+@media (prefers-color-scheme: dark) {
+    .memorize-page {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    }
+
+    .memorize-controls,
+    .player-controls,
+    .verses-container {
+        background: rgba(30, 30, 50, 0.8);
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .memorize-title {
+        color: #e0e0e0;
+    }
+
+    .verse-arabic {
+        color: #f0f0f0;
+        background: rgba(40, 40, 60, 0.5);
+    }
+
+    .verse-translation {
+        color: #b0b0b0;
+    }
+
+    .control-select,
+    .control-input {
+        background: rgba(40, 40, 60, 0.8);
+        color: #e0e0e0;
+        border-color: rgba(255, 255, 255, 0.2);
+    }
+}

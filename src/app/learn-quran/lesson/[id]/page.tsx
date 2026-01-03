@@ -34,6 +34,16 @@ export default function LessonDetailPage() {
                 console.error('Failed to load lesson', err);
                 setLoading(false);
             });
+
+        // Cleanup: Stop audio when leaving the page
+        return () => {
+            stopPlayAll();
+            window.speechSynthesis.cancel();
+            if (audioRef.current) {
+                audioRef.current.pause();
+                audioRef.current.currentTime = 0;
+            }
+        };
     }, [lessonId]);
 
     const [isPlayingAll, setIsPlayingAll] = useState(false);
@@ -123,16 +133,16 @@ export default function LessonDetailPage() {
 
         setPlayingItem(item.id || item.text);
 
+        // STRICT FIX: If no audio file, DO NOT use TTS. Just skip.
         if (!audioUrl) {
-            // No audio file defined, try TTS
-            console.log("No audio file, trying TTS for:", item.text);
-            playTTS(item.text, () => {
-                setPlayingItem(null);
-                if (onComplete) onComplete();
-            });
+            console.log("No audio file found for:", item.text);
+            // playTTS(item.text...) <-- REMOVED
+            setPlayingItem(null);
+            if (onComplete) onComplete();
             return;
         }
 
+        // PREVENT OVERLAP: Stop any existing audio immediately
         if (audioRef.current) {
             audioRef.current.pause();
             audioRef.current.currentTime = 0;
@@ -142,11 +152,10 @@ export default function LessonDetailPage() {
         audioRef.current = audio;
 
         audio.onerror = () => {
-            console.warn(`Audio failed to load for ${item.text}, falling back to TTS`);
-            playTTS(item.text, () => {
-                setPlayingItem(null);
-                if (onComplete) onComplete();
-            }); // Fallback also triggers complete
+            console.error(`Audio failed to load for ${item.text}`);
+            // DISABLE FALLBACK to keep voice consistent
+            setPlayingItem(null);
+            if (onComplete) onComplete();
         };
 
         audio.onended = () => {
@@ -156,10 +165,9 @@ export default function LessonDetailPage() {
 
         audio.play().catch(e => {
             console.error("Audio playback error", e);
-            playTTS(item.text, () => {
-                setPlayingItem(null);
-                if (onComplete) onComplete();
-            });
+            // DISABLE FALLBACK
+            setPlayingItem(null);
+            if (onComplete) onComplete();
         });
     };
 
