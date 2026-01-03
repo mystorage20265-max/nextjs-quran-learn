@@ -156,39 +156,82 @@ export default function ReadQuranPage() {
                     ))}
                 </div>
             ) : (
-                // Juz View
                 <div>
-                    {Array.from({ length: 30 }, (_, i) => i + 1).map((juzNum) => (
-                        <div key={juzNum} style={{ marginBottom: '32px' }}>
-                            <h3 style={{
-                                fontSize: '1.2rem',
-                                fontWeight: '600',
-                                color: 'var(--rq-text)',
-                                marginBottom: '16px',
-                                paddingBottom: '8px',
-                                borderBottom: '2px solid var(--rq-primary)'
-                            }}>
-                                Juz {juzNum}
-                            </h3>
-                            <div className="rq-surah-grid">
-                                {chapters
-                                    .filter((ch) => ch.pages && ch.pages[0] >= (juzNum - 1) * 20 + 1 && ch.pages[0] <= juzNum * 20)
-                                    .map((chapter) => (
+                    {Array.from({ length: 30 }, (_, i) => i + 1).map((juzNum) => {
+                        // Proper Juz to Surah mapping (which surahs START in each Juz)
+                        const JUZ_START_SURAHS: { [key: number]: number[] } = {
+                            1: [1, 2], // Al-Fatiha, Al-Baqarah (starts)
+                            2: [2], // Al-Baqarah (continues)
+                            3: [2, 3], // Al-Baqarah ends, Al-Imran starts
+                            4: [3, 4], // Al-Imran, An-Nisa
+                            5: [4], // An-Nisa continues
+                            6: [4, 5], // An-Nisa, Al-Ma'idah
+                            7: [5, 6], // Al-Ma'idah, Al-An'am
+                            8: [6, 7], // Al-An'am, Al-A'raf
+                            9: [7, 8], // Al-A'raf, Al-Anfal
+                            10: [8, 9], // Al-Anfal, At-Tawbah
+                            11: [9, 10, 11], // At-Tawbah, Yunus, Hud
+                            12: [11, 12], // Hud, Yusuf
+                            13: [12, 13, 14], // Yusuf, Ar-Ra'd, Ibrahim
+                            14: [15, 16], // Al-Hijr, An-Nahl
+                            15: [17, 18], // Al-Isra, Al-Kahf
+                            16: [18, 19, 20], // Al-Kahf, Maryam, Taha
+                            17: [21, 22], // Al-Anbiya, Al-Hajj
+                            18: [23, 24, 25], // Al-Mu'minun, An-Nur, Al-Furqan
+                            19: [25, 26, 27], // Al-Furqan, Ash-Shu'ara, An-Naml
+                            20: [27, 28, 29], // An-Naml, Al-Qasas, Al-Ankabut
+                            21: [29, 30, 31, 32, 33], // Al-Ankabut, Ar-Rum, Luqman, As-Sajdah, Al-Ahzab
+                            22: [33, 34, 35, 36], // Al-Ahzab, Saba, Fatir, Ya-Sin
+                            23: [36, 37, 38, 39], // Ya-Sin, As-Saffat, Sad, Az-Zumar
+                            24: [39, 40, 41], // Az-Zumar, Ghafir, Fussilat
+                            25: [41, 42, 43, 44, 45], // Fussilat, Ash-Shura, Az-Zukhruf, Ad-Dukhan, Al-Jathiyah
+                            26: [46, 47, 48, 49, 50, 51], // Al-Ahqaf to Adh-Dhariyat
+                            27: [51, 52, 53, 54, 55, 56, 57], // Adh-Dhariyat to Al-Hadid
+                            28: [58, 59, 60, 61, 62, 63, 64, 65, 66], // Al-Mujadila to At-Tahrim
+                            29: [67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77], // Al-Mulk to Al-Mursalat
+                            30: [78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114] // An-Naba to An-Nas
+                        };
+
+                        const juzSurahs = chapters.filter(ch =>
+                            JUZ_START_SURAHS[juzNum]?.includes(ch.id)
+                        );
+
+                        // Skip empty Juz sections
+                        if (juzSurahs.length === 0) return null;
+
+                        return (
+                            <div key={juzNum} style={{ marginBottom: '32px' }}>
+                                <h3 style={{
+                                    fontSize: '1.2rem',
+                                    fontWeight: '600',
+                                    color: 'var(--rq-text)',
+                                    marginBottom: '16px',
+                                    paddingBottom: '8px',
+                                    borderBottom: '2px solid var(--rq-primary)'
+                                }}>
+                                    Juz {juzNum}
+                                </h3>
+                                <div className="rq-surah-grid">
+                                    {juzSurahs.map((chapter) => (
                                         <SurahCard key={chapter.id} chapter={chapter} />
                                     ))}
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
-            )}
+            )
+            }
 
             {/* Empty State */}
-            {displayedChapters.length === 0 && searchQuery && (
-                <div style={{ textAlign: 'center', padding: '48px', color: 'var(--rq-text-secondary)' }}>
-                    <p>No surahs found matching "{searchQuery}"</p>
-                </div>
-            )}
-        </div>
+            {
+                displayedChapters.length === 0 && searchQuery && (
+                    <div style={{ textAlign: 'center', padding: '48px', color: 'var(--rq-text-secondary)' }}>
+                        <p>No surahs found matching "{searchQuery}"</p>
+                    </div>
+                )
+            }
+        </div >
     );
 }
 
