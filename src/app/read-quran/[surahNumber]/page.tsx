@@ -42,6 +42,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
     const [bookmarks, setBookmarks] = useState<string[]>([]);
     const [showBookmarkToast, setShowBookmarkToast] = useState(false);
     const [toastMessage, setToastMessage] = useState('');
+    const [toastType, setToastType] = useState<'success' | 'warning'>('success');
 
     // Load bookmarks from localStorage
     useEffect(() => {
@@ -490,12 +491,13 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                             }
                                         }
 
-                                        // Fallback: Copy to clipboard
+                                        // Fallback: Copy to clipboard (browser doesn't support native share)
                                         try {
                                             await navigator.clipboard.writeText(shareText + '\n\n' + shareUrl);
-                                            setToastMessage('Copied to clipboard!');
+                                            setToastType('warning');
+                                            setToastMessage('⚠️ Sharing not supported. Copied to clipboard - use Chrome for native sharing!');
                                             setShowBookmarkToast(true);
-                                            setTimeout(() => setShowBookmarkToast(false), 2000);
+                                            setTimeout(() => setShowBookmarkToast(false), 5000);
                                         } catch (clipboardErr) {
                                             // Last resort fallback for older browsers
                                             const textArea = document.createElement('textarea');
@@ -504,9 +506,10 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                             textArea.select();
                                             document.execCommand('copy');
                                             document.body.removeChild(textArea);
-                                            setToastMessage('Copied to clipboard!');
+                                            setToastType('warning');
+                                            setToastMessage('⚠️ Sharing not supported. Copied to clipboard - use Chrome for native sharing!');
                                             setShowBookmarkToast(true);
-                                            setTimeout(() => setShowBookmarkToast(false), 2000);
+                                            setTimeout(() => setShowBookmarkToast(false), 5000);
                                         }
                                     }}
                                     title="Share"
@@ -668,13 +671,17 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                     bottom: isPlaying && currentVerse ? '100px' : '24px',
                     left: '50%',
                     transform: 'translateX(-50%)',
-                    background: 'var(--rq-primary)',
+                    background: toastType === 'warning' ? '#DC2626' : 'var(--rq-primary)',
                     color: 'white',
                     padding: '12px 24px',
                     borderRadius: '8px',
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+                    boxShadow: toastType === 'warning' ? '0 4px 20px rgba(220, 38, 38, 0.4)' : '0 4px 12px rgba(0,0,0,0.2)',
                     zIndex: 2000,
-                    animation: 'fadeIn 0.3s ease'
+                    animation: 'fadeIn 0.3s ease',
+                    maxWidth: '90%',
+                    textAlign: 'center',
+                    fontSize: toastType === 'warning' ? '0.9rem' : '1rem',
+                    fontWeight: toastType === 'warning' ? '600' : '500'
                 }}>
                     {toastMessage}
                 </div>
