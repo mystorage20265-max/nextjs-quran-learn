@@ -1,8 +1,9 @@
-// Memorize Quran Page - Complete Feature with Quran.com API
+// Memorize Quran Page - Redesigned
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import './styles/memorize-quran.css';
+import SurahCard from './components/SurahCard';
 
 interface Chapter {
     id: number;
@@ -27,8 +28,14 @@ interface Reciter {
     style: string;
 }
 
+type ViewMode = 'selection' | 'player';
+
 export default function MemorizeQuranPage() {
-    // State
+    // UI State
+    const [viewMode, setViewMode] = useState<ViewMode>('selection');
+    const [searchQuery, setSearchQuery] = useState('');
+
+    // Data State
     const [chapters, setChapters] = useState<Chapter[]>([]);
     const [reciters, setReciters] = useState<Reciter[]>([]);
     const [verses, setVerses] = useState<Verse[]>([]);
@@ -88,13 +95,13 @@ export default function MemorizeQuranPage() {
         };
     }, []);
 
-    // Fetch verses when chapter or range changes
+    // Fetch verses when chapter or range changes (only if in player mode or pre-fetching)
     useEffect(() => {
-        if (selectedChapter) {
+        if (selectedChapter && viewMode === 'player') {
             fetchVerses();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedChapter, fromVerse, toVerse]);
+    }, [selectedChapter, fromVerse, toVerse, viewMode]);
 
     const fetchVerses = async () => {
         setLoadingVerses(true);
@@ -111,18 +118,34 @@ export default function MemorizeQuranPage() {
         }
     };
 
-    // Handle chapter change
-    const handleChapterChange = (chapterId: number) => {
-        setSelectedChapter(chapterId);
+    // Handle chapter selection from grid
+    const handleChapterSelect = (chapterId: number) => {
         const chapter = chapters.find(c => c.id === chapterId);
         if (chapter) {
+            setSelectedChapter(chapterId);
             setFromVerse(1);
             setToVerse(Math.min(7, chapter.versesCount));
+            setViewMode('player');
+            stopPlayback();
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-        stopPlayback();
     };
 
-    // Audio playback functions
+    const handleBackToSelection = () => {
+        stopPlayback();
+        setViewMode('selection');
+    };
+
+    // Filter chapters based on search
+    const filteredChapters = chapters.filter(chapter =>
+        chapter.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        chapter.nameTranslation.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        chapter.nameArabic.includes(searchQuery) ||
+        chapter.id.toString().includes(searchQuery)
+    );
+
+    // Audio playback functions (Same as before)
     const playVerseAudio = useCallback(async (verse: Verse): Promise<void> => {
         return new Promise(async (resolve, reject) => {
             try {
@@ -166,7 +189,13 @@ export default function MemorizeQuranPage() {
 
         isPlayingRef.current = true;
         let verseIndex = 0;
-        let repeatNum = 0;
+        // Resume from current index if valid
+        if (currentVerseIndex !== -1 && currentVerseIndex < verses.length) {
+            verseIndex = currentVerseIndex;
+        }
+
+        // Reset repeats if starting fresh or new index
+        let repeatNum = (verseIndex === currentVerseIndex) ? currentRepeat : 0;
 
         const playNext = async () => {
             if (!isPlayingRef.current) return;
@@ -183,6 +212,10 @@ export default function MemorizeQuranPage() {
 
             const verse = verses[verseIndex];
             setCurrentVerseIndex(verseIndex);
+
+            // Only increment repeats if we are repeating the SAME verse
+            // If it's a new verse, repeatNum starts at 0 (1st play)
+            // But UI displays 1-based index (Repeat 1/3)
             setCurrentRepeat(repeatNum + 1);
 
             try {
@@ -214,11 +247,16 @@ export default function MemorizeQuranPage() {
         };
 
         playNext();
-    }, [verses, loopEnabled, repeatCount, pauseBetweenVerses, playVerseAudio]);
+    }, [verses, loopEnabled, repeatCount, pauseBetweenVerses, playVerseAudio, currentVerseIndex, currentRepeat]);
 
     const startPlayback = () => {
         setIsPlaying(true);
         isPlayingRef.current = true;
+        // If restarting, reset indices unless resuming
+        if (currentVerseIndex === -1) {
+            setCurrentVerseIndex(0);
+            setCurrentRepeat(0);
+        }
         playSequence();
     };
 
@@ -243,16 +281,26 @@ export default function MemorizeQuranPage() {
         setIsPlaying(false);
         isPlayingRef.current = false;
 
+        if (playbackTimeoutRef.current) {
+            clearTimeout(playbackTimeoutRef.current);
+        }
+
         if (audioRef.current) {
             audioRef.current.pause();
         }
     };
 
     const resumePlayback = () => {
-        if (audioRef.current && currentVerseIndex >= 0) {
-            setIsPlaying(true);
-            isPlayingRef.current = true;
+        setIsPlaying(true);
+        isPlayingRef.current = true;
+
+        // If audio is loaded and paused, just play it
+        if (audioRef.current && !audioRef.current.ended) {
             audioRef.current.play();
+            // We need to hook back into the sequence after this audio ends
+            // simpler to just restart sequence logic from current index?
+            // Re-triggering sequence logic is safer for loops/repeats
+            playSequence();
         } else {
             startPlayback();
         }
@@ -280,6 +328,8 @@ export default function MemorizeQuranPage() {
         ? ((currentVerseIndex + 1) / verses.length) * 100
         : 0;
 
+    const currentChapter = chapters.find(c => c.id === selectedChapter);
+
     if (loading) {
         return (
             <main className="memorize-page">
@@ -292,8 +342,6 @@ export default function MemorizeQuranPage() {
             </main>
         );
     }
-
-    const currentChapter = chapters.find(c => c.id === selectedChapter);
 
     return (
         <main className="memorize-page">
@@ -310,189 +358,212 @@ export default function MemorizeQuranPage() {
                     </p>
                 </header>
 
-                {/* Controls Panel */}
-                <section className="memorize-controls">
-                    <div className="controls-grid">
-                        {/* Surah Selector */}
-                        <div className="control-group">
-                            <label className="control-label">
-                                <i className="fas fa-book-quran"></i>
-                                Select Surah
-                            </label>
-                            <select
-                                className="control-select"
-                                value={selectedChapter}
-                                onChange={(e) => handleChapterChange(parseInt(e.target.value))}
-                            >
-                                {chapters.map((chapter) => (
-                                    <option key={chapter.id} value={chapter.id}>
-                                        {chapter.id}. {chapter.name} ({chapter.nameArabic}) - {chapter.versesCount} verses
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-
-                        {/* Reciter Selector */}
-                        <div className="control-group">
-                            <label className="control-label">
-                                <i className="fas fa-microphone"></i>
-                                Select Reciter
-                            </label>
-                            <select
-                                className="control-select"
-                                value={selectedReciter}
-                                onChange={(e) => setSelectedReciter(parseInt(e.target.value))}
-                            >
-                                {reciters.map((reciter) => (
-                                    <option key={reciter.id} value={reciter.id}>
-                                        {reciter.name} ({reciter.style})
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-
-                        {/* Verse Range */}
-                        <div className="control-group">
-                            <label className="control-label">
-                                <i className="fas fa-list-ol"></i>
-                                Verse Range
-                            </label>
-                            <div className="verse-range">
-                                <input
-                                    type="number"
-                                    className="control-input"
-                                    min={1}
-                                    max={currentChapter?.versesCount || 1}
-                                    value={fromVerse}
-                                    onChange={(e) => setFromVerse(parseInt(e.target.value) || 1)}
-                                />
-                                <span className="verse-range-separator">to</span>
-                                <input
-                                    type="number"
-                                    className="control-input"
-                                    min={fromVerse}
-                                    max={currentChapter?.versesCount || 1}
-                                    value={toVerse}
-                                    onChange={(e) => setToVerse(parseInt(e.target.value) || fromVerse)}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                {/* Player Controls */}
-                <section className="player-controls">
-                    <div className="player-buttons">
-                        {!isPlaying ? (
-                            <button className="player-btn player-btn-primary" onClick={startPlayback}>
-                                <i className="fas fa-play"></i>
-                                Play All
-                            </button>
-                        ) : (
-                            <>
-                                <button className="player-btn player-btn-secondary" onClick={pausePlayback}>
-                                    <i className="fas fa-pause"></i>
-                                    Pause
-                                </button>
-                                <button className="player-btn player-btn-primary" onClick={resumePlayback}>
-                                    <i className="fas fa-play"></i>
-                                    Resume
-                                </button>
-                            </>
-                        )}
-                        <button className="player-btn player-btn-secondary" onClick={stopPlayback}>
-                            <i className="fas fa-stop"></i>
-                            Stop
-                        </button>
-                        <button
-                            className={`player-btn ${loopEnabled ? 'player-btn-active' : 'player-btn-secondary'}`}
-                            onClick={() => setLoopEnabled(!loopEnabled)}
-                        >
-                            <i className="fas fa-redo"></i>
-                            Loop {loopEnabled ? 'ON' : 'OFF'}
-                        </button>
-                    </div>
-
-                    {/* Loop Settings */}
-                    <div className="loop-settings">
-                        <div className="loop-setting">
-                            <label>Repeat each verse:</label>
+                {/* VIEW: SELECTION */}
+                {viewMode === 'selection' && (
+                    <section className="memorize-selection">
+                        <div className="mq-search-container">
+                            <i className="fas fa-search mq-search-icon"></i>
                             <input
-                                type="number"
-                                min={1}
-                                max={10}
-                                value={repeatCount}
-                                onChange={(e) => setRepeatCount(parseInt(e.target.value) || 1)}
+                                type="text"
+                                className="mq-search-input"
+                                placeholder="Search Surah by name or number..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
                             />
-                            <span>times</span>
                         </div>
-                        <div className="loop-setting">
-                            <label>Pause between verses:</label>
-                            <input
-                                type="number"
-                                min={0}
-                                max={10}
-                                value={pauseBetweenVerses}
-                                onChange={(e) => setPauseBetweenVerses(parseInt(e.target.value) || 0)}
-                            />
-                            <span>seconds</span>
-                        </div>
-                    </div>
 
-                    {/* Progress */}
-                    {currentVerseIndex >= 0 && (
-                        <div className="memorize-progress">
-                            <div className="progress-label">
-                                <span>
-                                    Verse {currentVerseIndex + 1} of {verses.length} | Repeat {currentRepeat}/{repeatCount}
-                                </span>
-                                <span>{Math.round(progress)}%</span>
-                            </div>
-                            <div className="progress-bar">
-                                <div className="progress-fill" style={{ width: `${progress}%` }}></div>
-                            </div>
-                        </div>
-                    )}
-                </section>
-
-                {/* Verses Display */}
-                <section className="verses-container">
-                    {loadingVerses ? (
-                        <div className="loading-container">
-                            <div className="loading-spinner"></div>
-                            <p className="loading-text">Loading verses...</p>
-                        </div>
-                    ) : (
-                        <div className="verses-list">
-                            {verses.map((verse, index) => (
-                                <article
-                                    key={verse.id}
-                                    className={`verse-card ${currentVerseIndex === index ? 'active' : ''}`}
-                                    onClick={() => playSingleVerse(verse, index)}
-                                >
-                                    <div className="verse-header">
-                                        <span className="verse-number">{verse.verseNumber}</span>
-                                        <button
-                                            className="verse-play-btn"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                playSingleVerse(verse, index);
-                                            }}
-                                            aria-label={`Play verse ${verse.verseNumber}`}
-                                        >
-                                            <i className="fas fa-play"></i>
-                                        </button>
-                                    </div>
-                                    <p className="verse-arabic">
-                                        {verse.textUthmani}
-                                        <span className="verse-end"> ۝ </span>
-                                    </p>
-                                    <p className="verse-translation">{verse.translation}</p>
-                                </article>
+                        <div className="mq-surah-grid">
+                            {filteredChapters.map((chapter) => (
+                                <SurahCard
+                                    key={chapter.id}
+                                    chapter={chapter}
+                                    onClick={() => handleChapterSelect(chapter.id)}
+                                />
                             ))}
                         </div>
-                    )}
-                </section>
+                    </section>
+                )}
+
+                {/* VIEW: PLAYER */}
+                {viewMode === 'player' && currentChapter && (
+                    <div className="memorize-controls-wrapper">
+                        <button className="back-btn" onClick={handleBackToSelection}>
+                            <i className="fas fa-arrow-left"></i>
+                            Select different Surah
+                        </button>
+
+                        {/* Controls Panel */}
+                        <section className="memorize-panel">
+                            <h2 className="panel-section-title">
+                                <i className="fas fa-sliders-h"></i>
+                                Settings for {currentChapter.name}
+                            </h2>
+                            <div className="controls-grid">
+                                {/* Reciter Selector */}
+                                <div className="control-group">
+                                    <label className="control-label">
+                                        <i className="fas fa-microphone"></i>
+                                        Select Reciter
+                                    </label>
+                                    <select
+                                        className="control-select"
+                                        value={selectedReciter}
+                                        onChange={(e) => setSelectedReciter(parseInt(e.target.value))}
+                                    >
+                                        {reciters.map((reciter) => (
+                                            <option key={reciter.id} value={reciter.id}>
+                                                {reciter.name} ({reciter.style})
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                {/* Verse Range */}
+                                <div className="control-group">
+                                    <label className="control-label">
+                                        <i className="fas fa-list-ol"></i>
+                                        Verse Range (Max {currentChapter.versesCount})
+                                    </label>
+                                    <div className="verse-range">
+                                        <input
+                                            type="number"
+                                            className="control-input"
+                                            min={1}
+                                            max={currentChapter.versesCount}
+                                            value={fromVerse}
+                                            onChange={(e) => setFromVerse(Math.max(1, Math.min(parseInt(e.target.value) || 1, currentChapter.versesCount)))}
+                                        />
+                                        <span className="verse-range-separator">to</span>
+                                        <input
+                                            type="number"
+                                            className="control-input"
+                                            min={fromVerse}
+                                            max={currentChapter.versesCount}
+                                            value={toVerse}
+                                            onChange={(e) => setToVerse(Math.max(fromVerse, Math.min(parseInt(e.target.value) || fromVerse, currentChapter.versesCount)))}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Loop Settings */}
+                            <div className="loop-settings">
+                                <div className="loop-setting">
+                                    <label>Repeat each verse:</label>
+                                    <input
+                                        type="number"
+                                        className="loop-input control-input"
+                                        min={1}
+                                        max={10}
+                                        value={repeatCount}
+                                        onChange={(e) => setRepeatCount(Math.max(1, parseInt(e.target.value) || 1))}
+                                    />
+                                    <span>times</span>
+                                </div>
+                                <div className="loop-setting">
+                                    <label>Pause between:</label>
+                                    <input
+                                        type="number"
+                                        className="loop-input control-input"
+                                        min={0}
+                                        max={10}
+                                        value={pauseBetweenVerses}
+                                        onChange={(e) => setPauseBetweenVerses(Math.max(0, parseInt(e.target.value) || 0))}
+                                    />
+                                    <span>sec</span>
+                                </div>
+                            </div>
+
+                            {/* Player Controls */}
+                            <div className="player-buttons">
+                                {!isPlaying ? (
+                                    <button className="player-btn player-btn-primary" onClick={startPlayback}>
+                                        <i className="fas fa-play"></i>
+                                        Start Memorization
+                                    </button>
+                                ) : (
+                                    <>
+                                        <button className="player-btn player-btn-secondary" onClick={pausePlayback}>
+                                            <i className="fas fa-pause"></i>
+                                            Pause
+                                        </button>
+                                        {/* Resume is same as Play really, but contextually different */}
+                                        <button className="player-btn player-btn-primary" onClick={resumePlayback}>
+                                            <i className="fas fa-play"></i>
+                                            Resume
+                                        </button>
+                                    </>
+                                )}
+                                <button className="player-btn player-btn-secondary" onClick={stopPlayback}>
+                                    <i className="fas fa-stop"></i>
+                                    Stop
+                                </button>
+                                <button
+                                    className={`player-btn ${loopEnabled ? 'player-btn-active' : 'player-btn-secondary'}`}
+                                    onClick={() => setLoopEnabled(!loopEnabled)}
+                                    title="Loop selected range"
+                                >
+                                    <i className="fas fa-redo"></i>
+                                    Loop Range
+                                </button>
+                            </div>
+
+                            {/* Progress */}
+                            {currentVerseIndex >= 0 && (
+                                <div className="memorize-progress">
+                                    <div className="progress-label">
+                                        <span>
+                                            Verse {currentVerseIndex + 1} of {verses.length} | Repeat {currentRepeat}/{repeatCount}
+                                        </span>
+                                        <span>{Math.round(progress)}%</span>
+                                    </div>
+                                    <div className="progress-bar">
+                                        <div className="progress-fill" style={{ width: `${progress}%` }}></div>
+                                    </div>
+                                </div>
+                            )}
+                        </section>
+
+                        {/* Verses Display */}
+                        <section className="verses-container">
+                            {loadingVerses ? (
+                                <div className="loading-container">
+                                    <div className="loading-spinner"></div>
+                                    <p className="loading-text">Loading verses...</p>
+                                </div>
+                            ) : (
+                                <div className="verses-list">
+                                    {verses.map((verse, index) => (
+                                        <article
+                                            key={verse.id}
+                                            className={`verse-card ${currentVerseIndex === index ? 'active' : ''}`}
+                                            onClick={() => playSingleVerse(verse, index)}
+                                        >
+                                            <div className="verse-header">
+                                                <span className="verse-number">{verse.verseNumber}</span>
+                                                <button
+                                                    className="verse-play-btn"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        playSingleVerse(verse, index);
+                                                    }}
+                                                    aria-label={`Play verse ${verse.verseNumber}`}
+                                                >
+                                                    <i className="fas fa-play"></i>
+                                                </button>
+                                            </div>
+                                            <p className="verse-arabic">
+                                                {verse.textUthmani}
+                                                <span className="verse-end"> ۝ </span>
+                                            </p>
+                                            <p className="verse-translation">{verse.translation}</p>
+                                        </article>
+                                    ))}
+                                </div>
+                            )}
+                        </section>
+                    </div>
+                )}
             </div>
         </main>
     );

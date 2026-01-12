@@ -2,36 +2,52 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
-import { getChapters, Chapter } from './lib/api';
+import { getChapters, getTafsirs, Chapter, Tafsir } from './lib/api';
 
-type TabType = 'surah' | 'juz' | 'revelation';
+type TabType = 'surah' | 'juz' | 'tafsir';
 
 export default function ReadQuranPage() {
     const [chapters, setChapters] = useState<Chapter[]>([]);
+    const [tafsirs, setTafsirs] = useState<Tafsir[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [activeTab, setActiveTab] = useState<TabType>('surah');
     const [searchQuery, setSearchQuery] = useState('');
 
-    // Fetch chapters on mount
+    // Fetch data on mount
     useEffect(() => {
-        async function loadChapters() {
+        async function loadData() {
             try {
                 setLoading(true);
-                const data = await getChapters();
-                setChapters(data);
+                const [chaptersData, tafsirsData] = await Promise.all([
+                    getChapters(),
+                    getTafsirs()
+                ]);
+                setChapters(chaptersData);
+                setTafsirs(tafsirsData);
             } catch (err) {
-                setError('Failed to load chapters. Please try again.');
+                setError('Failed to load data. Please try again.');
                 console.error(err);
             } finally {
                 setLoading(false);
             }
         }
-        loadChapters();
+        loadData();
     }, []);
 
-    // Filter and sort chapters based on active tab and search
-    const displayedChapters = useMemo(() => {
+    // Filter and sort chapters/tafsirs based on active tab and search
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const displayedContent = useMemo(() => {
+        if (activeTab === 'tafsir') {
+            if (!searchQuery) return tafsirs;
+            const query = searchQuery.toLowerCase();
+            return tafsirs.filter(t =>
+                t.name.toLowerCase().includes(query) ||
+                t.author_name.toLowerCase().includes(query) ||
+                t.language_name.toLowerCase().includes(query)
+            );
+        }
+
         let filtered = chapters;
 
         // Apply search filter
@@ -46,13 +62,8 @@ export default function ReadQuranPage() {
             );
         }
 
-        // Sort based on tab
-        if (activeTab === 'revelation') {
-            return [...filtered].sort((a, b) => a.revelation_order - b.revelation_order);
-        }
-
         return filtered;
-    }, [chapters, searchQuery, activeTab]);
+    }, [chapters, tafsirs, searchQuery, activeTab]);
 
     // Group chapters by Juz (approximate)
     const juzGroups = useMemo(() => {
@@ -119,7 +130,7 @@ export default function ReadQuranPage() {
                     <span className="rq-search-icon">🔍</span>
                     <input
                         type="text"
-                        placeholder="Search by surah name, number, or meaning..."
+                        placeholder={activeTab === 'tafsir' ? "Search tafsirs by name, author..." : "Search by surah name, number..."}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                     />
@@ -141,21 +152,51 @@ export default function ReadQuranPage() {
                     📚 Juz
                 </button>
                 <button
-                    className={`rq-tab ${activeTab === 'revelation' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('revelation')}
+                    className={`rq-tab ${activeTab === 'tafsir' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('tafsir')}
                 >
-                    ⏳ Revelation Order
+                    📚 Tafsir
                 </button>
             </div>
 
-            {/* Surah Grid */}
-            {activeTab !== 'juz' ? (
+            {/* Content Area */}
+            {activeTab === 'tafsir' ? (
+                // Tafsir Grid
                 <div className="rq-surah-grid">
-                    {displayedChapters.map((chapter) => (
-                        <SurahCard key={chapter.id} chapter={chapter} showOrder={activeTab === 'revelation'} />
+                    {(displayedContent as Tafsir[]).map((tafsir) => (
+                        <Link href={`/read-quran/tafsir/${tafsir.id}`} key={tafsir.id} className="rq-surah-card">
+                            <div className="rq-surah-number">
+                                {tafsir.id}
+                            </div>
+                            <div className="rq-surah-info">
+                                <div className="rq-surah-name-row">
+                                    <span className="rq-surah-name-en">{tafsir.name}</span>
+                                </div>
+                                <div className="rq-surah-meta">
+                                    <span>
+                                        👤 {tafsir.author_name}
+                                    </span>
+                                    <span>
+                                        🌐 {tafsir.language_name}
+                                    </span>
+                                </div>
+                            </div>
+                        </Link>
+                    ))}
+                </div>
+            ) : activeTab === 'surah' ? (
+                // Surah Grid
+                <div className="rq-surah-grid">
+                    {(displayedContent as Chapter[]).map((chapter) => (
+                        <SurahCard
+                            key={chapter.id}
+                            chapter={chapter}
+                            initialMode="translation"
+                        />
                     ))}
                 </div>
             ) : (
+                // Juz View
                 <div>
                     {Array.from({ length: 30 }, (_, i) => i + 1).map((juzNum) => {
                         // Proper Juz to Surah mapping (which surahs START in each Juz)
@@ -213,7 +254,11 @@ export default function ReadQuranPage() {
                                 </h3>
                                 <div className="rq-surah-grid">
                                     {juzSurahs.map((chapter) => (
-                                        <SurahCard key={chapter.id} chapter={chapter} />
+                                        <SurahCard
+                                            key={chapter.id}
+                                            chapter={chapter}
+                                            initialMode="reading"
+                                        />
                                     ))}
                                 </div>
                             </div>
@@ -225,9 +270,9 @@ export default function ReadQuranPage() {
 
             {/* Empty State */}
             {
-                displayedChapters.length === 0 && searchQuery && (
+                displayedContent.length === 0 && searchQuery && (
                     <div style={{ textAlign: 'center', padding: '48px', color: 'var(--rq-text-secondary)' }}>
-                        <p>No surahs found matching "{searchQuery}"</p>
+                        <p>No content found matching "{searchQuery}"</p>
                     </div>
                 )
             }
@@ -236,9 +281,17 @@ export default function ReadQuranPage() {
 }
 
 // Surah Card Component
-function SurahCard({ chapter, showOrder = false }: { chapter: Chapter; showOrder?: boolean }) {
+function SurahCard({
+    chapter,
+    showOrder = false,
+    initialMode = 'translation'
+}: {
+    chapter: Chapter;
+    showOrder?: boolean;
+    initialMode?: 'translation' | 'reading';
+}) {
     return (
-        <Link href={`/read-quran/${chapter.id}`} className="rq-surah-card">
+        <Link href={`/read-quran/${chapter.id}?mode=${initialMode}`} className="rq-surah-card">
             <div className="rq-surah-number">
                 {showOrder ? chapter.revelation_order : chapter.id}
             </div>

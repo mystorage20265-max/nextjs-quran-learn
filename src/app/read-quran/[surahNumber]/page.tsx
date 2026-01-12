@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback, use } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import {
     getChapter,
     getAllVerses,
@@ -20,14 +21,22 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
     const { surahNumber: surahNumberStr } = use(params);
     const surahNumber = parseInt(surahNumberStr);
 
+    // Get query params
+    const searchParams = useSearchParams();
+    const initialMode = searchParams.get('mode');
+    const tafsirId = searchParams.get('tafsir');
+
     // State
     const [chapter, setChapter] = useState<Chapter | null>(null);
     const [verses, setVerses] = useState<VerseWithTranslation[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [tafsirContent, setTafsirContent] = useState<Record<string, string>>({});
 
     // Settings
-    const [readingMode, setReadingMode] = useState<'translation' | 'reading'>('translation');
+    const [readingMode, setReadingMode] = useState<'translation' | 'reading'>(
+        (initialMode === 'reading' || initialMode === 'translation') ? initialMode : 'translation'
+    );
     const [selectedTranslation, setSelectedTranslation] = useState('en.sahih');
     const [selectedReciter, setSelectedReciter] = useState(7);
     const [fontSize, setFontSize] = useState(28);
@@ -43,6 +52,68 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
     const [showBookmarkToast, setShowBookmarkToast] = useState(false);
     const [toastMessage, setToastMessage] = useState('');
     const [toastType, setToastType] = useState<'success' | 'warning'>('success');
+
+    // Fetch Data
+    const fetchData = useCallback(async () => {
+        try {
+            setLoading(true);
+            const [chapterData, versesData] = await Promise.all([
+                getChapter(surahNumber),
+                getAllVerses(surahNumber, selectedTranslation)
+            ]);
+            setChapter(chapterData);
+            setVerses(versesData);
+
+            // Fetch Tafsir if currently in URL
+            if (tafsirId) {
+                // Dynamically import to avoid circular dep issues if any, or just direct import
+                const { getTafsirContent } = await import('../lib/api');
+                const tContent = await getTafsirContent(tafsirId, surahNumber);
+                setTafsirContent(tContent);
+            }
+
+        } catch (err) {
+            console.error(err);
+            setError('Failed to load Surah data');
+        } finally {
+            setLoading(false);
+        }
+    }, [surahNumber, selectedTranslation, tafsirId]);
+
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
+
+    // Confirmation State
+    const [pendingChange, setPendingChange] = useState<{ type: 'reciter' | 'translation', value: string | number, name: string } | null>(null);
+
+    // Handle Translation Change
+    const handleTranslationChange = (newValue: string) => {
+        const name = TRANSLATIONS.find(t => t.id === newValue)?.name || newValue;
+        setPendingChange({ type: 'translation', value: newValue, name });
+    };
+
+    // Handle Reciter Change
+    const handleReciterChange = (newValue: number) => {
+        const name = POPULAR_RECITERS.find(r => r.id === newValue)?.name || 'Selected Reciter';
+        setPendingChange({ type: 'reciter', value: newValue, name });
+    };
+
+    // Confirm Change
+    const confirmChange = () => {
+        if (!pendingChange) return;
+
+        if (pendingChange.type === 'translation') {
+            setSelectedTranslation(pendingChange.value as string);
+        } else if (pendingChange.type === 'reciter') {
+            setSelectedReciter(pendingChange.value as number);
+        }
+
+        setPendingChange(null);
+        setToastMessage(`${pendingChange.type === 'reciter' ? 'Reciter' : 'Translation'} updated!`);
+        setShowBookmarkToast(true);
+        setTimeout(() => setShowBookmarkToast(false), 2000);
+    };
 
     // Load bookmarks from localStorage
     useEffect(() => {
@@ -195,22 +266,27 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
             return;
         }
 
+        // Get selected reciter info
+        const reciter = POPULAR_RECITERS.find(r => r.id === selectedReciter);
+        const slug = reciter?.slug || 'ar.alafasy';
+        const folder = reciter?.folder || 'Alafasy_128kbps';
+
         // Use multiple audio source formats
         // Islamic Network CDN uses global ayah numbers (1-6236)
-        const globalAyahId = verse.id; // This is the global verse number
+        const globalAyahId = verse.id;
         const surahPadded = surahNumber.toString().padStart(3, '0');
         const versePadded = verseNumber.toString().padStart(3, '0');
 
         // Try multiple audio sources with different formats
+        // Try multiple audio sources with different formats
+        // Prioritize EveryAyah as it has the most predictable folder structure
         const audioUrls = [
-            // Islamic Network - uses global ayah number
-            `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${globalAyahId}.mp3`,
-            // EveryAyah - uses padded surah+verse format
-            `https://everyayah.com/data/Alafasy_128kbps/${surahPadded}${versePadded}.mp3`,
-            // Quran.com verses CDN
-            `https://verses.quran.com/Alafasy/mp3/${surahNumber}_${verseNumber}.mp3`,
-            // Backup: entire surah audio
-            `https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/${surahNumber}.mp3`
+            // EveryAyah - dynamic folder (Most reliable)
+            `https://everyayah.com/data/${folder}/${surahPadded}${versePadded}.mp3`,
+            // Islamic Network - dynamic slug
+            `https://cdn.islamic.network/quran/audio/128/${slug}/${globalAyahId}.mp3`,
+            // Quran.com verses CDN (Fallback)
+            `https://verses.quran.com/${slug.replace('ar.', '')}/mp3/${surahNumber}_${verseNumber}.mp3`
         ];
 
         // Stop any existing audio first
@@ -268,7 +344,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 if (!isMountedRef.current) {
                     return;
                 }
-                console.warn(`Audio source ${currentUrlIndex + 1} failed, trying next...`);
+                console.warn(`Audio source ${currentUrlIndex + 1} failed for ${slug}, trying next...`);
                 currentUrlIndex++;
                 tryNextUrl();
             };
@@ -285,7 +361,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
         };
 
         tryNextUrl();
-    }, [surahNumber, verses]);
+    }, [surahNumber, verses, selectedReciter]);
 
     // Stop audio
     const stopAudio = useCallback(() => {
@@ -340,6 +416,9 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
         );
     }
 
+    // Info Panel Toggle
+    const [showInfo, setShowInfo] = useState(false);
+
     return (
         <div className="rq-container">
             {/* Back Link */}
@@ -350,37 +429,109 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 ← Back to All Surahs
             </Link>
 
-            {/* Surah Header */}
-            <header className="rq-surah-header">
-                <h1 className="rq-surah-title">{chapter.name_arabic}</h1>
-                <h2 className="rq-surah-title-en">{chapter.name_simple}</h2>
-                <p className="rq-surah-subtitle">
-                    {chapter.translated_name.name} • {chapter.verses_count} Verses • {chapter.revelation_place === 'makkah' ? 'Meccan' : 'Medinan'}
-                </p>
+            {/* Surah Header - Simplified Modern Look */}
+            <header style={{
+                textAlign: 'center',
+                margin: '24px 0 40px',
+                padding: '32px 24px',
+                background: 'linear-gradient(135deg, var(--rq-primary) 0%, #064E3B 100%)',
+                borderRadius: '24px',
+                color: 'white',
+                boxShadow: '0 10px 30px rgba(5, 150, 105, 0.2)',
+                position: 'relative',
+                overflow: 'hidden'
+            }}>
+                {/* Decorative Pattern Background */}
+                <div style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.05\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
+                    opacity: 0.3
+                }} />
+
+                <div style={{ position: 'relative', zIndex: 1 }}>
+                    <h1 style={{
+                        fontFamily: 'var(--font-arabic)',
+                        fontSize: '3.5rem',
+                        marginBottom: '8px',
+                        textShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                    }}>
+                        {chapter.name_arabic}
+                    </h1>
+                    <h2 style={{
+                        fontSize: '1.5rem',
+                        fontWeight: '600',
+                        marginBottom: '8px',
+                        opacity: 0.95
+                    }}>
+                        {chapter.name_simple}
+                    </h2>
+                    <p style={{
+                        fontSize: '1rem',
+                        opacity: 0.8,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px'
+                    }}>
+                        {chapter.translated_name.name}
+                    </p>
+
+                    {/* Info Toggle Button */}
+                    <button
+                        onClick={() => setShowInfo(!showInfo)}
+                        style={{
+                            marginTop: '20px',
+                            background: 'rgba(255, 255, 255, 0.2)',
+                            border: '1px solid rgba(255, 255, 255, 0.3)',
+                            padding: '8px 24px',
+                            borderRadius: '50px',
+                            color: 'white',
+                            fontSize: '0.9rem',
+                            cursor: 'pointer',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            transition: 'all 0.2s ease',
+                            backdropFilter: 'blur(4px)'
+                        }}
+                    >
+                        <span>{showInfo ? 'Hide Info' : 'Show Info'}</span>
+                        <span style={{ fontSize: '0.8rem' }}>{showInfo ? '▲' : '▼'}</span>
+                    </button>
+                </div>
             </header>
 
-            {/* Surah Info Panel */}
-            <div className="rq-info-panel">
-                <h3 className="rq-info-title">📋 Surah Information</h3>
-                <div className="rq-info-grid">
-                    <div className="rq-info-item">
-                        <div className="rq-info-value">{chapter.id}</div>
-                        <div className="rq-info-label">Surah Number</div>
-                    </div>
-                    <div className="rq-info-item">
-                        <div className="rq-info-value">{chapter.verses_count}</div>
-                        <div className="rq-info-label">Verses</div>
-                    </div>
-                    <div className="rq-info-item">
-                        <div className="rq-info-value">{chapter.revelation_order}</div>
-                        <div className="rq-info-label">Revelation Order</div>
-                    </div>
-                    <div className="rq-info-item">
-                        <div className="rq-info-value">{chapter.revelation_place === 'makkah' ? '🕋 Makkah' : '🕌 Madinah'}</div>
-                        <div className="rq-info-label">Revealed In</div>
+            {/* Collapsible Surah Info Panel */}
+            {showInfo && (
+                <div className="rq-info-panel" style={{
+                    animation: 'slideDown 0.3s ease-out',
+                    marginBottom: '32px'
+                }}>
+                    <h3 className="rq-info-title">📋 Surah Information</h3>
+                    <div className="rq-info-grid">
+                        <div className="rq-info-item">
+                            <div className="rq-info-value">{chapter.id}</div>
+                            <div className="rq-info-label">Surah Number</div>
+                        </div>
+                        <div className="rq-info-item">
+                            <div className="rq-info-value">{chapter.verses_count}</div>
+                            <div className="rq-info-label">Verses</div>
+                        </div>
+                        <div className="rq-info-item">
+                            <div className="rq-info-value">{chapter.revelation_order}</div>
+                            <div className="rq-info-label">Revelation Order</div>
+                        </div>
+                        <div className="rq-info-item">
+                            <div className="rq-info-value">{chapter.revelation_place === 'makkah' ? '🕋 Makkah' : '🕌 Madinah'}</div>
+                            <div className="rq-info-label">Revealed In</div>
+                        </div>
                     </div>
                 </div>
-            </div>
+            )}
 
             {/* Toolbar */}
             <div className="rq-toolbar">
@@ -439,6 +590,25 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                             <div className="rq-verse-translation">
                                 {verse.translations?.[0]?.text || 'Translation not available'}
                             </div>
+
+                            {/* Tafsir Content */}
+                            {tafsirId && tafsirContent[verse.verse_key] && (
+                                <div className="rq-verse-tafsir" style={{
+                                    marginTop: '16px',
+                                    padding: '16px',
+                                    background: '#F8FAFC',
+                                    borderRadius: '8px',
+                                    borderLeft: '4px solid var(--rq-primary)',
+                                    fontSize: '1rem',
+                                    color: '#334155',
+                                    fontFamily: 'var(--font-primary)',
+                                    whiteSpace: 'pre-wrap'
+                                }}>
+                                    <strong style={{ display: 'block', marginBottom: '8px', color: 'var(--rq-primary)' }}>Tafsir:</strong>
+                                    <div dangerouslySetInnerHTML={{ __html: tafsirContent[verse.verse_key] }} />
+                                </div>
+                            )}
+
                             <div className="rq-verse-actions">
                                 <button
                                     className="rq-verse-action-btn"
@@ -593,6 +763,69 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 </div>
             )}
 
+
+            {/* Confirmation Modal */}
+            {pendingChange && (
+                <div style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: 'rgba(0,0,0,0.7)',
+                    zIndex: 2000,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontFamily: 'var(--font-primary)'
+                }}>
+                    <div style={{
+                        background: 'white',
+                        padding: '24px',
+                        borderRadius: '16px',
+                        maxWidth: '400px',
+                        width: '90%',
+                        textAlign: 'center',
+                        boxShadow: '0 10px 25px rgba(0,0,0,0.2)'
+                    }}>
+                        <h3 style={{ margin: '0 0 12px 0', fontSize: '1.25rem', color: '#1E293B' }}>Confirm Change</h3>
+                        <p style={{ margin: '0 0 24px 0', color: '#64748B', lineHeight: '1.5' }}>
+                            Are you sure you want to change the {pendingChange.type} to <strong>{pendingChange.name}</strong>?
+                        </p>
+                        <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+                            <button
+                                onClick={() => setPendingChange(null)}
+                                style={{
+                                    padding: '10px 24px',
+                                    borderRadius: '8px',
+                                    border: '1px solid #CBD5E1',
+                                    background: 'white',
+                                    color: '#64748B',
+                                    fontWeight: '500',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                No, Cancel
+                            </button>
+                            <button
+                                onClick={confirmChange}
+                                style={{
+                                    padding: '10px 24px',
+                                    borderRadius: '8px',
+                                    border: 'none',
+                                    background: '#059669',
+                                    color: 'white',
+                                    fontWeight: '500',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                Yes, Confirm
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Settings Panel */}
             <div className={`rq-settings-panel ${showSettings ? 'open' : ''}`}>
                 <div className="rq-settings-header">
@@ -622,7 +855,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                     <select
                         className="rq-select"
                         value={selectedTranslation}
-                        onChange={(e) => setSelectedTranslation(e.target.value)}
+                        onChange={(e) => handleTranslationChange(e.target.value)}
                     >
                         {TRANSLATIONS.map((t) => (
                             <option key={t.id} value={t.id}>
@@ -637,7 +870,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                     <select
                         className="rq-select"
                         value={selectedReciter}
-                        onChange={(e) => setSelectedReciter(parseInt(e.target.value))}
+                        onChange={(e) => handleReciterChange(parseInt(e.target.value))}
                     >
                         {POPULAR_RECITERS.map((r) => (
                             <option key={r.id} value={r.id}>

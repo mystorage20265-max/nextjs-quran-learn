@@ -239,6 +239,36 @@ export async function getReciters(): Promise<Reciter[]> {
     }
 }
 
+export interface Tafsir {
+    id: number;
+    name: string;
+    author_name: string;
+    slug: string;
+    language_name: string;
+    translated_name: {
+        name: string;
+        language_name: string;
+    };
+}
+
+interface TafsirsResponse {
+    tafsirs: Tafsir[];
+}
+
+/**
+ * Get available Tafsirs
+ */
+export async function getTafsirs(): Promise<Tafsir[]> {
+    try {
+        const response = await fetchWithRetry(`${API_BASE}/resources/tafsirs?language=en`);
+        const data: TafsirsResponse = await response.json();
+        return data.tafsirs;
+    } catch (error) {
+        console.error('Error fetching tafsirs:', error);
+        throw error;
+    }
+}
+
 /**
  * Get audio URL for a chapter
  */
@@ -255,16 +285,73 @@ export function getVerseAudioUrl(reciterId: number, verseKey: string): string {
 }
 
 // Popular reciters with their IDs
+// Popular reciters with their IDs and audio identifiers
 export const POPULAR_RECITERS = [
-    { id: 7, name: 'Mishari Rashid al-`Afasy' },
-    { id: 2, name: 'Abdul Rahman Al-Sudais' },
-    { id: 1, name: 'Abdul Basit Abdul Samad' },
-    { id: 5, name: 'Saad Al-Ghamdi' },
-    { id: 6, name: 'Mahmoud Khalil Al-Hussary' },
-    { id: 4, name: 'Abu Bakr al-Shatri' },
-    { id: 3, name: 'Abdullah Awad al-Juhani' },
-    { id: 10, name: 'Maher Al Muaiqly' },
+    {
+        id: 7,
+        name: 'Mishari Rashid al-`Afasy',
+        slug: 'ar.alafasy',
+        folder: 'Alafasy_128kbps'
+    },
+    {
+        id: 2,
+        name: 'Abdul Rahman Al-Sudais',
+        slug: 'ar.abdurrahmaansudais',
+        folder: 'Abdurrahmaan_As-Sudais_192kbps'
+    },
+    {
+        id: 1,
+        name: 'Abdul Basit Abdul Samad',
+        slug: 'ar.abdulbasitmurattal',
+        folder: 'Abdul_Basit_Murattal_192kbps'
+    },
+    {
+        id: 5,
+        name: 'Saad Al-Ghamdi',
+        slug: 'ar.saadalghamdi',
+        folder: 'Saad_Al-Ghamdi_128kbps'
+    },
+    {
+        id: 6,
+        name: 'Mahmoud Khalil Al-Hussary',
+        slug: 'ar.husary',
+        folder: 'Husary_128kbps'
+    },
+    {
+        id: 4,
+        name: 'Abu Bakr al-Shatri',
+        slug: 'ar.shaatri',
+        folder: 'Abu_Bakr_Ash-Shaatree_128kbps'
+    },
+    {
+        id: 10,
+        name: 'Maher Al Muaiqly',
+        slug: 'ar.mahermuaiqly',
+        folder: 'MaherAlMuaiqly128kbps'
+    },
 ];
+
+/**
+ * Get Tafsir content for a specific chapter
+ */
+export async function getTafsirContent(tafsirId: number | string, chapterId: number): Promise<Record<string, string>> {
+    try {
+        const url = `${API_BASE}/tafsirs/${tafsirId}/by_chapter/${chapterId}?language=en`;
+        const response = await fetchWithRetry(url);
+        const data = await response.json();
+
+        // Map response to verse_key: text
+        const content: Record<string, string> = {};
+        data.tafsirs.forEach((item: any) => {
+            content[item.verse_key] = item.text;
+        });
+
+        return content;
+    } catch (error) {
+        console.error(`Error fetching tafsir ${tafsirId} for chapter ${chapterId}:`, error);
+        return {};
+    }
+}
 
 // Popular translations (alquran.cloud edition identifiers)
 export const TRANSLATIONS = [
