@@ -52,6 +52,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
     const [showBookmarkToast, setShowBookmarkToast] = useState(false);
     const [toastMessage, setToastMessage] = useState('');
     const [toastType, setToastType] = useState<'success' | 'warning'>('success');
+    const [showInfo, setShowInfo] = useState(false);
 
     // Fetch Data
     const fetchData = useCallback(async () => {
@@ -416,8 +417,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
         );
     }
 
-    // Info Panel Toggle
-    const [showInfo, setShowInfo] = useState(false);
+
 
     return (
         <div className="rq-container">
