@@ -11,6 +11,13 @@ import {
     POPULAR_RECITERS,
     TRANSLATIONS
 } from '../lib/api';
+import TafsirSection from '../components/TafsirSection';
+
+// Convert English numbers to Arabic-Indic numerals (۰۱۲۳۴۵۶۷۸۹)
+const toArabicNumeral = (num: number): string => {
+    const arabicNumerals = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+    return num.toString().split('').map(digit => arabicNumerals[parseInt(digit)]).join('');
+};
 
 interface SurahPageProps {
     params: Promise<{ surahNumber: string }>;
@@ -591,22 +598,12 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                 {verse.translations?.[0]?.text || 'Translation not available'}
                             </div>
 
-                            {/* Tafsir Content */}
+                            {/* Interactive Tafsir Section - Works with ALL Tafsirs */}
                             {tafsirId && tafsirContent[verse.verse_key] && (
-                                <div className="rq-verse-tafsir" style={{
-                                    marginTop: '16px',
-                                    padding: '16px',
-                                    background: '#F8FAFC',
-                                    borderRadius: '8px',
-                                    borderLeft: '4px solid var(--rq-primary)',
-                                    fontSize: '1rem',
-                                    color: '#334155',
-                                    fontFamily: 'var(--font-primary)',
-                                    whiteSpace: 'pre-wrap'
-                                }}>
-                                    <strong style={{ display: 'block', marginBottom: '8px', color: 'var(--rq-primary)' }}>Tafsir:</strong>
-                                    <div dangerouslySetInnerHTML={{ __html: tafsirContent[verse.verse_key] }} />
-                                </div>
+                                <TafsirSection
+                                    verseKey={verse.verse_key}
+                                    content={tafsirContent[verse.verse_key]}
+                                />
                             )}
 
                             <div className="rq-verse-actions">
@@ -696,7 +693,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                             {verses.map((verse) => (
                                 <span key={verse.id}>
                                     {verse.text_uthmani}
-                                    <span className="rq-reading-verse-marker">{verse.verse_number}</span>
+                                    <span className="rq-reading-verse-marker">{toArabicNumeral(verse.verse_number)}</span>
                                 </span>
                             ))}
                         </div>
@@ -922,3 +919,4 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
         </div>
     );
 }
+

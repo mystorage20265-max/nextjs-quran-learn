@@ -2,7 +2,7 @@
 /* Clean White Glassmorphism with Emerald & Gold Accents */
 
 /* ============ GOOGLE FONTS - MUST BE FIRST ============ */
-@import url('https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Scheherazade+New:wght@400;700&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Scheherazade+New:wght@400;700&family=Inter:wght@400;500;600;700&family=Google+Sans+Code:ital,wght@0,300..800;1,300..800&display=swap');
 
 /* ============ UTHMANIC FONT ============ */
 @font-face {
@@ -310,7 +310,7 @@
     font-size: 1rem;
     color: var(--rq-text);
     outline: none;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Google Sans Code', monospace;
 }
 
 .rq-search input::placeholder {
@@ -338,7 +338,7 @@
     color: var(--rq-text-secondary);
     cursor: pointer;
     transition: all var(--rq-transition);
-    font-family: 'Inter', sans-serif;
+    font-family: 'Google Sans Code', monospace;
 }
 
 .rq-tab:hover {
@@ -491,7 +491,7 @@
     font-weight: 700;
     font-size: 1.1rem;
     color: var(--rq-text);
-    font-family: 'Inter', sans-serif;
+    font-family: 'Google Sans Code', monospace;
 }
 
 .rq-surah-name-ar {
@@ -506,7 +506,7 @@
     gap: var(--rq-spacing-md);
     font-size: 0.85rem;
     color: var(--rq-text-secondary);
-    font-family: 'Inter', sans-serif;
+    font-family: 'Google Sans Code', monospace;
 }
 
 .rq-surah-meta span {
@@ -531,7 +531,7 @@
     font-size: 0.95rem;
     margin-bottom: var(--rq-spacing-xl);
     transition: all var(--rq-transition);
-    font-family: 'Inter', sans-serif;
+    font-family: 'Google Sans Code', monospace;
 }
 
 .rq-back-btn:hover {
@@ -579,13 +579,13 @@
     font-weight: 600;
     opacity: 0.95;
     margin-bottom: var(--rq-spacing-xs);
-    font-family: 'Inter', sans-serif;
+    font-family: 'Google Sans Code', monospace;
 }
 
 .rq-surah-subtitle {
     font-size: 1.1rem;
     opacity: 0.9;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Google Sans Code', monospace;
 }
 
 /* ============ INFO PANEL ============ */
@@ -607,7 +607,7 @@
     display: flex;
     align-items: center;
     gap: var(--rq-spacing-sm);
-    font-family: 'Inter', sans-serif;
+    font-family: 'Google Sans Code', monospace;
 }
 
 .rq-info-grid {
@@ -639,7 +639,7 @@
 .rq-info-label {
     font-size: 0.85rem;
     color: var(--rq-text-secondary);
-    font-family: 'Inter', sans-serif;
+    font-family: 'Google Sans Code', monospace;
 }
 
 /* ============ TOOLBAR ============ */
@@ -682,7 +682,7 @@
     color: var(--rq-text-secondary);
     cursor: pointer;
     transition: all var(--rq-transition);
-    font-family: 'Inter', sans-serif;
+    font-family: 'Google Sans Code', monospace;
 }
 
 .rq-mode-btn:hover {
@@ -708,7 +708,7 @@
     display: flex;
     align-items: center;
     gap: var(--rq-spacing-sm);
-    font-family: 'Inter', sans-serif;
+    font-family: 'Google Sans Code', monospace;
 }
 
 .rq-toolbar-btn:hover {
@@ -784,7 +784,7 @@
     font-weight: 700;
     box-shadow: 0 4px 12px var(--rq-gold-glow);
     transition: all var(--rq-spring);
-    font-family: 'Inter', sans-serif;
+    font-family: 'Google Sans Code', monospace;
 }
 
 .rq-verse:hover .rq-verse-number-corner {
@@ -807,7 +807,7 @@
     color: var(--rq-text-secondary);
     padding-left: var(--rq-spacing-md);
     border-left: 3px solid var(--rq-primary);
-    font-family: 'Inter', sans-serif;
+    font-family: 'Google Sans Code', monospace;
 }
 
 .rq-verse-actions {
@@ -888,16 +888,19 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 28px;
-    height: 28px;
-    background: var(--rq-gold);
-    color: white;
+    min-width: 32px;
+    height: 32px;
+    background: white;
+    color: #1e293b;
+    border: 2px solid #64748b;
     border-radius: 50%;
-    font-size: 0.75rem;
-    font-weight: 600;
-    margin: 0 var(--rq-spacing-sm);
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin: 0 var(--rq-spacing-xs);
     vertical-align: middle;
-    font-family: 'Inter', sans-serif;
+    font-family: 'KFGQPC Uthmanic Script', 'Amiri Quran', serif;
+    line-height: 1;
+    padding: 2px;
 }
 
 /* ============ NAVIGATION BUTTONS ============ */
@@ -923,7 +926,7 @@
     display: flex;
     align-items: center;
     gap: var(--rq-spacing-sm);
-    font-family: 'Inter', sans-serif;
+    font-family: 'Google Sans Code', monospace;
 }
 
 .rq-nav-btn:hover {
@@ -969,13 +972,13 @@
     font-weight: 700;
     color: var(--rq-text);
     font-size: 1rem;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Google Sans Code', monospace;
 }
 
 .rq-player-surah {
     font-size: 0.85rem;
     color: var(--rq-text-secondary);
-    font-family: 'Inter', sans-serif;
+    font-family: 'Google Sans Code', monospace;
 }
 
 .rq-player-controls {
@@ -1047,7 +1050,7 @@
     font-size: 0.85rem;
     color: var(--rq-text-muted);
     min-width: 50px;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Google Sans Code', monospace;
 }
 
 /* ============ SETTINGS PANEL ============ */
@@ -1087,7 +1090,7 @@
     display: flex;
     align-items: center;
     gap: var(--rq-spacing-sm);
-    font-family: 'Inter', sans-serif;
+    font-family: 'Google Sans Code', monospace;
 }
 
 .rq-settings-close {
@@ -1120,7 +1123,7 @@
     color: var(--rq-text);
     margin-bottom: var(--rq-spacing-sm);
     display: block;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Google Sans Code', monospace;
 }
 
 .rq-select,
@@ -1133,7 +1136,7 @@
     color: var(--rq-text);
     font-size: 1rem;
     transition: all var(--rq-transition);
-    font-family: 'Inter', sans-serif;
+    font-family: 'Google Sans Code', monospace;
 }
 
 .rq-select:focus,
@@ -1380,5 +1383,809 @@
         page-break-inside: avoid;
         border: 1px solid #ccc;
         margin-bottom: 1rem;
+    }
+}
+
+/* ============ INTERACTIVE TAFSIR SECTION ============ */
+.tafsir-section {
+    margin-top: var(--rq-spacing-lg);
+    background: linear-gradient(135deg, #F0FDF4 0%, #ECFDF5 50%, #F8FAFC 100%);
+    border-radius: var(--rq-radius-lg);
+    border: 1.5px solid var(--rq-primary);
+    overflow: hidden;
+    transition: all var(--rq-transition);
+    box-shadow: var(--rq-shadow-sm);
+}
+
+.tafsir-section:hover {
+    box-shadow: var(--rq-shadow-md);
+}
+
+.tafsir-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--rq-spacing-md) var(--rq-spacing-lg);
+    background: linear-gradient(135deg, var(--rq-primary) 0%, #047857 100%);
+    cursor: pointer;
+    user-select: none;
+    transition: all var(--rq-transition);
+}
+
+.tafsir-header:hover {
+    background: linear-gradient(135deg, #047857 0%, #065F46 100%);
+}
+
+.tafsir-header-left {
+    display: flex;
+    align-items: center;
+    gap: var(--rq-spacing-sm);
+}
+
+.tafsir-icon {
+    font-size: 1.3rem;
+}
+
+.tafsir-title {
+    font-weight: 700;
+    font-size: 1rem;
+    color: white;
+    font-family: 'Google Sans Code', monospace;
+}
+
+.tafsir-reading-time {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.75);
+    background: rgba(255, 255, 255, 0.15);
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-family: 'Google Sans Code', monospace;
+}
+
+.tafsir-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: var(--rq-radius-full);
+    color: white;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--rq-transition);
+    font-family: 'Google Sans Code', monospace;
+    backdrop-filter: blur(4px);
+}
+
+.tafsir-toggle:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+}
+
+.tafsir-toggle-icon {
+    font-size: 0.7rem;
+    transition: transform 0.3s ease;
+}
+
+.tafsir-toggle.expanded .tafsir-toggle-icon {
+    transform: rotate(180deg);
+}
+
+/* Tafsir Preview - Collapsed state */
+.tafsir-preview {
+    position: relative;
+    padding: var(--rq-spacing-md) var(--rq-spacing-lg);
+    padding-bottom: var(--rq-spacing-xl);
+}
+
+.tafsir-preview p {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--rq-text-secondary);
+    font-family: 'Google Sans Code', monospace;
+}
+
+.tafsir-preview-fade {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    background: linear-gradient(transparent, #F0FDF4);
+    pointer-events: none;
+}
+
+/* Tafsir Content - Expanded state */
+.tafsir-content {
+    padding: var(--rq-spacing-lg);
+    animation: tafsirSlideDown 0.35s ease-out;
+}
+
+@keyframes tafsirSlideDown {
+    from {
+        opacity: 0;
+        max-height: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        max-height: 5000px;
+        transform: translateY(0);
+    }
+}
+
+.tafsir-text {
+    font-size: 0.95rem;
+    line-height: 1.85;
+    color: var(--rq-text);
+    font-family: 'Google Sans Code', monospace;
+}
+
+.tafsir-text p {
+    margin-bottom: var(--rq-spacing-md);
+}
+
+.tafsir-text h1,
+.tafsir-text h2,
+.tafsir-text h3,
+.tafsir-text h4 {
+    color: var(--rq-primary-dark);
+    margin-top: var(--rq-spacing-lg);
+    margin-bottom: var(--rq-spacing-sm);
+    font-weight: 700;
+}
+
+.tafsir-text h2 {
+    font-size: 1.15rem;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--rq-primary-light);
+}
+
+.tafsir-text h3 {
+    font-size: 1.05rem;
+}
+
+/* Arabic text in Tafsir */
+.tafsir-text span[lang="ar"],
+.tafsir-text .arabic {
+    font-family: 'KFGQPC Uthmanic Script', 'Amiri Quran', serif;
+    font-size: 1.3rem;
+    color: var(--rq-primary-dark);
+    background: var(--rq-gold-light);
+    padding: 2px 8px;
+    border-radius: 4px;
+    display: inline-block;
+    direction: rtl;
+}
+
+/* Hadith references */
+.tafsir-text blockquote,
+.tafsir-text .hadith {
+    background: linear-gradient(135deg, var(--rq-gold-light) 0%, #FEF9C3 100%);
+    border-left: 4px solid var(--rq-gold);
+    padding: var(--rq-spacing-md);
+    margin: var(--rq-spacing-md) 0;
+    border-radius: 0 var(--rq-radius-sm) var(--rq-radius-sm) 0;
+    font-style: italic;
+}
+
+.tafsir-collapse-btn {
+    display: block;
+    width: 100%;
+    margin-top: var(--rq-spacing-lg);
+    padding: var(--rq-spacing-sm) var(--rq-spacing-lg);
+    background: var(--rq-bg-subtle);
+    border: 2px solid var(--rq-border);
+    border-radius: var(--rq-radius-full);
+    color: var(--rq-text-secondary);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--rq-transition);
+    font-family: 'Google Sans Code', monospace;
+}
+
+.tafsir-collapse-btn:hover {
+    background: var(--rq-primary);
+    color: white;
+    border-color: var(--rq-primary);
+    transform: translateY(-2px);
+}
+
+/* Mobile-specific Tafsir styles */
+@media (max-width: 768px) {
+    .tafsir-section {
+        margin-top: var(--rq-spacing-md);
+        border-radius: var(--rq-radius-md);
+    }
+
+    .tafsir-header {
+        padding: var(--rq-spacing-sm) var(--rq-spacing-md);
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .tafsir-header-left {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .tafsir-title {
+        font-size: 0.9rem;
+    }
+
+    .tafsir-reading-time {
+        font-size: 0.7rem;
+    }
+
+    .tafsir-toggle {
+        padding: 5px 10px;
+        font-size: 0.8rem;
+    }
+
+    .tafsir-toggle-text {
+        display: none;
+    }
+
+    .tafsir-preview {
+        padding: var(--rq-spacing-sm) var(--rq-spacing-md);
+        padding-bottom: var(--rq-spacing-lg);
+    }
+
+    .tafsir-preview p {
+        font-size: 0.9rem;
+    }
+
+    .tafsir-content {
+        padding: var(--rq-spacing-md);
+    }
+
+    .tafsir-text {
+        font-size: 0.9rem;
+        line-height: 1.75;
+    }
+
+    .tafsir-text h2 {
+        font-size: 1.05rem;
+    }
+
+    .tafsir-collapse-btn {
+        padding: var(--rq-spacing-sm);
+        font-size: 0.85rem;
+    }
+}
+
+/* Dark theme support */
+[data-theme="dark"] .tafsir-section {
+    background: linear-gradient(135deg, rgba(5, 150, 105, 0.1) 0%, rgba(4, 120, 87, 0.08) 50%, var(--rq-bg-subtle) 100%);
+    border-color: rgba(5, 150, 105, 0.3);
+}
+
+[data-theme="dark"] .tafsir-preview-fade {
+    background: linear-gradient(transparent, var(--rq-bg-subtle));
+}
+
+[data-theme="dark"] .tafsir-text span[lang="ar"],
+[data-theme="dark"] .tafsir-text .arabic {
+    background: rgba(217, 119, 6, 0.2);
+}
+
+[data-theme="dark"] .tafsir-text blockquote,
+[data-theme="dark"] .tafsir-text .hadith {
+    background: linear-gradient(135deg, rgba(217, 119, 6, 0.15) 0%, rgba(217, 119, 6, 0.1) 100%);
+}
+
+/* ============ ADVANCED TAFSIR SECTION ============ */
+.tafsir-section-advanced {
+    margin-top: var(--rq-spacing-lg);
+    background: linear-gradient(135deg, #F0FDF4 0%, #ECFDF5 50%, #F8FAFC 100%);
+    border-radius: var(--rq-radius-lg);
+    border: 1.5px solid var(--rq-primary);
+    overflow: hidden;
+    transition: all var(--rq-transition);
+    box-shadow: var(--rq-shadow-sm);
+}
+
+.tafsir-section-advanced:hover {
+    box-shadow: var(--rq-shadow-md);
+}
+
+/* Advanced Dark Mode */
+.tafsir-section-advanced.dark-mode {
+    background: linear-gradient(135deg, #1E293B 0%, #0F172A 50%, #020617 100%);
+    border-color: rgba(5, 150, 105, 0.5);
+}
+
+.tafsir-section-advanced.dark-mode .tafsir-preview p,
+.tafsir-section-advanced.dark-mode .tafsir-text {
+    color: #E2E8F0;
+}
+
+.tafsir-section-advanced.dark-mode .tafsir-preview-fade {
+    background: linear-gradient(transparent, #1E293B);
+}
+
+.tafsir-section-advanced.dark-mode .tafsir-topics {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.tafsir-section-advanced.dark-mode .tafsir-topic-pill {
+    background: rgba(5, 150, 105, 0.3);
+    color: #A7F3D0;
+}
+
+.tafsir-section-advanced.dark-mode .tafsir-search-bar {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.tafsir-section-advanced.dark-mode .tafsir-search-input {
+    background: rgba(255, 255, 255, 0.1);
+    color: #E2E8F0;
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.tafsir-section-advanced.dark-mode .tafsir-notes-panel {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.tafsir-section-advanced.dark-mode .tafsir-note-input {
+    background: rgba(255, 255, 255, 0.1);
+    color: #E2E8F0;
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.tafsir-section-advanced.dark-mode .tafsir-note-item {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.tafsir-section-advanced.dark-mode .tafsir-read-more-btn {
+    background: rgba(5, 150, 105, 0.3);
+    color: #A7F3D0;
+}
+
+/* Advanced Header */
+.tafsir-header-advanced {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: linear-gradient(135deg, var(--rq-primary) 0%, #047857 100%);
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/* Quick Actions Bar */
+.tafsir-quick-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+.tafsir-action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 8px;
+    color: white;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all var(--rq-transition);
+    position: relative;
+}
+
+.tafsir-action-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: scale(1.1);
+}
+
+.tafsir-action-btn.active {
+    background: rgba(255, 255, 255, 0.35);
+    border-color: white;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+}
+
+.tafsir-action-btn .note-count {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: var(--rq-gold);
+    color: white;
+    font-size: 0.65rem;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+}
+
+.tafsir-expand-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    color: white;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.tafsir-expand-btn:hover {
+    background: rgba(255, 255, 255, 0.35);
+    transform: scale(1.15);
+}
+
+.tafsir-expand-btn.expanded {
+    transform: rotate(180deg);
+}
+
+/* Key Topics Pills */
+.tafsir-topics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 10px 16px;
+    background: rgba(5, 150, 105, 0.06);
+    border-bottom: 1px solid rgba(5, 150, 105, 0.1);
+}
+
+.tafsir-topic-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    background: linear-gradient(135deg, var(--rq-primary-light) 0%, #D1FAE5 100%);
+    color: var(--rq-primary-dark);
+    border-radius: var(--rq-radius-full);
+    font-size: 0.75rem;
+    font-weight: 600;
+    font-family: 'Google Sans Code', monospace;
+    cursor: pointer;
+    transition: all var(--rq-transition);
+}
+
+.tafsir-topic-pill:hover {
+    transform: scale(1.05);
+    box-shadow: var(--rq-shadow-sm);
+}
+
+/* Search Bar */
+.tafsir-search-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(5, 150, 105, 0.04);
+    border-bottom: 1px solid rgba(5, 150, 105, 0.1);
+    animation: tafsirSlideDown 0.2s ease-out;
+}
+
+.tafsir-search-input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1.5px solid var(--rq-border);
+    border-radius: var(--rq-radius-full);
+    font-size: 0.9rem;
+    font-family: 'Google Sans Code', monospace;
+    background: white;
+    outline: none;
+    transition: all var(--rq-transition);
+}
+
+.tafsir-search-input:focus {
+    border-color: var(--rq-primary);
+    box-shadow: 0 0 0 3px var(--rq-primary-glow);
+}
+
+.tafsir-search-count {
+    font-size: 0.8rem;
+    color: var(--rq-primary);
+    font-weight: 600;
+    font-family: 'Google Sans Code', monospace;
+    white-space: nowrap;
+}
+
+.tafsir-search-highlight {
+    background: linear-gradient(135deg, #FEF08A 0%, #FDE047 100%);
+    padding: 1px 3px;
+    border-radius: 3px;
+    font-weight: 600;
+}
+
+/* Reading Progress Bar */
+.tafsir-progress-container {
+    height: 3px;
+    background: rgba(5, 150, 105, 0.1);
+    position: relative;
+}
+
+.tafsir-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--rq-primary) 0%, var(--rq-gold) 100%);
+    transition: width 0.2s ease-out;
+    border-radius: 0 3px 3px 0;
+}
+
+/* Notes Panel */
+.tafsir-notes-panel {
+    padding: 12px 16px;
+    background: rgba(217, 119, 6, 0.06);
+    border-bottom: 1px solid rgba(217, 119, 6, 0.15);
+    animation: tafsirSlideDown 0.25s ease-out;
+}
+
+.tafsir-note-input-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.tafsir-selected-quote {
+    font-size: 0.85rem;
+    font-style: italic;
+    color: var(--rq-gold-dark);
+    background: var(--rq-gold-light);
+    padding: 8px 12px;
+    border-radius: var(--rq-radius-sm);
+    border-left: 3px solid var(--rq-gold);
+}
+
+.tafsir-note-input {
+    width: 100%;
+    min-height: 60px;
+    padding: 10px;
+    border: 1.5px solid var(--rq-border);
+    border-radius: var(--rq-radius-md);
+    font-size: 0.9rem;
+    font-family: 'Google Sans Code', monospace;
+    resize: vertical;
+    outline: none;
+    transition: all var(--rq-transition);
+}
+
+.tafsir-note-input:focus {
+    border-color: var(--rq-gold);
+    box-shadow: 0 0 0 3px var(--rq-gold-glow);
+}
+
+.tafsir-add-note-btn {
+    align-self: flex-end;
+    padding: 8px 16px;
+    background: var(--rq-gold-gradient);
+    color: white;
+    border: none;
+    border-radius: var(--rq-radius-full);
+    font-size: 0.85rem;
+    font-weight: 600;
+    font-family: 'Google Sans Code', monospace;
+    cursor: pointer;
+    transition: all var(--rq-transition);
+}
+
+.tafsir-add-note-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--rq-shadow-md);
+}
+
+/* Notes List */
+.tafsir-notes-list {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.tafsir-note-item {
+    background: white;
+    border: 1px solid var(--rq-border);
+    border-radius: var(--rq-radius-md);
+    padding: 10px;
+}
+
+.tafsir-note-item .tafsir-note-quote {
+    font-size: 0.8rem;
+    color: var(--rq-text-muted);
+    font-style: italic;
+    margin-bottom: 6px;
+    padding-left: 8px;
+    border-left: 2px solid var(--rq-gold);
+}
+
+.tafsir-note-item p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--rq-text);
+}
+
+.tafsir-note-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 8px;
+    font-size: 0.75rem;
+    color: var(--rq-text-muted);
+}
+
+.tafsir-note-meta button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+}
+
+.tafsir-note-meta button:hover {
+    opacity: 1;
+}
+
+/* Read More Button */
+.tafsir-read-more-btn {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-top: 8px;
+    background: linear-gradient(135deg, var(--rq-primary-light) 0%, #D1FAE5 100%);
+    border: none;
+    border-radius: var(--rq-radius-md);
+    color: var(--rq-primary-dark);
+    font-size: 0.9rem;
+    font-weight: 600;
+    font-family: 'Google Sans Code', monospace;
+    cursor: pointer;
+    transition: all var(--rq-transition);
+}
+
+.tafsir-read-more-btn:hover {
+    background: var(--rq-primary);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: var(--rq-shadow-md);
+}
+
+/* Advanced Content Container */
+.tafsir-content-advanced {
+    padding: var(--rq-spacing-lg);
+    max-height: 500px;
+    overflow-y: auto;
+    animation: tafsirSlideDown 0.35s ease-out;
+}
+
+.tafsir-content-advanced::-webkit-scrollbar {
+    width: 6px;
+}
+
+.tafsir-content-advanced::-webkit-scrollbar-track {
+    background: rgba(5, 150, 105, 0.05);
+    border-radius: 3px;
+}
+
+.tafsir-content-advanced::-webkit-scrollbar-thumb {
+    background: var(--rq-primary);
+    border-radius: 3px;
+}
+
+/* Selection Tooltip */
+.tafsir-selection-tooltip {
+    position: fixed;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    padding: 8px 12px;
+    background: rgba(0, 0, 0, 0.9);
+    border-radius: var(--rq-radius-full);
+    box-shadow: var(--rq-shadow-lg);
+    z-index: 1000;
+    animation: tafsirFadeIn 0.2s ease-out;
+}
+
+@keyframes tafsirFadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+.tafsir-selection-tooltip button {
+    padding: 6px 12px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: var(--rq-radius-full);
+    color: white;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.tafsir-selection-tooltip button:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Mobile Responsive - Advanced */
+@media (max-width: 768px) {
+    .tafsir-section-advanced {
+        margin-top: var(--rq-spacing-sm);
+        border-radius: var(--rq-radius-md);
+    }
+
+    .tafsir-header-advanced {
+        padding: 8px 12px;
+    }
+
+    .tafsir-quick-actions {
+        gap: 2px;
+    }
+
+    .tafsir-action-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 0.8rem;
+    }
+
+    .tafsir-expand-btn {
+        width: 28px;
+        height: 28px;
+    }
+
+    .tafsir-topics {
+        padding: 8px 12px;
+        gap: 4px;
+    }
+
+    .tafsir-topic-pill {
+        font-size: 0.7rem;
+        padding: 3px 8px;
+    }
+
+    .tafsir-search-bar {
+        padding: 8px 12px;
+    }
+
+    .tafsir-search-input {
+        font-size: 0.85rem;
+        padding: 6px 10px;
+    }
+
+    .tafsir-notes-panel {
+        padding: 10px 12px;
+    }
+
+    .tafsir-content-advanced {
+        padding: var(--rq-spacing-md);
+        max-height: 400px;
+    }
+
+    .tafsir-selection-tooltip {
+        bottom: 80px;
+        padding: 6px 10px;
+    }
+
+    .tafsir-selection-tooltip button {
+        padding: 4px 10px;
+        font-size: 0.75rem;
     }
 }
