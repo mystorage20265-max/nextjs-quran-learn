@@ -146,6 +146,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
         }
 
         setPendingChange(null);
+        setShowSettings(false); // Auto-close settings so user can see the change
         setToastType('success');
         setToastMessage(`${pendingChange.type === 'reciter' ? 'Reciter' : 'Translation'} updated!`);
         setShowBookmarkToast(true);
@@ -881,10 +882,11 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                         right: 0,
                         bottom: 0,
                         background: 'rgba(0,0,0,0.7)',
-                        zIndex: 2000,
+                        zIndex: 12000,
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
+                        padding: '16px',
                         fontFamily: 'var(--font-primary)'
                     }}>
                         <div style={{

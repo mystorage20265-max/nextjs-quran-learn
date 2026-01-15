@@ -1359,6 +1359,27 @@
     }
 }
 
+/* ============ MOBILE SETTINGS BOTTOM SHEET ============ */
+@media (max-width: 768px) {
+    .rq-settings-panel {
+        width: 100%;
+        height: auto;
+        max-height: 55vh;
+        top: auto;
+        bottom: -100%;
+        right: 0 !important;
+        border-radius: 24px 24px 0 0;
+        border-left: none;
+        border-top: 2px solid var(--rq-primary);
+        transition: bottom 0.25s ease;
+        padding-bottom: 24px;
+    }
+    .rq-settings-panel.open {
+        bottom: 0;
+        right: 0 !important;
+    }
+}
+
 /* Accessibility - Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
 
