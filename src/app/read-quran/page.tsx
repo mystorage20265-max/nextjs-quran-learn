@@ -78,19 +78,7 @@ export default function ReadQuranPage() {
         return filtered;
     }, [chapters, tafsirs, searchQuery, activeTab]);
 
-    // Group chapters by Juz (approximate)
-    const juzGroups = useMemo(() => {
-        if (activeTab !== 'juz') return null;
-
-        const groups: { [key: number]: Chapter[] } = {};
-        chapters.forEach((ch) => {
-            // Approximate juz based on chapter position
-            const juz = Math.ceil(ch.id / 4);
-            if (!groups[juz]) groups[juz] = [];
-            groups[juz].push(ch);
-        });
-        return groups;
-    }, [chapters, activeTab]);
+    // Note: Juz view uses hardcoded JUZ_START_SURAHS mapping for accurate Juz-to-Surah associations
 
     if (loading) {
         return (
