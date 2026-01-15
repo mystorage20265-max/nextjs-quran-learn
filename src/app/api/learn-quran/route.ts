@@ -88,7 +88,7 @@ const CURRICULUM_DATA = {
                     { "id": "34", "text": "ني", "name": "Noon Ya", "audio": "L02-34.mp3" },
                     { "id": "35", "text": "بيل", "name": "Ba Ya Lam", "audio": "L02-35.mp3" },
                     { "id": "36", "text": "تين", "name": "Ta Ya Noon", "audio": "L02-36.mp3" },
-                    { "id": "37", "text": "نثن", "name": "Noon Tha Noon" },
+                    { "id": "37", "text": "نثن", "name": "Noon Tha Noon", "audio": "L02-37.mp3" },
                     { "id": "38", "text": "غر", "name": "Ghayn Ra", "audio": "L02-38.mp3" },
                     { "id": "39", "text": "يف", "name": "Ya Fa", "audio": "L02-39.mp3" },
                     { "id": "40", "text": "و", "name": "Waw", "audio": "L02-40.mp3" },
@@ -108,8 +108,8 @@ const CURRICULUM_DATA = {
                     { "id": "54", "text": "يتل", "name": "Ya Ta Lam", "audio": "L02-54.mp3" },
                     { "id": "55", "text": "يتن", "name": "Ya Ta Noon", "audio": "L02-55.mp3" },
                     { "id": "56", "text": "حث", "name": "Ha Tha", "audio": "L02-56.mp3" },
-                    { "id": "57", "text": "صح", "name": "Sad Ha", "audio": "L02-57.mp3" },
-                    { "id": "58", "text": "مر", "name": "Meem Ra", "audio": "L02-58.mp3" },
+                    { "id": "57", "text": "صح", "name": "Sad Ha" },
+                    { "id": "58", "text": "مر", "name": "Meem Ra" },
                     { "id": "59", "text": "تم", "name": "Ta Meem", "audio": "L02-59.mp3" },
                     { "id": "60", "text": "قو", "name": "Qaf Waw", "audio": "L02-60.mp3" }
                 ]

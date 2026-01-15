@@ -179,12 +179,20 @@ export default function LessonDetailPage() {
             if (onComplete) onComplete();
         };
 
-        audio.play().catch(e => {
-            console.error("Audio playback error", e);
-            // DISABLE FALLBACK
-            setPlayingItem(null);
-            if (onComplete) onComplete();
-        });
+        const playPromise = audio.play();
+        if (playPromise !== undefined) {
+            playPromise.catch(e => {
+                // Ignore "The play() request was interrupted" errors which happen when
+                // quickly switching between items (normal behavior)
+                if (e.name === 'AbortError' || e.message?.includes('interrupted')) {
+                    // unexpected interruption is okay
+                    return;
+                }
+                console.error("Audio playback error", e);
+                setPlayingItem(null);
+                if (onComplete) onComplete();
+            });
+        }
     };
 
     const isPlayingRef = useRef(false);
