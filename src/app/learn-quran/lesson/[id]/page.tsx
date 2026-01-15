@@ -5,6 +5,21 @@ import Link from 'next/link';
 import { useParams, notFound } from 'next/navigation';
 import '../../styles/learn-quran.css';
 
+interface LessonItem {
+    id?: string;
+    text: string;
+    name?: string;
+    audio?: string;
+}
+
+interface Lesson {
+    id: number;
+    title: string;
+    description: string;
+    audioBase?: string;
+    items: LessonItem[];
+}
+
 export default function LessonDetailPage() {
     const params = useParams(); // Use generic params first
     // params can be Record<string, string | string[]>
@@ -133,12 +148,13 @@ export default function LessonDetailPage() {
 
         setPlayingItem(item.id || item.text);
 
-        // STRICT FIX: If no audio file, DO NOT use TTS. Just skip.
+        // Fallback to TTS if no audio file is provided
         if (!audioUrl) {
-            console.log("No audio file found for:", item.text);
-            // playTTS(item.text...) <-- REMOVED
-            setPlayingItem(null);
-            if (onComplete) onComplete();
+            console.log("No audio file found for:", item.text, "- Using TTS Fallback");
+            playTTS(item.text, () => {
+                setPlayingItem(null);
+                if (onComplete) onComplete();
+            });
             return;
         }
 
@@ -224,7 +240,12 @@ export default function LessonDetailPage() {
         setPlayingItem(null);
     };
 
-    if (loading) return <div className="lq-container" style={{ paddingTop: '40px' }}>Loading Lesson...</div>;
+    if (loading) return (
+        <div className="lq-container" style={{ paddingTop: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
+            <div className="rq-spinner"></div>
+            <p style={{ marginTop: '20px', color: 'var(--lq-text-muted)' }}>Loading Lesson...</p>
+        </div>
+    );
     if (!lesson) return <div className="lq-container">Lesson Not Found</div>;
 
     return (
@@ -244,11 +265,13 @@ export default function LessonDetailPage() {
                     >
                         {isPlayingAll ? (
                             <>
-                                <span>⏹</span> Stop Lesson
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h12v12H6z" /></svg>
+                                Stop Lesson
                             </>
                         ) : (
                             <>
-                                <span>▶</span> Play Full Lesson
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
+                                Play Full Lesson
                             </>
                         )}
                     </button>
@@ -279,14 +302,32 @@ export default function LessonDetailPage() {
                     )}
                 </div>
 
-                {/* Navigation (Next/Prev) could go here */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
-                    {lesson.id > 1 && (
-                        <Link href={`/learn-quran/lesson/${lesson.id - 1}`} className="lq-btn-start" style={{ transform: 'rotate(180deg)', display: 'inline-block' }}>
-                            Next
-                        </Link>
-                    )}
-                    {/* Actually, styling for Prev is tricky if reusing Next class. Better separate. */}
+                {/* Navigation */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '40px', gap: '20px' }}>
+
+                    {/* Previous Button */}
+                    <div style={{ flex: 1 }}>
+                        {lesson.id > 1 ? (
+                            <Link href={`/learn-quran/lesson/${lesson.id - 1}`} className="lq-nav-btn prev">
+                                <span>←</span> Previous Lesson
+                            </Link>
+                        ) : (
+                            <div style={{ flex: 1 }}></div> // Spacer
+                        )}
+                    </div>
+
+                    {/* Next Button - Check max lessons (currently 18) */}
+                    <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
+                        {lesson.id < 18 ? (
+                            <Link href={`/learn-quran/lesson/${lesson.id + 1}`} className="lq-nav-btn next">
+                                Next Lesson <span>→</span>
+                            </Link>
+                        ) : (
+                            <Link href="/learn-quran" className="lq-nav-btn complete">
+                                Complete Course <span>✓</span>
+                            </Link>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>

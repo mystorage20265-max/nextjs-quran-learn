@@ -296,3 +296,50 @@
         grid-template-columns: repeat(3, 1fr);
     }
 }
+
+/* Navigation Buttons */
+.lq-nav-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 24px;
+    border-radius: var(--lq-radius-xl);
+    font-weight: 600;
+    text-decoration: none;
+    transition: all var(--lq-bounce);
+}
+
+.lq-nav-btn.prev {
+    background: var(--lq-bg-card);
+    border: 1px solid var(--lq-border);
+    color: var(--lq-text-secondary);
+}
+
+.lq-nav-btn.prev:hover {
+    border-color: var(--lq-primary);
+    color: var(--lq-primary);
+    transform: translateX(-4px);
+}
+
+.lq-nav-btn.next {
+    background: var(--lq-primary);
+    color: white;
+    box-shadow: var(--lq-shadow-md);
+}
+
+.lq-nav-btn.next:hover {
+    background: var(--lq-primary-dark);
+    transform: translateX(4px);
+    box-shadow: var(--lq-shadow-lg);
+}
+
+.lq-nav-btn.complete {
+    background: var(--lq-accent);
+    color: white;
+    box-shadow: var(--lq-shadow-md);
+}
+
+.lq-nav-btn.complete:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--lq-shadow-lg);
+}

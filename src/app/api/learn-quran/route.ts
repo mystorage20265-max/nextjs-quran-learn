@@ -41,7 +41,7 @@ const CURRICULUM_DATA = {
                     { "id": "meem", "text": "م", "name": "Meem", "audio": "24_meem.mp3" },
                     { "id": "noon", "text": "ن", "name": "Noon", "audio": "25_noon.mp3" },
                     { "id": "waw", "text": "و", "name": "Waw", "audio": "27_waw.mp3" },
-                    { "id": "ha", "text": "ه", "name": "Ha", "audio": "26_haah.mp3" },
+                    { "id": "ha-soft", "text": "ه", "name": "Ha", "audio": "26_haah.mp3" },
                     { "id": "hamza", "text": "ء", "name": "Hamza", "audio": "28_hamzah.mp3" },
                     { "id": "ya", "text": "ي", "name": "Ya", "audio": "30_yaa.mp3" }
                 ]
