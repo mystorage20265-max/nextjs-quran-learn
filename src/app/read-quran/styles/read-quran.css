@@ -2103,3 +2103,118 @@
         font-size: 0.75rem;
     }
 }
+/* ============ SIMPLE TAFSIR SECTION (Clean, Minimal) ============ */
+.tafsir-simple {
+    margin-top: var(--rq-spacing-lg);
+    padding: var(--rq-spacing-md) var(--rq-spacing-lg);
+    background: #FAFAFA;
+    border-left: 3px solid var(--rq-primary);
+    border-radius: 0 var(--rq-radius-md) var(--rq-radius-md) 0;
+}
+
+.tafsir-simple-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--rq-spacing-md);
+}
+
+.tafsir-simple-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--rq-primary);
+}
+
+.tafsir-simple-toggle {
+    padding: 4px 12px;
+    background: transparent;
+    border: 1px solid var(--rq-border);
+    border-radius: var(--rq-radius-full);
+    color: var(--rq-text-secondary);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.tafsir-simple-toggle:hover {
+    background: var(--rq-primary);
+    color: white;
+    border-color: var(--rq-primary);
+}
+
+.tafsir-simple-content {
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: var(--rq-text);
+}
+
+.tafsir-simple-text {
+    color: #374151;
+}
+
+.tafsir-simple-text p {
+    margin-bottom: var(--rq-spacing-md);
+}
+
+.tafsir-simple-text h2, .tafsir-simple-text h3 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--rq-primary-dark);
+    margin: var(--rq-spacing-md) 0 var(--rq-spacing-sm);
+}
+
+.tafsir-simple-text span[lang='ar'], .tafsir-simple-text .arabic {
+    font-family: 'KFGQPC Uthmanic Script', 'Amiri Quran', serif;
+    font-size: 1.2rem;
+    color: var(--rq-primary-dark);
+    direction: rtl;
+    display: inline-block;
+}
+
+.tafsir-simple-text blockquote {
+    background: #FEF9C3;
+    border-left: 3px solid #D97706;
+    padding: var(--rq-spacing-sm) var(--rq-spacing-md);
+    margin: var(--rq-spacing-sm) 0;
+    font-style: italic;
+    color: #92400E;
+}
+
+.tafsir-simple-preview p {
+    margin: 0;
+    color: #6B7280;
+}
+
+.tafsir-simple-read-more {
+    display: inline-block;
+    margin-top: var(--rq-spacing-sm);
+    padding: 0;
+    background: none;
+    border: none;
+    color: var(--rq-primary);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.tafsir-simple-read-more:hover {
+    color: var(--rq-primary-dark);
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .tafsir-simple {
+        padding: var(--rq-spacing-sm) var(--rq-spacing-md);
+        margin-top: var(--rq-spacing-md);
+    }
+    
+    .tafsir-simple-title {
+        font-size: 0.9rem;
+    }
+    
+    .tafsir-simple-content {
+        font-size: 0.9rem;
+        line-height: 1.7;
+    }
+}
