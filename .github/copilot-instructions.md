@@ -1,4 +1,4 @@
-# Copilot Instructions for QuranicLearn
+# QuranicLearn
 
 ## Architecture Overview
 
