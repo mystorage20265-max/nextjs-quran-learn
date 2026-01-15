@@ -163,10 +163,10 @@ export default function ReadQuranPage() {
             {activeTab === 'tafsir' ? (
                 // Tafsir Grid
                 <div className="rq-surah-grid">
-                    {(displayedContent as Tafsir[]).map((tafsir) => (
+                    {(displayedContent as Tafsir[]).map((tafsir, index) => (
                         <Link href={`/read-quran/tafsir/${tafsir.id}`} key={tafsir.id} className="rq-surah-card">
                             <div className="rq-surah-number">
-                                {tafsir.id}
+                                {index + 1}
                             </div>
                             <div className="rq-surah-info">
                                 <div className="rq-surah-name-row">
