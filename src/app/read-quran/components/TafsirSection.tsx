@@ -70,10 +70,7 @@ interface UserNote {
 export default function TafsirSection({ verseKey, content }: TafsirSectionProps) {
     // Core State
     const [isExpanded, setIsExpanded] = useState(false);
-    const [fontSize, setFontSize] = useState(16);
-    const [isDarkMode, setIsDarkMode] = useState(false);
-    const [searchQuery, setSearchQuery] = useState('');
-    const [showSearch, setShowSearch] = useState(false);
+    // Removed: fontSize, isDarkMode, searchQuery, showSearch
     const [readingProgress, setReadingProgress] = useState(0);
 
     // TTS State
@@ -105,16 +102,27 @@ export default function TafsirSection({ verseKey, content }: TafsirSectionProps)
         localStorage.setItem(`tafsir-notes-${verseKey}`, JSON.stringify(newNotes));
     }, [verseKey]);
 
-    // Strip HTML for text processing
-    const strippedContent = useMemo(() => {
+    // Improved Content Preprocessing for Audio
+    // 1. Replace block-level tags with periods to ensure pauses
+    // 2. Cleaning up weird spacing
+    const audioContent = useMemo(() => {
         return content
-            .replace(/<[^>]*>/g, '')
+            .replace(/<\/p>/g, '. ')      // End of paragraph -> Pause
+            .replace(/<\/div>/g, '. ')    // End of div -> Pause
+            .replace(/<br\s*\/?>/g, ', ') // Line break -> Comma pause
+            .replace(/<[^>]*>/g, '')      // Strip remaining tags
             .replace(/&nbsp;/g, ' ')
             .replace(/&amp;/g, '&')
             .replace(/&lt;/g, '<')
             .replace(/&gt;/g, '>')
-            .replace(/\s+/g, ' ')
+            .replace(/\s+/g, ' ')         // Collapse multiple spaces
+            .replace(/\.\./g, '.')        // Fix double periods
             .trim();
+    }, [content]);
+
+    // Strip HTML for display/preview (standard stripping)
+    const strippedContent = useMemo(() => {
+        return content.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
     }, [content]);
 
     // Extract preview text
@@ -145,21 +153,6 @@ export default function TafsirSection({ verseKey, content }: TafsirSectionProps)
         return foundTopics.slice(0, 5); // Max 5 topics
     }, [strippedContent]);
 
-    // Search highlighting
-    const highlightedContent = useMemo(() => {
-        if (!searchQuery.trim()) return content;
-
-        const regex = new RegExp(`(${searchQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-        return content.replace(regex, '<mark class="tafsir-search-highlight">$1</mark>');
-    }, [content, searchQuery]);
-
-    // Search match count
-    const searchMatchCount = useMemo(() => {
-        if (!searchQuery.trim()) return 0;
-        const regex = new RegExp(searchQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
-        return (strippedContent.match(regex) || []).length;
-    }, [strippedContent, searchQuery]);
-
     // Reading progress tracking
     useEffect(() => {
         if (!isExpanded || !contentRef.current) return;
@@ -179,32 +172,98 @@ export default function TafsirSection({ verseKey, content }: TafsirSectionProps)
         return () => element.removeEventListener('scroll', handleScroll);
     }, [isExpanded]);
 
-    // Text-to-Speech functions
+    // Text-to-Speech functions - PRODUCTION OPTIMIZED
+    // 1. Selects the best available voice (neural/natural voices preferred)
+    // 2. Removes Arabic text to avoid mispronunciation
+    // 3. Optimized rate and pitch for clarity
     const startSpeech = useCallback(() => {
-        if ('speechSynthesis' in window) {
-            window.speechSynthesis.cancel();
+        if (!('speechSynthesis' in window)) {
+            alert('Text-to-speech is not supported in this browser.');
+            return;
+        }
 
-            const utterance = new SpeechSynthesisUtterance(strippedContent);
-            utterance.rate = 0.9;
-            utterance.pitch = 1;
-            utterance.lang = 'en-US';
+        // Stop any ongoing speech
+        window.speechSynthesis.cancel();
 
-            utterance.onend = () => {
-                setIsSpeaking(false);
-                setIsPaused(false);
-            };
+        // Clean the content for TTS:
+        // - Remove Arabic/Urdu text (causes mispronunciation)
+        // - Keep only Latin characters and basic punctuation
+        const cleanedForSpeech = audioContent
+            .replace(/[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]+/g, '') // Remove Arabic
+            .replace(/[\u0980-\u09FF]+/g, '') // Remove Bengali
+            .replace(/[\u0900-\u097F]+/g, '') // Remove Hindi/Devanagari
+            .replace(/\s+/g, ' ') // Collapse whitespace
+            .replace(/\.[\s.]+/g, '. ') // Fix multiple periods
+            .trim();
 
-            utterance.onerror = () => {
-                setIsSpeaking(false);
-                setIsPaused(false);
-            };
+        if (!cleanedForSpeech || cleanedForSpeech.length < 10) {
+            alert('No speakable English text found in this Tafsir.');
+            return;
+        }
 
-            speechRef.current = utterance;
-            window.speechSynthesis.speak(utterance);
+        // Find the best available English voice
+        const getBestVoice = (): SpeechSynthesisVoice | null => {
+            const voices = window.speechSynthesis.getVoices();
+            if (voices.length === 0) return null;
+
+            const englishVoices = voices.filter(v => v.lang.startsWith('en'));
+            if (englishVoices.length === 0) return voices[0]; // Use any voice if no English
+
+            // Priority keywords for high-quality voices
+            const priorityKeywords = ['natural', 'neural', 'enhanced', 'premium', 'google', 'microsoft'];
+
+            for (const keyword of priorityKeywords) {
+                const match = englishVoices.find(v =>
+                    v.name.toLowerCase().includes(keyword)
+                );
+                if (match) return match;
+            }
+
+            // Fallback: prefer US English, then any English
+            return englishVoices.find(v => v.lang === 'en-US') ||
+                englishVoices[0];
+        };
+
+        // Create and configure utterance
+        const utterance = new SpeechSynthesisUtterance(cleanedForSpeech);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.95;
+        utterance.pitch = 1.0;
+        utterance.volume = 1.0;
+
+        // Try to set the best voice
+        const bestVoice = getBestVoice();
+        if (bestVoice) {
+            utterance.voice = bestVoice;
+        }
+
+        utterance.onstart = () => {
             setIsSpeaking(true);
             setIsPaused(false);
-        }
-    }, [strippedContent]);
+        };
+
+        utterance.onend = () => {
+            setIsSpeaking(false);
+            setIsPaused(false);
+        };
+
+        utterance.onerror = (event) => {
+            // 'interrupted' and 'canceled' are expected when user stops - not real errors
+            if (event.error !== 'interrupted' && event.error !== 'canceled') {
+                console.warn('Speech synthesis error:', event.error);
+            }
+            setIsSpeaking(false);
+            setIsPaused(false);
+        };
+
+        speechRef.current = utterance;
+
+        // Speak immediately - voices are usually loaded by now
+        // Small delay to ensure cancel() has completed
+        setTimeout(() => {
+            window.speechSynthesis.speak(utterance);
+        }, 50);
+    }, [audioContent]);
 
     const pauseSpeech = useCallback(() => {
         if ('speechSynthesis' in window) {
@@ -236,12 +295,20 @@ export default function TafsirSection({ verseKey, content }: TafsirSectionProps)
         }
     }, []);
 
-    // Share selected quote
+    // Share selected quote or Full Tafsir
     const shareQuote = useCallback(async () => {
-        const textToShare = selectedText || preview;
+        // Use selected text if available, otherwise use the FULL plain text content
+        const textToShare = selectedText || strippedContent;
+
+        // Construct the share link (anchor to verse)
+        // Assuming path is /read-quran/[surahNumber]
+        // This component doesn't know surah number, but we can try to grab current URL or rely on user to be on the right page
+        const shareUrl = window.location.href.split('#')[0] + `#verse-${verseKey.split(':')[1]}`; // approximate
+
         const shareData = {
             title: `Tafsir - Verse ${verseKey}`,
-            text: `"${textToShare}"\n\n— Tafsir of Quran ${verseKey}`,
+            text: `"${textToShare.substring(0, 4000)}..."\n\n— Tafsir of Quran ${verseKey}`, // 4000 char limit safety
+            url: shareUrl,
         };
 
         if (navigator.share) {
@@ -252,11 +319,11 @@ export default function TafsirSection({ verseKey, content }: TafsirSectionProps)
             }
         } else {
             // Fallback to clipboard
-            await navigator.clipboard.writeText(shareData.text);
-            alert('Quote copied to clipboard!');
+            await navigator.clipboard.writeText(`${shareData.text}\n\n${shareData.url}`);
+            alert('Tafsir copied to clipboard!');
         }
         setSelectedText('');
-    }, [selectedText, preview, verseKey]);
+    }, [selectedText, strippedContent, verseKey]);
 
     // Add note
     const addNote = useCallback(() => {
@@ -282,7 +349,7 @@ export default function TafsirSection({ verseKey, content }: TafsirSectionProps)
     const isShortContent = strippedContent.length <= 200;
 
     return (
-        <div className={`tafsir-section-advanced ${isDarkMode ? 'dark-mode' : ''}`} style={{ fontSize: `${fontSize}px` }}>
+        <div className="tafsir-section-advanced">
             {/* Header Bar */}
             <div className="tafsir-header-advanced">
                 <div className="tafsir-header-left">
@@ -291,7 +358,7 @@ export default function TafsirSection({ verseKey, content }: TafsirSectionProps)
                     <span className="tafsir-reading-time">⏱️ {readingTime}</span>
                 </div>
 
-                {/* Quick Actions */}
+                {/* Quick Actions - Simplified & Mobile Responsive */}
                 <div className="tafsir-quick-actions">
                     {/* TTS Button */}
                     <button
@@ -308,40 +375,6 @@ export default function TafsirSection({ verseKey, content }: TafsirSectionProps)
                         </button>
                     )}
 
-                    {/* Search Toggle */}
-                    <button
-                        className={`tafsir-action-btn ${showSearch ? 'active' : ''}`}
-                        onClick={() => setShowSearch(!showSearch)}
-                        title="Search"
-                    >
-                        🔍
-                    </button>
-
-                    {/* Font Controls */}
-                    <button
-                        className="tafsir-action-btn"
-                        onClick={() => setFontSize(Math.max(12, fontSize - 2))}
-                        title="Decrease Font"
-                    >
-                        A-
-                    </button>
-                    <button
-                        className="tafsir-action-btn"
-                        onClick={() => setFontSize(Math.min(24, fontSize + 2))}
-                        title="Increase Font"
-                    >
-                        A+
-                    </button>
-
-                    {/* Dark Mode */}
-                    <button
-                        className="tafsir-action-btn"
-                        onClick={() => setIsDarkMode(!isDarkMode)}
-                        title={isDarkMode ? 'Light Mode' : 'Dark Mode'}
-                    >
-                        {isDarkMode ? '☀️' : '🌙'}
-                    </button>
-
                     {/* Notes Toggle */}
                     <button
                         className={`tafsir-action-btn ${showNotes ? 'active' : ''}`}
@@ -355,7 +388,7 @@ export default function TafsirSection({ verseKey, content }: TafsirSectionProps)
                     <button
                         className="tafsir-action-btn"
                         onClick={shareQuote}
-                        title="Share Quote"
+                        title="Share Tafsir"
                     >
                         📤
                     </button>
@@ -365,6 +398,7 @@ export default function TafsirSection({ verseKey, content }: TafsirSectionProps)
                         <button
                             className={`tafsir-expand-btn ${isExpanded ? 'expanded' : ''}`}
                             onClick={() => setIsExpanded(!isExpanded)}
+                            title="Expand/Collapse"
                         >
                             {isExpanded ? '▲' : '▼'}
                         </button>
@@ -378,24 +412,6 @@ export default function TafsirSection({ verseKey, content }: TafsirSectionProps)
                     {keyTopics.map((topic, i) => (
                         <span key={i} className="tafsir-topic-pill">{topic}</span>
                     ))}
-                </div>
-            )}
-
-            {/* Search Bar */}
-            {showSearch && (
-                <div className="tafsir-search-bar">
-                    <input
-                        type="text"
-                        placeholder="Search in Tafsir..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="tafsir-search-input"
-                    />
-                    {searchQuery && (
-                        <span className="tafsir-search-count">
-                            {searchMatchCount} match{searchMatchCount !== 1 ? 'es' : ''}
-                        </span>
-                    )}
                 </div>
             )}
 
@@ -451,7 +467,7 @@ export default function TafsirSection({ verseKey, content }: TafsirSectionProps)
             {/* Preview - Collapsed State */}
             {!isExpanded && !isShortContent && (
                 <div className="tafsir-preview" onClick={() => setIsExpanded(true)}>
-                    <p style={{ fontSize: `${fontSize}px` }}>{preview}</p>
+                    <p>{preview}</p>
                     <div className="tafsir-preview-fade" />
                     <button className="tafsir-read-more-btn">
                         Read Full Tafsir →
@@ -468,8 +484,7 @@ export default function TafsirSection({ verseKey, content }: TafsirSectionProps)
                     <div
                         ref={textRef}
                         className="tafsir-text"
-                        style={{ fontSize: `${fontSize}px` }}
-                        dangerouslySetInnerHTML={{ __html: highlightedContent }}
+                        dangerouslySetInnerHTML={{ __html: content }}
                         onMouseUp={handleTextSelection}
                     />
 
