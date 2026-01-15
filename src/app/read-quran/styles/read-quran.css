@@ -2346,3 +2346,48 @@
         padding: var(--rq-spacing-sm) var(--rq-spacing-md);
     }
 }
+
+/* ============ WORD-BY-WORD HIGHLIGHTING ============ */
+.word-by-word-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: flex-start;
+    line-height: 2.2;
+    font-family: 'KFGQPC Uthmanic Script', 'Amiri Quran', serif;
+}
+
+.quran-word {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: all 0.15s ease;
+    cursor: default;
+}
+
+.quran-word:hover {
+    background: rgba(5, 150, 105, 0.08);
+}
+
+.quran-word.highlighted {
+    background: linear-gradient(135deg, rgba(5, 150, 105, 0.2) 0%, rgba(16, 185, 129, 0.15) 100%);
+    color: var(--rq-primary-dark);
+    transform: scale(1.08);
+    box-shadow: 0 2px 8px rgba(5, 150, 105, 0.2);
+    border-radius: 8px;
+}
+
+@media (max-width: 768px) {
+    .word-by-word-container {
+        gap: 6px;
+        line-height: 2;
+    }
+    
+    .quran-word {
+        padding: 3px 6px;
+    }
+    
+    .quran-word.highlighted {
+        transform: scale(1.05);
+    }
+}

@@ -65,28 +65,36 @@ export default function RootLayout({
     <html lang="en" className="scroll-smooth">
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link 
-          rel="stylesheet" 
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
+        <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
         />
-        <link 
-          rel="preconnect" 
-          href="https://fonts.googleapis.com" 
+        <link
+          rel="preconnect"
+          href="https://fonts.googleapis.com"
         />
-        <link 
-          rel="preconnect" 
-          href="https://fonts.gstatic.com" 
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
           crossOrigin="anonymous"
         />
-        <link 
-          href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&display=swap" 
-          rel="stylesheet" 
+        <link
+          href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet"
         />
-        <link 
-          rel="icon" 
-          href="/favicon.ico" 
-          type="image/x-icon" 
+        <link
+          rel="icon"
+          href="/favicon.ico"
+          type="image/x-icon"
         />
+
+        {/* PWA Support */}
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#059669" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="QuranLearn" />
+        <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
 
         {/* ✅ JSON-LD Structured Data for SEO */}
         <script
@@ -108,6 +116,25 @@ export default function RootLayout({
           {children}
         </main>
         <Footer />
+
+        {/* Service Worker Registration */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function() {
+                  navigator.serviceWorker.register('/sw.js')
+                    .then(function(registration) {
+                      console.log('SW registered:', registration.scope);
+                    })
+                    .catch(function(error) {
+                      console.log('SW registration failed:', error);
+                    });
+                });
+              }
+            `,
+          }}
+        />
       </body>
     </html>
   );
