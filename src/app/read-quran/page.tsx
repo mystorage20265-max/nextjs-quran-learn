@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { getChapters, getTafsirs, Chapter, Tafsir } from './lib/api';
+import { getLastRead, getProgressPercentage, getProgress, LastReadPosition } from './lib/progress';
 
 type TabType = 'surah' | 'juz' | 'tafsir';
 
@@ -13,6 +14,9 @@ export default function ReadQuranPage() {
     const [error, setError] = useState<string | null>(null);
     const [activeTab, setActiveTab] = useState<TabType>('surah');
     const [searchQuery, setSearchQuery] = useState('');
+    const [lastRead, setLastRead] = useState<LastReadPosition | null>(null);
+    const [progressPercent, setProgressPercent] = useState(0);
+    const [totalRead, setTotalRead] = useState(0);
 
     // Fetch data on mount
     useEffect(() => {
@@ -33,6 +37,15 @@ export default function ReadQuranPage() {
             }
         }
         loadData();
+    }, []);
+
+    // Load last read position and progress
+    useEffect(() => {
+        const saved = getLastRead();
+        if (saved) setLastRead(saved);
+
+        setProgressPercent(getProgressPercentage());
+        setTotalRead(getProgress().totalRead);
     }, []);
 
     // Filter and sort chapters/tafsirs based on active tab and search
@@ -116,6 +129,40 @@ export default function ReadQuranPage() {
 
     return (
         <div className="rq-container">
+            {/* Continue Reading Banner */}
+            {lastRead && (
+                <Link
+                    href={`/read-quran/${lastRead.surahId}#verse-${lastRead.verseNumber}`}
+                    className="rq-continue-reading"
+                >
+                    <span className="rq-continue-icon">▶️</span>
+                    <div className="rq-continue-text">
+                        <span className="rq-continue-label">Continue Reading</span>
+                        <span className="rq-continue-position">
+                            {lastRead.surahName}, Verse {lastRead.verseNumber}
+                        </span>
+                    </div>
+                    <span className="rq-continue-arrow">→</span>
+                </Link>
+            )}
+
+            {/* Reading Progress */}
+            {totalRead > 0 && (
+                <div className="rq-progress-section">
+                    <div className="rq-progress-header">
+                        <span>📊 Reading Progress</span>
+                        <span className="rq-progress-percent">{progressPercent}%</span>
+                    </div>
+                    <div className="rq-progress-bar-container">
+                        <div
+                            className="rq-progress-bar-fill"
+                            style={{ width: `${progressPercent}%` }}
+                        />
+                    </div>
+                    <span className="rq-progress-detail">{totalRead} of 6,236 verses read</span>
+                </div>
+            )}
+
             {/* Hero Section */}
             <section className="rq-hero">
                 <h1>📖 Read the Noble Quran</h1>

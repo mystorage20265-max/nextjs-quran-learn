@@ -11,6 +11,7 @@ import {
     POPULAR_RECITERS,
     TRANSLATIONS
 } from '../lib/api';
+import { saveLastRead, markVerseRead } from '../lib/progress';
 import TafsirSection from '../components/TafsirSection';
 
 // Convert English numbers to Arabic-Indic numerals (۰۱۲۳۴۵۶۷۸۹)
@@ -132,6 +133,50 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
             }
         }
     }, []);
+
+    // Save last read position when verse is viewed
+    useEffect(() => {
+        if (!chapter || verses.length === 0) return;
+
+        // Save position when audio plays
+        if (currentVerse) {
+            saveLastRead(surahNumber, chapter.name_simple, currentVerse);
+            markVerseRead(`${surahNumber}:${currentVerse}`);
+        }
+    }, [currentVerse, chapter, surahNumber, verses.length]);
+
+    // Track visible verses for reading progress
+    useEffect(() => {
+        if (!chapter || verses.length === 0) return;
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        const verseId = entry.target.id;
+                        const verseNum = parseInt(verseId.replace('verse-', ''));
+                        if (!isNaN(verseNum)) {
+                            // Save as last read
+                            saveLastRead(surahNumber, chapter.name_simple, verseNum);
+                            // Mark as read after 2 seconds of visibility
+                            setTimeout(() => {
+                                if (entry.isIntersecting) {
+                                    markVerseRead(`${surahNumber}:${verseNum}`);
+                                }
+                            }, 2000);
+                        }
+                    }
+                });
+            },
+            { threshold: 0.5 }
+        );
+
+        // Observe all verse elements
+        const verseElements = document.querySelectorAll('[id^="verse-"]');
+        verseElements.forEach((el) => observer.observe(el));
+
+        return () => observer.disconnect();
+    }, [chapter, surahNumber, verses.length]);
 
     // CRITICAL: Track if component is mounted to prevent zombie callbacks
     const isMountedRef = useRef(true);
@@ -591,7 +636,10 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                             id={`verse-${verse.verse_number}`}
                         >
                             {/* Verse number in top left - Arabic-Indic numerals */}
-                            <span className="rq-verse-number-corner">{toArabicNumeral(verse.verse_number)}</span>
+                            <span className="rq-verse-number-corner">
+                                {toArabicNumeral(verse.verse_number)}
+                                {verse.sajdah_number && <span className="sajdah-marker" title="Sajdah (Prostration)">۩</span>}
+                            </span>
 
                             <div className="rq-verse-arabic">{verse.text_uthmani}</div>
                             <div className="rq-verse-translation">
@@ -693,7 +741,10 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                             {verses.map((verse) => (
                                 <span key={verse.id}>
                                     {verse.text_uthmani}
-                                    <span className="rq-reading-verse-marker">{toArabicNumeral(verse.verse_number)}</span>
+                                    <span className="rq-reading-verse-marker">
+                                        {toArabicNumeral(verse.verse_number)}
+                                        {verse.sajdah_number && <span className="sajdah-marker-reading">۩</span>}
+                                    </span>
                                 </span>
                             ))}
                         </div>

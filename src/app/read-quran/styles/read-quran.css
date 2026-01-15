@@ -2218,3 +2218,131 @@
         line-height: 1.7;
     }
 }
+
+/* ============ SAJDAH MARKERS ============ */
+.sajdah-marker {
+    display: inline-block;
+    margin-left: 4px;
+    color: #DC2626;
+    font-size: 0.9rem;
+    vertical-align: middle;
+}
+
+.sajdah-marker-reading {
+    display: inline;
+    color: #DC2626;
+    font-size: 0.85em;
+    margin-left: 2px;
+}
+
+/* Sajdah verse highlight */
+.rq-verse:has(.sajdah-marker) {
+    border-left: 3px solid #DC2626;
+}
+
+.rq-verse:has(.sajdah-marker) .rq-verse-number-corner {
+    border-color: #DC2626;
+}
+
+/* ============ CONTINUE READING BANNER ============ */
+.rq-continue-reading {
+    display: flex;
+    align-items: center;
+    gap: var(--rq-spacing-md);
+    padding: var(--rq-spacing-md) var(--rq-spacing-lg);
+    background: linear-gradient(135deg, var(--rq-primary) 0%, #047857 100%);
+    border-radius: var(--rq-radius-lg);
+    margin-bottom: var(--rq-spacing-lg);
+    color: white;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    box-shadow: var(--rq-shadow-md);
+}
+
+.rq-continue-reading:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--rq-shadow-lg);
+}
+
+.rq-continue-icon {
+    font-size: 1.5rem;
+}
+
+.rq-continue-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.rq-continue-label {
+    font-size: 0.85rem;
+    opacity: 0.9;
+}
+
+.rq-continue-position {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.rq-continue-arrow {
+    font-size: 1.3rem;
+    opacity: 0.8;
+}
+
+/* ============ READING PROGRESS SECTION ============ */
+.rq-progress-section {
+    background: var(--rq-glass);
+    border: 1.5px solid var(--rq-border);
+    border-radius: var(--rq-radius-lg);
+    padding: var(--rq-spacing-md) var(--rq-spacing-lg);
+    margin-bottom: var(--rq-spacing-lg);
+}
+
+.rq-progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--rq-spacing-sm);
+    font-weight: 600;
+    color: var(--rq-text);
+}
+
+.rq-progress-percent {
+    color: var(--rq-primary);
+    font-size: 1.1rem;
+}
+
+.rq-progress-bar-container {
+    height: 8px;
+    background: var(--rq-border);
+    border-radius: var(--rq-radius-full);
+    overflow: hidden;
+}
+
+.rq-progress-bar-fill {
+    height: 100%;
+    background: var(--rq-primary-gradient);
+    border-radius: var(--rq-radius-full);
+    transition: width 0.5s ease;
+}
+
+.rq-progress-detail {
+    display: block;
+    margin-top: var(--rq-spacing-xs);
+    font-size: 0.85rem;
+    color: var(--rq-text-secondary);
+}
+
+@media (max-width: 768px) {
+    .rq-continue-reading {
+        padding: var(--rq-spacing-sm) var(--rq-spacing-md);
+    }
+    
+    .rq-continue-position {
+        font-size: 1rem;
+    }
+    
+    .rq-progress-section {
+        padding: var(--rq-spacing-sm) var(--rq-spacing-md);
+    }
+}
