@@ -9,58 +9,71 @@ interface TafsirSectionProps {
 
 /**
  * Simple Tafsir Section - Clean, minimal UI inspired by alim.org
- * Just shows the tafsir text with a simple expand/collapse
+ * Shows brief summary first, full content on expand
  */
 export default function TafsirSection({ verseKey, content }: TafsirSectionProps) {
     const [isExpanded, setIsExpanded] = useState(false);
 
-    // Strip HTML for preview
-    const strippedContent = useMemo(() => {
-        return content.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+    // Strip HTML and clean up content
+    const cleanContent = useMemo(() => {
+        return content
+            .replace(/<[^>]*>/g, '')  // Remove HTML tags
+            .replace(/\s+/g, ' ')      // Normalize whitespace
+            .replace(/\([^)]*\)/g, '') // Remove parenthetical references
+            .trim();
     }, [content]);
 
-    // Extract preview text (first 200 chars)
-    const preview = useMemo(() => {
-        if (strippedContent.length <= 250) return strippedContent;
-        const cutoff = strippedContent.substring(0, 250).lastIndexOf(' ');
-        return strippedContent.substring(0, cutoff > 150 ? cutoff : 250) + '...';
-    }, [strippedContent]);
+    // Extract brief summary (first sentence or ~100 chars)
+    const briefSummary = useMemo(() => {
+        // Try to get first sentence
+        const firstSentence = cleanContent.match(/^[^.!?]+[.!?]/);
+        if (firstSentence && firstSentence[0].length <= 200) {
+            return firstSentence[0].trim();
+        }
 
-    const isShortContent = strippedContent.length <= 250;
+        // Fallback: first 120 characters at word boundary
+        if (cleanContent.length <= 150) return cleanContent;
+        const cutoff = cleanContent.substring(0, 150).lastIndexOf(' ');
+        return cleanContent.substring(0, cutoff > 80 ? cutoff : 120) + '...';
+    }, [cleanContent]);
+
+    const isShortContent = cleanContent.length <= 200;
 
     return (
         <div className="tafsir-simple">
             {/* Simple Header */}
             <div className="tafsir-simple-header">
-                <span className="tafsir-simple-title">📖 Tafsir</span>
+                <span className="tafsir-simple-title">📖 Brief Tafsir</span>
                 {!isShortContent && (
                     <button
                         className="tafsir-simple-toggle"
                         onClick={() => setIsExpanded(!isExpanded)}
                     >
-                        {isExpanded ? 'Collapse ▲' : 'Expand ▼'}
+                        {isExpanded ? 'Brief ▲' : 'Full ▼'}
                     </button>
                 )}
             </div>
 
             {/* Content */}
             <div className="tafsir-simple-content">
-                {isExpanded || isShortContent ? (
-                    // Full content
+                {isExpanded ? (
+                    // Full content (with HTML for formatting if needed)
                     <div
-                        className="tafsir-simple-text"
+                        className="tafsir-simple-text tafsir-full"
                         dangerouslySetInnerHTML={{ __html: content }}
                     />
                 ) : (
-                    // Preview
+                    // Brief summary - just plain text, easy to read
                     <div className="tafsir-simple-preview">
-                        <p>{preview}</p>
-                        <button
-                            className="tafsir-simple-read-more"
-                            onClick={() => setIsExpanded(true)}
-                        >
-                            Read more →
-                        </button>
+                        <p>{briefSummary}</p>
+                        {!isShortContent && (
+                            <button
+                                className="tafsir-simple-read-more"
+                                onClick={() => setIsExpanded(true)}
+                            >
+                                Read full tafsir →
+                            </button>
+                        )}
                     </div>
                 )}
             </div>
