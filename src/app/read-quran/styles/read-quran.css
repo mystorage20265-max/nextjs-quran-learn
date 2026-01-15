@@ -775,20 +775,23 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 44px;
-    height: 44px;
-    background: var(--rq-gold-gradient);
-    color: white;
+    min-width: 36px;
+    height: 36px;
+    background: white;
+    color: #475569;
+    border: 2px solid #94a3b8;
     border-radius: 50%;
-    font-size: 0.95rem;
-    font-weight: 700;
-    box-shadow: 0 4px 12px var(--rq-gold-glow);
+    font-size: 0.9rem;
+    font-weight: 500;
+    box-shadow: none;
     transition: all var(--rq-spring);
-    font-family: 'Google Sans Code', monospace;
+    font-family: 'KFGQPC Uthmanic Script', 'Amiri Quran', serif;
+    padding: 2px;
 }
 
 .rq-verse:hover .rq-verse-number-corner {
-    transform: scale(1.15) rotate(-5deg);
+    border-color: var(--rq-primary);
+    color: var(--rq-primary);
 }
 
 .rq-verse-arabic {
@@ -1260,7 +1263,9 @@
     }
 
     .rq-verse:hover .rq-verse-number-corner {
-        transform: translateX(-50%) scale(1.1);
+        transform: translateX(-50%);
+        border-color: var(--rq-primary);
+        color: var(--rq-primary);
     }
 
     .rq-verse-arabic {
