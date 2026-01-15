@@ -9,6 +9,7 @@ interface TafsirSectionProps {
 
 /**
  * Brief Tafsir - Fixed 5-10 lines, minimal UI
+ * Uses CSS variables for dark mode compatibility
  */
 export default function TafsirSection({ verseKey, content }: TafsirSectionProps) {
     // Extract only first ~500 chars (5-10 lines)
@@ -22,16 +23,19 @@ export default function TafsirSection({ verseKey, content }: TafsirSectionProps)
     }, [content]);
 
     return (
-        <p style={{
-            marginTop: '12px',
-            padding: '12px 16px',
-            fontSize: '0.9rem',
-            lineHeight: '1.7',
-            color: '#4B5563',
-            background: '#F9FAFB',
-            borderLeft: '3px solid #059669',
-            borderRadius: '0 6px 6px 0'
-        }}>
+        <p
+            className="tafsir-brief"
+            style={{
+                marginTop: '12px',
+                padding: '12px 16px',
+                fontSize: '0.9rem',
+                lineHeight: '1.7',
+                color: 'var(--rq-text-secondary)',
+                background: 'var(--rq-bg-subtle)',
+                borderLeft: '3px solid var(--rq-primary)',
+                borderRadius: '0 6px 6px 0'
+            }}
+        >
             {briefText}
         </p>
     );

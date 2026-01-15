@@ -38,6 +38,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
     const [chapter, setChapter] = useState<Chapter | null>(null);
     const [verses, setVerses] = useState<VerseWithTranslation[]>([]);
     const [loading, setLoading] = useState(true);
+    const [isChangingSettings, setIsChangingSettings] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [tafsirContent, setTafsirContent] = useState<Record<string, string>>({});
 
@@ -62,36 +63,61 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
     const [toastType, setToastType] = useState<'success' | 'warning'>('success');
     const [showInfo, setShowInfo] = useState(false);
 
-    // Fetch Data
-    const fetchData = useCallback(async () => {
-        try {
-            setLoading(true);
-            const [chapterData, versesData] = await Promise.all([
-                getChapter(surahNumber),
-                getAllVerses(surahNumber, selectedTranslation)
-            ]);
-            setChapter(chapterData);
-            setVerses(versesData);
+    // Debounce ref for IntersectionObserver
+    const lastSaveRef = useRef<number>(0);
 
-            // Fetch Tafsir if currently in URL
-            if (tafsirId) {
-                // Dynamically import to avoid circular dep issues if any, or just direct import
-                const { getTafsirContent } = await import('../lib/api');
-                const tContent = await getTafsirContent(tafsirId, surahNumber);
-                setTafsirContent(tContent);
+    // Fetch Data - Single source of truth for data loading
+    useEffect(() => {
+        let isCancelled = false;
+
+        async function loadSurahData() {
+            if (surahNumber < 1 || surahNumber > 114) {
+                setError('Invalid surah number');
+                setLoading(false);
+                return;
             }
 
-        } catch (err) {
-            console.error(err);
-            setError('Failed to load Surah data');
-        } finally {
-            setLoading(false);
-        }
-    }, [surahNumber, selectedTranslation, tafsirId]);
+            try {
+                setLoading(true);
+                setError(null);
 
-    useEffect(() => {
-        fetchData();
-    }, [fetchData]);
+                const [chapterData, versesData] = await Promise.all([
+                    getChapter(surahNumber),
+                    getAllVerses(surahNumber, selectedTranslation)
+                ]);
+
+                if (isCancelled) return;
+
+                setChapter(chapterData);
+                setVerses(versesData);
+
+                // Fetch Tafsir if in URL
+                if (tafsirId) {
+                    const { getTafsirContent } = await import('../lib/api');
+                    const tContent = await getTafsirContent(tafsirId, surahNumber);
+                    if (!isCancelled) {
+                        setTafsirContent(tContent);
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+                if (!isCancelled) {
+                    setError('Failed to load Surah data. Please try again.');
+                }
+            } finally {
+                if (!isCancelled) {
+                    setLoading(false);
+                    setIsChangingSettings(false);
+                }
+            }
+        }
+
+        loadSurahData();
+
+        return () => {
+            isCancelled = true;
+        };
+    }, [surahNumber, selectedTranslation, tafsirId]);
 
     // Confirmation State
     const [pendingChange, setPendingChange] = useState<{ type: 'reciter' | 'translation', value: string | number, name: string } | null>(null);
@@ -113,12 +139,14 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
         if (!pendingChange) return;
 
         if (pendingChange.type === 'translation') {
+            setIsChangingSettings(true);
             setSelectedTranslation(pendingChange.value as string);
         } else if (pendingChange.type === 'reciter') {
             setSelectedReciter(pendingChange.value as number);
         }
 
         setPendingChange(null);
+        setToastType('success');
         setToastMessage(`${pendingChange.type === 'reciter' ? 'Reciter' : 'Translation'} updated!`);
         setShowBookmarkToast(true);
         setTimeout(() => setShowBookmarkToast(false), 2000);
@@ -145,9 +173,12 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
         }
     }, [currentVerse, chapter, surahNumber, verses.length]);
 
-    // Track visible verses for reading progress
+    // Track visible verses for reading progress (debounced)
     useEffect(() => {
         if (!chapter || verses.length === 0) return;
+
+        const DEBOUNCE_MS = 1000; // Minimum time between saves
+        const readTimeouts: Map<number, NodeJS.Timeout> = new Map();
 
         const observer = new IntersectionObserver(
             (entries) => {
@@ -156,14 +187,29 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                         const verseId = entry.target.id;
                         const verseNum = parseInt(verseId.replace('verse-', ''));
                         if (!isNaN(verseNum)) {
-                            // Save as last read
-                            saveLastRead(surahNumber, chapter.name_simple, verseNum);
-                            // Mark as read after 2 seconds of visibility
-                            setTimeout(() => {
-                                if (entry.isIntersecting) {
+                            // Debounce: only save if enough time has passed
+                            const now = Date.now();
+                            if (now - lastSaveRef.current > DEBOUNCE_MS) {
+                                lastSaveRef.current = now;
+                                saveLastRead(surahNumber, chapter.name_simple, verseNum);
+                            }
+
+                            // Mark as read after 2 seconds of visibility (with cleanup)
+                            if (!readTimeouts.has(verseNum)) {
+                                const timeout = setTimeout(() => {
                                     markVerseRead(`${surahNumber}:${verseNum}`);
-                                }
-                            }, 2000);
+                                    readTimeouts.delete(verseNum);
+                                }, 2000);
+                                readTimeouts.set(verseNum, timeout);
+                            }
+                        }
+                    } else {
+                        // Clear timeout if verse scrolls out of view
+                        const verseId = entry.target.id;
+                        const verseNum = parseInt(verseId.replace('verse-', ''));
+                        if (!isNaN(verseNum) && readTimeouts.has(verseNum)) {
+                            clearTimeout(readTimeouts.get(verseNum));
+                            readTimeouts.delete(verseNum);
                         }
                     }
                 });
@@ -175,7 +221,12 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
         const verseElements = document.querySelectorAll('[id^="verse-"]');
         verseElements.forEach((el) => observer.observe(el));
 
-        return () => observer.disconnect();
+        return () => {
+            observer.disconnect();
+            // Cleanup all pending timeouts
+            readTimeouts.forEach((timeout) => clearTimeout(timeout));
+            readTimeouts.clear();
+        };
     }, [chapter, surahNumber, verses.length]);
 
     // CRITICAL: Track if component is mounted to prevent zombie callbacks
@@ -265,34 +316,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
         });
     }, []);
 
-    // Fetch data
-    useEffect(() => {
-        async function loadData() {
-            if (surahNumber < 1 || surahNumber > 114) {
-                setError('Invalid surah number');
-                setLoading(false);
-                return;
-            }
-
-            try {
-                setLoading(true);
-                const [chapterData, versesData] = await Promise.all([
-                    getChapter(surahNumber),
-                    getAllVerses(surahNumber, selectedTranslation)
-                ]);
-
-                setChapter(chapterData);
-                setVerses(versesData);
-            } catch (err) {
-                console.error(err);
-                setError('Failed to load surah. Please try again.');
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        loadData();
-    }, [surahNumber, selectedTranslation]);
+    // REMOVED: Duplicate loadData useEffect - now handled by single useEffect above
 
     // Calculate global verse number (for audio URL)
     const getGlobalVerseNumber = useCallback((surahNum: number, verseNum: number): number => {
@@ -473,10 +497,33 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
 
     return (
         <div className="rq-container">
+            {/* Loading overlay for settings changes */}
+            {isChangingSettings && (
+                <div style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: 'rgba(255, 255, 255, 0.8)',
+                    backdropFilter: 'blur(4px)',
+                    zIndex: 1500,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexDirection: 'column',
+                    gap: '16px'
+                }}>
+                    <div className="rq-spinner"></div>
+                    <p style={{ color: 'var(--rq-text)', fontWeight: 500 }}>Loading translation...</p>
+                </div>
+            )}
+
             {/* Back Link */}
             <Link
                 href="/read-quran"
                 className="rq-back-btn"
+                aria-label="Go back to all surahs"
             >
                 ← Back to All Surahs
             </Link>
@@ -659,6 +706,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                     className="rq-verse-action-btn"
                                     onClick={() => playVerse(verse.verse_number)}
                                     title="Play"
+                                    aria-label={`Play verse ${verse.verse_number}`}
                                 >
                                     🔊
                                 </button>
@@ -666,6 +714,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                     className="rq-verse-action-btn"
                                     onClick={() => copyVerse(verse)}
                                     title="Copy"
+                                    aria-label={`Copy verse ${verse.verse_number}`}
                                 >
                                     📋
                                 </button>
@@ -673,11 +722,13 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                     className={`rq-verse-action-btn ${isBookmarked(verse.verse_key) ? 'active' : ''}`}
                                     onClick={() => toggleBookmark(verse.verse_key)}
                                     title={isBookmarked(verse.verse_key) ? 'Remove Bookmark' : 'Bookmark'}
+                                    aria-label={isBookmarked(verse.verse_key) ? `Remove bookmark from verse ${verse.verse_number}` : `Bookmark verse ${verse.verse_number}`}
                                 >
                                     {isBookmarked(verse.verse_key) ? '⭐' : '🔖'}
                                 </button>
                                 <button
                                     className="rq-verse-action-btn"
+                                    aria-label={`Share verse ${verse.verse_number}`}
                                     onClick={async () => {
                                         const shareText = `${verse.text_uthmani}\n\n${verse.translations?.[0]?.text || ''}\n\n— Quran ${verse.verse_key}`;
                                         const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}/read-quran/${surahNumber}#verse-${verse.verse_number}` : '';
@@ -710,9 +761,12 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                         try {
                                             await navigator.clipboard.writeText(shareText + '\n\n' + shareUrl);
                                             setToastType('warning');
-                                            setToastMessage('⚠️ Sharing not supported. Copied to clipboard - use Chrome for native sharing!');
+                                            setToastMessage('📋 Copied! Native share requires Chrome.');
                                             setShowBookmarkToast(true);
-                                            setTimeout(() => setShowBookmarkToast(false), 5000);
+                                            setTimeout(() => {
+                                                setShowBookmarkToast(false);
+                                                setToastType('success'); // Reset for next use
+                                            }, 3000);
                                         } catch (clipboardErr) {
                                             // Last resort fallback for older browsers
                                             const textArea = document.createElement('textarea');
@@ -722,9 +776,12 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                             document.execCommand('copy');
                                             document.body.removeChild(textArea);
                                             setToastType('warning');
-                                            setToastMessage('⚠️ Sharing not supported. Copied to clipboard - use Chrome for native sharing!');
+                                            setToastMessage('📋 Copied! Native share requires Chrome.');
                                             setShowBookmarkToast(true);
-                                            setTimeout(() => setShowBookmarkToast(false), 5000);
+                                            setTimeout(() => {
+                                                setShowBookmarkToast(false);
+                                                setToastType('success'); // Reset for next use
+                                            }, 3000);
                                         }
                                     }}
                                     title="Share"
@@ -774,105 +831,109 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
             </div>
 
             {/* Audio Player Bar */}
-            {isPlaying && currentVerse && (
-                <div className="rq-audio-player">
-                    <div className="rq-player-info">
-                        <div className="rq-player-verse">Verse {currentVerse}</div>
-                        <div className="rq-player-surah">{chapter.name_simple}</div>
-                    </div>
+            {
+                isPlaying && currentVerse && (
+                    <div className="rq-audio-player">
+                        <div className="rq-player-info">
+                            <div className="rq-player-verse">Verse {currentVerse}</div>
+                            <div className="rq-player-surah">{chapter.name_simple}</div>
+                        </div>
 
-                    <div className="rq-player-controls">
-                        <button
-                            className="rq-player-btn secondary"
-                            onClick={() => currentVerse > 1 && playVerse(currentVerse - 1)}
-                        >
-                            ⏮
-                        </button>
-                        <button className="rq-player-btn" onClick={stopAudio}>
-                            ⏹
-                        </button>
-                        <button
-                            className="rq-player-btn secondary"
-                            onClick={() => currentVerse < verses.length && playVerse(currentVerse + 1)}
-                        >
-                            ⏭
-                        </button>
-                    </div>
+                        <div className="rq-player-controls">
+                            <button
+                                className="rq-player-btn secondary"
+                                onClick={() => currentVerse > 1 && playVerse(currentVerse - 1)}
+                            >
+                                ⏮
+                            </button>
+                            <button className="rq-player-btn" onClick={stopAudio}>
+                                ⏹
+                            </button>
+                            <button
+                                className="rq-player-btn secondary"
+                                onClick={() => currentVerse < verses.length && playVerse(currentVerse + 1)}
+                            >
+                                ⏭
+                            </button>
+                        </div>
 
-                    <div className="rq-player-progress">
-                        <span className="rq-time">{currentVerse}/{verses.length}</span>
-                        <div className="rq-progress-bar">
-                            <div
-                                className="rq-progress-fill"
-                                style={{ width: `${(currentVerse / verses.length) * 100}%` }}
-                            />
+                        <div className="rq-player-progress">
+                            <span className="rq-time">{currentVerse}/{verses.length}</span>
+                            <div className="rq-progress-bar">
+                                <div
+                                    className="rq-progress-fill"
+                                    style={{ width: `${(currentVerse / verses.length) * 100}%` }}
+                                />
+                            </div>
                         </div>
                     </div>
-                </div>
-            )}
+                )
+            }
 
 
             {/* Confirmation Modal */}
-            {pendingChange && (
-                <div style={{
-                    position: 'fixed',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    background: 'rgba(0,0,0,0.7)',
-                    zIndex: 2000,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontFamily: 'var(--font-primary)'
-                }}>
+            {
+                pendingChange && (
                     <div style={{
-                        background: 'white',
-                        padding: '24px',
-                        borderRadius: '16px',
-                        maxWidth: '400px',
-                        width: '90%',
-                        textAlign: 'center',
-                        boxShadow: '0 10px 25px rgba(0,0,0,0.2)'
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        background: 'rgba(0,0,0,0.7)',
+                        zIndex: 2000,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontFamily: 'var(--font-primary)'
                     }}>
-                        <h3 style={{ margin: '0 0 12px 0', fontSize: '1.25rem', color: '#1E293B' }}>Confirm Change</h3>
-                        <p style={{ margin: '0 0 24px 0', color: '#64748B', lineHeight: '1.5' }}>
-                            Are you sure you want to change the {pendingChange.type} to <strong>{pendingChange.name}</strong>?
-                        </p>
-                        <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
-                            <button
-                                onClick={() => setPendingChange(null)}
-                                style={{
-                                    padding: '10px 24px',
-                                    borderRadius: '8px',
-                                    border: '1px solid #CBD5E1',
-                                    background: 'white',
-                                    color: '#64748B',
-                                    fontWeight: '500',
-                                    cursor: 'pointer'
-                                }}
-                            >
-                                No, Cancel
-                            </button>
-                            <button
-                                onClick={confirmChange}
-                                style={{
-                                    padding: '10px 24px',
-                                    borderRadius: '8px',
-                                    border: 'none',
-                                    background: '#059669',
-                                    color: 'white',
-                                    fontWeight: '500',
-                                    cursor: 'pointer'
-                                }}
-                            >
-                                Yes, Confirm
-                            </button>
+                        <div style={{
+                            background: 'white',
+                            padding: '24px',
+                            borderRadius: '16px',
+                            maxWidth: '400px',
+                            width: '90%',
+                            textAlign: 'center',
+                            boxShadow: '0 10px 25px rgba(0,0,0,0.2)'
+                        }}>
+                            <h3 style={{ margin: '0 0 12px 0', fontSize: '1.25rem', color: '#1E293B' }}>Confirm Change</h3>
+                            <p style={{ margin: '0 0 24px 0', color: '#64748B', lineHeight: '1.5' }}>
+                                Are you sure you want to change the {pendingChange.type} to <strong>{pendingChange.name}</strong>?
+                            </p>
+                            <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+                                <button
+                                    onClick={() => setPendingChange(null)}
+                                    style={{
+                                        padding: '10px 24px',
+                                        borderRadius: '8px',
+                                        border: '1px solid #CBD5E1',
+                                        background: 'white',
+                                        color: '#64748B',
+                                        fontWeight: '500',
+                                        cursor: 'pointer'
+                                    }}
+                                >
+                                    No, Cancel
+                                </button>
+                                <button
+                                    onClick={confirmChange}
+                                    style={{
+                                        padding: '10px 24px',
+                                        borderRadius: '8px',
+                                        border: 'none',
+                                        background: '#059669',
+                                        color: 'white',
+                                        fontWeight: '500',
+                                        cursor: 'pointer'
+                                    }}
+                                >
+                                    Yes, Confirm
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            )}
+                )
+            }
 
             {/* Settings Panel */}
             <div className={`rq-settings-panel ${showSettings ? 'open' : ''}`}>
@@ -930,44 +991,48 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
             </div>
 
             {/* Overlay for settings */}
-            {showSettings && (
-                <div
-                    style={{
-                        position: 'fixed',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        background: 'rgba(0,0,0,0.5)',
-                        zIndex: 1000
-                    }}
-                    onClick={() => setShowSettings(false)}
-                />
-            )}
+            {
+                showSettings && (
+                    <div
+                        style={{
+                            position: 'fixed',
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            background: 'rgba(0,0,0,0.5)',
+                            zIndex: 1000
+                        }}
+                        onClick={() => setShowSettings(false)}
+                    />
+                )
+            }
 
             {/* Toast Notification */}
-            {showBookmarkToast && (
-                <div style={{
-                    position: 'fixed',
-                    bottom: isPlaying && currentVerse ? '100px' : '24px',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    background: toastType === 'warning' ? '#DC2626' : 'var(--rq-primary)',
-                    color: 'white',
-                    padding: '12px 24px',
-                    borderRadius: '8px',
-                    boxShadow: toastType === 'warning' ? '0 4px 20px rgba(220, 38, 38, 0.4)' : '0 4px 12px rgba(0,0,0,0.2)',
-                    zIndex: 2000,
-                    animation: 'fadeIn 0.3s ease',
-                    maxWidth: '90%',
-                    textAlign: 'center',
-                    fontSize: toastType === 'warning' ? '0.9rem' : '1rem',
-                    fontWeight: toastType === 'warning' ? '600' : '500'
-                }}>
-                    {toastMessage}
-                </div>
-            )}
-        </div>
+            {
+                showBookmarkToast && (
+                    <div style={{
+                        position: 'fixed',
+                        bottom: isPlaying && currentVerse ? '100px' : '24px',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        background: toastType === 'warning' ? '#DC2626' : 'var(--rq-primary)',
+                        color: 'white',
+                        padding: '12px 24px',
+                        borderRadius: '8px',
+                        boxShadow: toastType === 'warning' ? '0 4px 20px rgba(220, 38, 38, 0.4)' : '0 4px 12px rgba(0,0,0,0.2)',
+                        zIndex: 2000,
+                        animation: 'fadeIn 0.3s ease',
+                        maxWidth: '90%',
+                        textAlign: 'center',
+                        fontSize: toastType === 'warning' ? '0.9rem' : '1rem',
+                        fontWeight: toastType === 'warning' ? '600' : '500'
+                    }}>
+                        {toastMessage}
+                    </div>
+                )
+            }
+        </div >
     );
 }
 
