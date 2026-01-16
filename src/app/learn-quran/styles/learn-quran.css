@@ -473,6 +473,27 @@ input:checked+.lq-slider-round:before {
     /* FLIPS GRID TO RIGHT-TO-LEFT */
 }
 
+/* --- WIDE LAYOUT (Lessons 15-18) --- */
+.lq-item-grid.lq-wide-layout {
+    /* Use a much wider base calculation for long phrases */
+    grid-template-columns: repeat(auto-fill, minmax(calc(var(--lq-char-size, 3rem) * 4 + 60px), 1fr));
+}
+
+.lq-item-grid.lq-wide-layout .lq-item-card {
+    /* Allow rectangular shape instead of square */
+    aspect-ratio: auto;
+    min-height: calc(var(--lq-char-size, 3rem) * 2 + 80px);
+    /* Ensure height is sufficient */
+    padding: 24px;
+}
+
+.lq-item-grid.lq-wide-layout .lq-item-img {
+    max-width: 90%;
+    /* Allow image to fill more width */
+    height: auto;
+    max-height: 80%;
+}
+
 .lq-item-card {
     background: #ffffff;
     border: 1px solid var(--lq-border-subtle);

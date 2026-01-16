@@ -483,9 +483,9 @@ export default function LessonDetailPage() {
             </div>
 
             <div className="lq-container">
-                {/* Dynamic CSS Variable for Size Scaling */}
+                {/* Dynamic CSS Variable for Size Scaling + Wide Layout for Lessons 15-18 */}
                 <div
-                    className="lq-item-grid"
+                    className={`lq-item-grid ${(lesson && lesson.id >= 15 && lesson.id <= 18) ? 'lq-wide-layout' : ''}`}
                     style={{ '--lq-char-size': `${fontSize}rem` } as React.CSSProperties}
                 >
                     {lesson?.items?.length ? (
