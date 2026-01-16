@@ -483,7 +483,11 @@ export default function LessonDetailPage() {
             </div>
 
             <div className="lq-container">
-                <div className="lq-item-grid">
+                {/* Dynamic CSS Variable for Size Scaling */}
+                <div
+                    className="lq-item-grid"
+                    style={{ '--lq-char-size': `${fontSize}rem` } as React.CSSProperties}
+                >
                     {lesson?.items?.length ? (
                         lesson?.items.map((item, idx) => (
                             <button
@@ -500,7 +504,7 @@ export default function LessonDetailPage() {
                                         <img src={item.imageSrc} alt={item.name || item.text} className="lq-item-img" draggable="false" />
                                     </div>
                                 ) : (
-                                    <div className="lq-item-text" style={{ fontSize: `${fontSize}rem` }}>{item.text}</div>
+                                    <div className="lq-item-text">{item.text}</div>
                                 )}
                                 {item.name && <div className="lq-item-name">{item.name}</div>}
                             </button>

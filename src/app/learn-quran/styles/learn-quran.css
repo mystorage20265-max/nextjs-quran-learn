@@ -465,7 +465,8 @@ input:checked+.lq-slider-round:before {
 /* --- ITEM GRID --- */
 .lq-item-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    /* DYNAMIC SCALING: Columns grow with font size (Size * 2 + 40px padding) */
+    grid-template-columns: repeat(auto-fill, minmax(calc(var(--lq-char-size, 3rem) * 2 + 50px), 1fr));
     gap: 16px;
     padding-bottom: 100px;
     direction: rtl;
@@ -492,6 +493,7 @@ input:checked+.lq-slider-round:before {
     border-color: var(--lq-primary);
     transform: translateY(-3px);
     box-shadow: 0 8px 15px -3px rgba(0, 0, 0, 0.08);
+    background: #ffffff;
 }
 
 .lq-item-card.playing {
@@ -502,9 +504,10 @@ input:checked+.lq-slider-round:before {
 
 .lq-item-text {
     font-family: 'KFGQPC Uthmanic Script HAFS', serif;
-    font-size: 3rem;
+    font-size: var(--lq-char-size, 3rem);
     color: var(--lq-text-main);
     direction: rtl;
+    line-height: 1.2;
 }
 
 .lq-item-name {
