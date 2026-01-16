@@ -4,6 +4,104 @@ import { NextResponse } from 'next/server';
 // but for the Qaida curriculum, we structure the "Lesson" data explicitly here
 // to ensure the "Order of Learning" is correct (Alphabet -> Rules).
 
+const lesson3Items = Array.from({ length: 60 }, (_, i) => {
+    const n = (i + 1).toString().padStart(2, '0');
+    return {
+        id: (i + 1).toString(),
+        text: `Item ${i + 1}`,
+        name: `JointLetter ${i + 1}`,
+        imageSrc: `https://data.qurancentral.com/features/learn-quran/svg/lesson03/L3-${n}.svg`,
+        audio: `L03-${n}.mp3`
+    };
+});
+
+const lesson2Items = Array.from({ length: 60 }, (_, i) => {
+    const n = (i + 1).toString().padStart(2, '0');
+    // SVG Example: https://data.qurancentral.com/features/learn-quran/svg/lesson02/L2-01.svg
+    // Audio Example: https://data.qurancentral.com/features/learn-quran/audio/lesson02/L02-01.mp3
+    return {
+        id: (i + 1).toString(),
+        text: `Item ${i + 1}`,
+        name: `JointLetter ${i + 1}`,
+        imageSrc: `https://data.qurancentral.com/features/learn-quran/svg/lesson02/L2-${(i + 1).toString().padStart(2, '0')}.svg`,
+        audio: `L02-${n}.mp3`
+    };
+});
+
+const lesson4Items = Array.from({ length: 14 }, (_, i) => {
+    const n = (i + 1).toString().padStart(2, '0');
+    // SVG Example: https://data.qurancentral.com/features/learn-quran/svg/lesson04/L4-01.svg
+    // Audio Example: https://data.qurancentral.com/features/learn-quran/audio/lesson04/L04-01.mp3
+    // Note: Image uses 'L4-', Audio uses 'L04-'
+    return {
+        id: (i + 1).toString(),
+        text: `Item ${i + 1}`,
+        name: `Movement ${i + 1}`,
+        imageSrc: `https://data.qurancentral.com/features/learn-quran/svg/lesson04/L4-${n}.svg`,
+        audio: `L04-${n}.mp3`
+    };
+});
+
+const lesson5Items = Array.from({ length: 84 }, (_, i) => {
+    const n = (i + 1).toString().padStart(2, '0');
+    // SVG Example: https://data.qurancentral.com/features/learn-quran/svg/lesson05/L5-01.svg
+    // Audio Example: https://data.qurancentral.com/features/learn-quran/audio/lesson05/L05-01.mp3
+    // Note: Image uses 'L5-', Audio uses 'L05-'
+    return {
+        id: (i + 1).toString(),
+        text: `Item ${i + 1}`,
+        name: `Tanween ${i + 1}`,
+        imageSrc: `https://data.qurancentral.com/features/learn-quran/svg/lesson05/L5-${n}.svg`,
+        audio: `L05-${n}.mp3`
+    };
+});
+
+const lesson6Items = Array.from({ length: 84 }, (_, i) => {
+    const n = (i + 1).toString().padStart(2, '0');
+    // SVG Example: https://data.qurancentral.com/features/learn-quran/svg/lesson06/L6-01.svg
+    // Audio Example: https://data.qurancentral.com/features/learn-quran/audio/lesson06/L06-01.mp3
+    return {
+        id: (i + 1).toString(),
+        text: `Item ${i + 1}`,
+        name: `TanweenPractice ${i + 1}`,
+        imageSrc: `https://data.qurancentral.com/features/learn-quran/svg/lesson06/L6-${n}.svg`,
+        audio: `L06-${n}.mp3`
+    };
+});
+
+
+
+// Helper to generate lesson items for Quran Central clones
+const generateLessonItems = (count: number, lessonId: number | string, svgPrefix: string, audioPrefix: number | string) => {
+    return Array.from({ length: count }, (_, i) => {
+        const n = (i + 1).toString().padStart(2, '0');
+        const lessonStr = typeof lessonId === 'number' ? lessonId.toString().padStart(2, '0') : lessonId;
+        const audioStr = typeof audioPrefix === 'number' ? audioPrefix.toString().padStart(2, '0') : audioPrefix;
+
+        return {
+            id: (i + 1).toString(),
+            text: `Item ${i + 1}`,
+            name: `Lesson${lessonId} Item ${i + 1}`,
+            imageSrc: `https://data.qurancentral.com/features/learn-quran/svg/lesson${lessonStr}/${svgPrefix}-${n}.svg`,
+            audio: `L${audioStr}-${n}.mp3`
+        };
+    });
+};
+
+// Batch Generate Lessons 7-18
+const lesson7Items = generateLessonItems(54, 7, 'L7', 7);
+const lesson8Items = generateLessonItems(33, 8, 'L8', 8);
+const lesson9Items = generateLessonItems(140, 9, 'L9', 9);
+const lesson10Items = generateLessonItems(101, 10, 'L10', 10);
+const lesson11Items = generateLessonItems(48, 11, 'L11', 11);
+const lesson12Items = generateLessonItems(149, 12, 'L12', 12);
+const lesson13Items = generateLessonItems(69, 13, 'L13', 13);
+const lesson14Items = generateLessonItems(57, 14, 'L14', 14);
+const lesson15Items = generateLessonItems(25, 15, 'L15', 15);
+const lesson16Items = generateLessonItems(10, 16, 'L16', 16);
+const lesson17Items = generateLessonItems(11, 17, 'L17', 17);
+const lesson18Items = generateLessonItems(33, 18, 'L18', 18);
+
 const CURRICULUM_DATA = {
     "curriculum": {
         "title": "Noorani Qaida",
@@ -49,311 +147,121 @@ const CURRICULUM_DATA = {
             {
                 "id": 2,
                 "title": "Joint Letters (Murakkabat)",
-                "description": "In this lesson we will learn how the words are formed by joining alphabets. Have your students identify every alphabet in a word e.g. (لا) is actually (ل+ا). We will also learn the different shapes of particular letters, e.g. (لا).",
+                "description": "In this lesson we will learn how the words are formed by joining alphabets.",
                 "audioBase": "https://data.qurancentral.com/features/learn-quran/audio/lesson02/",
-                "items": [
-                    { "id": "1", "text": "ا", "name": "Alif", "audio": "L02-01.mp3" },
-                    { "id": "2", "text": "لا", "name": "Lam Alif", "audio": "L02-02.mp3" },
-                    { "id": "3", "text": "لا", "name": "Lam Alif", "audio": "L02-03.mp3" },
-                    { "id": "4", "text": "بَا", "name": "Ba Alif", "audio": "L02-04.mp3" },
-                    { "id": "5", "text": "لا", "name": "Lam Alif", "audio": "L02-05.mp3" },
-                    { "id": "6", "text": "ل", "name": "Lam", "audio": "L02-06.mp3" },
-                    { "id": "7", "text": "لا", "name": "Lam Alif", "audio": "L02-07.mp3" },
-                    { "id": "8", "text": "لح", "name": "Lam Ha", "audio": "L02-08.mp3" },
-                    { "id": "9", "text": "لا", "name": "Lam Alif", "audio": "L02-09.mp3" },
-                    { "id": "10", "text": "بلب", "name": "Ba Lam Ba", "audio": "L02-10.mp3" },
-                    { "id": "11", "text": "ك", "name": "Kaf", "audio": "L02-11.mp3" },
-                    { "id": "12", "text": "ك", "name": "Kaf", "audio": "L02-12.mp3" },
-                    { "id": "13", "text": "كب", "name": "Kaf Ba", "audio": "L02-13.mp3" },
-                    { "id": "14", "text": "كب", "name": "Kaf Ba", "audio": "L02-14.mp3" },
-                    { "id": "15", "text": "كا", "name": "Kaf Alif", "audio": "L02-15.mp3" },
-                    { "id": "16", "text": "كا", "name": "Kaf Alif", "audio": "L02-16.mp3" },
-                    { "id": "17", "text": "بكت", "name": "Ba Kaf Ta", "audio": "L02-17.mp3" },
-                    { "id": "18", "text": "تكث", "name": "Ta Kaf Tha", "audio": "L02-18.mp3" },
-                    { "id": "19", "text": "ب", "name": "Ba", "audio": "L02-19.mp3" },
-                    { "id": "20", "text": "ت", "name": "Ta", "audio": "L02-20.mp3" },
-                    { "id": "21", "text": "ث", "name": "Tha", "audio": "L02-21.mp3" },
-                    { "id": "22", "text": "ن", "name": "Noon", "audio": "L02-22.mp3" },
-                    { "id": "23", "text": "ي", "name": "Ya", "audio": "L02-23.mp3" },
-                    { "id": "24", "text": "با", "name": "Ba Alif", "audio": "L02-24.mp3" },
-                    { "id": "25", "text": "نا", "name": "Noon Alif", "audio": "L02-25.mp3" },
-                    { "id": "26", "text": "تا", "name": "Ta Alif", "audio": "L02-26.mp3" },
-                    { "id": "27", "text": "يا", "name": "Ya Alif", "audio": "L02-27.mp3" },
-                    { "id": "28", "text": "ثا", "name": "Tha Alif", "audio": "L02-28.mp3" },
-                    { "id": "29", "text": "بس", "name": "Ba Seen", "audio": "L02-29.mp3" },
-                    { "id": "30", "text": "يس", "name": "Ya Seen", "audio": "L02-30.mp3" },
-                    { "id": "31", "text": "نس", "name": "Noon Seen", "audio": "L02-31.mp3" },
-                    { "id": "32", "text": "نخ", "name": "Noon Kha", "audio": "L02-32.mp3" },
-                    { "id": "33", "text": "نم", "name": "Noon Meem", "audio": "L02-33.mp3" },
-                    { "id": "34", "text": "ني", "name": "Noon Ya", "audio": "L02-34.mp3" },
-                    { "id": "35", "text": "بيل", "name": "Ba Ya Lam", "audio": "L02-35.mp3" },
-                    { "id": "36", "text": "تين", "name": "Ta Ya Noon", "audio": "L02-36.mp3" },
-                    { "id": "37", "text": "نثن", "name": "Noon Tha Noon", "audio": "L02-37.mp3" },
-                    { "id": "38", "text": "غر", "name": "Ghayn Ra", "audio": "L02-38.mp3" },
-                    { "id": "39", "text": "يف", "name": "Ya Fa", "audio": "L02-39.mp3" },
-                    { "id": "40", "text": "و", "name": "Waw", "audio": "L02-40.mp3" },
-                    { "id": "41", "text": "أ", "name": "Alif Hamza", "audio": "L02-41.mp3" },
-                    { "id": "42", "text": "يجب", "name": "Ya Jeem Ba", "audio": "L02-42.mp3" },
-                    { "id": "43", "text": "يه", "name": "Ya Ha", "audio": "L02-43.mp3" },
-                    { "id": "44", "text": "بها", "name": "Ba Ha Alif", "audio": "L02-44.mp3" },
-                    { "id": "45", "text": "خذ", "name": "Kha Dhal", "audio": "L02-45.mp3" },
-                    { "id": "46", "text": "ر", "name": "Ra", "audio": "L02-46.mp3" },
-                    { "id": "47", "text": "ش", "name": "Sheen", "audio": "L02-47.mp3" },
-                    { "id": "48", "text": "ط", "name": "Ta", "audio": "L02-48.mp3" },
-                    { "id": "49", "text": "ظا", "name": "Za Alif", "audio": "L02-49.mp3" },
-                    { "id": "50", "text": "تس", "name": "Ta Seen", "audio": "L02-50.mp3" },
-                    { "id": "51", "text": "يح", "name": "Ya Ha", "audio": "L02-51.mp3" },
-                    { "id": "52", "text": "تم", "name": "Ta Meem", "audio": "L02-52.mp3" },
-                    { "id": "53", "text": "تي", "name": "Ta Ya", "audio": "L02-53.mp3" },
-                    { "id": "54", "text": "يتل", "name": "Ya Ta Lam", "audio": "L02-54.mp3" },
-                    { "id": "55", "text": "يتن", "name": "Ya Ta Noon", "audio": "L02-55.mp3" },
-                    { "id": "56", "text": "حث", "name": "Ha Tha", "audio": "L02-56.mp3" },
-                    { "id": "57", "text": "صح", "name": "Sad Ha" },
-                    { "id": "58", "text": "مر", "name": "Meem Ra" },
-                    { "id": "59", "text": "تم", "name": "Ta Meem", "audio": "L02-59.mp3" },
-                    { "id": "60", "text": "قو", "name": "Qaf Waw", "audio": "L02-60.mp3" }
-                ]
+                "items": lesson2Items
             },
             {
                 "id": 3,
-                "title": "Muqatta'at (Disjointed Letters)",
-                "description": "Unique letter combinations found at the beginning of certain Surahs. They are read by their letter names, not phonetic sounds.",
-                "items": [
-                    { "text": "الم", "name": "Alif Lam Meem" },
-                    { "text": "المص", "name": "Alif Lam Meem Sad" },
-                    { "text": "الر", "name": "Alif Lam Ra" },
-                    { "text": "كهيعص", "name": "Kaf Ha Ya Ain Sad" },
-                    { "text": "طه", "name": "Ta Ha" },
-                    { "text": "طسم", "name": "Ta Seen Meem" },
-                    { "text": "يس", "name": "Ya Seen" },
-                    { "text": "حم", "name": "Ha Meem" },
-                    { "text": "ق", "name": "Qaf" },
-                    { "text": "ن", "name": "Noon" }
-                ]
+                "title": "Joint Letters (Part 2)",
+                "description": "Continuation of learning connected letters. Identify the shapes.",
+                "audioBase": "https://data.qurancentral.com/features/learn-quran/audio/lesson03/",
+                "items": lesson3Items
             },
             {
                 "id": 4,
-                "title": "Harakat (Short Vowels)",
-                "description": "Introduction to Fatha (Zabar), Kasra (Zer), and Damma (Pesh). These determine the short vowel sounds: 'a', 'i', 'u'.",
-                "items": [
-                    { "text": "اَ", "name": "Hamza Fatha" },
-                    { "text": "اِ", "name": "Hamza Kasra" },
-                    { "text": "اُ", "name": "Hamza Damma" },
-                    { "text": "بَ", "name": "Ba Fatha" },
-                    { "text": "بِ", "name": "Ba Kasra" },
-                    { "text": "بُ", "name": "Ba Damma" },
-                    { "text": "تَ", "name": "Ta Fatha" },
-                    { "text": "تِ", "name": "Ta Kasra" },
-                    { "text": "تُ", "name": "Ta Damma" },
-                    { "text": "جَ", "name": "Jim Fatha" },
-                    { "text": "جِ", "name": "Jim Kasra" },
-                    { "text": "جُ", "name": "Jim Damma" }
-                ]
+                "title": "Movements (Harakat)",
+                "description": "Introduction to Short Vowels: Fatha, Kasra, and Damma.",
+                "audioBase": "https://data.qurancentral.com/features/learn-quran/audio/lesson04/",
+                "items": lesson4Items
             },
             {
                 "id": 5,
-                "title": "Tanween (Double Vowels)",
-                "description": "Double Fatha, Double Kasra, and Double Damma. These add an 'n' sound to the end of the letter (an, in, un).",
-                "items": [
-                    { "text": "اً", "name": "Alif Two Fathas" },
-                    { "text": "ٍ", "name": "Two Kasras" },
-                    { "text": "ٌ", "name": "Two Dammas" },
-                    { "text": "بًا", "name": "Ba Two Fathas" },
-                    { "text": "بٍ", "name": "Ba Two Kasras" },
-                    { "text": "بٌ", "name": "Ba Two Dammas" },
-                    { "text": "تًا", "name": "Ta Two Fathas" },
-                    { "text": "تٍ", "name": "Ta Two Kasras" },
-                    { "text": "تٌ", "name": "Ta Two Dammas" }
-                ]
+                "title": "Nunation (Tanween)",
+                "description": "Double Vowels: Double Fatha, Double Kasra, Double Damma.",
+                "audioBase": "https://data.qurancentral.com/features/learn-quran/audio/lesson05/",
+                "items": lesson5Items
             },
             {
                 "id": 6,
-                "title": "Tanween & Harakat Practice",
-                "description": "Practice combining single and double vowels to form simple words.",
-                "items": [
-                    { "text": "اَبَدًا", "name": "Abadan" },
-                    { "text": "اَحَدٌ", "name": "Ahadun" },
-                    { "text": "اَخَذَ", "name": "Akhadha" },
-                    { "text": "اَذِنَ", "name": "Adhina" },
-                    { "text": "اَمَرَ", "name": "Amara" },
-                    { "text": "اَنَا", "name": "Ana" },
-                    { "text": "بَخِلَ", "name": "Bakhila" },
-                    { "text": "بَرَرَةٍ", "name": "Bararatin" },
-                    { "text": "جَعَلَ", "name": "Ja'ala" },
-                    { "text": "جَمَعَ", "name": "Jama'a" }
-                ]
+                "title": "Nunation & Movement Practice",
+                "description": "Practice combining Tanween (Double Vowels) and Harakat (Short Vowels).",
+                "audioBase": "https://data.qurancentral.com/features/learn-quran/audio/lesson06/",
+                "items": lesson6Items
             },
             {
                 "id": 7,
-                "title": "Standing Vowels (Harakat)",
-                "description": "Standing Fatha, Standing Kasra, and Inverted Damma. These are prolonged sounds (usually 2 counts).",
-                "items": [
-                    { "text": "بٰ", "name": "Ba Standing Fatha" },
-                    { "text": "يٰ", "name": "Ya Standing Fatha" },
-                    { "text": "رٰ", "name": "Ra Standing Fatha" },
-                    { "text": "مٰ", "name": "Meem Standing Fatha" },
-                    { "text": "لٰ", "name": "Lam Standing Fatha" },
-                    { "text": "وٰ", "name": "Waw Standing Fatha" },
-                    { "text": "نٰ", "name": "Noon Standing Fatha" },
-                    { "text": "ءٰ", "name": "Hamza Standing Fatha" },
-                    { "text": "هٰ", "name": "Ha Standing Fatha" }
-                ]
+                "title": "Standing Fatha, Kasra, Damma",
+                "description": "Short vowels that are prolonged (2 counts).",
+                "audioBase": "https://data.qurancentral.com/features/learn-quran/audio/lesson07/",
+                "items": lesson7Items
             },
             {
                 "id": 8,
                 "title": "Madd and Leen",
-                "description": "The letters of Madd (Alif, Waw, Ya) elongate the sound. Leen letters (Waw and Ya with Fatha before them) are soft.",
-                "items": [
-                    { "text": "بَا", "name": "Ba Alif Madd" },
-                    { "text": "بُو", "name": "Ba Waw Madd" },
-                    { "text": "بِي", "name": "Ba Ya Madd" },
-                    { "text": "تَا", "name": "Ta Alif Madd" },
-                    { "text": "تُو", "name": "Ta Waw Madd" },
-                    { "text": "تِي", "name": "Ta Ya Madd" },
-                    { "text": "اَو", "name": "Alif Waw Leen" },
-                    { "text": "اَي", "name": "Alif Ya Leen" },
-                    { "text": "بَو", "name": "Ba Waw Leen" },
-                    { "text": "بَي", "name": "Ba Ya Leen" }
-                ]
+                "description": "Letters of Madd (Alif, Waw, Ya) and Leen (Waw, Ya with Fatha).",
+                "audioBase": "https://data.qurancentral.com/features/learn-quran/audio/lesson08/",
+                "items": lesson8Items
             },
             {
                 "id": 9,
                 "title": "Madd Practice",
-                "description": "Reading exercises focusing on the elongation of vowels.",
-                "items": [
-                    { "text": "قَالَ", "name": "Qala" },
-                    { "text": "يَقُولُ", "name": "Yaqulu" },
-                    { "text": "قِيلَ", "name": "Qila" },
-                    { "text": "كَانَ", "name": "Kana" },
-                    { "text": "يَكُونُ", "name": "Yakunu" },
-                    { "text": "نُوحِيهَا", "name": "Nuhiha" },
-                    { "text": "اُوذِينَا", "name": "Udhina" },
-                    { "text": "اُوتِينَا", "name": "Utina" }
-                ]
+                "description": "Extensive reading exercises for long vowels.",
+                "audioBase": "https://data.qurancentral.com/features/learn-quran/audio/lesson09/",
+                "items": lesson9Items
             },
             {
                 "id": 10,
                 "title": "Sukoon (Jazm)",
-                "description": "The Sukoon symbol (o or <) indicates that a letter has no vowel and ends the sound of the previous letter.",
-                "items": [
-                    { "text": "اَبْ", "name": "Ab" },
-                    { "text": "اَتْ", "name": "At" },
-                    { "text": "اَثْ", "name": "Ath" },
-                    { "text": "اَجْ", "name": "Aj" },
-                    { "text": "اَحْ", "name": "Ah" },
-                    { "text": "اَخْ", "name": "Akh" },
-                    { "text": "اَدْ", "name": "Ad" },
-                    { "text": "اَذْ", "name": "Adh" },
-                    { "text": "اَرْ", "name": "Ar" },
-                    { "text": "اَزْ", "name": "Az" }
-                ]
+                "description": "The Sukoon ends the sound of the previous letter.",
+                "audioBase": "https://data.qurancentral.com/features/learn-quran/audio/lesson10/",
+                "items": lesson10Items
             },
             {
                 "id": 11,
                 "title": "Sukoon Practice",
-                "description": "More complex words using Sukoon.",
-                "items": [
-                    { "text": "تَسْعٰی", "name": "Tas'a" },
-                    { "text": "يَخْشٰی", "name": "Yakhsha" },
-                    { "text": "نَقْعًا", "name": "Naq'an" },
-                    { "text": "يُبْدِئُ", "name": "Yubdi'u" },
-                    { "text": "يُعِدُ", "name": "Yu'idu" },
-                    { "text": "اَبْقٰی", "name": "Abqa" },
-                    { "text": "تَجْرِي", "name": "Tajri" }
-                ]
+                "description": "Complex words using Sukoon.",
+                "audioBase": "https://data.qurancentral.com/features/learn-quran/audio/lesson11/",
+                "items": lesson11Items
             },
             {
                 "id": 12,
                 "title": "Tashdeed (Shaddah)",
-                "description": "The Tashdeed symbol (w) doubles the letter. It is pronounced with emphasis.",
-                "items": [
-                    { "text": "اَبَّ", "name": "Abba" },
-                    { "text": "اَبِّ", "name": "Abbi" },
-                    { "text": "اَبُّ", "name": "Abbu" },
-                    { "text": "اَتَّ", "name": "Atta" },
-                    { "text": "اَتِّ", "name": "Atti" },
-                    { "text": "اَتُّ", "name": "Attu" },
-                    { "text": "اَثَّ", "name": "Aththa" },
-                    { "text": "اَثِّ", "name": "Aththi" },
-                    { "text": "اَثُّ", "name": "Aththu" }
-                ]
+                "description": "Doubling the letter with emphasis.",
+                "audioBase": "https://data.qurancentral.com/features/learn-quran/audio/lesson12/",
+                "items": lesson12Items
             },
             {
                 "id": 13,
                 "title": "Tashdeed Practice",
-                "description": "Words containing Tashdeed for practice.",
-                "items": [
-                    { "text": "قَدَّرَ", "name": "Qaddara" },
-                    { "text": "كَذَّبَ", "name": "Kadhdhaba" },
-                    { "text": "نَعَّمَ", "name": "Na''ama" },
-                    { "text": "يَظُنُّ", "name": "Yazunnu" },
-                    { "text": "يَحُضُّ", "name": "Yahuddu" },
-                    { "text": "مُمَدَّدَةٍ", "name": "Mumaddadatin" },
-                    { "text": "جَنَّةٍ", "name": "Jannatin" }
-                ]
+                "description": "Words containing Tashdeed.",
+                "audioBase": "https://data.qurancentral.com/features/learn-quran/audio/lesson13/",
+                "items": lesson13Items
             },
             {
                 "id": 14,
                 "title": "Tashdeed with Sukoon",
-                "description": "Combinations where a Tashdeed is followed by or follows a Sukoon.",
-                "items": [
-                    { "text": "يَزَّكّٰی", "name": "Yazzakka" },
-                    { "text": "يَذَّكَّرُ", "name": "Yadhdhakkaru" },
-                    { "text": "يَدَّبَّرُ", "name": "Yaddabbaru" },
-                    { "text": "اَلْمُدَّثِّرُ", "name": "Al-Muddaththiru" },
-                    { "text": "اَلْمُزَّمِّلُ", "name": "Al-Muzzammilu" }
-                ]
+                "description": "Combinations of Tashdeed followed by Sukoon.",
+                "audioBase": "https://data.qurancentral.com/features/learn-quran/audio/lesson14/",
+                "items": lesson14Items
             },
             {
                 "id": 15,
                 "title": "Tashdeed with Tashdeed",
                 "description": "Multiple Tashdeeds in sequence.",
-                "items": [
-                    { "text": "يَغُّ", "name": "Yagghu" },
-                    { "text": "اِلَّا", "name": "Illa" },
-                    { "text": "اِنَّ", "name": "Inna" },
-                    { "text": "اَنَّ", "name": "Anna" },
-                    { "text": "حَقًّا", "name": "Haqqan" }
-                ]
+                "audioBase": "https://data.qurancentral.com/features/learn-quran/audio/lesson15/",
+                "items": lesson15Items
             },
             {
                 "id": 16,
                 "title": "Tashdeed after Madd",
-                "description": "Long vowel followed by a doubled letter (Madd Lazim). Requires extra elongation (6 counts).",
-                "items": [
-                    { "text": "ضَآلِّينَ", "name": "Dallin" },
-                    { "text": "دَآبَّةٍ", "name": "Dabbatin" },
-                    { "text": "حَآجَّ", "name": "Hajja" },
-                    { "text": "جَآءَتِ", "name": "Ja'ati" }
-                ]
+                "description": "Madd Lazim: Long vowel followed by Tashdeed.",
+                "audioBase": "https://data.qurancentral.com/features/learn-quran/audio/lesson16/",
+                "items": lesson16Items
             },
             {
                 "id": 17,
-                "title": "Rules of Nun Sakinah (Izhar, Iqlab)",
-                "description": "Rules for pronouncing Nun Sakin or Tanween based on the following letter.",
-                "items": [
-                    { "text": "مَنْ اٰمَنَ", "name": "Man Amana (Izhar)" },
-                    { "text": "مِنْ هَادٍ", "name": "Min Hadin (Izhar)" },
-                    { "text": "مِنْ بَعْدِ", "name": "Min Ba'di (Iqlab)" },
-                    { "text": "سَمِيعٌۢ بَصِيرٌ", "name": "Sami'un Basir (Iqlab)" }
-                ]
+                "title": "Rules of Nun Sakinah",
+                "description": "Izhar, Iqlab, Idgham, Ikhfa.",
+                "audioBase": "https://data.qurancentral.com/features/learn-quran/audio/lesson17/",
+                "items": lesson17Items
             },
             {
                 "id": 18,
                 "title": "Ways of Stopping (Waqf)",
-                "description": "Rules for stopping (Waqf) at the end of verses or sentences. Understanding proper pauses is crucial for correct recitation.",
-                "items": [
-                    { "text": "اَلْحَمْدُ لِلّٰهِ", "name": "Al-Hamdu Lillah (Stop on Ha)" },
-                    { "text": "رَبِّ الْعٰلَمِينَ", "name": "Rabbil 'Alamin (Stop on Noon)" },
-                    { "text": "مٰلِكِ يَوْمِ الدِّينِ", "name": "Maliki Yawmid Din" },
-                    { "text": "اِيَّاكَ نَعْبُدُ", "name": "Iyyaka Na'budu" },
-                    { "text": "وَاِيَّاكَ نَسْتَعِينُ", "name": "Wa Iyyaka Nasta'in" },
-                    { "text": "اِهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ", "name": "Ihdinas Siratal Mustaqim" },
-                    { "text": "صِرَاطَ الَّذِينَ", "name": "Siratal Ladhina" },
-                    { "text": "اَنْعَمْتَ عَلَيْهِمْ", "name": "An'amta 'Alaihim" },
-                    { "text": "غَيْرِ الْمَغْضُوبِ", "name": "Ghairil Maghdubi" },
-                    { "text": "عَلَيْهِمْ وَلَا الضَّآلِّينَ", "name": "Alaihim Walad Dallin" }
-                ]
+                "description": "Rules for stopping at the end of verses.",
+                "audioBase": "https://data.qurancentral.com/features/learn-quran/audio/lesson18/",
+                "items": lesson18Items
             },
 
         ]
