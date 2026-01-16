@@ -31,6 +31,8 @@ export default function LessonDetailPage() {
     const [playbackRate, setPlaybackRate] = useState(1.0);
     const [autoRepeat, setAutoRepeat] = useState(false);
     const [isPlayingAll, setIsPlayingAll] = useState(false);
+    const [showSettings, setShowSettings] = useState(false);
+    const [fontSize, setFontSize] = useState(3.0); // Default 3rem
 
     // REFS for Reactive State Access inside callbacks
     const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -379,15 +381,87 @@ export default function LessonDetailPage() {
     return (
         <div className="learn-quran-page">
             <div className="lq-detail-header">
-                <div className="lq-container">
-                    <Link href="/learn-quran" className="lq-back-btn">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5" /><path d="M12 19l-7-7 7-7" /></svg>
-                        Back to Lessons
-                    </Link>
-                    <h1>{lesson.title}</h1>
-                    <p style={{ maxWidth: '800px', color: 'var(--lq-text-muted)', marginBottom: '32px', fontSize: '1.1rem' }}>{lesson.description}</p>
+                <div className="lq-container" style={{ position: 'relative' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                        <div>
+                            <Link href="/learn-quran" className="lq-back-btn">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5" /><path d="M12 19l-7-7 7-7" /></svg>
+                                Back to Lessons
+                            </Link>
+                            <h1>{lesson?.title || 'Loading...'}</h1>
+                            <p style={{ maxWidth: '800px', color: 'var(--lq-text-muted)', marginBottom: '32px', fontSize: '1.1rem' }}>{lesson?.description}</p>
+                        </div>
 
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '24px', alignItems: 'flex-start' }}>
+                        {/* SETTINGS TOGGLE BUTTON */}
+                        <div style={{ position: 'relative' }}>
+                            <button
+                                className={`lq-settings-btn ${showSettings ? 'active' : ''}`}
+                                onClick={() => setShowSettings(!showSettings)}
+                                title="Audio & Display Settings"
+                            >
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                                Settings
+                            </button>
+
+                            {/* SETTINGS POPOVER */}
+                            {showSettings && (
+                                <div className="lq-settings-popover">
+                                    <div className="lq-settings-header">
+                                        <h3>Class Settings</h3>
+                                        <button onClick={() => setShowSettings(false)} className="lq-close-btn">&times;</button>
+                                    </div>
+
+                                    {/* Size Control */}
+                                    <div className="lq-setting-row">
+                                        <label>Text Size</label>
+                                        <div className="lq-size-control">
+                                            <button onClick={() => setFontSize(Math.max(2, fontSize - 0.5))} disabled={fontSize <= 2}>A-</button>
+                                            <span>{fontSize}x</span>
+                                            <button onClick={() => setFontSize(Math.min(5, fontSize + 0.5))} disabled={fontSize >= 5}>A+</button>
+                                        </div>
+                                    </div>
+
+                                    <hr className="lq-divider" />
+
+                                    {/* Speed Control */}
+                                    <div className="lq-setting-row">
+                                        <label>Audio Speed</label>
+                                        <div className="lq-speed-control">
+                                            <span>0.5x</span>
+                                            <input
+                                                type="range"
+                                                min="0.5"
+                                                max="1.5"
+                                                step="0.25"
+                                                value={playbackRate}
+                                                onChange={(e) => setPlaybackRate(parseFloat(e.target.value))}
+                                                className="lq-slider"
+                                            />
+                                            <span>1.5x</span>
+                                        </div>
+                                        <div style={{ textAlign: 'center', fontSize: '0.8rem', color: 'var(--lq-primary)', marginTop: '4px', fontWeight: '600' }}>Current: {playbackRate}x</div>
+                                    </div>
+
+                                    <hr className="lq-divider" />
+
+                                    {/* Repeat Toggle */}
+                                    <div className="lq-setting-row" style={{ justifyContent: 'space-between' }}>
+                                        <label>Repeat 3x</label>
+                                        <label className="lq-toggle">
+                                            <input
+                                                type="checkbox"
+                                                checked={autoRepeat}
+                                                onChange={(e) => setAutoRepeat(e.target.checked)}
+                                            />
+                                            <span className="lq-slider-round"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '24px', alignItems: 'flex-start', marginTop: '10px' }}>
                         <button
                             className={`lq-play-main ${isPlayingAll ? 'playing' : ''}`}
                             onClick={isPlayingAll ? stopPlayAll : handlePlayAll}
@@ -404,48 +478,14 @@ export default function LessonDetailPage() {
                                 </>
                             )}
                         </button>
-
-                        {/* SMART AUDIO STUDIO PANEL */}
-                        <div className="lq-playback-panel">
-                            {/* Speed Control */}
-                            <div className="lq-control-group">
-                                <span className="lq-control-label">Speed</span>
-                                <input
-                                    type="range"
-                                    min="0.5"
-                                    max="1.5"
-                                    step="0.25"
-                                    value={playbackRate}
-                                    onChange={(e) => setPlaybackRate(parseFloat(e.target.value))}
-                                    className="lq-slider"
-                                    title={`Playback Speed: ${playbackRate}x`}
-                                />
-                                <span className="lq-control-label" style={{ minWidth: '30px' }}>{playbackRate}x</span>
-                            </div>
-
-                            <div style={{ width: '1px', height: '20px', background: 'var(--lq-border-subtle)' }}></div>
-
-                            {/* Auto Repeat Toggle */}
-                            <div className="lq-control-group">
-                                <span className="lq-control-label">Repeat (3x)</span>
-                                <label className="lq-toggle">
-                                    <input
-                                        type="checkbox"
-                                        checked={autoRepeat}
-                                        onChange={(e) => setAutoRepeat(e.target.checked)}
-                                    />
-                                    <span className="lq-slider-round"></span>
-                                </label>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
 
             <div className="lq-container">
                 <div className="lq-item-grid">
-                    {lesson.items.length > 0 ? (
-                        lesson.items.map((item, idx) => (
+                    {lesson?.items?.length ? (
+                        lesson?.items.map((item, idx) => (
                             <button
                                 key={idx}
                                 id={`item-${idx}`}
@@ -460,14 +500,14 @@ export default function LessonDetailPage() {
                                         <img src={item.imageSrc} alt={item.name || item.text} className="lq-item-img" draggable="false" />
                                     </div>
                                 ) : (
-                                    <div className="lq-item-text">{item.text}</div>
+                                    <div className="lq-item-text" style={{ fontSize: `${fontSize}rem` }}>{item.text}</div>
                                 )}
                                 {item.name && <div className="lq-item-name">{item.name}</div>}
                             </button>
                         ))
                     ) : (
                         <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '60px', background: 'rgba(255,255,255,0.03)', borderRadius: '24px', border: '1px solid var(--lq-border-subtle)' }}>
-                            <p>Content loading...</p>
+                            <p>Content loading or not found...</p>
                         </div>
                     )}
                 </div>
