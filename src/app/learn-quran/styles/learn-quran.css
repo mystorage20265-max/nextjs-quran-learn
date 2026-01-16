@@ -376,6 +376,7 @@ input:checked+.lq-slider-round:before {
     font-family: 'KFGQPC Uthmanic Script HAFS', serif;
     font-size: 3rem;
     color: var(--lq-text-main);
+    direction: rtl;
 }
 
 .lq-item-name {
