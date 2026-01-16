@@ -185,15 +185,10 @@ h3,
 
 /* --- DETAIL PAGE --- */
 .lq-detail-header {
-    padding: 40px 0;
+    padding: 40px 0 24px;
     border-bottom: 1px solid var(--lq-border-subtle);
-    background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    margin-bottom: 40px;
-    position: sticky;
-    top: 0;
-    z-index: 50;
+    background: transparent;
+    margin-bottom: 32px;
 }
 
 .lq-back-btn {
@@ -342,6 +337,8 @@ input:checked+.lq-slider-round:before {
     grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
     gap: 16px;
     padding-bottom: 100px;
+    direction: rtl;
+    /* FLIPS GRID TO RIGHT-TO-LEFT */
 }
 
 .lq-item-card {
