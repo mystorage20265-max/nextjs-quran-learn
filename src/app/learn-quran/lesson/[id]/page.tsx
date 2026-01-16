@@ -22,63 +22,34 @@ interface Lesson {
 }
 
 export default function LessonDetailPage() {
-    const params = useParams(); // Use generic params first
-    // params can be Record<string, string | string[]>
-    // Safely cast or parse
+    const params = useParams();
     const lessonId = params?.id ? Number(params.id) : null;
 
     const [lesson, setLesson] = useState<Lesson | null>(null);
     const [loading, setLoading] = useState(true);
     const [playingItem, setPlayingItem] = useState<string | null>(null);
-    const audioRef = useRef<HTMLAudioElement | null>(null);
-
-    useEffect(() => {
-        if (!lessonId) return;
-
-        // Cache-busting: Force fresh data to ensure audio mappings are updated
-        fetch(`/api/learn-quran?t=${new Date().getTime()}`, { cache: 'no-store' })
-            .then(res => res.json())
-            .then(data => {
-                const found = data.curriculum.lessons.find((l: Lesson) => l.id === lessonId);
-                if (found) {
-                    setLesson(found);
-                } else {
-                    setLesson(null);
-                }
-                setLoading(false);
-            })
-            .catch(err => {
-                console.error('Failed to load lesson', err);
-                setLoading(false);
-            });
-
-        // Cleanup: Stop audio when leaving the page
-        return () => {
-            stopPlayAll();
-            window.speechSynthesis.cancel();
-            if (audioRef.current) {
-                audioRef.current.pause();
-                audioRef.current.currentTime = 0;
-            }
-        };
-    }, [lessonId]);
-
+    const [playbackRate, setPlaybackRate] = useState(1.0);
+    const [autoRepeat, setAutoRepeat] = useState(false);
     const [isPlayingAll, setIsPlayingAll] = useState(false);
-    const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
 
+    // REFS for Reactive State Access inside callbacks
+    const audioRef = useRef<HTMLAudioElement | null>(null);
+    const isPlayingRef = useRef(false);
+    const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const playbackRateRef = useRef(1.0);
+    const autoRepeatRef = useRef(false);
+    const isMidSequenceRef = useRef(false);
+
+    // Sync refs with state
+    useEffect(() => { playbackRateRef.current = playbackRate; }, [playbackRate]);
+    useEffect(() => { autoRepeatRef.current = autoRepeat; }, [autoRepeat]);
+
+    // Apply speed change immediately to active audio
     useEffect(() => {
-        // Load voices ensure they are ready
-        const loadVoices = () => {
-            const available = window.speechSynthesis.getVoices();
-            setVoices(available);
-        };
-
-        loadVoices();
-
-        if (window.speechSynthesis.onvoiceschanged !== undefined) {
-            window.speechSynthesis.onvoiceschanged = loadVoices;
+        if (audioRef.current) {
+            audioRef.current.playbackRate = playbackRate;
         }
-    }, []);
+    }, [playbackRate]);
 
     // MAPPING: English Name -> Spelled out Arabic for TTS
     const ARABIC_LETTER_MAP: Record<string, string> = {
@@ -98,7 +69,7 @@ export default function LessonDetailPage() {
         "Ya Alif": "ياء ألف", "Tha Alif": "ثاء ألف", "Noon Alif": "نون ألف",
         "Ba Seen": "باء سين", "Ya Seen": "ياء سين", "Noon Seen": "نون سين",
         "Ta Seen": "تاء سين", "Tha Seen": "ثاء سين", "Ba Tha": "باء ثاء",
-        "Ta Tha": "تاء ثاء", "Noon Tha": "نون ثاء", "Ya Tha": "ياء ثاء",
+        "Ta Tha": "تاء ثاء", "Noon Ta": "نون ثاء", "Ya Tha": "ياء ثاء",
         "Ba Ta": "باء تاء", "Ya Ta": "ياء تاء", "Noon Ta": "نون تاء",
         "Ta Ta": "تاء تاء", "Ya Ha": "ياء حاء", "Ta Ha": "تاء حاء",
         "Ba Ha": "باء حاء", "Ya Ha": "ياء حاء", "Ha Alif": "حاء ألف",
@@ -111,8 +82,7 @@ export default function LessonDetailPage() {
         "Ha Tha": "حاء ثاء", "Meem Ra": "ميم راء", "Noon Tha Noon": "نون ثاء نون"
     };
 
-    // MAPPING: English Name -> Audio File from Lesson 1 (Base path: https://raw.githubusercontent.com/adnan/Arabic-Alphabet/master/sounds/)
-    // High-quality human male voice audio files for individual letters
+    // MAPPING: English Name -> Audio File from Lesson 1
     const LETTER_AUDIO_MAP: Record<string, string> = {
         "Alif": "1_alif.mp3", "Ba": "2_baa.mp3", "Ta": "3_taa.mp3", "Tha": "4_thaa.mp3",
         "Jim": "5_jeem.mp3", "Ha": "6_haa.mp3", "Kha": "7_khaa.mp3", "Dal": "8_daal.mp3",
@@ -124,107 +94,41 @@ export default function LessonDetailPage() {
         "Ya": "30_yaa.mp3"
     };
 
-    const playSequence = (englishName: string, onComplete?: () => void) => {
-        // Break name into parts: "Noon Tha Noon" -> ["Noon", "Tha", "Noon"]
-        const parts = englishName.split(' ');
+    const playGoogleFallback = (text: string, onComplete?: () => void) => {
+        const encodedText = encodeURIComponent(text);
+        const audioUrl = `/api/tts-proxy?text=${encodedText}&lang=ar`;
 
-        const audioFiles: string[] = [];
-        for (const p of parts) {
-            const file = LETTER_AUDIO_MAP[p];
-            if (file) audioFiles.push(file);
-        }
-
-        // Validate: If we can't map all parts, fallback to TTS
-        if (audioFiles.length !== parts.length) {
-            console.log("Sequence partial miss, falling back to Smart TTS for:", englishName);
-            const arabicText = parts.map(p => ARABIC_LETTER_MAP[p] || p).join(' ');
-            playTTSfallback(arabicText, englishName, onComplete);
-            return;
-        }
-
-        console.log(`Playing Sequence: ${englishName} -> ${audioFiles.join(' + ')}`);
-
-        let idx = 0;
-        const base = "https://raw.githubusercontent.com/adnan/Arabic-Alphabet/master/sounds/";
-
-        const playNextPart = () => {
-            if (idx >= audioFiles.length) {
-                if (onComplete) onComplete();
-                return;
-            }
-
-            const url = base + audioFiles[idx];
-            const audio = new Audio(url);
-            audio.defaultPlaybackRate = 1.25; // Force default
-            audio.playbackRate = 1.25;        // Force instance
-            audioRef.current = audio;
-
-            audio.onended = () => {
-                idx++;
-                setTimeout(playNextPart, 0); // No gap for fluid sentence
-            };
-
-            audio.onerror = () => {
-                console.error("Sequence part failed:", url);
-                idx++;
-                playNextPart();
-            };
-
-            audio.play().catch(e => {
-                console.error("Sequence play error", e);
-                idx++;
-                playNextPart();
-            });
+        const audio = new Audio(audioUrl);
+        audio.onended = () => { if (onComplete) onComplete(); };
+        audio.onerror = (e) => {
+            console.error("Proxy TTS Fallback Failed", e);
+            if (onComplete) onComplete();
         };
-
-        playNextPart();
-    };
-
-    const playTTS = (text: string, englishName?: string, onComplete?: () => void) => {
-        // STRATEGY: Try Sequence Player First (for Tajweed/Human voice), then TTS
-        if (englishName && englishName.includes(' ')) {
-            playSequence(englishName, onComplete);
-            return;
+        const playPromise = audio.play();
+        if (playPromise !== undefined) {
+            playPromise.catch(e => {
+                if (e.name !== 'AbortError') console.error("Proxy TTS Playback Error", e);
+                if (onComplete) onComplete();
+            });
         }
-        if (englishName && LETTER_AUDIO_MAP[englishName]) {
-            playSequence(englishName, onComplete);
-            return;
-        }
-        playTTSfallback(text, englishName, onComplete);
     };
 
     const playTTSfallback = (text: string, englishName?: string, onComplete?: () => void) => {
-        // STRATEGY: Smart TTS
-        // 1. Convert English Name (e.g., "Sad Ha") -> Arabic Spelled ("صاد حاء")
-        // 2. This ensures "Noon Tha Noon" is read as letters, not a weird word.
-
-        // Determine text to speak: Mapped Name > Original Name > Original Text
         let textToSpeak = text;
         if (englishName) {
             if (ARABIC_LETTER_MAP[englishName]) {
                 textToSpeak = ARABIC_LETTER_MAP[englishName];
             } else {
-                // Heuristic: If multi-part name (e.g. "Ba Alif"), try to map parts
                 const parts = englishName.split(' ');
                 const mappedParts = parts.map(p => ARABIC_LETTER_MAP[p] || p);
-                // Only use if all parts mapped successfully to Arabic (contains Arabic char)
                 if (mappedParts.some(p => /[\u0600-\u06FF]/.test(p))) {
                     textToSpeak = mappedParts.join(' ');
                 }
             }
         }
 
-        console.log(`TTS: Speaking '${textToSpeak}' (Original: ${text})`);
-
         const availableVoices = window.speechSynthesis.getVoices();
         const arabicVoices = availableVoices.filter(v => v.lang.includes('ar'));
-
-        // FILTER: Prioritize Arabic Natural Voices (Google, Microsoft)
-        // Order of preference: 
-        // 1. Explicit MALE voice (David, Maged, or just 'Male')
-        // 2. Google Arabic (High quality)
-        // 3. Microsoft Arabic (Good)
-
         const maleVoice = arabicVoices.find(v => v.name.toLowerCase().includes('male'))
             || arabicVoices.find(v => v.name.toLowerCase().includes('david'))
             || arabicVoices.find(v => v.name.toLowerCase().includes('maged'));
@@ -239,57 +143,88 @@ export default function LessonDetailPage() {
             const utterance = new SpeechSynthesisUtterance(textToSpeak);
             utterance.voice = selectedVoice;
             utterance.lang = selectedVoice.lang;
-            // Louder and slightly faster for 'natural' feel
-            utterance.rate = 0.9;
+            utterance.rate = 0.9 * playbackRateRef.current; // Use REF
             utterance.volume = 1.0;
 
             utterance.onend = () => { if (onComplete) onComplete(); };
-            utterance.onerror = (e) => {
-                console.error("Local TTS Error, falling back...", e);
-                playGoogleFallback(textToSpeak, onComplete);
-            };
-
-            console.log("Using Voice:", selectedVoice.name);
+            utterance.onerror = () => { playGoogleFallback(textToSpeak, onComplete); };
             window.speechSynthesis.speak(utterance);
         } else {
-            // OPTION 2: No Local Arabic Voice -> Use Google Fallback immediately
-            console.log("No Local Arabic Voice found. Using Google proxy.");
             playGoogleFallback(textToSpeak, onComplete);
         }
     };
 
-    const playGoogleFallback = (text: string, onComplete?: () => void) => {
-        const encodedText = encodeURIComponent(text);
-        // Force 'ar' lang for Google Translate TTS
-        const audioUrl = `/api/tts-proxy?text=${encodedText}&lang=ar`;
+    const playTTS = (text: string, englishName?: string, onComplete?: () => void) => {
+        if (englishName && englishName.includes(' ')) {
+            playSequence(englishName, onComplete);
+            return;
+        }
+        if (englishName && LETTER_AUDIO_MAP[englishName]) {
+            playSequence(englishName, onComplete);
+            return;
+        }
+        playTTSfallback(text, englishName, onComplete);
+    };
 
-        const audio = new Audio(audioUrl);
-        audio.onended = () => { if (onComplete) onComplete(); };
-        audio.onerror = (e) => {
-            console.error("Proxy TTS Fallback Failed", e);
-            playLocalDefaultFallback(text, onComplete);
-        };
-        const playPromise = audio.play();
-        if (playPromise !== undefined) {
-            playPromise.catch(e => {
-                // Ignore interruption errors
-                if (e.name !== 'AbortError') console.error("Proxy TTS Playback Error", e);
+    const playSequence = (englishName: string, onComplete?: () => void) => {
+        if (isMidSequenceRef.current) return;
+        isMidSequenceRef.current = true;
+
+        const parts = englishName.split(' ');
+        const audioFiles: string[] = [];
+        for (const p of parts) {
+            const file = LETTER_AUDIO_MAP[p];
+            if (file) audioFiles.push(file);
+        }
+
+        if (audioFiles.length !== parts.length) {
+            isMidSequenceRef.current = false;
+            const arabicText = parts.map(p => ARABIC_LETTER_MAP[p] || p).join(' ');
+            playTTSfallback(arabicText, englishName, onComplete);
+            return;
+        }
+
+        let idx = 0;
+        const base = "https://raw.githubusercontent.com/adnan/Arabic-Alphabet/master/sounds/";
+
+        const playNextPart = () => {
+            // Check if we should stop (e.g. user clicked stop)
+            if (!isPlayingRef.current && isPlayingAll) {
+                isMidSequenceRef.current = false;
+                return;
+            }
+
+            if (idx >= audioFiles.length) {
+                isMidSequenceRef.current = false;
                 if (onComplete) onComplete();
+                return;
+            }
+
+            const url = base + audioFiles[idx];
+            const audio = new Audio(url);
+            audio.playbackRate = playbackRateRef.current; // Use REF
+            audioRef.current = audio;
+
+            audio.onended = () => {
+                idx++;
+                setTimeout(playNextPart, 0);
+            };
+
+            audio.onerror = () => {
+                idx++;
+                playNextPart();
+            };
+
+            audio.play().catch(e => {
+                console.error("Sequence play error", e);
+                idx++;
+                playNextPart();
             });
-        }
+        };
+
+        playNextPart();
     };
 
-    const playLocalDefaultFallback = (text: string, onComplete?: () => void) => {
-        if ('speechSynthesis' in window) {
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'ar-SA';
-            utterance.onend = () => { if (onComplete) onComplete(); };
-            utterance.onerror = () => { if (onComplete) onComplete(); };
-            window.speechSynthesis.speak(utterance);
-        } else {
-            if (onComplete) onComplete();
-        }
-    };
 
     const playAudio = (item: LessonItem, onComplete?: () => void) => {
         const audioUrl = item.audio
@@ -298,56 +233,80 @@ export default function LessonDetailPage() {
 
         setPlayingItem(item.id || item.text);
 
-        // Fallback to TTS if no audio file is provided
-        if (!audioUrl) {
-            console.log("No audio file found for:", item.text, "- Using TTS Fallback");
-            // Pass item.name so we can map "Sad Ha" -> "صاد حاء"
-            playTTS(item.text, item.name, () => {
-                setPlayingItem(null);
-                if (onComplete) onComplete();
+        const handleCompletion = () => {
+            setPlayingItem(null);
+            if (onComplete) onComplete();
+        };
+
+        let repeatCount = 0;
+
+        const executePlay = () => {
+            // CHECK REFS for LATEST settings (Reactive!)
+            const maxRepeats = autoRepeatRef.current ? 3 : 1;
+
+            if (repeatCount >= maxRepeats) {
+                handleCompletion();
+                return;
+            }
+
+            if (!audioUrl) {
+                playTTS(item.text, item.name, () => {
+                    repeatCount++;
+                    setTimeout(executePlay, 500);
+                });
+                return;
+            }
+
+            if (audioRef.current) {
+                audioRef.current.pause();
+                audioRef.current.currentTime = 0;
+            }
+
+            const audio = new Audio(audioUrl);
+            audio.playbackRate = playbackRateRef.current; // Use REF
+            audioRef.current = audio;
+
+            audio.onerror = () => {
+                playTTS(item.text, item.name, handleCompletion);
+            };
+
+            audio.onended = () => {
+                repeatCount++;
+                // Check REF again to decide if we should continue
+                const currentMaxRepeats = autoRepeatRef.current ? 3 : 1;
+                if (repeatCount < currentMaxRepeats) {
+                    setTimeout(executePlay, 300);
+                } else {
+                    handleCompletion();
+                }
+            };
+
+            audio.play().catch(e => {
+                if (e.name === 'AbortError') return;
+                handleCompletion();
             });
-            return;
+        };
+
+        executePlay();
+    };
+
+    const stopPlayAll = () => {
+        setIsPlayingAll(false);
+        isPlayingRef.current = false;
+        isMidSequenceRef.current = false;
+
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+            timeoutRef.current = null;
         }
 
-        // PREVENT OVERLAP: Stop any existing audio immediately
         if (audioRef.current) {
             audioRef.current.pause();
             audioRef.current.currentTime = 0;
         }
-
-        const audio = new Audio(audioUrl);
-        audioRef.current = audio;
-
-        audio.onerror = () => {
-            console.error(`Audio failed to load for ${item.text}`);
-            // DISABLE FALLBACK to keep voice consistent
-            setPlayingItem(null);
-            if (onComplete) onComplete();
-        };
-
-        audio.onended = () => {
-            setPlayingItem(null);
-            if (onComplete) onComplete();
-        };
-
-        const playPromise = audio.play();
-        if (playPromise !== undefined) {
-            playPromise.catch(e => {
-                // Ignore "The play() request was interrupted" errors which happen when
-                // quickly switching between items (normal behavior)
-                if (e.name === 'AbortError' || e.message?.includes('interrupted')) {
-                    // unexpected interruption is okay
-                    return;
-                }
-                console.error("Audio playback error", e);
-                setPlayingItem(null);
-                if (onComplete) onComplete();
-            });
-        }
+        window.speechSynthesis.cancel();
+        setPlayingItem(null);
     };
-
-    const isPlayingRef = useRef(false);
-    const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     const handlePlayAll = () => {
         if (!lesson || !lesson.items.length) return;
@@ -364,8 +323,6 @@ export default function LessonDetailPage() {
             }
 
             const item = lesson.items[currentIndex];
-
-            // Scroll logic (optional)
             const element = document.getElementById(`item-${currentIndex}`);
             if (element) {
                 element.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -382,22 +339,34 @@ export default function LessonDetailPage() {
         playNext();
     };
 
-    const stopPlayAll = () => {
-        setIsPlayingAll(false);
-        isPlayingRef.current = false;
+    useEffect(() => {
+        if (!lessonId) return;
 
-        if (timeoutRef.current) {
-            clearTimeout(timeoutRef.current);
-            timeoutRef.current = null;
-        }
+        fetch(`/api/learn-quran?t=${new Date().getTime()}`, { cache: 'no-store' })
+            .then(res => res.json())
+            .then(data => {
+                const found = data.curriculum.lessons.find((l: Lesson) => l.id === lessonId);
+                if (found) {
+                    setLesson(found);
+                } else {
+                    setLesson(null);
+                }
+                setLoading(false);
+            })
+            .catch(err => {
+                console.error('Failed to load lesson', err);
+                setLoading(false);
+            });
 
-        if (audioRef.current) {
-            audioRef.current.pause();
-            audioRef.current.currentTime = 0;
-        }
-        window.speechSynthesis.cancel();
-        setPlayingItem(null);
-    };
+        return () => {
+            stopPlayAll();
+            window.speechSynthesis.cancel();
+            if (audioRef.current) {
+                audioRef.current.pause();
+                audioRef.current.currentTime = 0;
+            }
+        };
+    }, [lessonId]);
 
     if (loading) return (
         <div className="lq-container" style={{ paddingTop: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
@@ -412,28 +381,64 @@ export default function LessonDetailPage() {
             <div className="lq-detail-header">
                 <div className="lq-container">
                     <Link href="/learn-quran" className="lq-back-btn">
-                        ← Back to Lessons
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5" /><path d="M12 19l-7-7 7-7" /></svg>
+                        Back to Lessons
                     </Link>
                     <h1>{lesson.title}</h1>
-                    <p style={{ maxWidth: '800px', color: 'var(--lq-text-secondary)', marginBottom: '20px' }}>{lesson.description}</p>
+                    <p style={{ maxWidth: '800px', color: 'var(--lq-text-muted)', marginBottom: '32px', fontSize: '1.1rem' }}>{lesson.description}</p>
 
-                    <button
-                        className={`lq-btn-start ${isPlayingAll ? 'playing' : ''}`}
-                        onClick={isPlayingAll ? stopPlayAll : handlePlayAll}
-                        style={{ padding: '12px 24px', fontSize: '1.1rem', display: 'inline-flex', alignItems: 'center', gap: '8px' }}
-                    >
-                        {isPlayingAll ? (
-                            <>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h12v12H6z" /></svg>
-                                Stop Lesson
-                            </>
-                        ) : (
-                            <>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
-                                Play Full Lesson
-                            </>
-                        )}
-                    </button>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '24px', alignItems: 'flex-start' }}>
+                        <button
+                            className={`lq-play-main ${isPlayingAll ? 'playing' : ''}`}
+                            onClick={isPlayingAll ? stopPlayAll : handlePlayAll}
+                        >
+                            {isPlayingAll ? (
+                                <>
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2" /></svg>
+                                    Stop Session
+                                </>
+                            ) : (
+                                <>
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
+                                    Start Practice Session
+                                </>
+                            )}
+                        </button>
+
+                        {/* SMART AUDIO STUDIO PANEL */}
+                        <div className="lq-playback-panel">
+                            {/* Speed Control */}
+                            <div className="lq-control-group">
+                                <span className="lq-control-label">Speed</span>
+                                <input
+                                    type="range"
+                                    min="0.5"
+                                    max="1.5"
+                                    step="0.25"
+                                    value={playbackRate}
+                                    onChange={(e) => setPlaybackRate(parseFloat(e.target.value))}
+                                    className="lq-slider"
+                                    title={`Playback Speed: ${playbackRate}x`}
+                                />
+                                <span className="lq-control-label" style={{ minWidth: '30px' }}>{playbackRate}x</span>
+                            </div>
+
+                            <div style={{ width: '1px', height: '20px', background: 'var(--lq-border-subtle)' }}></div>
+
+                            {/* Auto Repeat Toggle */}
+                            <div className="lq-control-group">
+                                <span className="lq-control-label">Repeat (3x)</span>
+                                <label className="lq-toggle">
+                                    <input
+                                        type="checkbox"
+                                        checked={autoRepeat}
+                                        onChange={(e) => setAutoRepeat(e.target.checked)}
+                                    />
+                                    <span className="lq-slider-round"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -461,20 +466,20 @@ export default function LessonDetailPage() {
                             </button>
                         ))
                     ) : (
-                        <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '40px', background: 'var(--lq-bg-card)', borderRadius: 'var(--lq-radius-lg)', border: '1px solid var(--lq-border)' }}>
-                            <p>Content for this lesson is coming soon.</p>
+                        <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '60px', background: 'rgba(255,255,255,0.03)', borderRadius: '24px', border: '1px solid var(--lq-border-subtle)' }}>
+                            <p>Content loading...</p>
                         </div>
                     )}
                 </div>
 
                 {/* Navigation */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '40px', gap: '20px' }}>
-
+                <div className="lq-nav-buttons-container">
                     {/* Previous Button */}
                     <div style={{ flex: 1 }}>
                         {lesson.id > 1 ? (
                             <Link href={`/learn-quran/lesson/${lesson.id - 1}`} className="lq-nav-btn prev">
-                                <span>←</span> Previous Lesson
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5" /><path d="M12 19l-7-7 7-7" /></svg>
+                                Previous Lesson
                             </Link>
                         ) : (
                             <div style={{ flex: 1 }}></div> // Spacer
@@ -485,11 +490,13 @@ export default function LessonDetailPage() {
                     <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
                         {lesson.id < 18 ? (
                             <Link href={`/learn-quran/lesson/${lesson.id + 1}`} className="lq-nav-btn next">
-                                Next Lesson <span>→</span>
+                                Next Lesson
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14" /><path d="M12 5l7 7-7 7" /></svg>
                             </Link>
                         ) : (
-                            <Link href="/learn-quran" className="lq-nav-btn complete">
-                                Complete Course <span>✓</span>
+                            <Link href="/learn-quran" className="lq-nav-btn next" style={{ background: 'var(--lq-accent)' }}>
+                                Complete Course
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" /></svg>
                             </Link>
                         )}
                     </div>
