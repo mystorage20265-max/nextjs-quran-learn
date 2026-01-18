@@ -2390,3 +2390,242 @@ body:has(.demo-page) main {
         gap: 24px;
     }
 }
+
+/* ===== ADVANCED MOBILE RESPONSIVENESS ===== */
+
+/* Tablet Optimization (max-width: 1024px) */
+@media (max-width: 1024px) {
+    .container-wide {
+        padding: 0 40px;
+    }
+
+    .hero-title-main {
+        font-size: 52px;
+    }
+
+    .floating-btns {
+        right: 15px;
+    }
+
+    /* Add Tablet Scaling for Infinity Loop */
+    .infinity-wrapper {
+        transform: scale(0.75);
+        margin: -40px 0;
+        left: 50%;
+        margin-left: -500px;
+        position: relative;
+    }
+}
+
+/* Mobile Devices (max-width: 768px) */
+@media (max-width: 768px) {
+    .demo-page {
+        overflow-x: hidden;
+    }
+
+    .container-wide {
+        padding: 0 24px;
+    }
+
+    .sn-navbar {
+        padding: 0 20px;
+    }
+
+    /* Hero Stacking */
+    .hero-top-row {
+        flex-direction: column;
+        gap: 40px;
+        text-align: center;
+        margin-top: 40px;
+    }
+
+    .hero-left,
+    .hero-right {
+        width: 100%;
+        padding-right: 0;
+    }
+
+    .hero-title-main {
+        font-size: 38px;
+        line-height: 1.1;
+        text-wrap: balance;
+        margin-bottom: 20px;
+    }
+
+    .hero-controls-horizontal {
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .hero-description {
+        font-size: 16px;
+        margin-bottom: 25px;
+        padding: 0 10px;
+    }
+
+    .hero-actions {
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    /* Feature Cards */
+    .hero-bottom-cards {
+        flex-direction: column;
+        height: auto;
+        gap: 20px;
+        margin-top: 50px;
+    }
+
+    .hero-card-item {
+        width: 100%;
+        height: 260px;
+    }
+
+    /* Scaling Down Complex Animations - Robust Centering */
+    /* Scaling Down Complex Animations - Robust Centering */
+    .infinity-wrapper {
+        width: 1000px;
+        transform: scale(0.45);
+        height: 220px;
+        margin: 20px 0 -20px 0;
+        left: 50%;
+        margin-left: -500px;
+        transform-origin: center top;
+        position: relative;
+        top: 20px;
+    }
+
+    /* Stats & Insights Stacking */
+    .stats-grid,
+    .work-section,
+    .insights-grid,
+    .footer-top {
+        grid-template-columns: 1fr;
+        display: flex;
+        flex-direction: column;
+        gap: 40px;
+    }
+
+    .stats-section,
+    .work-section,
+    .insights-section,
+    .sn-footer {
+        padding: 50px 24px;
+    }
+
+    .stat-num {
+        font-size: 42px;
+    }
+
+    .insight-featured {
+        min-height: 380px;
+    }
+
+    /* Center alignments for mobile */
+    .work-left,
+    .insights-header,
+    .footer-bottom,
+    .footer-links {
+        text-align: center;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+
+    /* Hide floating button text to save space */
+    .floating-btn span {
+        display: none;
+    }
+
+    .floating-btn {
+        padding: 12px;
+        width: 48px;
+        height: 48px;
+        justify-content: center;
+    }
+}
+
+/* Small Mobile (max-width: 480px) */
+@media (max-width: 480px) {
+    .hero-title-main {
+        font-size: 34px;
+    }
+
+    .btn-explore-platform,
+    .btn-watch-video {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .floating-btns {
+        bottom: 20px;
+        top: auto;
+        transform: none;
+        flex-direction: row;
+        right: 20px;
+    }
+}
+
+/* Deep Analysis: iPhone SE / Very Narrow (max-width: 370px) */
+@media (max-width: 370px) {
+    .hero-title-main {
+        font-size: 28px;
+    }
+
+    .hero-actions {
+        flex-direction: column;
+        width: 100%;
+        gap: 12px;
+    }
+
+    .btn-explore-platform,
+    .btn-watch-video {
+        width: 100%;
+        padding: 14px 20px;
+        /* Slightly smaller padding */
+    }
+
+    .stat-num {
+        font-size: 36px;
+    }
+
+    .sn-navbar {
+        padding: 0 15px;
+        /* Maximize width */
+    }
+}
+
+/* Deep Analysis: Landscape Mode (Height constrained) */
+@media (max-height: 500px) and (orientation: landscape) {
+    .hero-section {
+        padding-top: 80px;
+        /* Less top padding */
+        min-height: auto;
+    }
+
+    .infinity-wrapper {
+        margin: 10px 0;
+        height: 150px;
+        transform: scale(0.3);
+        /* Smaller loop for landscape */
+        left: 50%;
+        margin-left: -500px;
+    }
+
+    .hero-bottom-cards {
+        display: none;
+        /* Hide cards in short landscape to prioritize content */
+    }
+
+    .hero-title-main {
+        font-size: 32px;
+        /* Smaller title to fit vertically */
+        margin-bottom: 15px;
+    }
+
+    .floating-btns {
+        display: none;
+        /* Hide floating buttons to prevent overlap */
+    }
+}
