@@ -1,7 +1,8 @@
 /* components/Navbar/Navbar.css */
 .navbar {
   background: linear-gradient(135deg, #1a2a6c, #2a5298);
-  padding: 0.6rem 0; /* reduced height */
+  padding: 0.6rem 0;
+  /* reduced height */
   position: fixed;
   top: 0;
   left: 0;
@@ -28,7 +29,8 @@
 
 /* Add padding to account for fixed navbar */
 main {
-  padding-top: 4rem; /* Adjust this value based on your navbar height */
+  padding-top: 4rem;
+  /* Adjust this value based on your navbar height */
   min-height: calc(100vh - 4rem);
 }
 
@@ -73,7 +75,8 @@ main {
   color: rgba(255, 255, 255, 0.9);
   text-decoration: none;
   font-weight: 500;
-  padding: 0.35rem 0; /* slightly tighter to reduce navbar height */
+  padding: 0.35rem 0;
+  /* slightly tighter to reduce navbar height */
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -127,10 +130,12 @@ main {
   z-index: 1001;
 }
 
-.dropdown-menu.active {
-  opacity: 1;
-  visibility: visible;
+.dropdown-menu.active,
+.nav-dropdown:hover .dropdown-menu {
+  opacity: 1 !important;
+  visibility: visible !important;
   transform: translateY(0);
+  display: block;
 }
 
 .dropdown-menu.nested {
@@ -258,7 +263,8 @@ main {
 
 /* Z-index layers */
 .navbar {
-  z-index: 10000; /* align with header/global expectations */
+  z-index: 10000;
+  /* align with header/global expectations */
 }
 
 .navbar-menu {
@@ -361,7 +367,7 @@ main {
     color: rgba(255, 255, 255, 0.95);
     padding: 0.9rem 0.9rem;
     border-radius: 8px;
-    background: rgba(255,255,255,0.02);
+    background: rgba(255, 255, 255, 0.02);
   }
 
   /* Mobile menu header */
@@ -447,15 +453,15 @@ main {
   .navbar-container {
     padding: 0 1.5rem;
   }
-  
+
   .navbar-menu {
     gap: 1.5rem;
   }
-  
+
   .nav-link {
     font-size: 0.9rem;
   }
-  
+
   .btn {
     padding: 0.5rem 1.25rem;
     font-size: 0.85rem;
@@ -469,12 +475,12 @@ main {
     font-size: 0.8rem;
     min-width: 70px;
   }
-  
+
   .navbar-auth-mobile-menu .btn {
     padding: 0.8rem 1rem;
     font-size: 0.85rem;
   }
-  
+
   .navbar-container {
     padding: 0 0.75rem;
   }
@@ -482,13 +488,14 @@ main {
 
 /* Accessibility */
 @media (prefers-reduced-motion: reduce) {
+
   .navbar,
   .nav-link,
   .dropdown-menu,
   .btn {
     transition: none;
   }
-  
+
   .btn-signup:hover {
     transform: none;
   }

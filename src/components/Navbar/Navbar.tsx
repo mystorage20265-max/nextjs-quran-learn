@@ -121,11 +121,11 @@ export default function Navbar() {
           </div>
 
           <Link
-            href="/"
-            className={`nav-link ${isActive('/') ? 'active' : ''}`}
+            href="/demo"
+            className={`nav-link ${isActive('/demo') ? 'active' : ''}`}
             onClick={closeMenu}
           >
-            <i className="fas fa-home"></i> Home
+            <i className="fas fa-laptop"></i> Demo
           </Link>
 
           <Link
@@ -155,6 +155,7 @@ export default function Navbar() {
           {/* More Features Dropdown */}
           <div className="nav-dropdown" ref={featuresRef}>
             <button
+              type="button"
               className={`nav-link dropdown-toggle ${isFeaturesOpen ? 'active' : ''}`}
               onClick={toggleFeatures}
               aria-expanded={isFeaturesOpen}
@@ -164,6 +165,9 @@ export default function Navbar() {
               <i className={`fas ${isFeaturesOpen ? 'fa-caret-up' : 'fa-caret-down'}`} style={{ marginLeft: 'auto' }} aria-hidden />
             </button>
             <div className={`dropdown-menu ${isFeaturesOpen ? 'active' : ''}`}>
+              <Link href="/" className="dropdown-item" onClick={closeMenu}>
+                <i className="fas fa-home"></i> Home
+              </Link>
               <Link href="/about" className="dropdown-item" onClick={closeMenu}>
                 <i className="fas fa-info-circle"></i> About Us
               </Link>
