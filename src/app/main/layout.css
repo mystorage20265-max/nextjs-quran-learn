@@ -1,7 +1,7 @@
 .home-layout {
   min-height: 100vh;
   width: 100%;
-  background-color: #f7f7fb;
+  background-color: var(--sn-bg);
   position: relative;
   overflow-x: hidden;
   padding-top: 64px;
@@ -21,43 +21,45 @@
 .floating-element {
   position: absolute;
   border-radius: 50%;
-  filter: blur(40px);
-  opacity: 0.6;
+  filter: blur(80px);
+  /* Increased blur for smoother look */
+  opacity: 0.15;
+  /* Reduced opacity for subtlety */
 }
 
 .element-1 {
-  width: 300px;
-  height: 300px;
-  top: -50px;
-  left: -50px;
-  background: radial-gradient(circle, rgba(52, 168, 83, 0.15) 0%, rgba(52, 168, 83, 0) 70%);
+  width: 600px;
+  height: 600px;
+  top: -100px;
+  left: -100px;
+  background: radial-gradient(circle, var(--sn-green) 0%, transparent 70%);
   animation: float 20s infinite ease-in-out;
 }
 
 .element-2 {
-  width: 250px;
-  height: 250px;
+  width: 500px;
+  height: 500px;
   top: 20%;
-  right: -30px;
-  background: radial-gradient(circle, rgba(26, 115, 232, 0.15) 0%, rgba(26, 115, 232, 0) 70%);
+  right: -100px;
+  background: radial-gradient(circle, var(--sn-teal) 0%, transparent 70%);
   animation: float 25s infinite ease-in-out reverse;
 }
 
 .element-3 {
-  width: 200px;
-  height: 200px;
-  bottom: -50px;
+  width: 400px;
+  height: 400px;
+  bottom: -100px;
   left: 15%;
-  background: radial-gradient(circle, rgba(142, 68, 173, 0.15) 0%, rgba(142, 68, 173, 0) 70%);
+  background: radial-gradient(circle, var(--sn-green) 0%, transparent 70%);
   animation: float 22s infinite ease-in-out;
 }
 
 .element-4 {
-  width: 180px;
-  height: 180px;
+  width: 350px;
+  height: 350px;
   top: 60%;
   right: 10%;
-  background: radial-gradient(circle, rgba(52, 168, 83, 0.15) 0%, rgba(52, 168, 83, 0) 70%);
+  background: radial-gradient(circle, var(--sn-teal) 0%, transparent 70%);
   animation: float 28s infinite ease-in-out reverse;
 }
 
@@ -65,23 +67,28 @@
   position: relative;
   z-index: 1;
   width: 100%;
-  max-width: 1400px;
+  max-width: 1440px;
   margin: 0 auto;
   padding: 2rem 1rem;
 }
 
 @keyframes float {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translate(0, 0) rotate(0deg);
   }
+
   25% {
-    transform: translate(20px, -10px) rotate(2deg);
+    transform: translate(30px, -20px) rotate(5deg);
   }
+
   50% {
-    transform: translate(-5px, 15px) rotate(-2deg);
+    transform: translate(-10px, 20px) rotate(-5deg);
   }
+
   75% {
-    transform: translate(-15px, -7px) rotate(1deg);
+    transform: translate(-20px, -10px) rotate(2deg);
   }
 }
 

@@ -1,252 +1,278 @@
-// components/Navbar/Navbar.tsx
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  ChevronDown,
+  Menu,
+  X,
+  Home,
+  BookOpen,
+  GraduationCap,
+  Brain,
+  LayoutGrid,
+  Info,
+  Book,
+  Search,
+  Sparkles,
+  Mic2,
+  Clock,
+  Users,
+  PlayCircle,
+  Radio,
+  Music,
+  LogIn,
+  UserPlus,
+  Star
+} from 'lucide-react';
 import './Navbar.css';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isFeaturesOpen, setIsFeaturesOpen] = useState(false);
-  const [isAudioOpen, setIsAudioOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
   const pathname = usePathname();
-  const featuresRef = useRef<HTMLDivElement>(null);
-  const audioRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Scroll effect
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
+      setIsScrolled(window.scrollY > 20);
     };
-
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Click outside to close dropdowns
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (featuresRef.current && !featuresRef.current.contains(event.target as Node)) {
-        setIsFeaturesOpen(false);
-      }
-      if (audioRef.current && !audioRef.current.contains(event.target as Node)) {
-        setIsAudioOpen(false);
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setActiveDropdown(null);
       }
     };
-
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
-
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const closeMenu = () => {
     setIsMenuOpen(false);
-    setIsFeaturesOpen(false);
-    setIsAudioOpen(false);
+    setActiveDropdown(null);
   };
 
-  const toggleFeatures = () => {
-    setIsFeaturesOpen(!isFeaturesOpen);
-    if (isAudioOpen) setIsAudioOpen(false);
-  };
+  const navLinks = [
+    { href: '/', label: 'Home', icon: <Home size={18} /> },
+    { href: '/main', label: 'Main', icon: <Star size={18} /> },
+    { href: '/read-quran', label: 'Read Quran', icon: <BookOpen size={18} /> },
+    { href: '/learn-quran', label: 'Learn Quran', icon: <GraduationCap size={18} /> },
+    { href: '/memorize-quran', label: 'Memorize Quran', icon: <Brain size={18} /> },
+  ];
 
-  const toggleAudio = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setIsAudioOpen(!isAudioOpen);
-  };
-
-  const isActive = (path: string) => {
-    return pathname === path;
-  };
+  const moreFeatures = [
+    { href: '/about', label: 'About Us', icon: <Info size={16} /> },
+    { href: '/courses', label: 'Courses', icon: <Book size={16} /> },
+    { href: '/quran', label: 'Quran Browser', icon: <Search size={16} /> },
+    { href: '/duas', label: 'DUAS', icon: <Sparkles size={16} /> },
+    { href: '/hifz', label: 'HIFZ', icon: <BookOpen size={16} /> },
+    { href: '/tafsir', label: 'TAFSIR', icon: <GraduationCap size={16} /> },
+    { href: '/tajweed', label: 'TAJWEED', icon: <Mic2 size={16} /> },
+    { href: '/prayer-time', label: 'Prayer Time', icon: <Clock size={16} /> },
+    { href: '/community', label: 'COMMUNITY', icon: <Users size={16} /> },
+    { href: '/quran-player', label: 'Quran Player', icon: <PlayCircle size={16} /> },
+    { href: '/radio', label: 'Quran Radio', icon: <Radio size={16} /> },
+    { href: '/audio-quran', label: 'Al-Quran Audio', icon: <Music size={16} /> },
+  ];
 
   return (
-    <nav className={`navbar ${isScrolled ? 'scrolled' : ''} ${isMenuOpen ? 'menu-open' : ''}`}>
-      <div className="navbar-container">
-        {/* Mobile Menu Toggle */}
-        <button
-          className={`navbar-toggle ${isMenuOpen ? 'active' : ''}`}
-          onClick={toggleMenu}
-          aria-label="Toggle menu"
-          aria-expanded={isMenuOpen}
-          aria-controls="mobile-nav"
-        >
-          <span className="bar"></span>
-          <span className="bar"></span>
-          <span className="bar"></span>
-        </button>
-
-        {/* Logo */}
-        <div className="navbar-logo">
-          <Link href="/" onClick={closeMenu}>
+    <nav className={`nav-wrapper ${isScrolled ? 'nav-scrolled' : ''}`}>
+      <div className="nav-container">
+        {/* Logo Section */}
+        <Link href="/" className="nav-logo" onClick={closeMenu}>
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="logo-container"
+          >
             <Image
               src="https://cdn-icons-png.flaticon.com/512/2787/2787958.png"
-              alt="Quran Learning Logo"
-              className="logo"
-              width={40}
-              height={40}
-              priority
+              alt="Learn Quran Logo"
+              width={42}
+              height={42}
+              className="logo-img"
             />
             <div className="logo-text">
-              <span className="logo-main">QuranicLearn</span>
-              <span className="logo-urdu">قرآنی سیکھیں</span>
+              <span className="logo-brand">Learn Quran</span>
+              <span className="logo-tagline Arabic">قرآنی سیکھیں</span>
             </div>
-          </Link>
-        </div>
+          </motion.div>
+        </Link>
 
-        {/* Navigation Menu */}
-        <div id="mobile-nav" className={`navbar-menu ${isMenuOpen ? 'active' : ''}`}>
-          {/* Mobile menu header with logo and close button */}
-          <div className="menu-header">
-            <div className="menu-logo">
-              <Image
-                src="https://cdn-icons-png.flaticon.com/512/2787/2787958.png"
-                alt="Quran Learning Logo"
-                className="logo menu-logo-image"
-                width={34}
-                height={34}
-              />
-              <div className="logo-text">
-                <span className="logo-main">QuranicLearn</span>
-                <span className="logo-urdu">قرآنی سیکھیں</span>
-              </div>
-            </div>
-            <button className="menu-close" onClick={closeMenu} aria-label="Close menu">✕</button>
-          </div>
-
-          <Link
-            href="/demo"
-            className={`nav-link ${isActive('/demo') ? 'active' : ''}`}
-            onClick={closeMenu}
-          >
-            <i className="fas fa-laptop"></i> Demo
-          </Link>
-
-          <Link
-            href="/read-quran"
-            className={`nav-link ${isActive('/read-quran') ? 'active' : ''}`}
-            onClick={closeMenu}
-          >
-            <i className="fas fa-book-quran"></i> Read Quran
-          </Link>
-
-          <Link
-            href="/learn-quran"
-            className={`nav-link ${isActive('/learn-quran') ? 'active' : ''}`}
-            onClick={closeMenu}
-          >
-            <i className="fas fa-graduation-cap"></i> Learn Quran
-          </Link>
-
-          <Link
-            href="/memorize-quran"
-            className={`nav-link ${isActive('/memorize-quran') ? 'active' : ''}`}
-            onClick={closeMenu}
-          >
-            <i className="fas fa-brain"></i> Memorize Quran
-          </Link>
+        {/* Desktop Navigation */}
+        <div className="nav-links-desktop">
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={`nav-item ${pathname === link.href ? 'nav-item-active' : ''}`}
+            >
+              <motion.span
+                className="nav-item-content"
+                whileHover={{ y: -2 }}
+              >
+                {link.icon}
+                {link.label}
+              </motion.span>
+              {pathname === link.href && (
+                <motion.div
+                  layoutId="nav-underline"
+                  className="nav-underline"
+                />
+              )}
+            </Link>
+          ))}
 
           {/* More Features Dropdown */}
-          <div className="nav-dropdown" ref={featuresRef}>
+          <div className="nav-dropdown-wrapper" ref={dropdownRef}>
             <button
-              type="button"
-              className={`nav-link dropdown-toggle ${isFeaturesOpen ? 'active' : ''}`}
-              onClick={toggleFeatures}
-              aria-expanded={isFeaturesOpen}
+              className={`nav-item dropdown-trigger ${activeDropdown === 'more' ? 'active' : ''}`}
+              onClick={() => setActiveDropdown(activeDropdown === 'more' ? null : 'more')}
             >
-              <i className="fas fa-th-large"></i>
-              More Features
-              <i className={`fas ${isFeaturesOpen ? 'fa-caret-up' : 'fa-caret-down'}`} style={{ marginLeft: 'auto' }} aria-hidden />
+              <LayoutGrid size={18} />
+              More
+              <ChevronDown size={14} className={`chevron ${activeDropdown === 'more' ? 'rotate' : ''}`} />
             </button>
-            <div className={`dropdown-menu ${isFeaturesOpen ? 'active' : ''}`}>
-              <Link href="/" className="dropdown-item" onClick={closeMenu}>
-                <i className="fas fa-home"></i> Home
-              </Link>
-              <Link href="/about" className="dropdown-item" onClick={closeMenu}>
-                <i className="fas fa-info-circle"></i> About Us
-              </Link>
-              <Link href="/courses" className="dropdown-item" onClick={closeMenu}>
-                <i className="fas fa-book"></i> Courses
-              </Link>
-              <Link href="/quran" className="dropdown-item" onClick={closeMenu}>
-                <i className="fas fa-quran"></i> Quran Browser
-              </Link>
-              <Link href="/duas" className="dropdown-item" onClick={closeMenu}>
-                <i className="fas fa-pray"></i> DUAS
-              </Link>
-              <Link href="/hifz" className="dropdown-item" onClick={closeMenu}>
-                <i className="fas fa-book-open"></i> HIFZ
-              </Link>
-              <Link href="/tafsir" className="dropdown-item" onClick={closeMenu}>
-                <i className="fas fa-graduation-cap"></i> TAFSIR
-              </Link>
-              <Link href="/tajweed" className="dropdown-item" onClick={closeMenu}>
-                <i className="fas fa-microphone"></i> TAJWEED
-              </Link>
-              <Link href="/prayer-time" className="dropdown-item" onClick={closeMenu}>
-                <i className="fas fa-clock"></i> Prayer Time
-              </Link>
-              <Link href="/community" className="dropdown-item" onClick={closeMenu}>
-                <i className="fas fa-users"></i> COMMUNITY
-              </Link>
 
-              <Link href="/quran-player" className="dropdown-item" onClick={closeMenu}>
-                <i className="fas fa-play-circle"></i> Quran Player
-              </Link>
-              <Link href="/radio" className="dropdown-item" onClick={closeMenu}>
-                <i className="fas fa-broadcast-tower"></i> Quran Radio
-              </Link>
-
-              {/* Nested Audio Dropdown */}
-              <div className="nav-dropdown nested" ref={audioRef}>
-                <button
-                  className={`dropdown-item dropdown-toggle ${isAudioOpen ? 'active' : ''}`}
-                  onClick={toggleAudio}
-                  aria-expanded={isAudioOpen}
+            <AnimatePresence>
+              {activeDropdown === 'more' && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                  transition={{ duration: 0.2 }}
+                  className="dropdown-panel"
                 >
-                  <i className="fas fa-music"></i>
-                  Audio
-                  <i className={`fas ${isAudioOpen ? 'fa-caret-up' : 'fa-caret-right'}`} style={{ marginLeft: 'auto' }} aria-hidden />
-                </button>
-                <div className={`dropdown-menu nested ${isAudioOpen ? 'active' : ''}`}>
-                  <Link href="/audio-quran" className="dropdown-item" onClick={closeMenu}>
-                    Al-Quran
-                  </Link>
-                  <Link href="/seerah-audio" className="dropdown-item" onClick={closeMenu}>
-                    Seerah
-                  </Link>
+                  <div className="dropdown-grid">
+                    {moreFeatures.map((item) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className="dropdown-link"
+                        onClick={() => setActiveDropdown(null)}
+                      >
+                        <span className="dropdown-icon">{item.icon}</span>
+                        <span className="dropdown-label">{item.label}</span>
+                      </Link>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+
+        {/* Desktop Auth */}
+        <div className="nav-auth-desktop">
+          <Link href="/login" className="auth-btn login-btn">
+            <LogIn size={18} />
+            <span>Login</span>
+          </Link>
+          <Link href="/signup" className="auth-btn signup-btn">
+            <UserPlus size={18} />
+            <span>Join Now</span>
+          </Link>
+        </div>
+
+        {/* Mobile menu toggle */}
+        <button className="mobile-toggle" onClick={toggleMenu}>
+          {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
+        </button>
+      </div>
+
+      {/* Mobile Sidebar */}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="mobile-overlay"
+              onClick={closeMenu}
+            />
+            <motion.div
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="mobile-sidebar"
+            >
+              <div className="sidebar-header">
+                <div className="logo-container">
+                  <Image
+                    src="https://cdn-icons-png.flaticon.com/512/2787/2787958.png"
+                    alt="Learn Quran Logo"
+                    width={36}
+                    height={36}
+                  />
+                  <div className="logo-text">
+                    <span className="logo-brand">Learn Quran</span>
+                  </div>
+                </div>
+                <button onClick={closeMenu}><X size={24} /></button>
+              </div>
+
+              <div className="sidebar-scroll">
+                <div className="sidebar-section">
+                  <p className="sidebar-label">Main Navigation</p>
+                  {navLinks.map((link) => (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      className={`sidebar-link ${pathname === link.href ? 'active' : ''}`}
+                      onClick={closeMenu}
+                    >
+                      {link.icon}
+                      {link.label}
+                    </Link>
+                  ))}
+                </div>
+
+                <div className="sidebar-divider" />
+
+                <div className="sidebar-section">
+                  <p className="sidebar-label">Explore More</p>
+                  <div className="sidebar-grid">
+                    {moreFeatures.map((item) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className="sidebar-grid-item"
+                        onClick={closeMenu}
+                      >
+                        {item.icon}
+                        <span>{item.label}</span>
+                      </Link>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
 
-          {/* Auth Buttons - Mobile (Inside Menu) */}
-          <div className="navbar-auth-mobile-menu">
-            <Link href="/login" className="btn btn-login" onClick={closeMenu}>
-              <i className="fas fa-sign-in-alt"></i> Login
-            </Link>
-            <Link href="/signup" className="btn btn-signup" onClick={closeMenu}>
-              <i className="fas fa-user-plus"></i> Sign Up
-            </Link>
-          </div>
-        </div>
-
-        {/* Auth Buttons - Desktop */}
-        <div className="navbar-auth-desktop">
-          <Link href="/login" className="btn btn-login">
-            <i className="fas fa-sign-in-alt"></i> Login
-          </Link>
-          <Link href="/signup" className="btn btn-signup">
-            <i className="fas fa-user-plus"></i> Sign Up
-          </Link>
-        </div>
-      </div>
+              <div className="sidebar-footer">
+                <Link href="/login" className="sidebar-btn sidebar-login" onClick={closeMenu}>
+                  <LogIn size={18} />
+                  Login
+                </Link>
+                <Link href="/signup" className="sidebar-btn sidebar-signup" onClick={closeMenu}>
+                  <UserPlus size={18} />
+                  Join Now
+                </Link>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </nav>
   );
 }

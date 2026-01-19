@@ -4,14 +4,15 @@ import Navbar from '@/components/Navbar/Navbar';
 import Footer from '@/components/Footer';
 import { getOrganizationSchema, getWebsiteSchema } from '@/lib/seoSchemas';
 import './globals.css';
+import ClientWrapper from '@/components/ClientWrapper';
 
 export const metadata: Metadata = {
-  title: 'QuranicLearn - Learn the Noble Quran | Interactive Quranic Education',
+  title: 'Learn Quran - Learn the Noble Quran | Interactive Quranic Education',
   description: 'Embark on a transformative journey with the Holy Quran through our comprehensive learning platform. Learn Quran with interactive lessons, audio recitations, and guided study plans.',
   keywords: 'Quran, Learn Quran, Quranic learning, Islamic education, Tajweed, Tafsir, Hifz, Arabic, Muslim, Islamic studies',
-  authors: [{ name: 'QuranicLearn Team' }],
-  creator: 'QuranicLearn',
-  publisher: 'QuranicLearn',
+  authors: [{ name: 'Learn Quran Team' }],
+  creator: 'Learn Quran',
+  publisher: 'Learn Quran',
   formatDetection: {
     email: false,
     address: false,
@@ -22,16 +23,16 @@ export const metadata: Metadata = {
     canonical: '/',
   },
   openGraph: {
-    title: 'QuranicLearn - Learn the Noble Quran | Interactive Quranic Education',
+    title: 'Learn Quran - Learn the Noble Quran | Interactive Quranic Education',
     description: 'Embark on a transformative journey with the Holy Quran through our comprehensive learning platform designed for spiritual growth.',
     url: 'https://quraniclearn.com',
-    siteName: 'QuranicLearn',
+    siteName: 'Learn Quran',
     images: [
       {
         url: '/your-quran-logo.svg',
         width: 1200,
         height: 630,
-        alt: 'QuranicLearn - Learn the Noble Quran',
+        alt: 'Learn Quran - Learn the Noble Quran',
       },
     ],
     locale: 'en_US',
@@ -39,7 +40,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'QuranicLearn - Learn the Noble Quran',
+    title: 'Learn Quran - Learn the Noble Quran',
     description: 'Interactive Quranic learning platform for spiritual growth and understanding.',
     images: ['/your-quran-logo.svg'],
   },
@@ -112,9 +113,11 @@ export default function RootLayout({
       </head>
       <body>
         <Navbar />
-        <main>
-          {children}
-        </main>
+        <ClientWrapper>
+          <main>
+            {children}
+          </main>
+        </ClientWrapper>
         <Footer />
       </body>
     </html>

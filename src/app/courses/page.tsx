@@ -6,11 +6,11 @@ import './Courses.css';
 
 // SEO Metadata
 export const metadata: Metadata = {
-  title: 'Quranic Courses — QuranLearn AI',
+  title: 'Learn Quran Courses — Learn Quran AI',
   description: 'Learn Quran through interactive courses designed for all levels. Tajweed, Memorization, and Tafsir courses with real-time feedback and personalized learning paths.',
   keywords: 'Quran courses, Islamic education, Tajweed courses, Quran memorization, Tafsir classes, online Quran learning',
   openGraph: {
-    title: 'Quranic Courses — QuranLearn AI',
+    title: 'Learn Quran Courses — Learn Quran AI',
     description: 'Interactive Quran courses with personalized learning paths',
     type: 'website',
     images: [

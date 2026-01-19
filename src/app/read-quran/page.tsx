@@ -95,18 +95,10 @@ export default function ReadQuranPage() {
         return (
             <div className="rq-container">
                 <div className="rq-loading">
-                    <p style={{ color: '#ef4444' }}>{error}</p>
+                    <p className="rq-error-text">{error}</p>
                     <button
                         onClick={() => window.location.reload()}
-                        style={{
-                            marginTop: '16px',
-                            padding: '8px 24px',
-                            background: 'var(--rq-primary)',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '8px',
-                            cursor: 'pointer',
-                        }}
+                        className="rq-retry-btn"
                     >
                         Retry
                     </button>

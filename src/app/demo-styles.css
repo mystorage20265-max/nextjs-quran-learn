@@ -1507,6 +1507,12 @@ body:has(.demo-page) main {
     left: 92%;
 }
 
+.node-extra {
+    top: 50%;
+    left: 95%;
+    transform: translateY(-50%);
+}
+
 /* Sparkles */
 .sparkle-star {
     position: absolute;

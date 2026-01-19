@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import styles from './NavigationTabs.module.css';
 
 interface NavigationTabsProps {
@@ -27,7 +28,15 @@ const NavigationTabs: React.FC<NavigationTabsProps> = ({ navigationMode, setNavi
           id={`${tab.id}-tab`}
           className={`${styles.navTab} ${navigationMode === tab.id ? styles.active : ''}`}
           onClick={() => setNavigationMode(tab.id as typeof navigationMode)}
+          style={{ position: 'relative' }}
         >
+          {navigationMode === tab.id && (
+            <motion.div
+              layoutId="activeTab"
+              className={styles.activeIndicator}
+              transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+            />
+          )}
           <span className={styles.navTabContent}>
             <span className={styles.navTabTitle}>{tab.title}</span>
             <span className={styles.navTabCount}>({tab.count})</span>

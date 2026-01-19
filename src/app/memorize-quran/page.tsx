@@ -349,8 +349,11 @@ export default function MemorizeQuranPage() {
         return (
             <FocusMode
                 verseText={verses[currentVerseIndex].textUthmani}
+                verseTranslation={verses[currentVerseIndex].translation}
                 verseNumber={verses[currentVerseIndex].verseNumber}
                 isPlaying={isPlaying}
+                currentRepeat={currentRepeat}
+                repeatCount={repeatCount}
                 onPlayPause={handlePlayPause}
                 onPrev={handlePrevVerse}
                 onNext={handleNextVerse}

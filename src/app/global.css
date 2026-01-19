@@ -8,6 +8,8 @@
   padding-bottom: 65px !important;
   min-height: 200px !important;
   overflow: visible !important;
+  background: var(--sn-bg-card) !important;
+  border: 1px solid var(--sn-border) !important;
 }
 
 .quran-surah-actions {
@@ -25,17 +27,24 @@
 }
 
 .quran-surah-btn.quran-btn-read {
-  background: #10b981 !important;
-  color: white !important;
-  font-weight: bold !important;
+  background: var(--sn-green) !important;
+  color: var(--sn-bg) !important;
+  font-weight: 800 !important;
   padding: 10px 16px !important;
-  border-radius: 8px !important;
-  border: 2px solid white !important;
+  border-radius: 100px !important;
+  border: 1px solid var(--sn-green) !important;
   width: 80% !important;
   margin: 0 auto !important;
-  box-shadow: 0 6px 15px rgba(0,0,0,0.25) !important;
+  box-shadow: 0 6px 15px var(--sn-green-glow) !important;
   font-size: 16px !important;
   display: block !important;
   text-transform: uppercase !important;
   cursor: pointer !important;
+  transition: all 0.3s !important;
+}
+
+.quran-surah-btn.quran-btn-read:hover {
+  transform: scale(1.05) !important;
+  background: var(--sn-green-hover) !important;
+  box-shadow: 0 10px 25px var(--sn-green-glow) !important;
 }

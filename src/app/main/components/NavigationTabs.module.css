@@ -1,0 +1,85 @@
+.navigationTabs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px;
+  margin: 2rem auto;
+  background: var(--glass-bg);
+  border-radius: 100px;
+  border: 1px solid var(--sn-border);
+  backdrop-filter: var(--glass-blur);
+  width: max-content;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.navigationTabs::-webkit-scrollbar {
+  display: none;
+}
+
+.navTab {
+  position: relative;
+  padding: 12px 24px;
+  background: transparent;
+  border: none;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  white-space: nowrap;
+  color: var(--sn-gray);
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 1;
+}
+
+.navTab:hover {
+  color: var(--sn-white);
+}
+
+.activeIndicator {
+  position: absolute;
+  inset: 0;
+  background: var(--sn-green);
+  border-radius: 100px;
+  box-shadow: 0 8px 16px var(--sn-green-glow);
+  z-index: -1;
+}
+
+.navTab.active {
+  color: var(--sn-bg);
+}
+
+.navTabContent {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.navTabTitle {
+  position: relative;
+}
+
+.navTabCount {
+  opacity: 0.6;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .navigationTabs {
+    width: 100%;
+    justify-content: flex-start;
+    padding: 6px;
+    margin: 1rem 0;
+  }
+
+  .navTab {
+    padding: 10px 18px;
+    font-size: 13px;
+  }
+}

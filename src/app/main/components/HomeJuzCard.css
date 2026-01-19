@@ -1,0 +1,74 @@
+/* === JUZ CARD - Premium Glassmorphism === */
+.juz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+  padding: 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.juz-card {
+  background: var(--sn-bg-card);
+  border: 1px solid var(--sn-border);
+  border-radius: 16px;
+  backdrop-filter: var(--glass-blur);
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  color: var(--sn-white);
+  position: relative;
+  overflow: hidden;
+}
+
+.juz-card:hover {
+  border-color: var(--sn-green);
+  background: var(--sn-bg-card-hover);
+  box-shadow: var(--shadow-card);
+  transform: translateY(-4px);
+}
+
+.juz-number {
+  background: linear-gradient(135deg, var(--sn-green), var(--sn-teal));
+  color: var(--sn-bg);
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  font-weight: 800;
+  box-shadow: 0 4px 15px var(--sn-green-glow);
+}
+
+.juz-name-en {
+  font-weight: 700;
+  font-size: 16px;
+  margin-bottom: 2px;
+  color: var(--sn-white);
+}
+
+.juz-range {
+  font-size: 12px;
+  color: var(--sn-gray);
+}
+
+.juz-name-ar {
+  font-family: var(--font-arabic);
+  font-size: 20px;
+  color: var(--sn-green);
+  text-shadow: 0 0 20px var(--sn-green-glow);
+}
+
+.verse-count {
+  font-size: 11px;
+  background: rgba(0, 245, 212, 0.1);
+  color: var(--sn-teal);
+  padding: 2px 8px;
+  border-radius: 100px;
+  margin-top: 4px;
+  display: inline-block;
+}

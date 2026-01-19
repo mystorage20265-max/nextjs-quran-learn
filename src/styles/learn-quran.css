@@ -1,40 +1,41 @@
-/* Learn Quran - Premium Glass Skin */
+/* Learn Quran - Premium Cinematic Glass Skin (Unified Theme) */
 
 :root {
-    /* Clean White & Gold Palette */
-    --lq-bg-main: #f8fafc;
-    --lq-bg-secondary: #ffffff;
-    --lq-bg-accent: #f0f9ff;
+    /* Unified Palette */
+    --lq-bg-main: var(--sn-bg);
+    --lq-bg-secondary: var(--sn-bg-dark);
+    --lq-bg-accent: var(--sn-bg-card);
 
-    --lq-text-primary: #1e293b;
-    --lq-text-secondary: #64748b;
+    --lq-text-primary: var(--sn-white);
+    --lq-text-secondary: var(--sn-gray);
 
-    --lq-accent-color: #0d9488;
-    /* Teal-600 */
-    --lq-accent-gold: #fbbf24;
-    /* Amber-400 */
-    --lq-accent-gold-dark: #d97706;
+    --lq-accent-color: var(--sn-green);
+    --lq-accent-gold: var(--sn-teal);
+    --lq-accent-gold-dark: var(--sn-cyan);
 
-    --glass-border: 1px solid rgba(255, 255, 255, 0.8);
-    --glass-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-    --glass-shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+    --glass-border: 1px solid var(--sn-border);
+    --glass-shadow: var(--glass-shadow);
+    --glass-shadow-hover: var(--shadow-card);
 }
 
 body {
-    background-color: var(--lq-bg-main);
-    color: var(--lq-text-primary);
+    background-color: var(--sn-bg);
+    color: var(--sn-white);
 }
 
 .learn-quran-page {
     min-height: 100vh;
     padding-bottom: 5rem;
+    position: relative;
+    z-index: 1;
 }
 
 .lq-detail-header {
-    background: white;
+    background: var(--sn-bg-dark);
     padding: 2rem 0;
-    border-bottom: 1px solid #e2e8f0;
+    border-bottom: 1px solid var(--sn-border);
     margin-bottom: 2rem;
+    backdrop-filter: var(--glass-blur);
 }
 
 .lq-container {
@@ -47,22 +48,24 @@ body {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    color: var(--lq-text-secondary);
+    color: var(--sn-gray);
     font-weight: 500;
     margin-bottom: 1rem;
-    transition: color 0.2s;
+    transition: all 0.2s;
+    text-decoration: none;
 }
 
 .lq-back-btn:hover {
-    color: var(--lq-accent-color);
+    color: var(--sn-green);
+    transform: translateX(-4px);
 }
 
 h1 {
     font-size: 2.5rem;
     font-weight: 800;
-    color: var(--lq-text-primary);
+    color: var(--sn-white);
     margin-bottom: 0.5rem;
-    background: linear-gradient(to right, #0d9488, #0f766e);
+    background: linear-gradient(to right, var(--sn-green), var(--sn-teal));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -70,17 +73,17 @@ h1 {
 /* Grid Layout */
 .lq-item-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     gap: 1.5rem;
 }
 
 /* Item Card - The "Glass" Upgrade */
 .lq-item-card {
     position: relative;
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(226, 232, 240, 0.8);
-    border-radius: 1rem;
+    background: var(--sn-bg-card);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--sn-border);
+    border-radius: 1.25rem;
     padding: 1.5rem;
     display: flex;
     flex-direction: column;
@@ -88,45 +91,45 @@ h1 {
     justify-content: center;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    min-height: 140px;
-    box-shadow: var(--glass-shadow);
+    min-height: 150px;
+    box-shadow: var(--shadow-card);
 }
 
 .lq-item-card:hover {
-    transform: translateY(-4px);
-    background: white;
-    box-shadow: var(--glass-shadow-hover);
-    border-color: var(--lq-accent-gold);
+    transform: translateY(-8px);
+    background: var(--sn-bg-card-hover);
+    border-color: var(--sn-green);
+    box-shadow: 0 10px 30px var(--sn-green-glow);
 }
 
-/* Active State - Gold & Animation */
+/* Active State - Glow & Animation */
 .lq-item-card.playing {
-    background: linear-gradient(135deg, white 0%, #fffbeb 100%);
-    border: 2px solid var(--lq-accent-gold);
-    box-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
+    background: var(--sn-bg-card-hover);
+    border: 2px solid var(--sn-green);
+    box-shadow: 0 0 30px var(--sn-green-glow);
     animation: rubberBand 1s both;
     z-index: 10;
 }
 
 /* Typography */
 .lq-item-text {
-    font-family: 'Amiri', 'Traditional Arabic', serif;
+    font-family: var(--font-arabic);
     font-size: 3rem;
     line-height: 1.2;
-    color: var(--lq-text-primary);
+    color: var(--sn-white);
     transition: transform 0.3s;
 }
 
 .lq-item-card:hover .lq-item-text,
 .lq-item-card.playing .lq-item-text {
     transform: scale(1.1);
-    color: var(--lq-accent-gold-dark);
+    color: var(--sn-green);
 }
 
 .lq-item-name {
     font-size: 0.875rem;
     font-weight: 600;
-    color: var(--lq-text-secondary);
+    color: var(--sn-gray-muted);
     margin-top: 0.5rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -134,35 +137,35 @@ h1 {
 }
 
 .lq-item-card.playing .lq-item-name {
-    color: var(--lq-accent-gold-dark);
+    color: var(--sn-green);
     opacity: 1;
 }
 
 /* Button Styling */
 .lq-btn-start {
-    background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
-    color: white;
+    background: linear-gradient(135deg, var(--sn-green) 0%, var(--sn-green-hover) 100%);
+    color: var(--sn-bg);
     border: none;
-    border-radius: 0.75rem;
-    padding: 0.75rem 1.5rem;
-    font-weight: 600;
+    border-radius: 100px;
+    padding: 0.85rem 2rem;
+    font-weight: 800;
     cursor: pointer;
-    transition: all 0.2s;
-    box-shadow: 0 4px 6px -1px rgba(13, 148, 136, 0.3);
+    transition: all 0.3s;
+    box-shadow: 0 10px 20px var(--sn-green-glow);
 }
 
 .lq-btn-start:hover {
-    transform: scale(1.02);
-    box-shadow: 0 10px 15px -3px rgba(13, 148, 136, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 15px 30px var(--sn-green-glow);
 }
 
 .lq-btn-start.playing {
     background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-    box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.3);
+    box-shadow: 0 10px 20px rgba(239, 68, 68, 0.3);
     animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-/* Animations */
+/* Animations from learn-quran.css preserved but context-aware */
 @keyframes rubberBand {
     0% {
         transform: scale3d(1, 1, 1);

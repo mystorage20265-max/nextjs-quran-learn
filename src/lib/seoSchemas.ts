@@ -11,7 +11,7 @@ export function getOrganizationSchema() {
   return {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: 'QuranicLearn',
+    name: 'Learn Quran',
     url: 'https://quraniclearn.com',
     logo: 'https://quraniclearn.com/your-quran-logo.svg',
     description: 'Interactive Quranic learning platform for spiritual growth and understanding.',
@@ -304,7 +304,7 @@ export function getOpenGraphTags({
     title,
     description,
     url,
-    siteName: 'QuranicLearn',
+    siteName: 'Learn Quran',
     images: [
       {
         url: image,

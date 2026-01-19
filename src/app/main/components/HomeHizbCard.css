@@ -1,0 +1,64 @@
+/* === HIZB CARD - Premium Glassmorphism === */
+.hizb-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+  padding: 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.hizb-card {
+  background: var(--sn-bg-card);
+  border: 1px solid var(--sn-border);
+  border-radius: 16px;
+  backdrop-filter: var(--glass-blur);
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  color: var(--sn-white);
+  position: relative;
+  overflow: hidden;
+}
+
+.hizb-card:hover {
+  border-color: var(--sn-green);
+  background: var(--sn-bg-card-hover);
+  box-shadow: var(--shadow-card);
+  transform: translateY(-4px);
+}
+
+.hizb-number {
+  background: linear-gradient(135deg, var(--sn-green), var(--sn-teal));
+  color: var(--sn-bg);
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  font-weight: 800;
+  box-shadow: 0 4px 15px var(--sn-green-glow);
+}
+
+.hizb-name-en {
+  font-weight: 700;
+  font-size: 16px;
+  margin-bottom: 2px;
+  color: var(--sn-white);
+}
+
+.hizb-range {
+  font-size: 12px;
+  color: var(--sn-gray);
+}
+
+.hizb-name-ar {
+  font-family: var(--font-arabic);
+  font-size: 20px;
+  color: var(--sn-green);
+  text-shadow: 0 0 20px var(--sn-green-glow);
+}

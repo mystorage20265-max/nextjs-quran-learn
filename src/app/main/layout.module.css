@@ -1,0 +1,124 @@
+.homeLayout {
+  min-height: 100vh;
+  width: 100%;
+  background-color: var(--sn-bg);
+  position: relative;
+  overflow-x: hidden;
+  padding-top: 64px;
+  display: flex;
+  flex-direction: column;
+}
+
+.homeBackground {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: 0.6;
+}
+
+.contentContainer {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  width: 100%;
+}
+
+.contentWrapper {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.floatingBgElement {
+  position: absolute;
+  border-radius: 50%;
+  animation: floatDrift 20s infinite ease-in-out;
+  filter: blur(80px);
+}
+
+.element1 {
+  width: 400px;
+  height: 400px;
+  top: -100px;
+  left: -100px;
+  background: radial-gradient(circle, var(--sn-green) 0%, transparent 70%);
+  opacity: 0.1;
+}
+
+.element2 {
+  width: 350px;
+  height: 350px;
+  top: 20%;
+  right: -50px;
+  background: radial-gradient(circle, var(--sn-teal) 0%, transparent 70%);
+  opacity: 0.08;
+  animation-delay: -5s;
+}
+
+.element3 {
+  width: 300px;
+  height: 300px;
+  bottom: -100px;
+  left: 15%;
+  background: radial-gradient(circle, var(--sn-green) 0%, transparent 70%);
+  opacity: 0.08;
+  animation-delay: -10s;
+}
+
+.element4 {
+  width: 250px;
+  height: 250px;
+  top: 60%;
+  right: 10%;
+  background: radial-gradient(circle, var(--sn-teal) 0%, transparent 70%);
+  opacity: 0.08;
+  animation-delay: -15s;
+}
+
+@keyframes floatDrift {
+
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+
+  25% {
+    transform: translate(30px, -20px) rotate(5deg);
+  }
+
+  50% {
+    transform: translate(-10px, 20px) rotate(-5deg);
+  }
+
+  75% {
+    transform: translate(-20px, -10px) rotate(2deg);
+  }
+}
+
+@media (max-width: 1024px) {
+  .contentWrapper {
+    padding: 1.5rem 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .contentWrapper {
+    padding: 1rem;
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .contentWrapper {
+    padding: 1rem 0.5rem;
+    gap: 1rem;
+  }
+}

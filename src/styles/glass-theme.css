@@ -1,32 +1,29 @@
-/* Glassmorphism Theme - Clean White & Gold */
+/* Glassmorphism Theme - Premium Dark Cinematic (Unified Theme) */
 :root {
-    /* Palette */
-    --glass-bg-primary: #f8fafc;
-    --glass-bg-gradient: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    /* Unified Palette */
+    --glass-bg-primary: var(--sn-bg);
+    --glass-bg-gradient: linear-gradient(135deg, var(--sn-bg) 0%, var(--sn-bg-dark) 100%);
 
-    /* The "Noor" (Light) Accent */
-    --glass-accent-gold: #fbbf24;
-    --glass-accent-gold-gradient: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
-
-    /* The "Peace" (Islam) Accent */
-    --glass-accent-teal: #0f766e;
+    /* Accents */
+    --glass-accent-gold: var(--sn-green);
+    --glass-accent-gold-gradient: linear-gradient(135deg, var(--sn-green) 0%, var(--sn-green-hover) 100%);
+    --glass-accent-teal: var(--sn-teal);
 
     /* Card Glass */
-    --glass-card-bg: rgba(255, 255, 255, 0.65);
-    --glass-card-border: 1px solid rgba(255, 255, 255, 0.8);
-    --glass-card-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
-    --glass-card-shadow-hover: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    --glass-card-bg: var(--sn-bg-card);
+    --glass-card-border: 1px solid var(--sn-border);
+    --glass-card-shadow: var(--shadow-card);
+    --glass-card-shadow-hover: 0 20px 50px rgba(0, 0, 0, 0.5);
 
     /* Typography */
-    --glass-text-main: #1e293b;
-    --glass-text-muted: #64748b;
+    --glass-text-main: var(--sn-white);
+    --glass-text-muted: var(--sn-gray);
 }
 
 body {
-    background: var(--glass-bg-primary);
+    background: var(--sn-bg);
     background-image: var(--glass-bg-gradient);
-    color: var(--glass-text-main);
-    min-height: 100vh;
+    color: var(--sn-white);
 }
 
 /* Base Container */
@@ -39,21 +36,21 @@ body {
 /* Glass Card Utility */
 .glass-card {
     background: var(--glass-card-bg);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
     border: var(--glass-card-border);
     box-shadow: var(--glass-card-shadow);
-    border-radius: 1rem;
-    /* Rounded-2xl */
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 1.5rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
 }
 
 .glass-card:hover {
-    transform: translateY(-4px);
+    transform: translateY(-8px);
     box-shadow: var(--glass-card-shadow-hover);
-    border-color: #fff;
+    border-color: var(--sn-green);
+    background: var(--sn-bg-card-hover);
 }
 
 /* Lesson Grid Item */
@@ -62,29 +59,28 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 120px;
+    min-height: 140px;
     cursor: pointer;
-    /* Font settings for Arabic */
     font-family: var(--font-arabic);
     font-size: 2.5rem;
     line-height: 1.2;
+    transition: all 0.3s;
 }
 
-/* Active / Playing State - The "Light" Glow */
+/* Active / Playing State */
 .lesson-grid-item.active {
     background: var(--glass-accent-gold-gradient);
-    color: white;
+    color: var(--sn-bg);
     border-color: transparent;
-    box-shadow: 0 0 20px rgba(251, 191, 36, 0.4);
-    /* Replicating QuranCentral Animation */
+    box-shadow: 0 0 30px var(--sn-green-glow);
     animation: rubberBand 1s both;
 }
 
 .lesson-grid-item.active .text-sm {
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--sn-bg);
 }
 
-/* Animations from Animate.css / QuranCentral */
+/* Animations preserved */
 @keyframes rubberBand {
     0% {
         transform: scale3d(1, 1, 1);
@@ -116,33 +112,30 @@ body {
 }
 
 @keyframes float {
-    0% {
+
+    0%,
+    100% {
         transform: translateY(0px);
     }
 
     50% {
-        transform: translateY(-5px);
-    }
-
-    100% {
-        transform: translateY(0px);
+        transform: translateY(-10px);
     }
 }
 
-/* Utility Animations */
 .animate-float {
     animation: float 6s ease-in-out infinite;
 }
 
 /* Page Transitions */
 .page-enter {
-    animation: slideUp 0.5s ease-out both;
+    animation: slideUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
 @keyframes slideUp {
     from {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(30px);
     }
 
     to {
@@ -151,18 +144,20 @@ body {
     }
 }
 
-/* Play All / Stop Button Glass Style */
+/* Button Glass Style */
 .btn-glass-primary {
-    background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
-    color: white;
+    background: linear-gradient(135deg, var(--sn-green) 0%, var(--sn-green-hover) 100%);
+    color: var(--sn-bg);
     border: none;
-    box-shadow: 0 4px 15px rgba(15, 118, 110, 0.3);
-    transition: all 0.2s ease;
+    box-shadow: 0 4px 15px var(--sn-green-glow);
+    transition: all 0.3s ease;
+    border-radius: 100px;
+    font-weight: 700;
 }
 
 .btn-glass-primary:hover {
-    transform: scale(1.02);
-    box-shadow: 0 6px 20px rgba(15, 118, 110, 0.4);
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px var(--sn-green-glow);
 }
 
 .btn-glass-danger {
@@ -170,9 +165,5 @@ body {
     color: white;
     border: none;
     box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
-}
-
-.btn-glass-danger:hover {
-    transform: scale(1.02);
-    box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+    border-radius: 100px;
 }

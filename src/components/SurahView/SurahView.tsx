@@ -116,7 +116,7 @@ export default function SurahView({ surah, onBack, backgroundImage }: SurahViewP
     try {
       await navigator.share({
         title: `Surah ${surah.englishName}`,
-        text: `Read Surah ${surah.englishName} on QuranicLearn`,
+        text: `Read Surah ${surah.englishName} on Learn Quran`,
         url: url,
       });
     } catch (err) {
@@ -132,13 +132,13 @@ export default function SurahView({ surah, onBack, backgroundImage }: SurahViewP
     console.log('Bookmark clicked');
   };
   return (
-    <div 
-      className="surah-view" 
-      style={{ 
+    <div
+      className="surah-view"
+      style={{
         backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url(${backgroundImage})`
       }}
     >
-      <ToggleMenu 
+      <ToggleMenu
         onFullScreen={handleFullScreen}
         onScrollViewToggle={() => {
           if (showScrollReadView) {
@@ -179,7 +179,7 @@ export default function SurahView({ surah, onBack, backgroundImage }: SurahViewP
           totalVerses={surah.numberOfAyahs}
           backgroundImageUrl={backgroundImage}
           onBack={() => setShowSlideView(false)}
-          onShowSlideView={() => {}}
+          onShowSlideView={() => { }}
           onShowScrollRead={() => {
             setShowSlideView(false);
             setShowScrollReadView(true);
@@ -201,7 +201,7 @@ export default function SurahView({ surah, onBack, backgroundImage }: SurahViewP
             setShowScrollReadView(false);
             setShowSlideView(true);
           }}
-          onShowScrollRead={() => {}}
+          onShowScrollRead={() => { }}
           onShowAudioView={() => {
             setShowScrollReadView(false);
             setShowAudioView(true);
@@ -222,81 +222,81 @@ export default function SurahView({ surah, onBack, backgroundImage }: SurahViewP
             </div>
           </div>
 
-      <div className="surah-view-content">
-        <div className="quran-icon-circle">
-          <span className="quran-icon">📖</span>
-        </div>
-        <h1 className="surah-title typing-text">
-          <TypeWriter 
-            arabicText={surah.name}
-            englishText={surah.englishName.toUpperCase()}
-            englishMeaning={surah.englishNameTranslation}
-          />
-        </h1>
-
-        <div className="actions-layout">
-          <div className="main-actions">
-            <button 
-              className="feature-button view-button"
-              onClick={() => setShowSlideView(true)}
-            >
-              <span className="action-icon">🖥️</span>
-              <span className="action-text">Slide View</span>
-            </button>
-            
-            <button 
-              className="feature-button read-button"
-              onClick={() => setShowScrollReadView(true)}
-            >
-              <span className="action-icon">📜</span>
-              <span className="action-text">Scroll & Read</span>
-            </button>
-            
-            <button 
-              className="feature-button audio-button"
-              onClick={() => setShowAudioView(true)}
-            >
-              <span className="action-icon">🎵</span>
-              <span className="action-text">Play with Audio</span>
-            </button>
-
-            {showAudioView && (
-              <AudioView
-                surahNumber={surah.number}
-                surahName={surah.name}
-                backgroundImage={backgroundImage}
-                onClose={() => setShowAudioView(false)}
-                onShowSlideView={() => {
-                  setShowAudioView(false);
-                  setShowSlideView(true);
-                }}
-                onShowScrollRead={() => {
-                  setShowAudioView(false);
-                  setShowScrollReadView(true);
-                }}
-                onShowAudioView={() => {}}
-                onShowIntroduction={setShowIntroduction}
+          <div className="surah-view-content">
+            <div className="quran-icon-circle">
+              <span className="quran-icon">📖</span>
+            </div>
+            <h1 className="surah-title typing-text">
+              <TypeWriter
+                arabicText={surah.name}
+                englishText={surah.englishName.toUpperCase()}
+                englishMeaning={surah.englishNameTranslation}
               />
-            )}
-          </div>
+            </h1>
 
-          <button 
-            className="intro-button"
-            onClick={() => setShowIntroduction(true)}
-          >
-            <span className="intro-icon">ℹ️</span>
-            INTRODUCTION
-          </button>
-          
-          {surahIntro && (
-            <SurahIntroduction
-              surahData={surahIntro}
-              isOpen={showIntroduction}
-              onClose={() => setShowIntroduction(false)}
-            />
-          )}
-        </div>
-      </div>
+            <div className="actions-layout">
+              <div className="main-actions">
+                <button
+                  className="feature-button view-button"
+                  onClick={() => setShowSlideView(true)}
+                >
+                  <span className="action-icon">🖥️</span>
+                  <span className="action-text">Slide View</span>
+                </button>
+
+                <button
+                  className="feature-button read-button"
+                  onClick={() => setShowScrollReadView(true)}
+                >
+                  <span className="action-icon">📜</span>
+                  <span className="action-text">Scroll & Read</span>
+                </button>
+
+                <button
+                  className="feature-button audio-button"
+                  onClick={() => setShowAudioView(true)}
+                >
+                  <span className="action-icon">🎵</span>
+                  <span className="action-text">Play with Audio</span>
+                </button>
+
+                {showAudioView && (
+                  <AudioView
+                    surahNumber={surah.number}
+                    surahName={surah.name}
+                    backgroundImage={backgroundImage}
+                    onClose={() => setShowAudioView(false)}
+                    onShowSlideView={() => {
+                      setShowAudioView(false);
+                      setShowSlideView(true);
+                    }}
+                    onShowScrollRead={() => {
+                      setShowAudioView(false);
+                      setShowScrollReadView(true);
+                    }}
+                    onShowAudioView={() => { }}
+                    onShowIntroduction={setShowIntroduction}
+                  />
+                )}
+              </div>
+
+              <button
+                className="intro-button"
+                onClick={() => setShowIntroduction(true)}
+              >
+                <span className="intro-icon">ℹ️</span>
+                INTRODUCTION
+              </button>
+
+              {surahIntro && (
+                <SurahIntroduction
+                  surahData={surahIntro}
+                  isOpen={showIntroduction}
+                  onClose={() => setShowIntroduction(false)}
+                />
+              )}
+            </div>
+          </div>
         </>
       )}
     </div>

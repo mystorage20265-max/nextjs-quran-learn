@@ -500,24 +500,9 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
         <div className="rq-container">
             {/* Loading overlay for settings changes */}
             {isChangingSettings && (
-                <div style={{
-                    position: 'fixed',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    background: 'var(--rq-glass)',
-                    backdropFilter: 'blur(8px)',
-                    WebkitBackdropFilter: 'blur(8px)',
-                    zIndex: 1500,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexDirection: 'column',
-                    gap: '16px'
-                }}>
+                <div className="settings-loading-overlay">
                     <div className="rq-spinner"></div>
-                    <p style={{ color: 'var(--rq-text)', fontWeight: 500 }}>Loading translation...</p>
+                    <p>Loading translation...</p>
                 </div>
             )}
 
@@ -530,88 +515,35 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 ← Back to All Surahs
             </Link>
 
-            {/* Surah Header - Simplified Modern Look */}
-            <header style={{
-                textAlign: 'center',
-                margin: '24px 0 40px',
-                padding: '32px 24px',
-                background: 'linear-gradient(135deg, var(--rq-primary) 0%, #064E3B 100%)',
-                borderRadius: '24px',
-                color: 'white',
-                boxShadow: '0 10px 30px rgba(5, 150, 105, 0.2)',
-                position: 'relative',
-                overflow: 'hidden'
-            }}>
-                {/* Decorative Pattern Background */}
-                <div style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.05\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
-                    opacity: 0.3
-                }} />
+            {/* Surah Header - Premium Cinematic Look */}
+            <header className="surah-header-cinematic">
+                <div className="surah-header-overlay" />
 
-                <div style={{ position: 'relative', zIndex: 1 }}>
-                    <h1 style={{
-                        fontFamily: 'var(--font-arabic)',
-                        fontSize: '3.5rem',
-                        marginBottom: '8px',
-                        textShadow: '0 2px 4px rgba(0,0,0,0.1)'
-                    }}>
+                <div className="surah-header-content">
+                    <h1 className="surah-name-arabic-large">
                         {chapter.name_arabic}
                     </h1>
-                    <h2 style={{
-                        fontSize: '1.5rem',
-                        fontWeight: '600',
-                        marginBottom: '8px',
-                        opacity: 0.95
-                    }}>
+                    <h2 className="surah-name-english-large">
                         {chapter.name_simple}
                     </h2>
-                    <p style={{
-                        fontSize: '1rem',
-                        opacity: 0.8,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '8px'
-                    }}>
+                    <p className="surah-meaning">
                         {chapter.translated_name.name}
                     </p>
 
                     {/* Info Toggle Button */}
                     <button
                         onClick={() => setShowInfo(!showInfo)}
-                        style={{
-                            marginTop: '20px',
-                            background: 'rgba(255, 255, 255, 0.2)',
-                            border: '1px solid rgba(255, 255, 255, 0.3)',
-                            padding: '8px 24px',
-                            borderRadius: '50px',
-                            color: 'white',
-                            fontSize: '0.9rem',
-                            cursor: 'pointer',
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '6px',
-                            transition: 'all 0.2s ease',
-                            backdropFilter: 'blur(4px)'
-                        }}
+                        className="info-toggle-btn"
                     >
                         <span>{showInfo ? 'Hide Info' : 'Show Info'}</span>
-                        <span style={{ fontSize: '0.8rem' }}>{showInfo ? '▲' : '▼'}</span>
+                        <span className="toggle-icon">{showInfo ? '▲' : '▼'}</span>
                     </button>
                 </div>
             </header>
 
             {/* Collapsible Surah Info Panel */}
             {showInfo && (
-                <div className="rq-info-panel" style={{
-                    animation: 'slideDown 0.3s ease-out',
-                    marginBottom: '32px'
-                }}>
+                <div className="rq-info-panel">
                     <h3 className="rq-info-title">📋 Surah Information</h3>
                     <div className="rq-info-grid">
                         <div className="rq-info-item">
