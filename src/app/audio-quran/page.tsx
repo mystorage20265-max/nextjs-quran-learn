@@ -4,7 +4,7 @@ import React, { useEffect, useState, useRef, useCallback } from "react";
 import Head from "next/head";
 import { motion } from "framer-motion";
 import Navbar from "../../components/Navbar/Navbar";
-import "../quran/Quran.css";
+import "../demo-styles.css";
 import "./AudioQuran.css";
 
 // API endpoints
@@ -208,22 +208,22 @@ export default function AudioQuranPage() {
   // Handle progress bar click
   const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!audioRef.current || !durationState) return;
-    
+
     const progressBar = e.currentTarget;
     const clickPosition = e.clientX - progressBar.getBoundingClientRect().left;
     const progressBarWidth = progressBar.clientWidth;
     const percentage = clickPosition / progressBarWidth;
-    
+
     audioRef.current.currentTime = percentage * durationState;
   };
 
   // Get current surah and reciter info for sticky player
   const getCurrentSurahInfo = () => {
     if (nowPlayingSurah === null) return null;
-    
+
     const surah = surahs.find(s => s.number === nowPlayingSurah);
     const reciter = reciters.find(r => r.identifier === selectedReciter);
-    
+
     return {
       surahName: surah?.englishName || `Surah ${nowPlayingSurah}`,
       surahTranslation: surah?.englishNameTranslation || "",
@@ -236,8 +236,8 @@ export default function AudioQuranPage() {
   const currentPlaybackInfo = getCurrentSurahInfo();
 
   // Calculate progress percentage
-  const progressPercentage = durationState > 0 
-    ? (currentTimeState / durationState) * 100 
+  const progressPercentage = durationState > 0
+    ? (currentTimeState / durationState) * 100
     : 0;
 
   // Calculate remaining time
@@ -279,7 +279,7 @@ export default function AudioQuranPage() {
           className="audio-header"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          style={{ 
+          style={{
             paddingTop: '100px',
             paddingBottom: '30px',
             paddingLeft: '20px',
@@ -470,12 +470,12 @@ export default function AudioQuranPage() {
                   <span className="duration-time">/ {formatTime(durationState)}</span>
                   <span className="remaining-time">-{formatTime(remainingTime)} left</span>
                 </div>
-                <div 
+                <div
                   className="progress-bar-container"
                   onClick={handleProgressClick}
                 >
-                  <div 
-                    className="progress-bar" 
+                  <div
+                    className="progress-bar"
                     style={{ width: `${progressPercentage}%` }}
                   ></div>
                 </div>

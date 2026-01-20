@@ -48,9 +48,12 @@
     /* Matching Vercel cards */
     --rq-radius-full: 9999px;
 
-    /* Effects */
     --rq-shadow-glow: 0 0 20px rgba(16, 185, 129, 0.2);
     --rq-blur: blur(12px);
+
+    /* Arabic Typography - UPDATED FOR VISIBILITY */
+    --rq-arabic-size: 42px;
+    --rq-arabic-line-height: 2.2;
 }
 
 /* ============ GLOBAL RESET & BASE ============ */
@@ -987,7 +990,8 @@
 
 @media (max-width: 768px) {
     :root {
-        --rq-arabic-size: 26px;
+        --rq-arabic-size: 32px;
+        --rq-arabic-line-height: 2.0;
     }
 
     .rq-container {
