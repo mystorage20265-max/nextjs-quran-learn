@@ -535,6 +535,40 @@
     color: #ef4444;
 }
 
+/* Reveal Button (Hidden Mode) */
+.reveal-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 12px 24px;
+    background: var(--mq-primary);
+    color: black;
+    border: none;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 10;
+    box-shadow: 0 4px 15px rgba(0, 230, 118, 0.3);
+    transition: all 0.2s;
+}
+
+.reveal-btn:hover {
+    transform: translate(-50%, -50%) scale(1.05);
+    box-shadow: 0 6px 20px rgba(0, 230, 118, 0.4);
+}
+
+/* Verse End Marker */
+.verse-end {
+    color: var(--mq-primary);
+    font-size: 0.8em;
+    margin-left: 8px;
+}
+
 /* Challenge Mode */
 .verse-arabic.challenge-mode {
     display: flex;
