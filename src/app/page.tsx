@@ -163,22 +163,25 @@ export default function HomePage() {
       {/* VIDEO MODAL */}
       {showDemoVideo && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4" onClick={() => setShowDemoVideo(false)}>
-          <div className="relative w-full max-w-4xl aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl border border-white/10" onClick={e => e.stopPropagation()}>
+          <div className="relative w-full max-w-5xl aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl border border-white/10" onClick={e => e.stopPropagation()}>
             <button
               className="absolute top-4 right-4 text-white hover:text-green-400 z-10 bg-black/50 rounded-full p-2 transition-colors"
               onClick={() => setShowDemoVideo(false)}
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
-            <iframe
+            <video
               width="100%"
               height="100%"
-              src="https://www.youtube.com/embed/fT5WlRfkXms?autoplay=1"
+              src="/COMING SOON.mp4"
               title="Quran Demo"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            ></iframe>
+              autoPlay
+              controls
+              playsInline
+              className="w-full h-full object-cover"
+            >
+              Your browser does not support the video tag.
+            </video>
           </div>
         </div>
       )}
