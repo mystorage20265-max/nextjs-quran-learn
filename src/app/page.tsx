@@ -3,6 +3,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
 import { Search, Globe, MessageSquare, Monitor, Pause, Play, ArrowRight, ChevronDown } from 'lucide-react';
 import './demo-styles.css';
 
@@ -224,15 +225,23 @@ export default function HomePage() {
                 {slides[currentSlide].desc}
               </p>
               <div className="hero-actions">
-                <button className="btn-explore-platform magnetic-btn">
-                  {slides[currentSlide].primaryBtn}
-                </button>
-                <button className="btn-watch-video magnetic-btn">
-                  <div className="play-icon-circle">
-                    <Play size={12} fill="white" />
-                  </div>
-                  {slides[currentSlide].secondaryBtn}
-                </button>
+                <Link href={
+                  currentSlide === 0 ? '/learn-quran' :
+                    currentSlide === 1 ? '/tajweed' :
+                      '/memorize-quran'
+                }>
+                  <button className="btn-explore-platform magnetic-btn">
+                    {slides[currentSlide].primaryBtn}
+                  </button>
+                </Link>
+                <Link href="/demo">
+                  <button className="btn-watch-video magnetic-btn">
+                    <div className="play-icon-circle">
+                      <Play size={12} fill="white" />
+                    </div>
+                    {slides[currentSlide].secondaryBtn}
+                  </button>
+                </Link>
               </div>
             </div>
           </div>

@@ -15,7 +15,6 @@ interface FocusModeProps {
 
 export default function FocusMode({
     verseText,
-    verseTranslation,
     verseNumber,
     isPlaying,
     currentRepeat,
@@ -26,39 +25,36 @@ export default function FocusMode({
     onClose
 }: FocusModeProps) {
     const [isTestMode, setIsTestMode] = React.useState(false);
-    const [showTranslation, setShowTranslation] = React.useState(false);
 
     return (
         <div className="focus-mode">
+            {/* Header with Exit and Test Mode */}
             <div className="focus-mode-header">
                 <button className="focus-mode-close" onClick={onClose}>
-                    <i className="fas fa-times"></i> Exit Focus
+                    <i className="fas fa-times"></i> Exit
+                </button>
+                <div className="focus-mode-verse-num">
+                    Verse {verseNumber}
+                </div>
+                <button
+                    className={`focus-mode-test-btn ${isTestMode ? 'active' : ''}`}
+                    onClick={() => setIsTestMode(!isTestMode)}
+                >
+                    <i className={`fas fa-eye${isTestMode ? '-slash' : ''}`}></i>
+                    {isTestMode ? 'Show' : 'Hide'}
                 </button>
             </div>
 
+            {/* Main Content - Verse */}
             <div className="focus-mode-content">
                 <div className={`focus-mode-verse-wrapper ${isTestMode ? 'is-testing' : ''}`}>
                     <p className="focus-mode-verse">
                         {verseText}
-                        <span className="verse-end"> ۝{verseNumber} </span>
+                        <span className="verse-end-mark"> ۝{verseNumber} </span>
                     </p>
-                    {isTestMode && (
-                        <button
-                            className="reveal-btn"
-                            onClick={() => setIsTestMode(false)}
-                            style={{ opacity: 1 }}
-                        >
-                            <i className="fas fa-eye"></i> Reveal
-                        </button>
-                    )}
                 </div>
 
-                {showTranslation && (
-                    <p className="focus-mode-translation">
-                        {verseTranslation}
-                    </p>
-                )}
-
+                {/* Repeat Progress Dots */}
                 <div className="focus-mode-repeat-progress">
                     <div className="repeat-dot-container">
                         {Array.from({ length: repeatCount }).map((_, i) => (
@@ -68,55 +64,21 @@ export default function FocusMode({
                             ></div>
                         ))}
                     </div>
-                    <span className="repeat-text">Repeat {currentRepeat}/{repeatCount}</span>
+                    <span className="repeat-text">{currentRepeat}/{repeatCount}</span>
                 </div>
             </div>
 
+            {/* Footer - Controls */}
             <div className="focus-mode-footer">
-                <div className="focus-mode-tools">
-                    <button
-                        className={`tool-btn ${isTestMode ? 'active' : ''}`}
-                        onClick={() => setIsTestMode(!isTestMode)}
-                        title="Test Mode (Blur Verse)"
-                    >
-                        <i className={`fas fa-eye${isTestMode ? '' : '-slash'}`}></i>
-                        {isTestMode ? 'Learning' : 'Testing'}
-                    </button>
-                    <button
-                        className={`tool-btn ${showTranslation ? 'active' : ''}`}
-                        onClick={() => setShowTranslation(!showTranslation)}
-                        title="Toggle Translation"
-                    >
-                        <i className="fas fa-language"></i>
-                        Translation
-                    </button>
-                </div>
-
-                <div className="focus-mode-controls">
-                    <button
-                        className="bottom-player-btn secondary"
-                        onClick={onPrev}
-                        aria-label="Previous verse"
-                    >
-                        <i className="fas fa-step-backward"></i>
-                    </button>
-
-                    <button
-                        className="bottom-player-btn play"
-                        onClick={onPlayPause}
-                        aria-label={isPlaying ? 'Pause' : 'Play'}
-                    >
-                        <i className={`fas fa-${isPlaying ? 'pause' : 'play'}`}></i>
-                    </button>
-
-                    <button
-                        className="bottom-player-btn secondary"
-                        onClick={onNext}
-                        aria-label="Next verse"
-                    >
-                        <i className="fas fa-step-forward"></i>
-                    </button>
-                </div>
+                <button className="focus-ctrl-btn" onClick={onPrev}>
+                    <i className="fas fa-step-backward"></i>
+                </button>
+                <button className="focus-ctrl-btn play" onClick={onPlayPause}>
+                    <i className={`fas fa-${isPlaying ? 'pause' : 'play'}`}></i>
+                </button>
+                <button className="focus-ctrl-btn" onClick={onNext}>
+                    <i className="fas fa-step-forward"></i>
+                </button>
             </div>
         </div>
     );

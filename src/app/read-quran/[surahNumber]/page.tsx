@@ -330,8 +330,13 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
         return (surahVerseOffsets[surahNum] || 0) + verseNum;
     }, []);
 
+    const playbackIdRef = useRef(0);
+
     // Play verse audio
     const playVerse = useCallback((verseNumber: number) => {
+        // Increment playback ID to invalidate any previous or pending sequences
+        const myPlaybackId = ++playbackIdRef.current;
+
         // CRITICAL: Don't play if component is unmounted
         if (!isMountedRef.current) {
             return;
@@ -356,14 +361,10 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
         const versePadded = verseNumber.toString().padStart(3, '0');
 
         // Try multiple audio sources with different formats
-        // Try multiple audio sources with different formats
         // Prioritize EveryAyah as it has the most predictable folder structure
         const audioUrls = [
-            // EveryAyah - dynamic folder (Most reliable)
             `https://everyayah.com/data/${folder}/${surahPadded}${versePadded}.mp3`,
-            // Islamic Network - dynamic slug
             `https://cdn.islamic.network/quran/audio/128/${slug}/${globalAyahId}.mp3`,
-            // Quran.com verses CDN (Fallback)
             `https://verses.quran.com/${slug.replace('ar.', '')}/mp3/${surahNumber}_${verseNumber}.mp3`
         ];
 
@@ -380,13 +381,14 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
 
         const tryNextUrl = () => {
             // CRITICAL: Check mounted status before any action
-            if (!isMountedRef.current) {
-                return;
-            }
+            if (!isMountedRef.current) return;
+
+            // CRITICAL: Verify this is still the active playback session
+            if (myPlaybackId !== playbackIdRef.current) return;
 
             if (currentUrlIndex >= audioUrls.length) {
                 console.error('All audio sources failed');
-                if (isMountedRef.current) {
+                if (isMountedRef.current && myPlaybackId === playbackIdRef.current) {
                     setIsPlaying(false);
                 }
                 return;
@@ -396,18 +398,15 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
             audioRef.current = audio;
 
             audio.onplay = () => {
-                // Check if still mounted before updating state
-                if (isMountedRef.current) {
+                if (isMountedRef.current && myPlaybackId === playbackIdRef.current) {
                     setIsPlaying(true);
                     setCurrentVerse(verseNumber);
                 }
             };
 
             audio.onended = () => {
-                // Check if still mounted before auto-playing next
-                if (!isMountedRef.current) {
-                    return;
-                }
+                if (!isMountedRef.current || myPlaybackId !== playbackIdRef.current) return;
+
                 // Auto-play next verse
                 if (verseNumber < verses.length) {
                     playVerse(verseNumber + 1);
@@ -418,20 +417,16 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
             };
 
             audio.onerror = () => {
-                // Check if still mounted before retrying
-                if (!isMountedRef.current) {
-                    return;
-                }
+                if (!isMountedRef.current || myPlaybackId !== playbackIdRef.current) return;
+
                 console.warn(`Audio source ${currentUrlIndex + 1} failed for ${slug}, trying next...`);
                 currentUrlIndex++;
                 tryNextUrl();
             };
 
             audio.play().catch((err) => {
-                // Check if still mounted before retrying
-                if (!isMountedRef.current) {
-                    return;
-                }
+                if (!isMountedRef.current || myPlaybackId !== playbackIdRef.current) return;
+
                 console.warn('Audio play failed:', err);
                 currentUrlIndex++;
                 tryNextUrl();
@@ -441,8 +436,24 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
         tryNextUrl();
     }, [surahNumber, verses, selectedReciter]);
 
+    // Auto-scroll to active verse
+    useEffect(() => {
+        if (currentVerse && isPlaying) {
+            const verseElement = document.getElementById(`verse-${currentVerse}`);
+            if (verseElement) {
+                verseElement.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+            }
+        }
+    }, [currentVerse, isPlaying]);
+
     // Stop audio
     const stopAudio = useCallback(() => {
+        // Invalidate any pending playbacks
+        playbackIdRef.current++;
+
         if (audioRef.current) {
             audioRef.current.pause();
             audioRef.current = null;
@@ -568,7 +579,19 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
 
             {/* Toolbar */}
             <div className="rq-toolbar">
-                <div className="rq-toolbar-group">
+                <div className="rq-toolbar-group actions-group">
+                    {/* Play Button */}
+                    <button className="rq-toolbar-btn play-btn" onClick={playAll}>
+                        {isPlaying ? '⏸️ Pause' : '▶️ Play Audio'}
+                    </button>
+
+                    {/* Settings Button */}
+                    <button className="rq-toolbar-btn settings-btn" onClick={() => setShowSettings(true)}>
+                        ⚙️ Settings
+                    </button>
+                </div>
+
+                <div className="rq-toolbar-group mode-group">
                     {/* Mode Toggle */}
                     <div className="rq-mode-toggle">
                         <button
@@ -584,18 +607,6 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                             Reading
                         </button>
                     </div>
-                </div>
-
-                <div className="rq-toolbar-group">
-                    {/* Play Button */}
-                    <button className="rq-toolbar-btn play-btn" onClick={playAll}>
-                        {isPlaying ? '⏸️ Pause' : '▶️ Play Audio'}
-                    </button>
-
-                    {/* Settings Button */}
-                    <button className="rq-toolbar-btn settings-btn" onClick={() => setShowSettings(true)}>
-                        ⚙️ Settings
-                    </button>
                 </div>
             </div>
 
