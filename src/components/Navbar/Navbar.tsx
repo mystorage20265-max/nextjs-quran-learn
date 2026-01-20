@@ -98,10 +98,10 @@ export default function Navbar() {
             <Image
               src="/logo.png"
               alt="Learn Quran App"
-              width={160}
-              height={50}
+              width={100}
+              height={100}
               className="logo-img"
-              style={{ objectFit: 'contain' }}
+              priority
             />
           </motion.div>
         </Link>
@@ -210,9 +210,9 @@ export default function Navbar() {
                   <Image
                     src="/logo.png"
                     alt="Learn Quran App"
-                    width={120}
-                    height={40}
-                    style={{ objectFit: 'contain' }}
+                    width={80}
+                    height={80}
+                    priority
                   />
                 </div>
                 <button className="sidebar-close" onClick={closeMenu}><X size={24} /></button>
