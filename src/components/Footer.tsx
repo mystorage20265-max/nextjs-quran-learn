@@ -26,7 +26,7 @@ const Footer: React.FC = () => {
       { name: 'Home', href: '/' },
       { name: 'Main Page', href: '/main' },
       { name: 'About Us', href: '/about' },
-      { name: 'Quran Browser', href: '/quran' },
+      { name: 'Read Quran', href: '/read-quran' },
     ],
     courses: [
       { name: 'Tajweed', href: '/tajweed' },

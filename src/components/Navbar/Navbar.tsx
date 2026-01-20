@@ -64,7 +64,6 @@ export default function Navbar() {
 
   const navLinks = [
     { href: '/', label: 'Home', icon: <Home size={18} /> },
-    { href: '/main', label: 'Main', icon: <Star size={18} /> },
     { href: '/read-quran', label: 'Read Quran', icon: <BookOpen size={18} /> },
     { href: '/learn-quran', label: 'Learn Quran', icon: <GraduationCap size={18} /> },
     { href: '/memorize-quran', label: 'Memorize Quran', icon: <Brain size={18} /> },
@@ -73,16 +72,12 @@ export default function Navbar() {
   const moreFeatures = [
     { href: '/about', label: 'About Us', icon: <Info size={16} /> },
     { href: '/courses', label: 'Courses', icon: <Book size={16} /> },
-    { href: '/quran', label: 'Quran Browser', icon: <Search size={16} /> },
     { href: '/duas', label: 'DUAS', icon: <Sparkles size={16} /> },
-    { href: '/hifz', label: 'HIFZ', icon: <BookOpen size={16} /> },
-    { href: '/tafsir', label: 'TAFSIR', icon: <GraduationCap size={16} /> },
     { href: '/tajweed', label: 'TAJWEED', icon: <Mic2 size={16} /> },
     { href: '/prayer-time', label: 'Prayer Time', icon: <Clock size={16} /> },
     { href: '/community', label: 'COMMUNITY', icon: <Users size={16} /> },
     { href: '/quran-player', label: 'Quran Player', icon: <PlayCircle size={16} /> },
     { href: '/radio', label: 'Quran Radio', icon: <Radio size={16} /> },
-    { href: '/audio-quran', label: 'Al-Quran Audio', icon: <Music size={16} /> },
   ];
 
   return (
@@ -96,8 +91,8 @@ export default function Navbar() {
             className="logo-container"
           >
             <Image
-              src="/logo.png"
-              alt="Learn Quran App"
+              src="/logo-v4.png"
+              alt="Learn Quran"
               width={100}
               height={100}
               className="logo-img"
@@ -208,8 +203,8 @@ export default function Navbar() {
               <div className="sidebar-header">
                 <div className="logo-container">
                   <Image
-                    src="/logo.png"
-                    alt="Learn Quran App"
+                    src="/logo-v4.png"
+                    alt="Learn Quran"
                     width={80}
                     height={80}
                     priority

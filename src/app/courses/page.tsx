@@ -1,146 +1,117 @@
-import React from 'react';
-import { Metadata } from 'next';
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
+import { motion } from 'framer-motion';
+import '../demo-styles.css';
+
+// Original imports (kept for reference)
 import Image from 'next/image';
 import Navbar from '../../components/Navbar/Navbar';
 import './Courses.css';
 
-// SEO Metadata
-export const metadata: Metadata = {
+/*
+// SEO Metadata (Hidden for client component)
+export const metadata = {
   title: 'Learn Quran Courses — Learn Quran AI',
   description: 'Learn Quran through interactive courses designed for all levels. Tajweed, Memorization, and Tafsir courses with real-time feedback and personalized learning paths.',
-  keywords: 'Quran courses, Islamic education, Tajweed courses, Quran memorization, Tafsir classes, online Quran learning',
-  openGraph: {
-    title: 'Learn Quran Courses — Learn Quran AI',
-    description: 'Interactive Quran courses with personalized learning paths',
-    type: 'website',
-    images: [
-      {
-        url: '/courses-og.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'QuranLearn AI - Quranic Courses'
-      }
-    ]
-  }
 };
+*/
 
-const CoursesPage = () => {
+// Hidden original component
+const HiddenCoursesPage = () => {
+  // Original logic would go here
+  return null;
+}
+
+export default function CoursesPage() {
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePos({
+        x: (e.clientX / window.innerWidth) - 0.5,
+        y: (e.clientY / window.innerHeight) - 0.5
+      });
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
   return (
-    <>
-      <Navbar />
-      <main className="courses-page">
-        <section className="courses-hero">
-          <div className="container">
-            <h1>Quranic Learning Courses</h1>
-            <p className="lead">Discover our interactive learning paths designed to help you connect with the Quran</p>
-          </div>
-        </section>
+    <div className="demo-page flex flex-col min-h-screen overflow-hidden relative font-sans !bg-[#001822]">
+      {/* ===== ANIMATED BACKGROUND IDENTICAL TO HOME ===== */}
+      <div className="particles-bg">
+        {[...Array(30)].map((_, i) => (
+          <div key={i} className={`particle p${i % 5}`} style={{
+            left: `${Math.random() * 100}%`,
+            top: `${Math.random() * 100}%`,
+            animationDelay: `${Math.random() * 5}s`,
+            animationDuration: `${15 + Math.random() * 20}s`
+          }} />
+        ))}
+      </div>
 
-        <section className="courses-grid">
-          <div className="container">
-            <h2>Featured Courses</h2>
-            <div className="courses-list">
-              {/* Course cards would be mapped here from API data */}
-              <div className="course-card">
-                <div className="course-image">
-                  <Image
-                    src="/tajweed-course.jpg"
-                    alt="Tajweed Fundamentals Course Cover"
-                    width={400}
-                    height={250}
-                  />
-                  <span className="course-level">Beginner</span>
-                </div>
-                <div className="course-content">
-                  <h3>Tajweed Fundamentals</h3>
-                  <p>Learn the essential rules of proper Quranic recitation with interactive exercises.</p>
-                  <div className="course-meta">
-                    <span><i className="fas fa-clock"></i> 8 weeks</span>
-                    <span><i className="fas fa-user"></i> 2,500+ enrolled</span>
-                  </div>
-                  <button className="btn btn-primary">Enroll Now</button>
-                </div>
-              </div>
+      {/* Hero Parallax Orbs */}
+      <div className="hero-orb orb-1" style={{ transform: `translate(${mousePos.x * 30}px, ${mousePos.y * 30}px)`, top: '20%', left: '20%' }} />
+      <div className="hero-orb orb-2" style={{ transform: `translate(${mousePos.x * -25}px, ${mousePos.y * -25}px)`, bottom: '20%', right: '20%' }} />
 
-              <div className="course-card">
-                <div className="course-image">
-                  <Image
-                    src="/memorization-course.jpg"
-                    alt="Quran Memorization Course Cover - Juz Amma"
-                    width={400}
-                    height={250}
-                  />
-                  <span className="course-level">Intermediate</span>
-                </div>
-                <div className="course-content">
-                  <h3>Hifdh: Juz Amma</h3>
-                  <p>Memorize the 30th Juz of the Quran with our proven memorization techniques.</p>
-                  <div className="course-meta">
-                    <span><i className="fas fa-clock"></i> 12 weeks</span>
-                    <span><i className="fas fa-user"></i> 1,800+ enrolled</span>
-                  </div>
-                  <button className="btn btn-primary">Enroll Now</button>
-                </div>
-              </div>
+      <main className="flex-1 flex flex-col items-center justify-center relative z-10 p-6">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="text-center max-w-5xl mx-auto space-y-16"
+        >
+          {/* Glass Badge */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+            className="inline-flex items-center gap-5 px-10 py-5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md shadow-2xl mb-14 group hover:bg-white/10 transition-colors cursor-default"
+          >
+            <span className="relative flex h-5 w-5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#81b532] opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-5 w-5 bg-[#81b532]"></span>
+            </span>
+            <span className="text-5xl md:text-8xl font-bold tracking-[0.2em] text-[#81b532] uppercase drop-shadow-2xl">Coming Soon</span>
+          </motion.div>
 
-              <div className="course-card">
-                <div className="course-image">
-                  <Image
-                    src="/tafsir-course.jpg"
-                    alt="Tafsir Course Cover - Understanding Surah Al-Baqarah"
-                    width={400}
-                    height={250}
-                  />
-                  <span className="course-level">Advanced</span>
-                </div>
-                <div className="course-content">
-                  <h3>Tafsir: Understanding Surah Al-Baqarah</h3>
-                  <p>Deep dive into the meanings and contexts of the longest Surah in the Quran.</p>
-                  <div className="course-meta">
-                    <span><i className="fas fa-clock"></i> 16 weeks</span>
-                    <span><i className="fas fa-user"></i> 1,200+ enrolled</span>
-                  </div>
-                  <button className="btn btn-primary">Enroll Now</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+          {/* Main Title */}
+          <h1 className="hero-title-main text-6xl md:text-8xl font-black tracking-tight leading-tight">
+            <span className="block text-white mb-2 drop-shadow-lg">Courses</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#81b532] via-[#a3cf5b] to-emerald-400 drop-shadow-2xl">
+              Reimagined.
+            </span>
+          </h1>
 
-        <section className="courses-categories">
-          <div className="container">
-            <h2>Browse by Category</h2>
-            <div className="category-list">
-              <a href="#tajweed" className="category-item">
-                <i className="fas fa-microphone"></i>
-                <span>Tajweed</span>
-              </a>
-              <a href="#memorization" className="category-item">
-                <i className="fas fa-brain"></i>
-                <span>Memorization</span>
-              </a>
-              <a href="#tafsir" className="category-item">
-                <i className="fas fa-book-open"></i>
-                <span>Tafsir</span>
-              </a>
-              <a href="#arabic" className="category-item">
-                <i className="fas fa-language"></i>
-                <span>Arabic</span>
-              </a>
-              <a href="#beginners" className="category-item">
-                <i className="fas fa-seedling"></i>
-                <span>For Beginners</span>
-              </a>
-              <a href="#children" className="category-item">
-                <i className="fas fa-child"></i>
-                <span>For Children</span>
-              </a>
-            </div>
-          </div>
-        </section>
+          {/* Subtitle */}
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4, duration: 0.8 }}
+            className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto leading-relaxed font-light"
+          >
+            Discover interactive learning paths designed to help you <span className="text-white font-medium">connect with the Quran</span>. <br className="hidden md:block" />
+            From Tajweed to Memorization, master the Holy Book with expert guidance.
+          </motion.p>
+
+          {/* Connected Button */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6, duration: 0.5 }}
+            className="pt-32 flex flex-col sm:flex-row items-center justify-center gap-6"
+          >
+            <Link href="/learn-quran">
+              <button className="btn-explore-platform magnetic-btn px-10 py-5 text-lg shadow-[0_0_40px_rgba(129,181,50,0.4)] hover:shadow-[0_0_60px_rgba(129,181,50,0.6)]">
+                Start Learning Now
+              </button>
+            </Link>
+          </motion.div>
+        </motion.div>
       </main>
-    </>
+    </div>
   );
-};
-
-export default CoursesPage;
+}

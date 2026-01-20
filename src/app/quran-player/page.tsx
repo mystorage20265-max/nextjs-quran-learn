@@ -1,10 +1,12 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
-import SurahView from '@/components/SurahView/SurahView';
-import Navbar from '@/components/Navbar/Navbar';
-import './styles.css';
+import '../demo-styles.css'; // Import Homepage Theme
+import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
+import { motion } from 'framer-motion';
 
+// Hiding original code as requested - keeping minimal interfaces if needed later
 interface Surah {
   number: number;
   name: string;
@@ -14,210 +16,101 @@ interface Surah {
   revelationType: string;
 }
 
+// Previously used component code (hidden)
+function HiddenQuranPlayerPage() {
+  // ... original logic reserved ...
+  return null;
+}
+
 export default function QuranPlayerPage() {
-  const [surahs, setSurahs] = useState<Surah[]>([]);
-  const [selectedSurah, setSelectedSurah] = useState<Surah | null>(null);
-  const [isLoadingSurahs, setIsLoadingSurahs] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [mainContentHeight, setMainContentHeight] = useState<number>(0);
-
-  // Filter surahs based on search query
-  const filteredSurahs = useMemo(() => {
-    if (!searchQuery.trim()) return surahs;
-    
-    const query = searchQuery.toLowerCase().trim();
-    return surahs.filter((surah) => 
-      surah.name.toLowerCase().includes(query) ||
-      surah.englishName.toLowerCase().includes(query) ||
-      surah.englishNameTranslation.toLowerCase().includes(query) ||
-      surah.number.toString() === query
-    );
-  }, [surahs, searchQuery]);
-
-  // Group filtered surahs into sections
-  const groupedSurahs = useMemo(() => {
-    const groups = [];
-    for (let i = 0; i < filteredSurahs.length; i += 19) {
-      groups.push({
-        start: i,
-        end: Math.min(i + 19, filteredSurahs.length),
-        surahs: filteredSurahs.slice(i, i + 19)
-      });
-    }
-    return groups;
-  }, [filteredSurahs]);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
-    // Calculate and set content height
-    const calculateHeight = () => {
-      const windowHeight = window.innerHeight;
-      const navbarHeight = 80; // Height of navbar
-      setMainContentHeight(windowHeight - navbarHeight);
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePos({
+        x: (e.clientX / window.innerWidth) - 0.5,
+        y: (e.clientY / window.innerHeight) - 0.5
+      });
     };
-
-    calculateHeight();
-    window.addEventListener('resize', calculateHeight);
-    return () => window.removeEventListener('resize', calculateHeight);
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
-
-  useEffect(() => {
-    fetch('https://api.alquran.cloud/v1/surah')
-      .then(response => response.json())
-      .then(data => {
-        setSurahs(data.data);
-        setIsLoadingSurahs(false);
-      })
-      .catch(error => {
-        console.error('Error fetching surahs:', error);
-        setIsLoadingSurahs(false);
-      });
-  }, []);
-
-  const handleSurahSelect = (surah: Surah) => {
-    setSelectedSurah(surah);
-  };
-
-  const getBackgroundImage = (surahNumber: number) => {
-    const imageNumber = ((surahNumber - 1) % 14) + 1;
-    return `/images/surah-backgrounds/${imageNumber}.jpg`;
-  };
-
-  const renderSurahSection = (groupIndex: number, surahs: Surah[], sliderId: string) => (
-    <div className="surah-section" key={groupIndex}>
-      <h3 className="surah-section-title">
-        Surah {surahs[0].number} - {surahs[surahs.length - 1].number}
-      </h3>
-      <div className="slider-container">
-        <button 
-          className="slider-button prev"
-          onClick={() => {
-            const slider = document.getElementById(sliderId);
-            if (slider) slider.scrollLeft -= 300;
-          }}
-          aria-label="Previous Surahs"
-          title="Scroll left"
-        >
-          &#10094;
-        </button>
-        <div className="surahs-slider" id={sliderId}>
-          {surahs.map((surah) => (
-            <div
-              key={surah.number}
-              className={`surah-card ${selectedSurah?.number === surah.number ? 'selected' : ''}`}
-              onClick={() => handleSurahSelect(surah)}
-              style={{
-                backgroundImage: `url(${getBackgroundImage(surah.number)})`
-              }}
-            >
-              <div className="surah-card-content">
-                <div className="surah-number-badge">{surah.number}</div>
-                <h3 className="surah-name-arabic">{surah.name}</h3>
-                <h4 className="surah-name-english">{surah.englishName}</h4>
-                <p className="surah-translation">{surah.englishNameTranslation}</p>
-                <span className="surah-ayahs">{surah.numberOfAyahs} Verses</span>
-              </div>
-            </div>
-          ))}
-        </div>
-        <button 
-          className="slider-button next"
-          onClick={() => {
-            const slider = document.getElementById(sliderId);
-            if (slider) slider.scrollLeft += 300;
-          }}
-          aria-label="Next Surahs"
-          title="Scroll right"
-        >
-          &#10095;
-        </button>
-      </div>
-    </div>
-  );
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <Navbar />
-      <main className="flex-1 w-full">
-        {/* Hero Header */}
-        <div className="page-header">
-          <div className="header-background" style={{ 
-            backgroundImage: 'url(/images/quran%20player%20home%20background.jpg)'
-          }}></div>
-          <div className="header-overlay"></div>
-          <div className="header-content">
-            <h1 className="page-title">Quran Player</h1>
-            <p className="page-subtitle">Immerse yourself in the beautiful recitation of the Holy Quran</p>
-          </div>
-        </div>
+    <div className="demo-page flex flex-col min-h-screen overflow-hidden relative font-sans !bg-[#001822]">
+      {/* ===== ANIMATED BACKGROUND IDENTICAL TO HOME ===== */}
+      <div className="particles-bg">
+        {[...Array(30)].map((_, i) => (
+          <div key={i} className={`particle p${i % 5}`} style={{
+            left: `${Math.random() * 100}%`,
+            top: `${Math.random() * 100}%`,
+            animationDelay: `${Math.random() * 5}s`,
+            animationDuration: `${15 + Math.random() * 20}s`
+          }} />
+        ))}
+      </div>
 
-        {/* Search and Content Area */}
-        <div className="main-content-wrapper">
-          {/* Search Bar Section */}
-          <div className="search-section">
-            <div className="search-container">
-              <div className="search-wrapper">
-                <svg className="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <circle cx="11" cy="11" r="8"></circle>
-                  <path d="m21 21-4.35-4.35"></path>
-                </svg>
-                <input
-                  type="text"
-                  className="search-input"
-                  placeholder="Search by Surah name, English name, or number..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-                {searchQuery && (
-                  <button
-                    className="clear-button"
-                    onClick={() => setSearchQuery('')}
-                    title="Clear search"
-                  >
-                    ✕
-                  </button>
-                )}
-              </div>
-              {searchQuery && (
-                <p className="search-info">
-                  Found <strong>{filteredSurahs.length}</strong> Surah{filteredSurahs.length !== 1 ? 's' : ''}
-                </p>
-              )}
-            </div>
-          </div>
+      {/* Hero Parallax Orbs */}
+      <div className="hero-orb orb-1" style={{ transform: `translate(${mousePos.x * 30}px, ${mousePos.y * 30}px)`, top: '20%', left: '20%' }} />
+      <div className="hero-orb orb-2" style={{ transform: `translate(${mousePos.x * -25}px, ${mousePos.y * -25}px)`, bottom: '20%', right: '20%' }} />
 
-          {/* Main Content */}
-          <div className="flex-1 w-full">
-            <div className="surahs-container">
-              {isLoadingSurahs ? (
-                <div className="loading-container">
-                  <div className="loading-spinner"></div>
-                  <p>Loading Surahs...</p>
-                </div>
-              ) : filteredSurahs.length === 0 ? (
-                <div className="no-results">
-                  <div className="no-results-icon">🔍</div>
-                  <h3>No Surahs Found</h3>
-                  <p>Try searching with different keywords or clear your search.</p>
-                </div>
-              ) : (
-                <>
-                  {groupedSurahs.map((group, index) => 
-                    renderSurahSection(index, group.surahs, `slider-${index}`)
-                  )}
-                </>
-              )}
-            </div>
-          </div>
-        </div>
+      <main className="flex-1 flex flex-col items-center justify-center relative z-10 p-6">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="text-center max-w-5xl mx-auto space-y-16"
+        >
+          {/* Glass Badge */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+            className="inline-flex items-center gap-5 px-10 py-5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md shadow-2xl mb-14 group hover:bg-white/10 transition-colors cursor-default"
+          >
+            <span className="relative flex h-5 w-5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#81b532] opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-5 w-5 bg-[#81b532]"></span>
+            </span>
+            <span className="text-5xl md:text-8xl font-bold tracking-[0.2em] text-[#81b532] uppercase drop-shadow-2xl">Coming Soon</span>
+          </motion.div>
 
-        {/* Surah Detail View Modal */}
-        {selectedSurah && (
-          <SurahView
-            surah={selectedSurah}
-            onBack={() => setSelectedSurah(null)}
-            backgroundImage={getBackgroundImage(selectedSurah.number)}
-          />
-        )}
+          {/* Main Title - Homepage Typography */}
+          <h1 className="hero-title-main text-6xl md:text-8xl font-black tracking-tight leading-tight">
+            <span className="block text-white mb-2 drop-shadow-lg">Quran Player</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#81b532] via-[#a3cf5b] to-emerald-400 drop-shadow-2xl">
+              Reimagined.
+            </span>
+          </h1>
+
+          {/* Subtitle */}
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4, duration: 0.8 }}
+            className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto leading-relaxed font-light"
+          >
+            We are crafting a <span className="text-white font-medium">spiritual masterpiece</span>. <br className="hidden md:block" />
+            An immersive environment where technology dissolves into worship.
+          </motion.p>
+
+          {/* Buttons - Homepage Style */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6, duration: 0.5 }}
+            className="pt-32 flex flex-col sm:flex-row items-center justify-center gap-6"
+          >
+            <Link href="/learn-quran">
+              <button className="btn-explore-platform magnetic-btn px-10 py-5 text-lg shadow-[0_0_40px_rgba(129,181,50,0.4)] hover:shadow-[0_0_60px_rgba(129,181,50,0.6)]">
+                Start Learning Now
+              </button>
+            </Link>
+
+
+          </motion.div>
+        </motion.div>
+
       </main>
     </div>
   );

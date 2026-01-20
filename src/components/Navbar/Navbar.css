@@ -10,19 +10,21 @@
   right: 0;
   z-index: 1000;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  padding: 8px 0;
+  padding: 0;
   background: var(--sn-bg-dark);
-  /* Solid background by default */
   border-bottom: 1px solid var(--sn-border);
-  /* Subtle separator */
+  height: 70px;
+  /* Adjusted to 60px */
+  display: flex;
+  align-items: center;
 }
 
 .nav-scrolled {
-  padding: 12px 0;
   background: var(--sn-bg-dark);
-  /* Ensure solid when scrolled */
   box-shadow: var(--shadow-header);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  height: 70px;
+  /* Consistent height */
 }
 
 .nav-container {
@@ -40,10 +42,19 @@
   align-items: center;
   gap: 15px;
   text-decoration: none;
+  margin-right: 70px;
+  /* Added spacing from Home button */
 }
 
 .logo-img {
-  /* Removed filter to keep it crystal clear */
+  height: 40px;
+  /* Maximize height */
+  width: auto;
+  object-fit: contain;
+  transform: scale(1.99);
+  /* Zoom in to make text clear and large */
+  transform-origin: left center;
+  filter: drop-shadow(0 0 10px rgba(16, 185, 129, 0.2));
 }
 
 .logo-text {
@@ -444,7 +455,7 @@
   }
 
   .nav-container {
-    padding: 0 20px;
+    padding: 0 16px;
   }
 }
 
@@ -453,10 +464,26 @@
     display: none;
   }
 
+  /* Fix Mobile Logo Size */
+  .logo-img {
+    height: 32px;
+    width: auto;
+  }
+
+  /* Fix Mobile Toggle Alignment */
+  .mobile-toggle {
+    font-size: 1.25rem;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .mobile-sidebar {
     width: 100%;
     max-width: 100%;
     border-left: none;
+    padding-top: 10px;
   }
 }
 

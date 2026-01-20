@@ -5,7 +5,7 @@ import styles from './DirectNav.module.css';
 
 const DirectNav = () => {
   const navItems = [
-    { title: 'Read Quran', href: '/quran', icon: '📖' },
+    { title: 'Read Quran', href: '/read-quran', icon: '📖' },
     { title: 'Learn Tajweed', href: '/tajweed', icon: '🎯' },
     { title: 'Audio Quran', href: '/audio-quran', icon: '🔊' },
     { title: 'Prayer Times', href: '/prayer-time', icon: '🕌' }
@@ -14,7 +14,7 @@ const DirectNav = () => {
   return (
     <nav className={styles.directNav}>
       {navItems.map((item) => (
-        <Link 
+        <Link
           key={item.href}
           href={item.href}
           className={styles.navButton}

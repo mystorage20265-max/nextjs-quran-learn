@@ -21,6 +21,7 @@ export default function HomePage() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [activeTab, setActiveTab] = useState('tajweed');
+  const [showDemoVideo, setShowDemoVideo] = useState(false); // STATE FOR VIDEO MODAL
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [scrollY, setScrollY] = useState(0);
 
@@ -148,7 +149,6 @@ export default function HomePage() {
 
   return (
     <main className="demo-page">
-      {/* Animated Background Particles */}
       <div className="particles-bg">
         {[...Array(30)].map((_, i) => (
           <div key={i} className={`particle p${i % 5}`} style={{
@@ -159,6 +159,29 @@ export default function HomePage() {
           }} />
         ))}
       </div>
+
+      {/* VIDEO MODAL */}
+      {showDemoVideo && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4" onClick={() => setShowDemoVideo(false)}>
+          <div className="relative w-full max-w-4xl aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl border border-white/10" onClick={e => e.stopPropagation()}>
+            <button
+              className="absolute top-4 right-4 text-white hover:text-green-400 z-10 bg-black/50 rounded-full p-2 transition-colors"
+              onClick={() => setShowDemoVideo(false)}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+            <iframe
+              width="100%"
+              height="100%"
+              src="https://www.youtube.com/embed/fT5WlRfkXms?autoplay=1"
+              title="Quran Demo"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
+          </div>
+        </div>
+      )}
 
       {/* ===== FLOATING CTA ===== */}
       <div className="floating-btns">
@@ -226,22 +249,24 @@ export default function HomePage() {
               </p>
               <div className="hero-actions">
                 <Link href={
-                  currentSlide === 0 ? '/learn-quran' :
-                    currentSlide === 1 ? '/tajweed' :
+                  currentSlide === 0 ? '/read-quran' :
+                    currentSlide === 1 ? '/learn-quran' :
                       '/memorize-quran'
                 }>
                   <button className="btn-explore-platform magnetic-btn">
                     {slides[currentSlide].primaryBtn}
                   </button>
                 </Link>
-                <Link href="/demo">
-                  <button className="btn-watch-video magnetic-btn">
-                    <div className="play-icon-circle">
-                      <Play size={12} fill="white" />
-                    </div>
-                    {slides[currentSlide].secondaryBtn}
-                  </button>
-                </Link>
+
+                <button
+                  className="btn-watch-video magnetic-btn"
+                  onClick={() => setShowDemoVideo(true)}
+                >
+                  <div className="play-icon-circle">
+                    <Play size={12} fill="white" />
+                  </div>
+                  {slides[currentSlide].secondaryBtn}
+                </button>
               </div>
             </div>
           </div>
@@ -249,11 +274,11 @@ export default function HomePage() {
           {/* BOTTOM: Horizontal Feature Cards */}
           <div className="hero-bottom-cards">
             {[
-              { title: "Interactive Quran Reading", label: "READING", img: "/images/quran_reading.png" },
-              { title: "Advanced Memorization", label: "HIFZ", img: "/images/memorization.png" },
-              { title: "Noorani Qaida Lessons", label: "LEARN", img: "/images/qaida.png" }
+              { title: "Interactive Quran Reading", label: "READING", img: "/images/quran_reading.png", link: "/read-quran" },
+              { title: "Advanced Memorization", label: "HIFZ", img: "/images/memorization.png", link: "/memorize-quran" },
+              { title: "Noorani Qaida Lessons", label: "LEARN", img: "/images/qaida.png", link: "/learn-quran" }
             ].map((card, idx) => (
-              <div key={idx} className="hero-card-item group">
+              <Link href={card.link} key={idx} className="hero-card-item group">
                 <div className="card-image-wrapper">
                   <img src={card.img} alt={card.title} className="card-img" />
                   <div className="card-overlay" />
@@ -265,7 +290,7 @@ export default function HomePage() {
                     <ArrowRight size={24} />
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
@@ -485,20 +510,7 @@ export default function HomePage() {
         </div>
 
 
-        {/* Any Cards with hover effects */}
-        <div className="any-cards">
-          {[
-            { icon: '🤖', title: 'Any AI', desc: 'Connect AI from any source', color: 'cyan' },
-            { icon: '📊', title: 'Any Data', desc: 'Unify your enterprise data', color: 'purple' },
-            { icon: '⚡', title: 'Any Workflows', desc: 'Automate end-to-end', color: 'green' }
-          ].map((card, i) => (
-            <div key={card.title} className={`any-card animate-child hover-3d`} style={{ animationDelay: `${i * 0.15}s` }}>
-              <div className={`any-icon ${card.color} icon-bounce`}>{card.icon}</div>
-              <h4>{card.title}</h4>
-              <p>{card.desc}</p>
-            </div>
-          ))}
-        </div>
+
       </section>
 
 
