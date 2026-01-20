@@ -96,16 +96,13 @@ export default function Navbar() {
             className="logo-container"
           >
             <Image
-              src="https://cdn-icons-png.flaticon.com/512/2787/2787958.png"
-              alt="Learn Quran Logo"
-              width={42}
-              height={42}
+              src="/logo.jpg"
+              alt="Learn Quran App"
+              width={160}
+              height={50}
               className="logo-img"
+              style={{ objectFit: 'contain' }}
             />
-            <div className="logo-text">
-              <span className="logo-brand">Learn Quran</span>
-              <span className="logo-tagline Arabic">قرآنی سیکھیں</span>
-            </div>
           </motion.div>
         </Link>
 
@@ -211,14 +208,12 @@ export default function Navbar() {
               <div className="sidebar-header">
                 <div className="logo-container">
                   <Image
-                    src="https://cdn-icons-png.flaticon.com/512/2787/2787958.png"
-                    alt="Learn Quran Logo"
-                    width={36}
-                    height={36}
+                    src="/logo.jpg"
+                    alt="Learn Quran App"
+                    width={120}
+                    height={40}
+                    style={{ objectFit: 'contain' }}
                   />
-                  <div className="logo-text">
-                    <span className="logo-brand">Learn Quran</span>
-                  </div>
                 </div>
                 <button className="sidebar-close" onClick={closeMenu}><X size={24} /></button>
               </div>
