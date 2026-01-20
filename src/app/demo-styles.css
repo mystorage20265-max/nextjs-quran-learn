@@ -1228,6 +1228,101 @@ body:has(.demo-page) main {
     font-size: 16px;
 }
 
+/* ===== PREMIUM BUTTONS (Learn More) ===== */
+.btn-outline {
+    position: relative;
+    padding: 14px 28px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    color: var(--sn-white);
+    font-family: var(--sn-font);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-outline span {
+    transition: transform 0.3s ease;
+    font-size: 18px;
+}
+
+.btn-outline:hover {
+    background: var(--sn-green);
+    color: var(--sn-bg-dark);
+    border-color: var(--sn-green);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 15px 35px rgba(129, 181, 50, 0.4),
+        0 0 20px rgba(129, 181, 50, 0.2);
+}
+
+.btn-outline:active {
+    transform: translateY(-1px) scale(0.98);
+}
+
+.btn-outline:hover span {
+    transform: translateX(8px);
+}
+
+/* Shimmer Effect for Button */
+.btn-outline::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -100%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(to right,
+            transparent,
+            rgba(255, 255, 255, 0.2),
+            transparent);
+    transform: rotate(45deg);
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+}
+
+.btn-outline:hover::after {
+    left: 100%;
+}
+
+.hover-arrow span {
+    display: inline-block;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Insight Link refined */
+.insight-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--sn-green) !important;
+    font-weight: 700;
+    font-size: 15px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    margin-top: 15px;
+}
+
+.insight-link span {
+    font-size: 20px;
+    transition: transform 0.3s ease;
+}
+
+.insight-link:hover {
+    gap: 15px;
+    text-shadow: 0 0 15px var(--sn-green-glow);
+    opacity: 0.9;
+}
+
+.insight-link:hover span {
+    transform: translateX(5px);
+}
+
 /* ===== AI TOWER / INFINITY LOOP ===== */
 .ai-tower-section {
     padding: 120px 60px;
