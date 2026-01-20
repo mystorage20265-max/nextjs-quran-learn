@@ -271,8 +271,8 @@
   bottom: 0;
   width: 85%;
   max-width: 320px;
-  background: var(--sn-bg-dark);
-  /* Solid background */
+  background: #0a1628;
+  /* Fully solid dark background */
   z-index: 1200;
   display: flex;
   flex-direction: column;
@@ -280,6 +280,8 @@
   border-left: 1px solid var(--sn-border);
   transform: translateX(100%);
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  isolation: isolate;
+  /* Prevent content bleed-through */
 }
 
 /* Class to open sidebar matches React logic usually */

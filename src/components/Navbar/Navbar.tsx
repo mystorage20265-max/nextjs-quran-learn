@@ -220,7 +220,7 @@ export default function Navbar() {
                     <span className="logo-brand">Learn Quran</span>
                   </div>
                 </div>
-                <button onClick={closeMenu}><X size={24} /></button>
+                <button className="sidebar-close" onClick={closeMenu}><X size={24} /></button>
               </div>
 
               <div className="sidebar-scroll">
