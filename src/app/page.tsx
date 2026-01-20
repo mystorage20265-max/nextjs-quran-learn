@@ -249,9 +249,9 @@ export default function HomePage() {
           {/* BOTTOM: Horizontal Feature Cards */}
           <div className="hero-bottom-cards">
             {[
-              { title: "AI Control Tower", label: "DASHBOARD", img: "https://images.pexels.com/photos/5926382/pexels-photo-5926382.jpeg?auto=compress&cs=tinysrgb&w=800" },
-              { title: "Connected Workflow", label: "PROCESS", img: "https://images.pexels.com/photos/3182773/pexels-photo-3182773.jpeg?auto=compress&cs=tinysrgb&w=800" },
-              { title: "AI-Powered Service", label: "AGENTS", img: "https://images.pexels.com/photos/7006949/pexels-photo-7006949.jpeg?auto=compress&cs=tinysrgb&w=800" }
+              { title: "Interactive Quran Reading", label: "READING", img: "/images/quran_reading.png" },
+              { title: "Advanced Memorization", label: "HIFZ", img: "/images/memorization.png" },
+              { title: "Noorani Qaida Lessons", label: "LEARN", img: "/images/qaida.png" }
             ].map((card, idx) => (
               <div key={idx} className="hero-card-item group">
                 <div className="card-image-wrapper">
