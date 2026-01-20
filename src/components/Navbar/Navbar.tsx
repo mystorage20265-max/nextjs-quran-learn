@@ -96,7 +96,7 @@ export default function Navbar() {
             className="logo-container"
           >
             <Image
-              src="/logo.jpg"
+              src="/logo.png"
               alt="Learn Quran App"
               width={160}
               height={50}
@@ -208,7 +208,7 @@ export default function Navbar() {
               <div className="sidebar-header">
                 <div className="logo-container">
                   <Image
-                    src="/logo.jpg"
+                    src="/logo.png"
                     alt="Learn Quran App"
                     width={120}
                     height={40}
