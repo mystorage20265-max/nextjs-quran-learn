@@ -1231,3 +1231,86 @@
     background: var(--rq-primary);
     color: white;
 }
+
+/* ============ READING MODE (Mushaf Style) ============ */
+.rq-reading-mode {
+    background: var(--rq-bg-card);
+    border: 1px solid var(--rq-border);
+    border-radius: var(--rq-radius-lg);
+    padding: 40px;
+    position: relative;
+}
+
+.rq-reading-text {
+    font-family: var(--rq-font-arabic);
+    font-size: 36px;
+    line-height: 2.5;
+    text-align: justify;
+    direction: rtl;
+    color: var(--rq-text);
+    word-spacing: 0.3em;
+    letter-spacing: 0.02em;
+}
+
+/* Verse End Marker - The circled Ayah number */
+.rq-reading-verse-marker {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    margin: 0 8px;
+    vertical-align: middle;
+    font-size: 0.55em;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    color: var(--rq-primary);
+    background: rgba(16, 185, 129, 0.1);
+    border: 2px solid var(--rq-primary);
+    border-radius: 50%;
+    position: relative;
+}
+
+/* Remove the special ۝ symbol since we're using circles with numbers */
+.rq-reading-verse-marker::before {
+    content: '';
+}
+
+/* Sajdah marker in reading mode */
+.sajdah-marker-reading {
+    color: var(--rq-accent);
+    font-size: 0.7em;
+    margin-left: 4px;
+}
+
+/* Bismillah styling */
+.rq-bismillah {
+    text-align: center;
+    font-family: var(--rq-font-arabic);
+    font-size: 2rem;
+    color: var(--rq-primary);
+    margin-bottom: 40px;
+    padding: 24px;
+    background: rgba(16, 185, 129, 0.05);
+    border-radius: var(--rq-radius-lg);
+    border: 1px solid rgba(16, 185, 129, 0.1);
+}
+
+/* Mobile responsiveness for Reading Mode */
+@media (max-width: 768px) {
+    .rq-reading-mode {
+        padding: 20px;
+    }
+
+    .rq-reading-text {
+        font-size: 24px;
+        line-height: 2.2;
+    }
+
+    .rq-reading-verse-marker {
+        width: 30px;
+        height: 30px;
+        font-size: 0.5em;
+        margin: 0 4px;
+    }
+}
