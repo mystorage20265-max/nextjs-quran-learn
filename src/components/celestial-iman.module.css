@@ -1,0 +1,581 @@
+.celestialImanSection {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0a1628 0%, #0d1b2a 50%, #1b263b 100%);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+}
+
+.celestialCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.celestialContainer {
+    position: relative;
+    width: 100%;
+    max-width: 1400px;
+    aspect-ratio: 1;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ===== CENTRAL IMAN SUN ===== */
+.imanSun {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+}
+
+.sunCore {
+    position: relative;
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%,
+            #81b532 0%,
+            #6a9629 30%,
+            #4a6b1d 70%,
+            #2a3b11 100%);
+    box-shadow:
+        0 0 40px rgba(129, 181, 50, 0.8),
+        0 0 80px rgba(129, 181, 50, 0.6),
+        0 0 120px rgba(129, 181, 50, 0.4),
+        0 0 160px rgba(0, 245, 212, 0.3),
+        inset -20px -20px 40px rgba(0, 0, 0, 0.4),
+        inset 10px 10px 30px rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: sunPulse 4s ease-in-out infinite;
+}
+
+.sunGlow {
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+            rgba(129, 181, 50, 0.3) 0%,
+            rgba(0, 245, 212, 0.2) 30%,
+            transparent 70%);
+    animation: glowPulse 3s ease-in-out infinite alternate;
+}
+
+.sunInnerGlow {
+    position: absolute;
+    width: 120%;
+    height: 120%;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+            rgba(0, 245, 212, 0.4) 0%,
+            transparent 70%);
+    animation: innerGlowPulse 2s ease-in-out infinite alternate;
+}
+
+.sunContent {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    z-index: 2;
+}
+
+.imanArabic {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #ffffff;
+    text-shadow:
+        0 0 10px rgba(255, 255, 255, 0.8),
+        0 0 20px rgba(0, 245, 212, 0.6),
+        0 2px 4px rgba(0, 0, 0, 0.5);
+    letter-spacing: 2px;
+}
+
+.imanEnglish {
+    font-size: 1rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    letter-spacing: 4px;
+    text-shadow: 0 0 10px rgba(0, 245, 212, 0.8);
+}
+
+.sunRays {
+    position: absolute;
+    width: 300%;
+    height: 300%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background:
+        repeating-conic-gradient(from 0deg,
+            transparent 0deg,
+            rgba(129, 181, 50, 0.1) 2deg,
+            transparent 4deg,
+            transparent 8deg);
+    border-radius: 50%;
+    animation: rotateSunRays 60s linear infinite;
+    pointer-events: none;
+}
+
+/* ===== ORBITAL PATHS ===== */
+.orbitalPath {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+/* ===== PLANET ORBITS ===== */
+.planetOrbit {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+.planet {
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    transform: translateY(-50%);
+    border-radius: 50%;
+    cursor: pointer;
+    pointer-events: all;
+    transition: transform 0.3s ease;
+}
+
+.planet:hover {
+    transform: translateY(-50%) scale(1.15);
+    z-index: 100;
+}
+
+.planet:hover .planetLabel {
+    transform: translate(-50%, 2px) scale(1.05);
+    box-shadow: 0 6px 30px rgba(0, 0, 0, 0.7);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.planetGlassHalo {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    background: radial-gradient(circle at 30% 30%,
+            rgba(255, 255, 255, 0.1),
+            transparent 60%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.planetLabel {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translate(-50%, 2px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.125rem;
+    opacity: 1;
+    transition: all 0.3s ease;
+    pointer-events: none;
+    white-space: nowrap;
+    background: rgba(10, 22, 40, 0.9);
+    backdrop-filter: blur(10px);
+    padding: 0.5rem 1rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.planetNameAr {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #ffffff;
+    text-shadow: 0 0 10px rgba(0, 245, 212, 0.6);
+}
+
+.planetNameEn {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.8);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.lightTrail {
+    position: absolute;
+    width: 150%;
+    height: 150%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    opacity: 0.3;
+    animation: trailPulse 2s ease-in-out infinite;
+    pointer-events: none;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes orbit {
+    from {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+
+@keyframes counterRotate {
+    from {
+        transform: translateY(-50%) rotate(0deg);
+    }
+
+    to {
+        transform: translateY(-50%) rotate(-360deg);
+    }
+}
+
+@keyframes sunPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+@keyframes glowPulse {
+    0% {
+        opacity: 0.6;
+        transform: scale(1);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1.1);
+    }
+}
+
+@keyframes innerGlowPulse {
+    0% {
+        opacity: 0.4;
+    }
+
+    100% {
+        opacity: 0.8;
+    }
+}
+
+@keyframes rotateSunRays {
+    from {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+@keyframes trailPulse {
+
+    0%,
+    100% {
+        opacity: 0.2;
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    50% {
+        opacity: 0.4;
+        transform: translate(-50%, -50%) scale(1.2);
+    }
+}
+
+/* ===== RESPONSIVE ===== */
+
+/* Tablet (landscape and portrait) */
+@media (max-width: 1024px) {
+    .celestialImanSection {
+        padding: 3rem 1.5rem;
+        min-height: 80vh;
+    }
+
+    .celestialContainer {
+        max-width: 800px;
+        transform: scale(0.85);
+    }
+
+    .sunCore {
+        width: 140px;
+        height: 140px;
+    }
+
+    .imanArabic {
+        font-size: 2rem;
+    }
+
+    .imanEnglish {
+        font-size: 0.875rem;
+        letter-spacing: 3px;
+    }
+
+    /* Keep planets at normal size since container is scaled */
+    .planet:hover {
+        transform: translateY(-50%) scale(1.15);
+    }
+
+    .planetNameAr {
+        font-size: 0.875rem;
+    }
+
+    .planetNameEn {
+        font-size: 0.625rem;
+    }
+
+    /* Make orbital paths more visible */
+    .orbitalPath {
+        border-width: 1.5px;
+        opacity: 1;
+    }
+}
+
+/* Mobile (large phones) */
+@media (max-width: 768px) {
+    .celestialImanSection {
+        padding: 2rem 1rem;
+        min-height: 80vh;
+    }
+
+    .celestialContainer {
+        max-width: 700px;
+        transform: scale(0.6);
+    }
+
+    .sunCore {
+        width: 120px;
+        height: 120px;
+        box-shadow:
+            0 0 30px rgba(129, 181, 50, 0.8),
+            0 0 60px rgba(129, 181, 50, 0.6),
+            0 0 90px rgba(129, 181, 50, 0.4),
+            0 0 120px rgba(0, 245, 212, 0.3),
+            inset -15px -15px 30px rgba(0, 0, 0, 0.4),
+            inset 8px 8px 20px rgba(255, 255, 255, 0.2);
+    }
+
+    .imanArabic {
+        font-size: 1.75rem;
+    }
+
+    .imanEnglish {
+        font-size: 0.75rem;
+        letter-spacing: 2px;
+    }
+
+    .sunGlow {
+        width: 180%;
+        height: 180%;
+    }
+
+    .sunInnerGlow {
+        width: 110%;
+        height: 110%;
+    }
+
+    /* Keep planets normal size - container scaling handles sizing */
+    .planet:hover {
+        transform: translateY(-50%) scale(1.15);
+    }
+
+    .planetLabel {
+        padding: 0.375rem 0.75rem;
+        border-radius: 8px;
+    }
+
+    .planetNameAr {
+        font-size: 0.875rem;
+    }
+
+    .planetNameEn {
+        font-size: 0.625rem;
+        letter-spacing: 0.5px;
+    }
+
+    /* Make orbital paths clearly visible */
+    .orbitalPath {
+        border-width: 2px;
+        opacity: 1;
+        border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    /* Keep light trail visible */
+    .lightTrail {
+        opacity: 0.25;
+    }
+}
+
+/* Mobile (small phones) */
+@media (max-width: 480px) {
+    .celestialImanSection {
+        padding: 1.5rem 0.5rem;
+        min-height: 75vh;
+    }
+
+    .celestialContainer {
+        max-width: 600px;
+        transform: scale(0.45);
+    }
+
+    .sunCore {
+        width: 110px;
+        height: 110px;
+        box-shadow:
+            0 0 25px rgba(129, 181, 50, 0.8),
+            0 0 50px rgba(129, 181, 50, 0.6),
+            0 0 75px rgba(129, 181, 50, 0.4),
+            0 0 100px rgba(0, 245, 212, 0.3),
+            inset -12px -12px 25px rgba(0, 0, 0, 0.4),
+            inset 6px 6px 18px rgba(255, 255, 255, 0.2);
+    }
+
+    .imanArabic {
+        font-size: 1.5rem;
+        letter-spacing: 1px;
+    }
+
+    .imanEnglish {
+        font-size: 0.625rem;
+        letter-spacing: 1.5px;
+    }
+
+    .sunGlow {
+        width: 170%;
+        height: 170%;
+    }
+
+    .sunInnerGlow {
+        width: 105%;
+        height: 105%;
+    }
+
+    .sunRays {
+        width: 280%;
+        height: 280%;
+    }
+
+    /* Keep planets normal - scaling handled by container */
+    .planet:hover {
+        transform: translateY(-50%) scale(1.2);
+    }
+
+    .planetLabel {
+        padding: 0.3rem 0.6rem;
+        border-radius: 6px;
+        font-size: 0.75rem;
+    }
+
+    .planetNameAr {
+        font-size: 0.75rem;
+    }
+
+    .planetNameEn {
+        font-size: 0.5rem;
+        letter-spacing: 0.5px;
+    }
+
+    /* Very visible orbital paths */
+    .orbitalPath {
+        border-width: 2.5px;
+        opacity: 1;
+        border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Visible light trail */
+    .lightTrail {
+        opacity: 0.3;
+        width: 130%;
+        height: 130%;
+    }
+
+    /* Keep planet glow effects */
+    .planetGlassHalo {
+        border-width: 2px;
+    }
+}
+
+/* Extra small devices */
+@media (max-width: 360px) {
+    .celestialImanSection {
+        min-height: 70vh;
+        padding: 1rem 0.25rem;
+    }
+
+    .celestialContainer {
+        max-width: 500px;
+        transform: scale(0.38);
+    }
+
+    .sunCore {
+        width: 100px;
+        height: 100px;
+    }
+
+    .imanArabic {
+        font-size: 1.25rem;
+    }
+
+    .imanEnglish {
+        font-size: 0.5rem;
+    }
+
+    .planet:hover {
+        transform: translateY(-50%) scale(1.15);
+    }
+
+    .planetLabel {
+        font-size: 0.7rem;
+    }
+
+    .planetNameAr {
+        font-size: 0.7rem;
+    }
+
+    .planetNameEn {
+        font-size: 0.45rem;
+    }
+
+    /* Maximum visibility for orbital paths */
+    .orbitalPath {
+        border-width: 3px;
+        opacity: 1;
+        border-color: rgba(255, 255, 255, 0.25);
+    }
+}

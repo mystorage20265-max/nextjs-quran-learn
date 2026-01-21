@@ -84,8 +84,15 @@ export async function buildStreamUrl(reciterId: number, surahNumber = 1): Promis
 
 /**
  * Get reciter image URL
+ * Uses local generated portraits for all configured reciters (1-12), falls back to CDN for others
  */
 export function getReciterImageUrl(reciterId: number, size: '200' | 'profile' = 'profile'): string {
+    // Use our generated local portraits for all main reciters
+    const localReciterIds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+    if (localReciterIds.includes(reciterId)) {
+        return `/images/reciters/reciter-${reciterId}.png`;
+    }
+    // Fall back to QuranCDN for other reciters
     return `${RADIO_CONFIG.apis.qurancdn}/images/reciters/${reciterId}/${size === '200' ? '200.jpg' : 'profile.png'}`;
 }
 

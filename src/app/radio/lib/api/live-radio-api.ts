@@ -111,6 +111,29 @@ class LiveRadioAPI {
     }
 
     /**
+     * Map Arabic reciter names to local portrait images
+     */
+    private getReciterImageByName(reciterName: string): string {
+        const nameMap: Record<string, string> = {
+            'إبراهيم الأخضر': '/images/reciters/ibrahim-alakhdar.png',
+            'أبو بكر الشاطري': '/images/reciters/reciter-4.png', // Maps to Abu Bakr al-Shatri
+            'أحمد العجمي': '/images/reciters/ahmed-alajmi.png',
+            'أحمد الحواشي': '/images/reciters/ahmed-alhawashi.png',
+            'أحمد صابر': '/images/reciters/ahmed-saber.png',
+            'أحمد نعينع': '/images/reciters/ahmed-nuaina.png',
+        };
+
+        // Check for exact match or partial match in Arabic name
+        for (const [arabicName, imagePath] of Object.entries(nameMap)) {
+            if (reciterName.includes(arabicName)) {
+                return imagePath;
+            }
+        }
+
+        return ''; // Return empty string if no match found
+    }
+
+    /**
      * Fetch radios from MP3Quran.net
      */
     private async fetchMP3QuranRadios(): Promise<LiveStation[]> {
@@ -122,19 +145,24 @@ class LiveRadioAPI {
                 return [];
             }
 
-            return data.radios.map((radio: any, index: number) => ({
-                id: `mp3quran-${radio.id || index}`,
-                name: radio.name || `Radio ${index + 1}`,
-                description: radio.description || 'Live Quran Radio',
-                streamUrl: radio.url || radio.stream_url,
-                imageUrl: radio.image_url || `${RADIO_CONFIG.apis.qurancdn}/images/radio-default.png`,
-                language: radio.language || 'ar',
-                reciterName: radio.reciter,
-                bitrate: radio.bitrate || RADIO_CONFIG.audio.defaultBitrate,
-                format: 'mp3' as const,
-                isLive: true as const,
-                tags: ['live', 'radio', 'quran'],
-            }));
+            return data.radios.map((radio: any, index: number) => {
+                // Try to get local image by name first, then fall back to API image
+                const localImage = this.getReciterImageByName(radio.name || radio.reciter || '');
+
+                return {
+                    id: `mp3quran-${radio.id || index}`,
+                    name: radio.name || `Radio ${index + 1}`,
+                    description: radio.description || 'Live Quran Radio',
+                    streamUrl: radio.url || radio.stream_url,
+                    imageUrl: localImage || radio.image_url || `${RADIO_CONFIG.apis.qurancdn}/images/radio-default.png`,
+                    language: radio.language || 'ar',
+                    reciterName: radio.reciter,
+                    bitrate: radio.bitrate || RADIO_CONFIG.audio.defaultBitrate,
+                    format: 'mp3' as const,
+                    isLive: true as const,
+                    tags: ['live', 'radio', 'quran'],
+                };
+            });
         } catch (error) {
             console.error('Error fetching MP3Quran radios:', error);
             return [];

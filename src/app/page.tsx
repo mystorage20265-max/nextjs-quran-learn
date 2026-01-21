@@ -4,10 +4,15 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { Search, Globe, MessageSquare, Monitor, Pause, Play, ArrowRight, ChevronDown } from 'lucide-react';
+import dynamic from 'next/dynamic';
+import { MessageSquare, Monitor, Pause, Play, ArrowRight, BookOpen, Heart, GraduationCap, Users, Sparkles } from 'lucide-react';
 import './demo-styles.css';
 
-const LOGOS = ['Azhar', 'Medina', 'Makkah', 'Cairo', 'Istanbul', 'Doha'];
+const CelestialIman = dynamic(() => import('@/components/celestial-iman'), {
+  ssr: false,
+  loading: () => <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #0a1628 0%, #0d1b2a 50%, #1b263b 100%)' }} />
+});
+
 const SOLUTION_TABS = [
   { id: 'tajweed', label: 'Tajweed', desc: 'Master the art of recitation with real-time AI feedback', icon: '📖' },
   { id: 'hifz', label: 'Hifz', desc: 'Smart memorization tracks tailored to your pace', icon: '🧠' },
@@ -74,24 +79,34 @@ export default function HomePage() {
         y: (e.clientY / window.innerHeight) - 0.5
       });
 
-      // Card Glow & 3D Tilt Effect
+      // Card Glow & 3D Tilt Effect - ONLY when hovering
       const cards = document.querySelectorAll('.hero-card-item');
       cards.forEach(card => {
         const rect = card.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
 
-        // Calculate percentage position
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-        const rotateX = ((y - centerY) / centerY) * -10; // Max 10deg rotation
-        const rotateY = ((x - centerX) / centerX) * 10;
+        // Check if mouse is actually over the card
+        const isHovering = x >= 0 && x <= rect.width && y >= 0 && y <= rect.height;
 
-        const cardEl = card as HTMLElement;
-        cardEl.style.setProperty('--mx', `${x}px`);
-        cardEl.style.setProperty('--my', `${y}px`);
-        cardEl.style.setProperty('--rx', `${rotateX}deg`);
-        cardEl.style.setProperty('--ry', `${rotateY}deg`);
+        if (isHovering) {
+          // Calculate percentage position
+          const centerX = rect.width / 2;
+          const centerY = rect.height / 2;
+          const rotateX = ((y - centerY) / centerY) * -10; // Max 10deg rotation
+          const rotateY = ((x - centerX) / centerX) * 10;
+
+          const cardEl = card as HTMLElement;
+          cardEl.style.setProperty('--mx', `${x}px`);
+          cardEl.style.setProperty('--my', `${y}px`);
+          cardEl.style.setProperty('--rx', `${rotateX}deg`);
+          cardEl.style.setProperty('--ry', `${rotateY}deg`);
+        } else {
+          // Reset to straight when not hovering
+          const cardEl = card as HTMLElement;
+          cardEl.style.setProperty('--rx', `0deg`);
+          cardEl.style.setProperty('--ry', `0deg`);
+        }
       });
 
       // Magnetic Buttons
@@ -299,10 +314,13 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ===== CELESTIAL IMAN - SOLAR SYSTEM INTERFACE ===== */}
+      <CelestialIman />
+
       {/* ===== SOLUTION TABS with animations ===== */}
       <section className="solutions-section reveal-section" ref={solutionsRef}>
         <h2 className="solutions-title animate-child">
-          Run your enterprise on the <span className="green gradient-text">Learn Quran AI Platform</span>
+          Learning the Qur’an <span className="green gradient-text"> nurturing the soul</span>
         </h2>
         <div className="solution-tabs animate-child">
           {SOLUTION_TABS.map((tab, i) => (
@@ -333,199 +351,17 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ===== AI TOWER / INFINITY LOOP - TRUE ∞ SHAPE WITH FLOWING TRACERS ===== */}
-      <section className="ai-tower-section reveal-section" ref={aiTowerRef}>
-        <h2 className="section-title animate-child">
-          <span className="green">Bring intelligence</span> to every corner<br />of your life
-        </h2>
-
-        <div className="infinity-wrapper">
-          {/* TWINKLING STARS LAYER */}
-          <div className="stars-layer">
-            {[...Array(15)].map((_, i) => (
-              <div key={i} className="twinkle-star" style={{
-                top: `${Math.random() * 100}%`,
-                left: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 3}s`
-              }}>✦</div>
-            ))}
-          </div>
-
-          {/* TRUE SVG INFINITY SYMBOL with 3D glass tube effect */}
-          <svg className="infinity-svg-3d" viewBox="0 0 1000 500" preserveAspectRatio="xMidYMid meet">
-            <defs>
-              {/* 3D Glass Tube Gradient */}
-              <linearGradient id="tube3dGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#0066cc" />
-                <stop offset="20%" stopColor="#00c8f0" />
-                <stop offset="40%" stopColor="#00f5d4" />
-                <stop offset="50%" stopColor="#81b532" />
-                <stop offset="60%" stopColor="#00f5d4" />
-                <stop offset="80%" stopColor="#00c8f0" />
-                <stop offset="100%" stopColor="#8b5cf6" />
-              </linearGradient>
-
-              {/* Inner highlight for 3D effect */}
-              <linearGradient id="tubeHighlight" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="rgba(255,255,255,0.4)" />
-                <stop offset="50%" stopColor="rgba(255,255,255,0)" />
-                <stop offset="100%" stopColor="rgba(0,0,0,0.2)" />
-              </linearGradient>
-
-              {/* Glow filter */}
-              <filter id="glow3d" x="-50%" y="-50%" width="200%" height="200%">
-                <feGaussianBlur stdDeviation="8" result="glow" />
-                <feMerge>
-                  <feMergeNode in="glow" />
-                  <feMergeNode in="glow" />
-                  <feMergeNode in="SourceGraphic" />
-                </feMerge>
-              </filter>
-
-              {/* Center green glow */}
-              <radialGradient id="centerGlow" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stopColor="rgba(129, 181, 50, 0.8)" />
-                <stop offset="100%" stopColor="transparent" />
-              </radialGradient>
-
-              {/* Tracer gradient */}
-              <linearGradient id="tracerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="transparent" />
-                <stop offset="50%" stopColor="#00f5d4" />
-                <stop offset="100%" stopColor="transparent" />
-              </linearGradient>
-            </defs>
-
-            {/* Background glow layer */}
-            <ellipse cx="500" cy="250" rx="120" ry="100" fill="url(#centerGlow)" className="center-glow-svg" />
-
-            {/* FULL INFINITY PATH (Used for tracers) */}
-            <path
-              id="fullInfinityPath"
-              d="M500,250 
-                               C500,350 400,420 280,420 
-                               C130,420 80,320 80,250 
-                               C80,180 130,80 280,80 
-                               C400,80 500,150 500,250
-                               C500,350 600,420 720,420 
-                               C870,420 920,320 920,250 
-                               C920,180 870,80 720,80 
-                               C600,80 500,150 500,250"
-              fill="none"
-            />
-
-            {/* BACK PART of infinity */}
-            <path
-              className="infinity-line back"
-              d="M500,250 C500,150 600,80 720,80 C870,80 920,180 920,250 C920,320 870,420 720,420 C600,420 500,350 500,250"
-              fill="none" stroke="url(#tube3dGrad)" strokeWidth="70" strokeLinecap="round" filter="url(#glow3d)"
-            />
-
-            {/* FRONT PART of infinity */}
-            <path
-              className="infinity-line front"
-              d="M500,250 C500,350 400,420 280,420 C130,420 80,320 80,250 C80,180 130,80 280,80 C400,80 500,150 500,250"
-              fill="none" stroke="url(#tube3dGrad)" strokeWidth="70" strokeLinecap="round" filter="url(#glow3d)"
-            />
-
-            {/* HIGHLIGHT TUBES (For 3D feeling) */}
-            <path
-              className="infinity-highlight"
-              d="M500,250 C500,350 400,420 280,420 C130,420 80,320 80,250 C80,180 130,80 280,80 C400,80 500,150 500,250"
-              fill="none" stroke="url(#tubeHighlight)" strokeWidth="70" strokeLinecap="round" opacity="0.4"
-            />
-            <path
-              className="infinity-highlight"
-              d="M500,250 C500,150 600,80 720,80 C870,80 920,180 920,250 C920,320 870,420 720,420 C600,420 500,350 500,250"
-              fill="none" stroke="url(#tubeHighlight)" strokeWidth="70" strokeLinecap="round" opacity="0.4"
-            />
-
-            {/* 4. FAST TRACERS - Rapid data pulses */}
-            <path
-              d="M 500,250 C 500,350 400,420 280,420 C 130,420 80,320 80,250 C 80,180 130,80 280,80 C 400,80 500,150 500,250 C 500,350 600,420 720,420 C 870,420 920,320 920,250 C 920,180 870,80 720,80 C 600,80 500,150 500,250"
-              fill="none"
-              stroke="url(#tube3dGrad)"
-              strokeWidth="3"
-              className="infinity-tracer-fast"
-              filter="url(#glow3d)"
-            />
-            <path
-              d="M 500,250 C 500,350 400,420 280,420 C 130,420 80,320 80,250 C 80,180 130,80 280,80 C 400,80 500,150 500,250 C 500,350 600,420 720,420 C 870,420 920,320 920,250 C 920,180 870,80 720,80 C 600,80 500,150 500,250"
-              fill="none"
-              stroke="white"
-              strokeWidth="2"
-              className="infinity-tracer-white"
-              strokeDasharray="20 980"
-            />
-
-            {/* CENTRAL ENGINE GLOW */}
-            <circle cx="500" cy="250" r="15" fill="#81b532" className="engine-core-pulse">
-              <animate attributeName="r" values="15;25;15" dur="1.5s" repeatCount="indefinite" />
-              <animate attributeName="opacity" values="0.8;0.3;0.8" dur="1.5s" repeatCount="indefinite" />
-            </circle>
-          </svg>
-
-          {/* Left Avatar - Person in Sajda (Prostration) */}
-          <div className="infinity-avatar left-loop">
-            <div className="avatar-orb cyan-orb"></div>
-            <img
-              src="https://png.pngtree.com/png-clipart/20220420/ourmid/pngtree-muslim-men-praying-cartoon-illustration-design-png-image_4550506.png"
-              alt="Muslim in Sajda"
-              className="avatar-face"
-            />
-            <span className="pill-label employees">Worship</span>
-          </div>
-
-          {/* Right Avatar - The Holy Kaaba */}
-          <div className="infinity-avatar right-loop">
-            <div className="avatar-orb purple-orb"></div>
-            <img
-              src="https://media.istockphoto.com/id/1406253881/vector/kaaba-and-word-allah.jpg?s=612x612&w=0&k=20&c=EAhx_aFC_BhaDhWO0S01KyoED9VzkRQwUdv_9KM7-DY="
-              alt="Holy Kaaba"
-              className="avatar-face"
-            />
-            <span className="pill-label customers">Qibla</span>
-          </div>
-
-          {/* Center IMAN text at crossing point */}
-          <div className="infinity-label">
-            <span className="ai-main">إيمان</span>
-            <span className="ai-sub">IMAN</span>
-          </div>
-
-          {/* Nodes along the path - Three Pillars & Five Pillars of Islam */}
-          <div className="path-node node-it"><span>إحسان Ihsan</span><div className="dot"></div></div>
-          <div className="path-node node-crm"><span>إسلام Islam</span><div className="dot"></div></div>
-          <div className="path-node node-hr"><span>Testify the Shahada</span><div className="dot"></div></div>
-          <div className="path-node node-risk"><span>Establish Prayer</span><div className="dot"></div></div>
-          <div className="path-node node-dev"><span>Pay Zakat</span><div className="dot"></div></div>
-          <div className="path-node node-fin"><span>Fast Ramadan</span><div className="dot"></div></div>
-          <div className="path-node node-extra"><span>Perform Hajj</span><div className="dot"></div></div>
-
-          {/* Sparkles everywhere */}
-          {[...Array(12)].map((_, i) => (
-            <div key={i} className={`sparkle-star s${i}`} style={{
-              left: `${15 + Math.random() * 70}%`,
-              top: `${15 + Math.random() * 70}%`,
-              animationDelay: `${i * 0.4}s`
-            }}>✦</div>
-          ))}
-        </div>
-
-
-
-      </section>
 
 
       {/* ===== TESTIMONIALS with parallax cards ===== */}
       <section className="testimonials-section reveal-section" ref={testimonialsRef}>
         <h2 className="section-title animate-child">
-          When our community learns, <span className="green">the world works better</span>
+          When hearts connect with the Quran, <span className="green">souls find peace</span>
         </h2>
         <div className="testimonial-cards">
           <div className="testimonial-card hover-lift-3d animate-child">
             <div className="testimonial-image">
-              <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&h=400&fit=crop" alt="Office" />
+              <img src="https://images.unsplash.com/photo-1609599006353-e629aaabfeae?w=600&h=400&fit=crop" alt="Quran Study" />
               <div className="image-overlay"></div>
             </div>
             <div className="testimonial-stat glass-stat">
@@ -535,7 +371,7 @@ export default function HomePage() {
           </div>
           <div className="testimonial-card hover-lift-3d animate-child">
             <div className="testimonial-image">
-              <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=600&h=400&fit=crop" alt="Team" />
+              <img src="https://images.unsplash.com/photo-1564769625905-50e93615e769?w=600&h=400&fit=crop" alt="Islamic Learning" />
               <div className="image-overlay"></div>
             </div>
             <div className="testimonial-stat glass-stat">
@@ -546,15 +382,16 @@ export default function HomePage() {
         </div>
       </section>
 
+
       {/* ===== STATS with counter animation ===== */}
       <section className="stats-section reveal-section" ref={statsRef}>
-        <h3 className="animate-child">Recognized results that transform lives</h3>
+        <h3 className="animate-child">The Holy Quran in numbers</h3>
         <div className="stats-grid">
           {[
-            { num: '#1', text: 'Spiritual Growth' },
-            { num: '5X', text: 'Faster Memorization' },
-            { num: '100+', text: 'Interactive Lessons' },
-            { num: '1M+', text: 'Daily Recitations' }
+            { num: '114', text: 'Surahs (Chapters)' },
+            { num: '6,236', text: 'Ayahs (Verses)' },
+            { num: '30', text: 'Juz (Parts)' },
+            { num: '77,797', text: 'Words' }
           ].map((stat, i) => (
             <div key={stat.num} className="stat-item animate-child scale-in" style={{ animationDelay: `${i * 0.1}s` }}>
               <span className="stat-num counter-up">{stat.num}</span>
@@ -615,15 +452,15 @@ export default function HomePage() {
       {/* ===== WORK SECTION with stagger ===== */}
       <section className="work-section reveal-section" ref={workRef}>
         <div className="work-left">
-          <h2 className="animate-child"><span className="green">Let&apos;s get</span> to learning</h2>
-          <p className="animate-child">Explore all the ways Learn Quran can put AI to work for your spiritual journey.</p>
+          <h2 className="animate-child"><span className="green">Our Vision</span> for Quranic Excellence</h2>
+          <p className="animate-child">Empowering Muslims worldwide to connect deeply with the Quran through innovative learning, authentic knowledge, and spiritual growth.</p>
         </div>
         <div className="work-cards">
           {[
-            { icon: '👤', title: 'Contact us', desc: 'Talk to an expert and see how our platform can meet your goals.' },
-            { icon: '👥', title: 'Join the community', desc: 'Learn, share, and connect with people doing work that matters.' },
-            { icon: '🤝', title: 'Find a teacher', desc: 'Realize even more value with a certified Quran tutor.' },
-            { icon: '🎬', title: 'Explore modules', desc: 'Get hands-on with the Learn Quran AI Platform.' }
+            { icon: <BookOpen size={28} />, title: 'Master Quranic Recitation', desc: 'Perfect your Tajweed and recite with beauty and precision through guided lessons.' },
+            { icon: <Heart size={28} />, title: 'Deepen Spiritual Connection', desc: 'Transform your relationship with Allah through understanding and reflection on His words.' },
+            { icon: <GraduationCap size={28} />, title: 'Comprehensive Learning', desc: 'From Noorani Qaida to advanced Tafsir, journey through all levels of Quranic knowledge.' },
+            { icon: <Users size={28} />, title: 'Global Muslim Community', desc: 'Connect with learners worldwide, share insights, and grow together in faith.' }
           ].map((card, i) => (
             <div key={card.title} className="work-card animate-child slide-in-right" style={{ animationDelay: `${i * 0.1}s` }}>
               <div className="work-icon bounce-hover">{card.icon}</div>
@@ -631,7 +468,7 @@ export default function HomePage() {
                 <h4>{card.title}</h4>
                 <p>{card.desc}</p>
               </div>
-              <div className="work-arrow magnetic-arrow">→</div>
+              <div className="work-icon bounce-hover" style={{ opacity: 0.6 }}><Sparkles size={20} /></div>
             </div>
           ))}
         </div>

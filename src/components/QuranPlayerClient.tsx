@@ -5,8 +5,6 @@ import { Verse } from '@/types/QuranTypes';
 import VersePlayer from './VersePlayer/VersePlayer';
 import QuranPlayer, { PlaylistItem } from './QuranPlayer';
 import '../app/quran-player/quran-player.css';
-import '../app/quran-player/surah-cards.css';
-import '../app/quran-player/utils.css';
 import './QuranPlayer/responsive.css';
 
 const SURAH_AUDIO_API = (surahNum: number, edition: string) =>
@@ -47,13 +45,13 @@ interface Reciter {
   direction?: string;
 }
 
-const PaginationButton = ({ 
-  page, 
-  currentPage, 
-  onClick 
-}: { 
-  page: number; 
-  currentPage: number; 
+const PaginationButton = ({
+  page,
+  currentPage,
+  onClick
+}: {
+  page: number;
+  currentPage: number;
   onClick: (page: number) => void;
 }) => (
   <button
@@ -82,10 +80,10 @@ export default function QuranPlayerClient() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const ITEMS_PER_PAGE = 20;
-  
+
   // Filter reciters based on search query
   const filteredReciters = reciters
-    .filter(reciter => 
+    .filter(reciter =>
       reciter.englishName.toLowerCase().includes(reciterSearchQuery.toLowerCase()) ||
       reciter.language.toLowerCase().includes(reciterSearchQuery.toLowerCase())
     )
@@ -177,7 +175,7 @@ export default function QuranPlayerClient() {
       setIsLoading(true);
       setCurrentVerse(1);
       setIsPlaying(false);
-      
+
       // Fetch both audio and text data
       const [audioRes, textRes] = await Promise.all([
         fetch(SURAH_AUDIO_API(surahNum, selectedReciter)),
@@ -210,7 +208,7 @@ export default function QuranPlayerClient() {
         surah: surahNum,
         ayah: v.numberInSurah
       })) || []);
-      
+
     } catch (e) {
       setError('Failed to load surah. Please try again.');
       console.error('Error loading surah:', e);
@@ -269,7 +267,7 @@ export default function QuranPlayerClient() {
   const normalizedSearchQuery = debouncedSearchQuery.toLowerCase();
 
   // First check if the search query matches any reciter
-  const matchingReciter = reciters.find(reciter => 
+  const matchingReciter = reciters.find(reciter =>
     reciter.englishName.toLowerCase().includes(normalizedSearchQuery) ||
     reciter.language.toLowerCase().includes(normalizedSearchQuery)
   );
@@ -283,8 +281,8 @@ export default function QuranPlayerClient() {
     }
   }, [matchingReciter, debouncedSearchQuery]);
 
-  const filteredSurahs = surahs.filter(surah => 
-    surah.name.includes(searchQuery) || 
+  const filteredSurahs = surahs.filter(surah =>
+    surah.name.includes(searchQuery) ||
     surah.englishName.toLowerCase().includes(normalizedSearchQuery) ||
     surah.englishNameTranslation.toLowerCase().includes(normalizedSearchQuery) ||
     surah.number.toString().includes(searchQuery)
@@ -301,8 +299,8 @@ export default function QuranPlayerClient() {
 
   return (
     <div className="quran-player-layout">
-      <header className="player-header">
-        <div className="search-bar" role="search">
+      <header className="player-header" role="search">
+        <div className="search-bar">
           <input
             type="search"
             placeholder={isLoading ? "Loading..." : "Search surah by name or number..."}
@@ -344,11 +342,11 @@ export default function QuranPlayerClient() {
                   <div key={language} className="reciter-group">
                     <div className="language-header">
                       {language === 'ar' ? 'Arabic' :
-                       language === 'en' ? 'English' :
-                       language === 'ur' ? 'Urdu' :
-                       language === 'fa' ? 'Persian' :
-                       language === 'tr' ? 'Turkish' :
-                       language.toUpperCase()}
+                        language === 'en' ? 'English' :
+                          language === 'ur' ? 'Urdu' :
+                            language === 'fa' ? 'Persian' :
+                              language === 'tr' ? 'Turkish' :
+                                language.toUpperCase()}
                     </div>
                     {groupedReciters[language].map((reciter) => (
                       <div
@@ -379,7 +377,7 @@ export default function QuranPlayerClient() {
               ) : (
                 <div className="no-results">
                   <span>No reciters found matching "{reciterSearchQuery}"</span>
-                  <button 
+                  <button
                     className="clear-search"
                     onClick={() => setReciterSearchQuery('')}
                   >
@@ -400,7 +398,7 @@ export default function QuranPlayerClient() {
 
       {selectedSurah ? (
         <div className="active-player-section">
-          <button 
+          <button
             className="back-button"
             onClick={() => setSelectedSurah(null)}
             aria-label="Back to surah selection"
@@ -433,31 +431,31 @@ export default function QuranPlayerClient() {
         <>
           <div className="surah-cards-grid">
             {paginatedSurahs.map((surah) => (
-            <div 
-              key={surah.number}
-              className={`surah-card ${selectedSurah === surah.number ? 'selected' : ''}`}
-              onClick={() => loadSurah(surah.number)}
-              style={{
-                background: getSurahColor(surah.number)
-              } as React.CSSProperties}
-              role="button"
-              tabIndex={0}
-              onKeyPress={(e) => e.key === 'Enter' && loadSurah(surah.number)}
-              aria-label={`Play Surah ${surah.englishName}`}
-            >
-              <div className="surah-card__overlay">
-                <div className="surah-card__number">{surah.number}</div>
-                <div className="surah-card__content">
-                  <h3 className="surah-card__name-ar" dir="rtl">{surah.name}</h3>
-                  <div className="surah-card__details">
-                    <span className="surah-card__name-en">{surah.englishName}</span>
-                    <span className="surah-card__verses">{surah.numberOfAyahs} Verses</span>
+              <div
+                key={surah.number}
+                className={`surah-card ${selectedSurah === surah.number ? 'selected' : ''}`}
+                onClick={() => loadSurah(surah.number)}
+                style={{
+                  background: getSurahColor(surah.number)
+                } as React.CSSProperties}
+                role="button"
+                tabIndex={0}
+                onKeyPress={(e) => e.key === 'Enter' && loadSurah(surah.number)}
+                aria-label={`Play Surah ${surah.englishName}`}
+              >
+                <div className="surah-card__overlay">
+                  <div className="surah-card__number">{surah.number}</div>
+                  <div className="surah-card__content">
+                    <h3 className="surah-card__name-ar" dir="rtl">{surah.name}</h3>
+                    <div className="surah-card__details">
+                      <span className="surah-card__name-en">{surah.englishName}</span>
+                      <span className="surah-card__verses">{surah.numberOfAyahs} Verses</span>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
           {filteredSurahs.length > ITEMS_PER_PAGE && (
             <div className="pagination">
               <button

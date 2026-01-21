@@ -13,25 +13,25 @@ const CURATED_STATIONS: Partial<Station>[] = [
         id: 'mishary-rashid-alafasy',
         title: 'Mishary Rashid Alafasy',
         description: 'Emotional and clear recitation',
-        image: 'https://static.qurancdn.com/images/reciters/7/profile.png',
+        image: '/images/reciters/reciter-7.png', // Local generated portrait
     },
     {
         id: 'abdulbaset-abdulsamad',
         title: 'AbdulBaset AbdulSamad',
         description: 'Mujawwad style, timeless',
-        image: 'https://static.qurancdn.com/images/reciters/1/profile.png',
+        image: '/images/reciters/reciter-1.png', // Local generated portrait
     },
     {
         id: 'maher-al-muaiqly',
         title: 'Maher Al Muaiqly',
         description: 'Imam of Masjid Al-Haram',
-        image: 'https://static.qurancdn.com/images/reciters/12/profile.png',
+        image: '/images/reciters/reciter-12.png', // Local generated portrait
     },
     {
         id: 'saud-al-shuraim',
         title: 'Saud Al-Shuraim',
         description: 'Powerful and fast paced',
-        image: 'https://static.qurancdn.com/images/reciters/19/profile.png',
+        image: '/images/reciters/reciter-10.png', // Local generated portrait
     }
 ];
 

@@ -11,7 +11,6 @@ import {
   Mail,
   Phone,
   MapPin,
-  ArrowRight,
   Shield,
   Heart,
   Globe
@@ -84,13 +83,16 @@ const Footer: React.FC = () => {
 
           <div className="footer-newsletter">
             <h4>Stay Connected</h4>
-            <p>Get weekly Quranic insights and platform updates.</p>
-            <form className="newsletter-form" onSubmit={(e) => e.preventDefault()}>
-              <input type="email" placeholder="Enter your email" required />
-              <button type="submit" className="newsletter-btn">
-                <ArrowRight size={20} />
-              </button>
-            </form>
+            <p>Get weekly Quranic insights and updates.</p>
+            <a
+              href="https://wa.me/916204130133?text=Assalamu%20Alaikum!%20I%20would%20like%20to%20receive%20weekly%20Quranic%20insights%20from%20Learn%20Quran"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="whatsapp-btn"
+            >
+              <img src="/whatsapp-icon.png" alt="WhatsApp" />
+              Connect on WhatsApp
+            </a>
           </div>
         </div>
 
