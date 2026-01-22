@@ -136,7 +136,21 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
 
             try {
                 setWordDataLoading(true);
-                const wordData = await getVersesWithWords(surahNumber, '131'); // 131 = Sahih International
+
+                // Map alquran.cloud translation IDs to Quran.com resource IDs
+                const translationMap: Record<string, string> = {
+                    'en.sahih': '131',      // Sahih International
+                    'en.pickthall': '22',   // Pickthall
+                    'en.yusufali': '21',    // Yusuf Ali
+                    'en.asad': '206',       // Muhammad Asad
+                    'ur.jalandhry': '97',   // Fateh Muhammad Jalandhry (Urdu)
+                    'ur.ahmedali': '96',    // Ahmed Ali (Urdu)
+                    'fr.hamidullah': '31',  // Muhammad Hamidullah (French)
+                    'es.asad': '83'         // Muhammad Asad (Spanish)
+                };
+
+                const resourceId = translationMap[selectedTranslation] || '131';
+                const wordData = await getVersesWithWords(surahNumber, resourceId);
 
                 if (!isCancelled) {
                     setVersesWithWords(wordData);
@@ -159,7 +173,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
         return () => {
             isCancelled = true;
         };
-    }, [readingMode, surahNumber, verses]);
+    }, [readingMode, surahNumber, verses, selectedTranslation]);
 
     // Confirmation State
     const [pendingChange, setPendingChange] = useState<{ type: 'reciter' | 'translation', value: string | number, name: string } | null>(null);
