@@ -6,6 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import {
     getChapter,
     getAllVerses,
+    getVersesWithWords,
     Chapter,
     VerseWithTranslation,
     POPULAR_RECITERS,
@@ -13,6 +14,7 @@ import {
 } from '../lib/api';
 import { saveLastRead, markVerseRead } from '../lib/progress';
 import TafsirSection from '../components/TafsirSection';
+import InteractiveWord from '../components/InteractiveWord';
 
 // Convert English numbers to Arabic-Indic numerals (۰۱۲۳۴۵۶۷۸۹)
 const toArabicNumeral = (num: number): string => {
@@ -43,13 +45,17 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
     const [tafsirContent, setTafsirContent] = useState<Record<string, string>>({});
 
     // Settings
-    const [readingMode, setReadingMode] = useState<'translation' | 'reading'>(
-        (initialMode === 'reading' || initialMode === 'translation') ? initialMode : 'translation'
+    const [readingMode, setReadingMode] = useState<'translation' | 'reading' | 'word-by-word'>(
+        (initialMode === 'reading' || initialMode === 'translation' || initialMode === 'word-by-word') ? initialMode : 'translation'
     );
     const [selectedTranslation, setSelectedTranslation] = useState('en.sahih');
     const [selectedReciter, setSelectedReciter] = useState(7);
     const [fontSize, setFontSize] = useState(28);
     const [showSettings, setShowSettings] = useState(false);
+
+    // Word-by-word data
+    const [versesWithWords, setVersesWithWords] = useState<VerseWithTranslation[]>([]);
+    const [wordDataLoading, setWordDataLoading] = useState(false);
 
     // Audio
     const [isPlaying, setIsPlaying] = useState(false);
@@ -118,6 +124,42 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
             isCancelled = true;
         };
     }, [surahNumber, selectedTranslation, tafsirId]);
+
+    // Fetch word-by-word data when mode is switched
+    useEffect(() => {
+        let isCancelled = false;
+
+        async function loadWordData() {
+            if (readingMode !== 'word-by-word' || surahNumber < 1 || surahNumber > 114) {
+                return;
+            }
+
+            try {
+                setWordDataLoading(true);
+                const wordData = await getVersesWithWords(surahNumber, '131'); // 131 = Sahih International
+
+                if (!isCancelled) {
+                    setVersesWithWords(wordData);
+                }
+            } catch (err) {
+                console.error('Error fetching word data:', err);
+                if (!isCancelled) {
+                    // Fallback to regular verses if word data fails
+                    setVersesWithWords(verses);
+                }
+            } finally {
+                if (!isCancelled) {
+                    setWordDataLoading(false);
+                }
+            }
+        }
+
+        loadWordData();
+
+        return () => {
+            isCancelled = true;
+        };
+    }, [readingMode, surahNumber, verses]);
 
     // Confirmation State
     const [pendingChange, setPendingChange] = useState<{ type: 'reciter' | 'translation', value: string | number, name: string } | null>(null);
@@ -606,6 +648,12 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                         >
                             Reading
                         </button>
+                        <button
+                            className={`rq-mode-btn ${readingMode === 'word-by-word' ? 'active' : ''}`}
+                            onClick={() => setReadingMode('word-by-word')}
+                        >
+                            Word-by-Word
+                        </button>
                     </div>
                 </div>
             </div>
@@ -736,7 +784,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                             </div>
                         </div>
                     ))
-                ) : (
+                ) : readingMode === 'reading' ? (
                     // Reading Mode (Mushaf style)
                     <div className="rq-reading-mode">
                         <div className="rq-reading-text" style={{ fontSize: `${fontSize + 4}px` }}>
@@ -750,6 +798,45 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                 </span>
                             ))}
                         </div>
+                    </div>
+                ) : (
+                    // Word-by-Word Mode
+                    <div className="word-by-word-mode">
+                        {wordDataLoading ? (
+                            <div className="rq-loading">
+                                <div className="rq-spinner"></div>
+                                <p>Loading word-by-word data...</p>
+                            </div>
+                        ) : versesWithWords.length > 0 ? (
+                            versesWithWords.map((verse) => (
+                                <div key={verse.id} className="word-by-word-verse" id={`verse-${verse.verse_number}`}>
+                                    <div className="word-by-word-verse-header">
+                                        <div className="word-by-word-verse-number">
+                                            <span className="verse-number-badge">{verse.verse_number}</span>
+                                            <span>Verse {verse.verse_number}</span>
+                                        </div>
+                                    </div>
+
+                                    <div className="word-by-word-text">
+                                        {verse.words && verse.words.length > 0 ? (
+                                            verse.words.map((word) => (
+                                                <InteractiveWord key={word.id} word={word} />
+                                            ))
+                                        ) : (
+                                            <span>{verse.text_uthmani}</span>
+                                        )}
+                                    </div>
+
+                                    <div className="word-by-word-translation">
+                                        {verse.translations?.[0]?.text || 'Translation not available'}
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            <div className="rq-loading">
+                                <p>Switch to word-by-word mode to see interactive translations</p>
+                            </div>
+                        )}
                     </div>
                 )}
             </div>

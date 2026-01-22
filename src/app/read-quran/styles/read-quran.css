@@ -1384,3 +1384,278 @@
     align-items: center;
     gap: 4px;
 }
+
+/* ============ WORD-BY-WORD MODE ============ */
+.word-by-word-mode {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 24px;
+    background: var(--rq-bg-card);
+    border: 1px solid var(--rq-border);
+    border-radius: var(--rq-radius-lg);
+}
+
+.word-by-word-verse {
+    padding: 32px 0;
+    border-bottom: 1px solid var(--rq-border);
+    position: relative;
+}
+
+.word-by-word-verse:last-child {
+    border-bottom: none;
+}
+
+.word-by-word-verse-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.word-by-word-verse-number {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    color: var(--rq-text-muted);
+}
+
+.verse-number-badge {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    border-radius: 50%;
+    color: var(--rq-primary);
+    font-weight: 600;
+}
+
+.word-by-word-text {
+    direction: rtl;
+    text-align: right;
+    line-height: 3.5;
+    font-family: var(--rq-font-arabic);
+    font-size: 38px;
+    margin-bottom: 24px;
+    padding: 0 12px;
+}
+
+/* Interactive Word Wrapper */
+.interactive-word-wrapper {
+    display: inline-block;
+    position: relative;
+    margin: 0 4px;
+}
+
+/* Individual Interactive Word */
+.interactive-word {
+    display: inline-block;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 8px;
+    position: relative;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    /* Remove tap highlight on mobile */
+    min-width: 44px;
+    /* Touch-friendly minimum */
+    min-height: 44px;
+    /* Touch-friendly minimum */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.interactive-word:hover {
+    background: rgba(16, 185, 129, 0.1);
+    transform: translateY(-2px);
+}
+
+.interactive-word.active {
+    background: rgba(16, 185, 129, 0.15);
+    color: var(--rq-primary);
+}
+
+/* Word Tooltip */
+.word-tooltip {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    pointer-events: none;
+    animation: tooltipFadeIn 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.word-tooltip.top {
+    bottom: calc(100% + 12px);
+}
+
+.word-tooltip.bottom {
+    top: calc(100% + 12px);
+}
+
+.word-tooltip.pinned {
+    pointer-events: auto;
+}
+
+@keyframes tooltipFadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(4px) scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0) scale(1);
+    }
+}
+
+/* Tooltip Content - Premium Glassmorphic Design */
+.word-tooltip-content {
+    background: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    padding: 16px 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(16, 185, 129, 0.2);
+    min-width: 200px;
+    max-width: 300px;
+    text-align: center;
+    position: relative;
+}
+
+.word-tooltip-arabic {
+    font-family: var(--rq-font-arabic);
+    font-size: 32px;
+    color: var(--rq-text);
+    margin-bottom: 12px;
+    direction: rtl;
+}
+
+.word-tooltip-transliteration {
+    font-size: 16px;
+    color: var(--rq-secondary);
+    font-style: italic;
+    margin-bottom: 8px;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.word-tooltip-translation {
+    font-size: 15px;
+    color: var(--rq-text-secondary);
+    line-height: 1.5;
+    margin-bottom: 12px;
+    padding-top: 8px;
+    border-top: 1px solid var(--rq-border);
+}
+
+.word-tooltip-audio-btn {
+    width: 100%;
+    padding: 8px 16px;
+    background: var(--rq-primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.word-tooltip-audio-btn:hover {
+    background: var(--rq-primary-hover);
+    transform: scale(1.05);
+}
+
+/* Tooltip Arrow */
+.word-tooltip-arrow {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+}
+
+.word-tooltip-arrow.top {
+    bottom: -8px;
+    border-top: 8px solid rgba(15, 23, 42, 0.95);
+}
+
+.word-tooltip-arrow.bottom {
+    top: -8px;
+    border-bottom: 8px solid rgba(15, 23, 42, 0.95);
+}
+
+/* Verse Translation (below words) */
+.word-by-word-translation {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--rq-text-secondary);
+    padding: 16px 20px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    border-left: 3px solid var(--rq-primary);
+    margin-top: 16px;
+}
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+    .word-by-word-text {
+        font-size: 32px;
+        line-height: 3;
+    }
+
+    .interactive-word {
+        padding: 6px 10px;
+    }
+
+    .word-tooltip-content {
+        min-width: 180px;
+        max-width: 260px;
+        padding: 14px 16px;
+    }
+
+    .word-tooltip-arabic {
+        font-size: 28px;
+    }
+
+    .word-tooltip-transliteration {
+        font-size: 14px;
+    }
+
+    .word-tooltip-translation {
+        font-size: 14px;
+    }
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+    .word-by-word-mode {
+        padding: 16px;
+    }
+
+    .word-by-word-text {
+        font-size: 28px;
+        line-height: 2.8;
+    }
+
+    .interactive-word {
+        padding: 4px 8px;
+        margin: 0 2px;
+    }
+
+    .word-tooltip-content {
+        min-width: 160px;
+        max-width: 240px;
+    }
+}

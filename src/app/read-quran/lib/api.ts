@@ -49,6 +49,7 @@ export interface Word {
         text: string;
         language_name: string;
     };
+    audio_url?: string;
 }
 
 export interface Translation {
@@ -223,6 +224,59 @@ export async function getAllVerses(
 ): Promise<VerseWithTranslation[]> {
     const data = await getVerses(chapterId, translationId);
     return data.verses;
+}
+
+/**
+ * Get verses with word-by-word data (translations and transliterations)
+ * Uses Quran.com API v4 with words parameter
+ */
+export async function getVersesWithWords(
+    chapterId: number,
+    translationId: string = '131' // Sahih International
+): Promise<VerseWithTranslation[]> {
+    try {
+        // Quran.com API endpoint for verses with words
+        const url = `${API_BASE}/verses/by_chapter/${chapterId}?language=en&words=true&translations=${translationId}&word_fields=text_uthmani,text_imlaei,translation,transliteration&translation_fields=text,resource_name&per_page=300`;
+
+        const response = await fetchWithRetry(url);
+        const data = await response.json();
+
+        if (!data.verses) {
+            throw new Error('Failed to fetch verses with words');
+        }
+
+        // Map the response to our VerseWithTranslation type
+        const verses: VerseWithTranslation[] = data.verses.map((verse: any) => ({
+            id: verse.id,
+            verse_key: verse.verse_key,
+            verse_number: verse.verse_number,
+            hizb_number: verse.hizb_number || 1,
+            rub_el_hizb_number: verse.rub_el_hizb_number || 1,
+            ruku_number: verse.ruku_number || 1,
+            manzil_number: verse.manzil_number || 1,
+            sajdah_number: verse.sajdah_number || null,
+            page_number: verse.page_number || 1,
+            juz_number: verse.juz_number || 1,
+            text_uthmani: verse.text_uthmani,
+            text_imlaei: verse.text_imlaei,
+            translations: verse.translations || [],
+            words: verse.words?.map((word: any) => ({
+                id: word.id,
+                position: word.position,
+                text_uthmani: word.text_uthmani,
+                text_imlaei: word.text_imlaei || word.text_uthmani,
+                translation: word.translation || { text: '', language_name: 'english' },
+                transliteration: word.transliteration || { text: '', language_name: 'english' },
+                audio_url: word.audio_url || null
+            })) || []
+        }));
+
+        return verses;
+    } catch (error) {
+        console.error(`Error fetching verses with words for chapter ${chapterId}:`, error);
+        // Fallback to regular verses if word data fails
+        return getAllVerses(chapterId, translationId);
+    }
 }
 
 /**
