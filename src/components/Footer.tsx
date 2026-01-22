@@ -8,9 +8,6 @@ import {
   Twitter,
   Instagram,
   Youtube,
-  Mail,
-  Phone,
-  MapPin,
   Shield,
   Heart,
   Globe
@@ -23,7 +20,6 @@ const Footer: React.FC = () => {
   const footerLinks = {
     learn: [
       { name: 'Home', href: '/' },
-      { name: 'Main Page', href: '/main' },
       { name: 'About Us', href: '/about' },
       { name: 'Read Quran', href: '/read-quran' },
     ],
@@ -33,11 +29,17 @@ const Footer: React.FC = () => {
       { name: 'Tafsir Study', href: '/tafsir' },
       { name: 'Arabic Language', href: '/courses' },
     ],
-    community: [
-      { name: 'Live Radio', href: '/radio' },
-      { name: 'Prayer Times', href: '/prayer-time' },
-      { name: 'DUAS', href: '/duas' },
-      { name: 'Islamic Community', href: '/community' },
+    comingSoon: [
+      { name: 'Courses', href: '/courses' },
+      { name: 'TAJWEED', href: '/tajweed' },
+      { name: 'Prayer Time', href: '/prayer-time' },
+      { name: 'COMMUNITY', href: '/community' },
+    ],
+    resources: [
+      { name: 'Read Quran', href: '/read-quran' },
+      { name: 'Learn Quran', href: '/learn-quran' },
+      { name: 'Memorize Quran', href: '/memorize-quran' },
+      { name: 'Quran Player', href: '/quran-player' },
     ]
   };
 
@@ -117,29 +119,20 @@ const Footer: React.FC = () => {
             </ul>
           </div>
           <div className="footer-col">
-            <h5>Connect</h5>
+            <h5>Coming Soon</h5>
             <ul>
-              {footerLinks.community.map(link => (
+              {footerLinks.comingSoon.map(link => (
                 <li key={link.href}><Link href={link.href}>{link.name}</Link></li>
               ))}
             </ul>
           </div>
-          <div className="footer-col contact-col">
-            <h5>Contact Us</h5>
-            <div className="contact-info">
-              <a href="mailto:info@learnquran.com" className="contact-item">
-                <Mail size={18} />
-                <span>info@learnquran.com</span>
-              </a>
-              <a href="tel:+1234567890" className="contact-item">
-                <Phone size={18} />
-                <span>+1 (234) 567-890</span>
-              </a>
-              <div className="contact-item">
-                <MapPin size={18} />
-                <span>Global Digital Platform</span>
-              </div>
-            </div>
+          <div className="footer-col">
+            <h5>Resources</h5>
+            <ul>
+              {footerLinks.resources.map(link => (
+                <li key={link.href}><Link href={link.href}>{link.name}</Link></li>
+              ))}
+            </ul>
           </div>
         </div>
 
