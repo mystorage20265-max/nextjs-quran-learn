@@ -61,16 +61,17 @@ export default function PrayerTimesPage() {
             setLoading(true);
             setError(null);
 
-            console.log('Requesting location permission...');
+            console.log('🌍 Requesting location permission...');
             const location = await getUserLocation();
-            console.log('Location received:', location);
+            console.log('✅ Location received:', location);
 
             setLocationPermission('granted');
             const data = await getPrayerTimesByCoordinates(location.latitude, location.longitude, calculationMethod);
-            console.log('Prayer times loaded:', data);
+            console.log('📿 Prayer times loaded for coordinates:', data.meta?.latitude, data.meta?.longitude);
 
             // Set location display
             const locationStr = `${location.latitude.toFixed(4)}°, ${location.longitude.toFixed(4)}°`;
+            console.log('📍 Setting userLocation to:', locationStr);
             setUserLocation(locationStr);
 
             setPrayerData(data);
@@ -91,7 +92,10 @@ export default function PrayerTimesPage() {
 
             // Fallback to default city
             try {
+                console.log('🏙️ Falling back to city:', city, country);
                 const data = await getPrayerTimesByCity(city, country, calculationMethod);
+                console.log('📍 Setting userLocation to (fallback):', `${city}, ${country}`);
+                setUserLocation(`${city}, ${country}`); // Set location for fallback
                 setPrayerData(data);
             } catch (cityErr) {
                 setError('Failed to load prayer times');
@@ -102,28 +106,34 @@ export default function PrayerTimesPage() {
     }
 
     async function loadPrayerTimes() {
+        console.log('🔄 loadPrayerTimes called, permission status:', locationPermission);
         try {
             setLoading(true);
             setError(null);
 
             if (locationPermission === 'granted') {
+                console.log('✅ Permission granted, getting location...');
                 try {
                     const location = await getUserLocation();
+                    console.log('📍 Got location:', location);
                     const data = await getPrayerTimesByCoordinates(location.latitude, location.longitude, calculationMethod);
 
                     // Set location from coordinates
                     const locationStr = `${location.latitude.toFixed(4)}°, ${location.longitude.toFixed(4)}°`;
+                    console.log('📍 Setting userLocation to:', locationStr);
                     setUserLocation(locationStr);
 
                     setPrayerData(data);
                     return;
                 } catch (err) {
-                    console.error('Failed to get location:', err);
+                    console.error('❌ Failed to get location:', err);
                 }
             }
 
             // Use city if location not available
+            console.log('🏙️ Using city-based location:', city, country);
             const data = await getPrayerTimesByCity(city, country, calculationMethod);
+            console.log('📍 Setting userLocation to (city):', `${city}, ${country}`);
             setUserLocation(`${city}, ${country}`);
             setPrayerData(data);
         } catch (err) {
