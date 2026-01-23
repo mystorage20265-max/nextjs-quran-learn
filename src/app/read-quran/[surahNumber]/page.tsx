@@ -15,6 +15,7 @@ import {
 import { saveLastRead, markVerseRead } from '../lib/progress';
 import TafsirSection from '../components/TafsirSection';
 import InteractiveWord from '../components/InteractiveWord';
+import { parseTranslationWithFootnotes } from '../lib/translationUtils';
 
 // Convert English numbers to Arabic-Indic numerals (۰۱۲۳۴۵۶۷۸۹)
 const toArabicNumeral = (num: number): string => {
@@ -31,10 +32,10 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
     const { surahNumber: surahNumberStr } = use(params);
     const surahNumber = parseInt(surahNumberStr);
 
-    // Get query params
+    // Get query params (searchParams can be null during SSR)
     const searchParams = useSearchParams();
-    const initialMode = searchParams.get('mode');
-    const tafsirId = searchParams.get('tafsir');
+    const initialMode = searchParams?.get('mode') ?? null;
+    const tafsirId = searchParams?.get('tafsir') ?? null;
 
     // State
     const [chapter, setChapter] = useState<Chapter | null>(null);
@@ -149,6 +150,8 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                     'es.asad': '83'         // Muhammad Asad (Spanish)
                 };
 
+                // Get verse translation resource ID and fetch word-by-word data
+                // Note: Word translations and transliterations are in English by default
                 const resourceId = translationMap[selectedTranslation] || '131';
                 const wordData = await getVersesWithWords(surahNumber, resourceId);
 
@@ -697,7 +700,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
 
                             <div className="rq-verse-arabic">{verse.text_uthmani}</div>
                             <div className="rq-verse-translation">
-                                {verse.translations?.[0]?.text || 'Translation not available'}
+                                {parseTranslationWithFootnotes(verse.translations?.[0]?.text || 'Translation not available')}
                             </div>
 
                             {/* Interactive Tafsir Section - Works with ALL Tafsirs */}
@@ -842,7 +845,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                     </div>
 
                                     <div className="word-by-word-translation">
-                                        {verse.translations?.[0]?.text || 'Translation not available'}
+                                        {parseTranslationWithFootnotes(verse.translations?.[0]?.text || 'Translation not available')}
                                     </div>
                                 </div>
                             ))

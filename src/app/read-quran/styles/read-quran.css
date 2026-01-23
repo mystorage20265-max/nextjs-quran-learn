@@ -426,6 +426,25 @@
     margin-left: 10px;
 }
 
+/* Translation Footnotes */
+.translation-footnote {
+    font-size: 0.7em !important;
+    vertical-align: super;
+    cursor: help;
+    color: var(--rq-primary);
+    font-weight: 600;
+    margin-left: 2px;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.translation-footnote:hover {
+    color: var(--rq-secondary);
+    transform: scale(1.15);
+}
+
+
 .rq-verse-actions {
     display: flex;
     gap: 12px;

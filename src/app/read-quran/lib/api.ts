@@ -232,11 +232,13 @@ export async function getAllVerses(
  */
 export async function getVersesWithWords(
     chapterId: number,
-    translationId: string = '131' // Sahih International
+    translationId: string = '131', // Sahih International (English)
+    wordLanguage: string = 'en' // Default to English for word translations/transliterations
 ): Promise<VerseWithTranslation[]> {
     try {
         // Quran.com API endpoint for verses with words
-        const url = `${API_BASE}/verses/by_chapter/${chapterId}?language=en&words=true&translations=${translationId}&word_fields=text_uthmani,text_imlaei,translation,transliteration&translation_fields=text,resource_name&per_page=300`;
+        // language parameter ensures word translations and transliterations are in English
+        const url = `${API_BASE}/verses/by_chapter/${chapterId}?language=${wordLanguage}&words=true&translations=${translationId}&word_fields=text_uthmani,text_imlaei,translation,transliteration&translation_fields=text,resource_name&per_page=300`;
 
         const response = await fetchWithRetry(url);
         const data = await response.json();
