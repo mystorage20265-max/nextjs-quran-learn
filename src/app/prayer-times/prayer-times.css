@@ -74,6 +74,25 @@
     margin: 0;
 }
 
+.location-display {
+    margin-top: 8px;
+    font-size: 0.9rem;
+    color: var(--pt-text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.location-icon {
+    font-size: 1rem;
+}
+
+.location-text {
+    font-weight: 500;
+    color: var(--pt-accent-light);
+}
+
 .hijri-date {
     display: none;
     /* Included in gregorian-date */

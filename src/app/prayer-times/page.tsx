@@ -43,6 +43,7 @@ export default function PrayerTimesPage() {
     const [calculationMethod, setCalculationMethod] = useState(3);
     const [showSettings, setShowSettings] = useState(false);
     const [currentTime, setCurrentTime] = useState(new Date());
+    const [userLocation, setUserLocation] = useState<string | null>(null);
 
     useEffect(() => {
         const timer = setInterval(() => setCurrentTime(new Date()), 1000);
@@ -60,13 +61,34 @@ export default function PrayerTimesPage() {
             setLoading(true);
             setError(null);
 
+            console.log('Requesting location permission...');
             const location = await getUserLocation();
+            console.log('Location received:', location);
+
             setLocationPermission('granted');
             const data = await getPrayerTimesByCoordinates(location.latitude, location.longitude, calculationMethod);
+            console.log('Prayer times loaded:', data);
+
+            // Set location display
+            const locationStr = `${location.latitude.toFixed(4)}°, ${location.longitude.toFixed(4)}°`;
+            setUserLocation(locationStr);
+
             setPrayerData(data);
-        } catch (err) {
+        } catch (err: any) {
+            console.error('Location request failed:', err);
             setLocationPermission('denied');
-            setError('Location permission denied. Using default location.');
+
+            // Provide more specific error messages
+            let errorMessage = 'Location permission denied. Using default location.';
+            if (err?.code === 1) {
+                errorMessage = 'Location permission denied. Using default location.';
+            } else if (err?.code === 2) {
+                errorMessage = 'Location unavailable. Using default location.';
+            } else if (err?.code === 3) {
+                errorMessage = 'Location request timeout. Using default location.';
+            }
+            setError(errorMessage);
+
             // Fallback to default city
             try {
                 const data = await getPrayerTimesByCity(city, country, calculationMethod);
@@ -88,6 +110,11 @@ export default function PrayerTimesPage() {
                 try {
                     const location = await getUserLocation();
                     const data = await getPrayerTimesByCoordinates(location.latitude, location.longitude, calculationMethod);
+
+                    // Set location from coordinates
+                    const locationStr = `${location.latitude.toFixed(4)}°, ${location.longitude.toFixed(4)}°`;
+                    setUserLocation(locationStr);
+
                     setPrayerData(data);
                     return;
                 } catch (err) {
@@ -97,6 +124,7 @@ export default function PrayerTimesPage() {
 
             // Use city if location not available
             const data = await getPrayerTimesByCity(city, country, calculationMethod);
+            setUserLocation(`${city}, ${country}`);
             setPrayerData(data);
         } catch (err) {
             setError('Failed to load prayer times');
@@ -200,6 +228,12 @@ export default function PrayerTimesPage() {
                         <div className="gregorian-date">
                             {new Date().toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })} - {prayerData.date.hijri.day} {prayerData.date.hijri.month.en} {prayerData.date.hijri.year}
                         </div>
+                        {userLocation && (
+                            <div className="location-display">
+                                <span className="location-icon">📍</span>
+                                <span className="location-text">{userLocation}</span>
+                            </div>
+                        )}
                     </div>
 
                     <div className="content-wrapper">
@@ -234,7 +268,7 @@ export default function PrayerTimesPage() {
                         </div>
                     </div>
 
-                    <div className="footer">Powered by Learn Quran App</div>
+                    <div className="footer">Powered by Learn Quran App  </div>
                 </div>
             </div>
 

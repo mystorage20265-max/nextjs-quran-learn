@@ -231,15 +231,24 @@ export function getUserLocation(): Promise<{ latitude: number; longitude: number
             return;
         }
 
+        console.log('Requesting user location...');
+
         navigator.geolocation.getCurrentPosition(
             (position) => {
+                console.log('Location granted:', position.coords);
                 resolve({
                     latitude: position.coords.latitude,
                     longitude: position.coords.longitude,
                 });
             },
             (error) => {
+                console.error('Location error:', error);
                 reject(error);
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 0
             }
         );
     });
