@@ -234,10 +234,13 @@ export default function QuranSciencePage() {
                                         <p className="science-text">{topic.scientificFact}</p>
                                     </div>
 
-                                    <button className="explore-btn">
+                                    <Link
+                                        href={topic.id === 'embryology' ? '/quran-science/embryology' : '#'}
+                                        className="explore-btn"
+                                    >
                                         Explore in Detail
                                         <ArrowRight size={18} />
-                                    </button>
+                                    </Link>
                                 </motion.div>
                             )}
                         </motion.div>

@@ -1,0 +1,430 @@
+/* Prayer Times - Compact Card Design */
+/* Inspired by SalatTimes.com widget */
+
+/* ============ VARIABLES ============ */
+:root {
+    --pt-bg: #0f172a;
+    --pt-card-bg-start: #1e293b;
+    --pt-card-bg-end: #0f172a;
+    --pt-header-bg: #1e40af;
+    --pt-header-border: #3b82f6;
+    --pt-border: #334155;
+    --pt-text-primary: #e2e8f0;
+    --pt-text-secondary: #94a3b8;
+    --pt-text-muted: #64748b;
+    --pt-accent: #f59e0b;
+    --pt-accent-light: #fbbf24;
+    --pt-clock-inner: #475569;
+}
+
+/* ============ BASE STYLES ============ */
+.prayer-times-page {
+    min-height: 100vh;
+    background: var(--pt-bg);
+    color: var(--pt-text-primary);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 100px 20px 40px 20px;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.prayer-times-container {
+    width: 100%;
+    max-width: 520px;
+    position: relative;
+}
+
+/* ============ CARD LAYOUT ============ */
+.enhanced-prayer-display {
+    width: 100%;
+    background: linear-gradient(135deg, var(--pt-card-bg-start) 0%, var(--pt-card-bg-end) 100%);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+    border: 1px solid var(--pt-border);
+    animation: fadeIn 0.6s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============ DATE HEADER ============ */
+.date-header {
+    background: var(--pt-header-bg);
+    padding: 18px 24px;
+    text-align: center;
+    border-bottom: 1px solid var(--pt-header-border);
+}
+
+.gregorian-date {
+    font-size: 1.05rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    color: var(--pt-text-primary);
+    margin: 0;
+}
+
+.hijri-date {
+    display: none;
+    /* Included in gregorian-date */
+}
+
+/* ============ CONTENT AREA ============ */
+.content-wrapper {
+    padding: 24px;
+}
+
+/* ============ CLOCK SECTION ============ */
+.clock-section {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    max-width: 260px;
+    margin: 0 auto 30px;
+}
+
+.analog-clock {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, var(--pt-clock-inner), var(--pt-card-bg-end) 60%);
+    border: 12px solid var(--pt-clock-inner);
+    box-shadow:
+        inset 0 0 30px rgba(0, 0, 0, 0.7),
+        0 0 40px rgba(59, 130, 246, 0.15);
+    position: relative;
+}
+
+.clock-face {
+    width: 100%;
+    height: 100%;
+}
+
+.quran-icon-bg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -70%);
+    font-size: 3.8rem;
+    color: rgba(245, 158, 11, 0.15);
+    opacity: 0.25;
+    pointer-events: none;
+}
+
+/* ============ COUNTDOWN SECTION ============ */
+.countdown-section {
+    text-align: center;
+    margin: 20px 0 8px;
+}
+
+.countdown-label {
+    color: var(--pt-accent);
+    font-size: 1.05rem;
+    font-weight: 500;
+    margin-bottom: 12px;
+}
+
+.countdown-time {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--pt-accent);
+    font-family: 'Courier New', monospace;
+    letter-spacing: 2px;
+}
+
+/* ============ PROGRESS BAR ============ */
+.progress-container {
+    height: 6px;
+    background: var(--pt-border);
+    border-radius: 3px;
+    margin: 0 0 24px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(to right, var(--pt-accent), var(--pt-accent-light));
+    border-radius: 3px;
+    transition: width 1s ease;
+}
+
+/* ============ PRAYER TIMES GRID ============ */
+.prayers-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px 24px;
+}
+
+.prayer-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--pt-border);
+}
+
+.prayer-list-item:nth-child(5),
+.prayer-list-item:nth-child(6) {
+    border-bottom: none;
+}
+
+.prayer-name {
+    font-weight: 500;
+    font-size: 1.1rem;
+    color: var(--pt-text-secondary);
+}
+
+.prayer-time {
+    font-size: 1.18rem;
+    font-weight: 600;
+    color: var(--pt-text-primary);
+}
+
+.prayer-icon-small,
+.prayer-name-section {
+    display: none;
+    /* Simplified version */
+}
+
+/* ============ FOOTER ============ */
+.footer {
+    text-align: center;
+    padding: 16px;
+    font-size: 0.82rem;
+    color: var(--pt-text-muted);
+    border-top: 1px solid var(--pt-border);
+}
+
+/* ============ SETTINGS BUTTON ============ */
+.settings-toggle-btn {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--pt-accent);
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(245, 158, 11, 0.4);
+    transition: all 0.3s;
+    z-index: 100;
+}
+
+.settings-toggle-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 12px 32px rgba(245, 158, 11, 0.5);
+}
+
+/* ============ SETTINGS PANEL ============ */
+.settings-panel {
+    position: fixed;
+    top: 0;
+    right: -400px;
+    width: 380px;
+    height: 100vh;
+    background: #1e293b;
+    border-left: 1px solid var(--pt-border);
+    padding: 80px 24px 24px;
+    z-index: 1000;
+    transition: right 0.3s ease;
+    overflow-y: auto;
+    box-shadow: -4px 0 12px rgba(0, 0, 0, 0.5);
+}
+
+.settings-panel.open {
+    right: 0;
+}
+
+.settings-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--pt-border);
+}
+
+.settings-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--pt-text-primary);
+}
+
+.settings-close {
+    background: transparent;
+    border: none;
+    color: var(--pt-text-secondary);
+    font-size: 1.8rem;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.settings-close:hover {
+    color: var(--pt-text-primary);
+}
+
+.settings-section {
+    margin-bottom: 24px;
+}
+
+.settings-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--pt-text-primary);
+    font-size: 0.9rem;
+}
+
+.settings-select,
+.settings-input {
+    width: 100%;
+    padding: 12px;
+    background: var(--pt-card-bg-end);
+    border: 1px solid var(--pt-border);
+    border-radius: 8px;
+    color: var(--pt-text-primary);
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.settings-select:focus,
+.settings-input:focus {
+    border-color: var(--pt-accent);
+}
+
+/* ============ LOCATION PROMPT ============ */
+.location-prompt {
+    text-align: center;
+    padding: 60px 40px;
+    background: linear-gradient(135deg, var(--pt-card-bg-start) 0%, var(--pt-card-bg-end) 100%);
+    border-radius: 24px;
+    border: 1px solid var(--pt-border);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+    animation: fadeIn 0.6s ease-out;
+}
+
+.location-prompt-icon {
+    font-size: 4rem;
+    margin-bottom: 24px;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+.location-prompt-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--pt-text-primary);
+    margin-bottom: 16px;
+}
+
+.location-prompt-description {
+    font-size: 1rem;
+    color: var(--pt-text-secondary);
+    line-height: 1.6;
+    margin-bottom: 32px;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.location-prompt-button {
+    width: 100%;
+    max-width: 300px;
+    padding: 16px 32px;
+    background: var(--pt-accent);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-bottom: 12px;
+    box-shadow: 0 8px 24px rgba(245, 158, 11, 0.3);
+}
+
+.location-prompt-button:hover {
+    background: var(--pt-accent-light);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(245, 158, 11, 0.4);
+}
+
+.location-prompt-button-secondary {
+    width: 100%;
+    max-width: 300px;
+    padding: 14px 32px;
+    background: transparent;
+    border: 1px solid var(--pt-border);
+    border-radius: 12px;
+    color: var(--pt-text-secondary);
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.location-prompt-button-secondary:hover {
+    border-color: var(--pt-accent);
+    color: var(--pt-text-primary);
+    background: rgba(245, 158, 11, 0.1);
+}
+
+/* Hide elements not in compact design */
+.monthly-calendar-section,
+.qibla-section,
+.clock-prayers-container {
+    display: none;
+}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 500px) {
+    .prayer-times-page {
+        padding: 80px 16px 20px 16px;
+    }
+
+    .content-wrapper {
+        padding: 20px;
+    }
+
+    .prayers-list {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .prayer-list-item {
+        border-bottom: 1px solid var(--pt-border) !important;
+    }
+
+    .prayer-list-item:last-child {
+        border-bottom: none !important;
+    }
+
+    .settings-panel {
+        width: 100%;
+        right: -100%;
+    }
+}

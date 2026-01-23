@@ -74,7 +74,7 @@ export default function Navbar() {
     { href: '/courses', label: 'Courses', icon: <Book size={16} /> },
     { href: '/duas', label: 'DUAS', icon: <Sparkles size={16} /> },
     { href: '/quran-science', label: 'Quran & Science', icon: <Microscope size={16} /> },
-    { href: '/prayer-time', label: 'Prayer Time', icon: <Clock size={16} /> },
+    { href: '/prayer-times', label: 'Prayer Times', icon: <Clock size={16} /> },
     { href: '/community', label: 'COMMUNITY', icon: <Users size={16} /> },
     { href: '/quran-player', label: 'Quran Player', icon: <PlayCircle size={16} /> },
     { href: '/radio', label: 'Quran Radio', icon: <Radio size={16} /> },

@@ -23,6 +23,21 @@ const toArabicNumeral = (num: number): string => {
     return num.toString().split('').map(digit => arabicNumerals[parseInt(digit)]).join('');
 };
 
+// Remove unwanted Quranic symbols from text (verse markers, pause marks, etc.)
+const cleanArabicText = (text: string): string => {
+    return text
+        // Remove verse end markers (۞, numbers in circles like ۝۩, etc.)
+        .replace(/[\u06D6-\u06ED]/g, '') // Arabic small high signs
+        .replace(/[\u06D6-\u06DC]/g, '') // Quranic annotation signs
+        .replace(/۝/g, '') // End of Ayah
+        .replace(/۩/g, '') // Place of Sajdah
+        .replace(/[\u0610-\u061A]/g, '') // Additional Arabic signs
+        .replace(/[\u064B-\u065F]/g, (match) => {
+            // Keep most tashkeel but remove some special marks
+            return match;
+        });
+};
+
 interface SurahPageProps {
     params: Promise<{ surahNumber: string }>;
 }
@@ -698,7 +713,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                 {verse.sajdah_number && <span className="sajdah-marker" title="Sajdah (Prostration)">۩</span>}
                             </span>
 
-                            <div className="rq-verse-arabic">{verse.text_uthmani}</div>
+                            <div className="rq-verse-arabic">{cleanArabicText(verse.text_uthmani)}</div>
                             <div className="rq-verse-translation">
                                 {parseTranslationWithFootnotes(verse.translations?.[0]?.text || 'Translation not available')}
                             </div>
@@ -807,7 +822,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                         <div className="rq-reading-text" style={{ fontSize: `${fontSize + 4}px` }}>
                             {verses.map((verse) => (
                                 <span key={verse.id}>
-                                    {verse.text_uthmani}
+                                    {cleanArabicText(verse.text_uthmani)}
                                     <span className="rq-reading-verse-marker">
                                         {toArabicNumeral(verse.verse_number)}
                                         {verse.sajdah_number && <span className="sajdah-marker-reading">۩</span>}
@@ -840,7 +855,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                 <InteractiveWord key={word.id} word={word} />
                                             ))
                                         ) : (
-                                            <span>{verse.text_uthmani}</span>
+                                            <span>{cleanArabicText(verse.text_uthmani)}</span>
                                         )}
                                     </div>
 

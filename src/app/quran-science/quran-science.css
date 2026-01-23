@@ -504,6 +504,7 @@
     transition: all 0.3s;
     width: 100%;
     justify-content: center;
+    text-decoration: none;
 }
 
 .explore-btn:hover {

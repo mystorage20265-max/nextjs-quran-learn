@@ -66,6 +66,13 @@
     /* Prevent horizontal scroll */
 }
 
+/* CRITICAL: Reset any unwanted list markers or pseudo-elements */
+.read-quran-page *,
+.read-quran-page *::before,
+.read-quran-page *::after {
+    list-style: none;
+}
+
 .rq-container {
     max-width: var(--rq-container-width);
     margin: 0 auto;
