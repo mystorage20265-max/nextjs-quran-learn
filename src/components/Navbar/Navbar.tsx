@@ -26,7 +26,8 @@ import {
   Music,
   LogIn,
   UserPlus,
-  Star
+  Star,
+  Microscope
 } from 'lucide-react';
 import './Navbar.css';
 
@@ -72,6 +73,7 @@ export default function Navbar() {
   const moreFeatures = [
     { href: '/courses', label: 'Courses', icon: <Book size={16} /> },
     { href: '/duas', label: 'DUAS', icon: <Sparkles size={16} /> },
+    { href: '/quran-science', label: 'Quran & Science', icon: <Microscope size={16} /> },
     { href: '/prayer-time', label: 'Prayer Time', icon: <Clock size={16} /> },
     { href: '/community', label: 'COMMUNITY', icon: <Users size={16} /> },
     { href: '/quran-player', label: 'Quran Player', icon: <PlayCircle size={16} /> },
