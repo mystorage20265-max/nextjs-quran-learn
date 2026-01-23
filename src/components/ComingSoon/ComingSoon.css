@@ -1,0 +1,378 @@
+/* Eclipse Coming Soon Component Styles */
+
+.eclipse-coming-soon {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    background: linear-gradient(180deg, #0a0a0f 0%, #1a1620 50%, #0f0a12 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+}
+
+/* Starfield Background */
+.starfield {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.star {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    animation: twinkle 4s ease-in-out infinite;
+}
+
+@keyframes twinkle {
+
+    0%,
+    100% {
+        opacity: 0.3;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.2);
+    }
+}
+
+/* Main Content Container */
+.eclipse-content {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+}
+
+/* Eclipse Container */
+.eclipse-container {
+    position: relative;
+    width: 500px;
+    height: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 4rem;
+}
+
+/* Eclipse Core - The dark circle */
+.eclipse-core {
+    position: absolute;
+    width: 320px;
+    height: 320px;
+    background: radial-gradient(circle, #0f0a12 0%, #1a1420 40%, #0a0a0f 100%);
+    border-radius: 50%;
+    z-index: 3;
+    box-shadow:
+        inset 0 0 60px rgba(0, 0, 0, 0.8),
+        0 0 40px rgba(0, 0, 0, 0.5);
+}
+
+/* Corona Glow - Rotating pink/coral glow */
+.corona-glow {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+            transparent 55%,
+            rgba(255, 107, 129, 0.4) 60%,
+            rgba(255, 140, 107, 0.6) 65%,
+            rgba(255, 107, 180, 0.3) 70%,
+            transparent 80%);
+    filter: blur(20px);
+    animation: coronaRotate 20s linear infinite;
+    z-index: 1;
+}
+
+.corona-glow-2 {
+    animation: coronaRotate 25s linear infinite reverse;
+    background: radial-gradient(circle,
+            transparent 55%,
+            rgba(255, 140, 107, 0.5) 60%,
+            rgba(255, 107, 129, 0.4) 65%,
+            rgba(255, 180, 107, 0.3) 70%,
+            transparent 80%);
+    filter: blur(25px);
+    z-index: 2;
+}
+
+@keyframes coronaRotate {
+    0% {
+        transform: rotate(0deg) scale(1);
+    }
+
+    50% {
+        transform: rotate(180deg) scale(1.05);
+    }
+
+    100% {
+        transform: rotate(360deg) scale(1);
+    }
+}
+
+/* Light Flares */
+.light-flare {
+    position: absolute;
+    width: 200px;
+    height: 3px;
+    background: linear-gradient(90deg,
+            transparent 0%,
+            rgba(255, 140, 107, 0.8) 50%,
+            transparent 100%);
+    border-radius: 50%;
+    filter: blur(2px);
+    animation: flareGlow 3s ease-in-out infinite;
+}
+
+.flare-1 {
+    top: 50%;
+    left: -50px;
+    transform: translateY(-50%);
+    animation-delay: 0s;
+}
+
+.flare-2 {
+    top: 50%;
+    right: -50px;
+    transform: translateY(-50%) rotate(180deg);
+    animation-delay: 1.5s;
+}
+
+@keyframes flareGlow {
+
+    0%,
+    100% {
+        opacity: 0.4;
+        width: 180px;
+    }
+
+    50% {
+        opacity: 1;
+        width: 220px;
+    }
+}
+
+/* Coming Soon Text */
+.coming-soon-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.coming-soon-text h1 {
+    font-size: 3rem;
+    font-weight: 300;
+    letter-spacing: 1.2rem;
+    color: #ffffff;
+    margin: 0;
+    text-transform: uppercase;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+/* Progress Container */
+.progress-container {
+    width: 420px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg,
+            rgba(255, 107, 129, 0.8) 0%,
+            rgba(255, 140, 107, 1) 50%,
+            rgba(255, 107, 180, 0.8) 100%);
+    border-radius: 2px;
+    box-shadow:
+        0 0 10px rgba(255, 140, 107, 0.6),
+        0 0 20px rgba(255, 140, 107, 0.4);
+    position: relative;
+}
+
+.progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.3) 50%,
+            transparent 100%);
+    animation: shimmer 2s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        transform: translateX(-100%);
+    }
+
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+/* Title */
+.eclipse-title {
+    font-size: 2.5rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    margin: 1rem 0 0.5rem;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+/* Subtitle */
+.eclipse-subtitle {
+    font-size: 1.125rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    margin: 0;
+    max-width: 500px;
+}
+
+/* Footer Link */
+.eclipse-footer {
+    margin-top: 3rem;
+}
+
+.back-link {
+    color: rgba(255, 255, 255, 0.4);
+    text-decoration: none;
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.back-link:hover {
+    color: rgba(255, 140, 107, 0.8);
+    transform: translateX(-5px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .eclipse-container {
+        width: 350px;
+        height: 350px;
+    }
+
+    .eclipse-core {
+        width: 220px;
+        height: 220px;
+    }
+
+    .coming-soon-text h1 {
+        font-size: 2rem;
+        letter-spacing: 0.8rem;
+    }
+
+    .progress-container {
+        width: 280px;
+    }
+
+    .eclipse-title {
+        font-size: 2rem;
+    }
+
+    .eclipse-subtitle {
+        font-size: 1rem;
+        padding: 0 1rem;
+    }
+
+    .light-flare {
+        width: 120px;
+    }
+
+    .flare-1 {
+        left: -30px;
+    }
+
+    .flare-2 {
+        right: -30px;
+    }
+}
+
+@media (max-width: 480px) {
+    .eclipse-container {
+        width: 280px;
+        height: 280px;
+        margin-bottom: 3rem;
+    }
+
+    .eclipse-core {
+        width: 180px;
+        height: 180px;
+    }
+
+    .coming-soon-text h1 {
+        font-size: 1.5rem;
+        letter-spacing: 0.5rem;
+    }
+
+    .progress-container {
+        width: 220px;
+    }
+
+    .eclipse-title {
+        font-size: 1.5rem;
+    }
+
+    .eclipse-subtitle {
+        font-size: 0.9rem;
+    }
+
+    .light-flare {
+        display: none;
+    }
+}
+
+/* Additional Glow Effects */
+.eclipse-core::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 340px;
+    height: 340px;
+    background: radial-gradient(circle,
+            transparent 50%,
+            rgba(255, 107, 129, 0.15) 55%,
+            transparent 60%);
+    border-radius: 50%;
+    animation: innerGlow 4s ease-in-out infinite;
+}
+
+@keyframes innerGlow {
+
+    0%,
+    100% {
+        opacity: 0.5;
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    50% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.02);
+    }
+}
