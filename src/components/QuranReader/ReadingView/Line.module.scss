@@ -1,0 +1,45 @@
+.container {
+    direction: rtl;
+    width: 100%;
+    padding: var(--spacing-small) var(--spacing-medium);
+    margin-bottom: var(--spacing-xsmall);
+    border-radius: var(--border-radius-default);
+    transition: all var(--transition-regular);
+
+    &:hover {
+        background-color: var(--glass-bg-hover);
+    }
+}
+
+.line {
+    text-align: center;
+    margin-inline: auto;
+    max-width: 100%;
+}
+
+.highlighted {
+    background-color: var(--color-success-faded);
+    box-shadow: var(--shadow-medium);
+    animation: highlightPulse 2s ease-in-out;
+}
+
+@keyframes highlightPulse {
+    0% {
+        background-color: var(--color-success-faded);
+    }
+
+    50% {
+        background-color: rgba(129, 181, 50, 0.3);
+    }
+
+    100% {
+        background-color: var(--color-success-faded);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .container {
+        padding: var(--spacing-xsmall) var(--spacing-small);
+    }
+}

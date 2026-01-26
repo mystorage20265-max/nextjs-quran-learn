@@ -1,0 +1,187 @@
+/**
+ * Design Tokens - Quran.com Inspired Design System
+ * CSS Custom Properties for consistent theming
+ */
+
+:root {
+    /* ========== COLORS - BACKGROUNDS ========== */
+    --color-background-default: #001f2b;
+    --color-background-elevated: rgba(10, 53, 69, 0.7);
+    --color-background-elevated-new: rgba(10, 53, 69, 0.9);
+    --color-background-alternative: #001822;
+
+    /* ========== COLORS - TEXT ========== */
+    --color-text-default: #ffffff;
+    --color-text-faded: #a3b8c2;
+    --color-text-faded-new: #6b8a99;
+    --color-text-inverse: #001f2b;
+    --color-text-error: #ef4444;
+    --color-text-warning: #f59e0b;
+
+    /* ========== COLORS - PRIMARY/SUCCESS ========== */
+    --color-success-medium: #81b532;
+    --color-success-dark: #6fa025;
+    --color-success-light: #9dd13e;
+    --color-success-faded: rgba(129, 181, 50, 0.2);
+
+    /* ========== COLORS - ACCENT ========== */
+    --color-accent-teal: #00f5d4;
+    --color-accent-cyan: #00c8f0;
+    --color-accent-purple: #8b5cf6;
+
+    /* ========== BORDERS ========== */
+    --color-borders-default: rgba(255, 255, 255, 0.08);
+    --color-borders-hairline: rgba(255, 255, 255, 0.05);
+    --color-borders-hover: rgba(255, 255, 255, 0.2);
+
+    /* ========== SPACING ========== */
+    --spacing-micro: 4px;
+    --spacing-xxsmall: 6px;
+    --spacing-xsmall: 8px;
+    --spacing-small: 12px;
+    --spacing-medium: 16px;
+    --spacing-medium2-px: 24px;
+    --spacing-large: 32px;
+    --spacing-xlarge: 40px;
+    --spacing-xxlarge: 48px;
+    --spacing-mega: 64px;
+
+    /* ========== TYPOGRAPHY - SIZES ========== */
+    --font-size-micro: 0.625rem;
+    /* 10px */
+    --font-size-xxsmall: 0.75rem;
+    /* 12px */
+    --font-size-xsmall: 0.8125rem;
+    /* 13px */
+    --font-size-small: 0.875rem;
+    /* 14px */
+    --font-size-normal: 0.9375rem;
+    /* 15px */
+    --font-size-medium: 1rem;
+    /* 16px */
+    --font-size-large: 1.125rem;
+    /* 18px */
+    --font-size-xlarge: 1.5rem;
+    /* 24px */
+    --font-size-xxlarge: 2rem;
+    /* 32px */
+    --font-size-mega: 2.5rem;
+    /* 40px */
+
+    /* ========== TYPOGRAPHY - WEIGHTS ========== */
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    --font-weight-black: 900;
+
+    /* ========== TYPOGRAPHY - FAMILIES ========== */
+    --font-family-primary: 'Figtree', 'Inter', system-ui, -apple-system, sans-serif;
+    --font-family-arabic: 'KFGQPC Uthmanic Script HAFS', serif;
+
+    /* ========== SHADOWS ========== */
+    --shadow-small: 0 2px 4px rgba(0, 0, 0, 0.1);
+    --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.15);
+    --shadow-large: 0 8px 24px rgba(0, 0, 0, 0.2);
+    --shadow-xlarge: 0 15px 40px rgba(0, 0, 0, 0.3);
+    --shadow-chapter-header-actions: 0 4px 16px rgba(0, 0, 0, 0.25);
+    --shadow-glow-success: 0 0 30px rgba(129, 181, 50, 0.3);
+
+    /* ========== BORDER RADIUS ========== */
+    --border-radius-default: 8px;
+    --border-radius-medium: 12px;
+    --border-radius-large: 16px;
+    --border-radius-pill: 9999px;
+
+    /* ========== TRANSITIONS ========== */
+    --transition-regular: 0.2s ease;
+    --transition-fast: 0.15s ease;
+    --transition-slow: 0.3s ease;
+    --transition-bounce: 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+    /* ========== Z-INDEX SCALE ========== */
+    --z-index-dropdown: 1000;
+    --z-index-sticky: 1020;
+    --z-index-fixed: 1030;
+    --z-index-modal-backdrop: 1040;
+    --z-index-modal: 1050;
+    --z-index-popover: 1060;
+    --z-index-tooltip: 1070;
+
+    /* ========== QURAN READER SPECIFIC ========== */
+    --reading-view-container-top-margin: 32px;
+    --line-width: auto;
+    --quran-font-scale-1: 16px;
+    --quran-font-scale-2: 20px;
+    --quran-font-scale-3: 28px;
+    --quran-font-scale-4: 36px;
+    --quran-font-scale-5: 42px;
+    --quran-font-scale-6: 48px;
+
+    /* ========== GLASSMORPHISM ========== */
+    --glass-bg: rgba(255, 255, 255, 0.03);
+    --glass-bg-hover: rgba(255, 255, 255, 0.05);
+    --glass-blur: blur(20px);
+    --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ========== THEME OVERRIDES ========== */
+
+[data-theme="light"] {
+    --color-background-default: #f8f9fa;
+    --color-background-elevated: #ffffff;
+    --color-background-elevated-new: #ffffff;
+    --color-background-alternative: #e9ecef;
+
+    --color-text-default: #1a1a1a;
+    --color-text-faded: #6c757d;
+    --color-text-faded-new: #868e96;
+    --color-text-inverse: #ffffff;
+
+    --color-borders-default: rgba(0, 0, 0, 0.1);
+    --color-borders-hairline: rgba(0, 0, 0, 0.05);
+    --color-borders-hover: rgba(0, 0, 0, 0.2);
+
+    --glass-bg: rgba(0, 0, 0, 0.02);
+    --glass-bg-hover: rgba(0, 0, 0, 0.04);
+    --glass-border: 1px solid rgba(0, 0, 0, 0.08);
+
+    --shadow-small: 0 2px 4px rgba(0, 0, 0, 0.05);
+    --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --shadow-large: 0 8px 24px rgba(0, 0, 0, 0.1);
+    --shadow-chapter-header-actions: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="sepia"] {
+    --color-background-default: #f4f1ea;
+    --color-background-elevated: #faf8f3;
+    --color-background-elevated-new: #faf8f3;
+    --color-background-alternative: #ebe8df;
+
+    --color-text-default: #3e2723;
+    --color-text-faded: #6d4c41;
+    --color-text-faded-new: #8d6e63;
+    --color-text-inverse: #faf8f3;
+
+    --color-success-medium: #7cb342;
+    --color-success-dark: #689f38;
+    --color-success-light: #9ccc65;
+
+    --color-borders-default: rgba(62, 39, 35, 0.1);
+    --color-borders-hairline: rgba(62, 39, 35, 0.05);
+    --color-borders-hover: rgba(62, 39, 35, 0.2);
+
+    --glass-bg: rgba(62, 39, 35, 0.02);
+    --glass-bg-hover: rgba(62, 39, 35, 0.04);
+    --glass-border: 1px solid rgba(62, 39, 35, 0.08);
+
+    --shadow-small: 0 2px 4px rgba(62, 39, 35, 0.06);
+    --shadow-medium: 0 4px 12px rgba(62, 39, 35, 0.1);
+    --shadow-large: 0 8px 24px rgba(62, 39, 35, 0.12);
+    --shadow-chapter-header-actions: 0 4px 16px rgba(62, 39, 35, 0.15);
+}
+
+/* ========== RESPONSIVE BREAKPOINTS (using mixins in future) ========== */
+/* Mobile: < 768px */
+/* Tablet: 768px - 1024px */
+/* Desktop: > 1024px */

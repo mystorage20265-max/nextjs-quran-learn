@@ -1,0 +1,25 @@
+/**
+ * Quran Complex Glyph Fonts (QPC V2)
+ * CDN-based font loading for all 604 pages
+ */
+
+/* Pre-declare common fonts for faster initial load */
+@font-face {
+    font-family: 'p1-v2';
+    src: url('https://cdn.qurancdn.com/fonts/QCF_P001.woff2') format('woff2');
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'p2-v2';
+    src: url('https://cdn.qurancdn.com/fonts/QCF_P002.woff2') format('woff2');
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'p604-v2';
+    src: url('https://cdn.qurancdn.com/fonts/QCF_P604.woff2') format('woff2');
+    font-display: swap;
+}
+
+/* Additional fonts load dynamically via JavaScript */

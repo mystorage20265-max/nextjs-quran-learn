@@ -1,0 +1,17 @@
+.container {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: var(--spacing-large) var(--spacing-medium);
+    background-color: var(--color-background-elevated);
+    border-radius: var(--border-radius-large);
+    box-shadow: var(--shadow-large);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .container {
+        padding: var(--spacing-medium) var(--spacing-small);
+        border-radius: 0;
+    }
+}

@@ -1,0 +1,66 @@
+.seoText {
+    /* Hidden from visual users, accessible to search engines and screen readers */
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.verseTextContainer {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+
+    /* Remove default heading margins if h1 */
+    &:where(h1) {
+        font-size: inherit;
+        font-weight: inherit;
+        margin: 0;
+    }
+}
+
+.verseText {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px;
+    line-height: 2.2;
+    font-family: var(--font-family-arabic);
+    color: var(--color-text-default);
+    transition: all var(--transition-regular);
+
+    /* Better text rendering for Arabic */
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.verseTextCenterAlign {
+    justify-content: center;
+    text-align: center;
+}
+
+.verseTextSpaceBetween {
+    justify-content: space-between;
+    text-align: justify;
+}
+
+.highlighted {
+    background-color: var(--color-success-faded);
+    border-radius: var(--border-radius-default);
+    padding: var(--spacing-small);
+    transition: background-color var(--transition-regular);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .verseText {
+        gap: 2px;
+        line-height: 2;
+    }
+}

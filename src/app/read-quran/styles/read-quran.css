@@ -13,26 +13,25 @@
 }
 
 /* ============ VARIABLES ============ */
-:root {
-    /* Colors - Vercel Inspired Deep Teal Theme */
-    --rq-primary: #10b981;
-    /* Emerald 500 */
-    --rq-primary-hover: #059669;
-    --rq-primary-glow: rgba(16, 185, 129, 0.4);
-    --rq-secondary: #0ea5e9;
-    --rq-accent: #f59e0b;
+/* Dark Theme (Default) */
+:root,
+[data-theme="dark"] {
+    /* Colors - Dawateislami Dark Theme */
+    --rq-primary: #2d7da4;
+    --rq-primary-hover: #236589;
+    --rq-primary-glow: rgba(45, 125, 164, 0.4);
+    --rq-secondary: #4a9dc4;
+    --rq-accent: #5cb85c;
 
-    --rq-bg: #001f2b;
-    /* Deep Dark Teal */
-    --rq-bg-subtle: rgba(0, 31, 43, 0.8);
-    --rq-bg-card: rgba(0, 48, 63, 0.3);
+    --rq-bg: #0f1419;
+    --rq-bg-subtle: #1a1f2e;
+    --rq-bg-card: #1e2838;
 
-    --rq-text: #f8fafc;
-    --rq-text-secondary: #94a3b8;
-    --rq-text-muted: #64748b;
+    --rq-text: #e8eaed;
+    --rq-text-secondary: #9aa0a6;
+    --rq-text-muted: #6b7280;
 
-    --rq-border: rgba(255, 255, 255, 0.08);
-    /* Vercel 0.8px solid */
+    --rq-border: rgba(255, 255, 255, 0.1);
     --rq-glass-border: rgba(255, 255, 255, 0.1);
 
     /* Gradients */
@@ -44,17 +43,69 @@
     --rq-font-arabic: 'KFGQPC Uthmanic Script', 'Amiri Quran', serif;
 
     /* Layout */
-    --rq-radius-lg: 20px;
-    /* Matching Vercel cards */
+    --rq-radius-lg: 12px;
+    --rq-radius-md: 8px;
+    --rq-radius-sm: 6px;
     --rq-radius-full: 9999px;
 
-    --rq-shadow-glow: 0 0 20px rgba(16, 185, 129, 0.2);
+    --rq-shadow-glow: 0 0 20px rgba(45, 125, 164, 0.2);
     --rq-blur: blur(12px);
 
-    /* Arabic Typography - UPDATED FOR VISIBILITY */
+    /* Arabic Typography */
     --rq-arabic-size: 42px;
     --rq-arabic-line-height: 2.2;
 }
+
+/* Light Theme */
+[data-theme="light"] {
+    --rq-primary: #2d7da4;
+    --rq-primary-hover: #236589;
+    --rq-primary-glow: rgba(45, 125, 164, 0.3);
+    --rq-secondary: #4a9dc4;
+    --rq-accent: #5cb85c;
+
+    --rq-bg: #ffffff;
+    --rq-bg-subtle: #f8f9fa;
+    --rq-bg-card: #ffffff;
+
+    --rq-text: #212529;
+    --rq-text-secondary: #495057;
+    --rq-text-muted: #6c757d;
+
+    --rq-border: rgba(0, 0, 0, 0.1);
+    --rq-glass-border: rgba(0, 0, 0, 0.08);
+
+    --rq-gradient-primary: linear-gradient(135deg, var(--rq-primary) 0%, var(--rq-secondary) 100%);
+    --rq-gradient-card: linear-gradient(145deg, rgba(0, 0, 0, 0.02) 0%, rgba(0, 0, 0, 0.05) 100%);
+
+    --rq-shadow-glow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Sepia Theme */
+[data-theme="sepia"] {
+    --rq-primary: #8b6914;
+    --rq-primary-hover: #6b5010;
+    --rq-primary-glow: rgba(139, 105, 20, 0.3);
+    --rq-secondary: #a67c00;
+    --rq-accent: #5cb85c;
+
+    --rq-bg: #f4ecd8;
+    --rq-bg-subtle: #efe5d0;
+    --rq-bg-card: #faf6ed;
+
+    --rq-text: #3e2723;
+    --rq-text-secondary: #5d4037;
+    --rq-text-muted: #795548;
+
+    --rq-border: rgba(62, 39, 35, 0.15);
+    --rq-glass-border: rgba(62, 39, 35, 0.1);
+
+    --rq-gradient-primary: linear-gradient(135deg, var(--rq-primary) 0%, var(--rq-secondary) 100%);
+    --rq-gradient-card: linear-gradient(145deg, rgba(0, 0, 0, 0.02) 0%, rgba(0, 0, 0, 0.03) 100%);
+
+    --rq-shadow-glow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
 
 /* ============ GLOBAL RESET & BASE ============ */
 .read-quran-page {
@@ -906,16 +957,18 @@
 
 .rq-reading-text {
     text-align: center;
+    font-size: 21px !important;
     direction: rtl;
     font-family: var(--rq-font-arabic);
     color: var(--rq-text);
     line-height: 2.5;
+    word-spacing: 2px;
 }
 
 .rq-reading-verse-marker {
     display: inline-flex;
-    width: 28px;
-    height: 28px;
+    width: 20px;
+    height: 20px;
     align-items: center;
     justify-content: center;
     border: 1px solid var(--rq-text-muted);
@@ -1261,13 +1314,15 @@
 }
 
 .rq-reading-text {
-    font-family: var(--rq-font-arabic);
-    font-size: 36px;
-    line-height: 2.5;
-    text-align: justify;
+    font-family: var(--font-arabic);
     direction: rtl;
+    text-align: center;
+    font-size: 21px !important;
+    line-height: 2.2;
+    margin: 24px auto;
+    padding: 0 16px;
+    word-spacing: 2px;
     color: var(--rq-text);
-    word-spacing: 0.3em;
     letter-spacing: 0.02em;
 }
 
@@ -1632,6 +1687,174 @@
     border-radius: 12px;
     border-left: 3px solid var(--rq-primary);
     margin-top: 16px;
+}
+
+/* ============ STICKY BOTTOM NAVIGATION (Dawateislami Style) ============ */
+.rq-sticky-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--rq-bg-card);
+    border-top: 1px solid var(--rq-border);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.rq-sticky-footer-left,
+.rq-sticky-footer-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.rq-sticky-footer-center {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.rq-sticky-btn {
+    padding: 8px 16px;
+    background: transparent;
+    border: 1px solid var(--rq-border);
+    border-radius: var(--rq-radius-md);
+    color: var(--rq-text);
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+.rq-sticky-btn:hover {
+    background: var(--rq-primary);
+    border-color: var(--rq-primary);
+    color: white;
+}
+
+.rq-sticky-btn-icon {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.rq-sticky-btn-icon:hover {
+    transform: scale(1.1);
+}
+
+/* ============ RUKU MARKERS (Dawateislami Style) ============ */
+.ruku-marker {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    background: #5cb85c;
+    color: white;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    margin: 12px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.ruku-marker-icon {
+    font-size: 16px;
+}
+
+/* ============ BREADCRUMB NAVIGATION ============ */
+.rq-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--rq-text-muted);
+    margin-bottom: 20px;
+}
+
+.rq-breadcrumb a {
+    color: var(--rq-text-secondary);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.rq-breadcrumb a:hover {
+    color: var(--rq-primary);
+}
+
+.rq-breadcrumb-separator {
+    color: var(--rq-text-muted);
+}
+
+/* ============ THEME BUTTON STYLES ============ */
+.theme-selector {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.theme-btn {
+    flex: 1;
+    padding: 10px;
+    border: 2px solid var(--rq-border);
+    border-radius: var(--rq-radius-md);
+    background: transparent;
+    color: var(--rq-text);
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.2s;
+    text-align: center;
+}
+
+.theme-btn:hover {
+    border-color: var(--rq-primary);
+}
+
+.theme-btn.active {
+    background: var(--rq-primary);
+    border-color: var(--rq-primary);
+    color: white;
+}
+
+/* ============ MOBILE RESPONSIVE ============ */
+@media (max-width: 768px) {
+    .rq-sticky-footer {
+        padding: 10px 16px;
+        flex-wrap: wrap;
+    }
+
+    .rq-sticky-btn span:not(.rq-sticky-btn-icon) {
+        display: none;
+    }
+
+    .rq-sticky-btn {
+        padding: 8px;
+        min-width: 40px;
+        justify-content: center;
+    }
+
+    .rq-sticky-footer-center {
+        order: -1;
+        width: 100%;
+        justify-content: center;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--rq-border);
+        margin-bottom: 8px;
+    }
 }
 
 /* Mobile Optimizations */

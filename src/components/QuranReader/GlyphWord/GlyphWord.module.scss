@@ -1,0 +1,46 @@
+.styledWord {
+    display: inline;
+    font-size: var(--quran-font-scale-3);
+    line-height: 2;
+    color: var(--color-text-default);
+    transition: color var(--transition-fast);
+
+    /* Prevent selection issues with glyph fonts */
+    user-select: text;
+    -webkit-user-select: text;
+
+    /* Better font rendering */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.fallbackText {
+    /* Fallback font styling when custom font isn't loaded */
+    font-family: var(--font-family-arabic);
+    opacity: 0.95;
+}
+
+/* Font scale variations based on data attribute */
+[data-font-scale="1"] .styledWord {
+    font-size: var(--quran-font-scale-1);
+}
+
+[data-font-scale="2"] .styledWord {
+    font-size: var(--quran-font-scale-2);
+}
+
+[data-font-scale="3"] .styledWord {
+    font-size: var(--quran-font-scale-3);
+}
+
+[data-font-scale="4"] .styledWord {
+    font-size: var(--quran-font-scale-4);
+}
+
+[data-font-scale="5"] .styledWord {
+    font-size: var(--quran-font-scale-5);
+}
+
+[data-font-scale="6"] .styledWord {
+    font-size: var(--quran-font-scale-6);
+}

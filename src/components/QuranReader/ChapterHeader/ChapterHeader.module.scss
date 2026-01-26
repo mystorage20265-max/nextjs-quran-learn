@@ -1,0 +1,126 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-inline: auto;
+    inline-size: 100%;
+    max-inline-size: 450px;
+    margin-block-start: var(--reading-view-container-top-margin);
+    margin-block-end: var(--spacing-xlarge);
+    padding: var(--spacing-large);
+}
+
+.topControls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    inline-size: 100%;
+    margin-block-end: var(--spacing-medium2-px);
+}
+
+.leftControls {
+    display: flex;
+    gap: var(--spacing-small);
+}
+
+.playButton {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xsmall);
+    padding: var(--spacing-small) var(--spacing-medium);
+    background-color: var(--color-background-elevated-new);
+    color: var(--color-text-default);
+    border: 1px solid var(--color-borders-hover);
+    border-radius: var(--border-radius-pill);
+    font-size: var(--font-size-small);
+    font-weight: var(--font-weight-medium);
+    cursor: pointer;
+    transition: all var(--transition-regular);
+    box-shadow: var(--shadow-chapter-header-actions);
+
+    &:hover {
+        border-color: var(--color-success-medium);
+        background-color: var(--color-background-elevated);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-medium);
+    }
+
+    &:active {
+        transform: translateY(0);
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--color-success-medium);
+        outline-offset: 2px;
+    }
+}
+
+.playIcon {
+    font-size: var(--font-size-large);
+}
+
+.titleSection {
+    text-align: center;
+    width: 100%;
+}
+
+.arabicName {
+    font-size: var(--font-size-mega);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-default);
+    margin: 0;
+    margin-block-end: var(--spacing-small);
+    font-family: var(--font-family-arabic);
+}
+
+.englishName {
+    font-size: var(--font-size-xlarge);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-default);
+    margin: 0;
+    margin-block-end: var(--spacing-xsmall);
+}
+
+.metadata {
+    font-size: var(--font-size-small);
+    color: var(--color-text-faded);
+    margin: 0;
+}
+
+.bismillahSection {
+    width: 100%;
+    margin-block-start: var(--spacing-large);
+    padding-block-start: var(--spacing-large);
+    border-top: 1px solid var(--color-borders-default);
+}
+
+.bismillah {
+    font-size: var(--font-size-xlarge);
+    font-family: var(--font-family-arabic);
+    color: var(--color-text-default);
+    text-align: center;
+    margin: 0;
+    line-height: 1.8;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .container {
+        max-inline-size: 100%;
+        padding: var(--spacing-medium);
+    }
+
+    .arabicName {
+        font-size: 21px;
+        text-align: center;
+    }
+
+    .englishName {
+        font-size: var(--font-size-large);
+    }
+
+    .playButton {
+        font-size: var(--font-size-xsmall);
+        padding: var(--spacing-xsmall) var(--spacing-small);
+    }
+}

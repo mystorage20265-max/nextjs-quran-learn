@@ -1,0 +1,46 @@
+.container {
+    display: inline-block;
+    position: relative;
+    cursor: pointer;
+    padding: 2px 4px;
+    margin: 0 2px;
+    border-radius: 4px;
+    transition: all var(--transition-fast);
+
+    /* Accessibility */
+    outline: none;
+
+    &:focus-visible {
+        outline: 2px solid var(--color-success-medium);
+        outline-offset: 2px;
+    }
+}
+
+.highlightOnHover {
+    &:hover {
+        background-color: var(--color-success-faded);
+        transform: translateY(-1px);
+    }
+
+    &:active {
+        transform: translateY(0);
+    }
+}
+
+.highlighted {
+    background-color: var(--color-success-faded);
+    box-shadow: 0 0 0 2px var(--color-success-medium);
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 0 2px var(--color-success-medium);
+    }
+
+    50% {
+        box-shadow: 0 0 0 4px var(--color-success-faded);
+    }
+}

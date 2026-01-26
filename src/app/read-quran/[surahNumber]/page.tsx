@@ -17,25 +17,28 @@ import TafsirSection from '../components/TafsirSection';
 import InteractiveWord from '../components/InteractiveWord';
 import { parseTranslationWithFootnotes } from '../lib/translationUtils';
 
+// NEW: Import Quran.com-style components
+import { ChapterHeader } from '@/components/QuranReader';
+
 // Convert English numbers to Arabic-Indic numerals (۰۱۲۳۴۵۶۷۸۹)
 const toArabicNumeral = (num: number): string => {
     const arabicNumerals = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
     return num.toString().split('').map(digit => arabicNumerals[parseInt(digit)]).join('');
 };
 
-// Remove unwanted Quranic symbols from text (verse markers, pause marks, etc.)
-const cleanArabicText = (text: string): string => {
+// Remove verse markers and annotation circles, but keep important pause marks
+const cleanArabicText = (text: string | undefined): string => {
+    if (!text) return '';
+
     return text
-        // Remove verse end markers (۞, numbers in circles like ۝۩, etc.)
-        .replace(/[\u06D6-\u06ED]/g, '') // Arabic small high signs
-        .replace(/[\u06D6-\u06DC]/g, '') // Quranic annotation signs
-        .replace(/۝/g, '') // End of Ayah
-        .replace(/۩/g, '') // Place of Sajdah
-        .replace(/[\u0610-\u061A]/g, '') // Additional Arabic signs
-        .replace(/[\u064B-\u065F]/g, (match) => {
-            // Keep most tashkeel but remove some special marks
-            return match;
-        });
+        // Remove verse end marker (۝) - the decorative verse number circle
+        .replace(/۝/g, '')
+        // Remove small high Quranic annotation signs that appear as dots/circles
+        .replace(/[\u06D6-\u06DC]/g, '') // Small high ligatures, rounded zeros, etc.
+        .replace(/[\u06DD-\u06E4]/g, '') // Arabic end of ayah and annotation marks
+        .replace(/[\u06E7-\u06E8]/g, '') // Small high yeh/noon
+        .replace(/[\u06EA-\u06ED]/g, '') // Empty centre marks, etc.
+    // Keep pause marks (ۚ ۛ ۙ ۘ) and tashkeel for proper recitation
 };
 
 interface SurahPageProps {
@@ -68,6 +71,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
     const [selectedReciter, setSelectedReciter] = useState(7);
     const [fontSize, setFontSize] = useState(28);
     const [showSettings, setShowSettings] = useState(false);
+    const [theme, setTheme] = useState<'light' | 'sepia' | 'dark'>('dark');
 
     // Word-by-word data
     const [versesWithWords, setVersesWithWords] = useState<VerseWithTranslation[]>([]);
@@ -227,15 +231,27 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
         setTimeout(() => setShowBookmarkToast(false), 2000);
     };
 
-    // Load bookmarks from localStorage
+    // Load bookmarks and theme from localStorage
     useEffect(() => {
         if (typeof window !== 'undefined') {
             const saved = localStorage.getItem('quran-bookmarks');
             if (saved) {
                 setBookmarks(JSON.parse(saved));
             }
+            const savedTheme = localStorage.getItem('quran-theme') as 'light' | 'sepia' | 'dark';
+            if (savedTheme) {
+                setTheme(savedTheme);
+            }
         }
     }, []);
+
+    // Handle theme change
+    const handleThemeChange = (newTheme: 'light' | 'sepia' | 'dark') => {
+        setTheme(newTheme);
+        if (typeof window !== 'undefined') {
+            localStorage.setItem('quran-theme', newTheme);
+        }
+    };
 
     // Save last read position when verse is viewed
     useEffect(() => {
@@ -582,7 +598,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
 
 
     return (
-        <div className="rq-container">
+        <div className="rq-container" data-theme={theme}>
             {/* Loading overlay for settings changes */}
             {isChangingSettings && (
                 <div className="settings-loading-overlay">
@@ -592,81 +608,30 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
             )}
 
             {/* Back Link */}
-            <Link
-                href="/read-quran"
-                className="rq-back-btn"
-                aria-label="Go back to all surahs"
-            >
-                ← Back to All Surahs
-            </Link>
+            <div className="rq-breadcrumb">
+                <Link href="/">Home</Link>
+                <span className="rq-breadcrumb-separator">›</span>
+                <Link href="/read-quran">Quran</Link>
+                <span className="rq-breadcrumb-separator">›</span>
+                <span>{chapter.name_simple}</span>
+            </div>
 
-            {/* Surah Header - Premium Cinematic Look */}
-            <header className="surah-header-cinematic">
-                <div className="surah-header-overlay" />
+            {/* NEW: Quran.com-style Chapter Header */}
+            <ChapterHeader
+                chapterId={chapter.id}
+                chapterName={chapter.name_simple}
+                chapterNameArabic={chapter.name_arabic}
+                translatedName={chapter.translated_name.name}
+                versesCount={chapter.verses_count}
+                revelationPlace={chapter.revelation_place as 'makkah' | 'madinah'}
+                onPlayAll={playAll}
+                isPlaying={isPlaying}
+                showBismillah={chapter.bismillah_pre}
+            />
 
-                <div className="surah-header-content">
-                    <h1 className="surah-name-arabic-large">
-                        {chapter.name_arabic}
-                    </h1>
-                    <h2 className="surah-name-english-large">
-                        {chapter.name_simple}
-                    </h2>
-                    <p className="surah-meaning">
-                        {chapter.translated_name.name}
-                    </p>
-
-                    {/* Info Toggle Button */}
-                    <button
-                        onClick={() => setShowInfo(!showInfo)}
-                        className="info-toggle-btn"
-                    >
-                        <span>{showInfo ? 'Hide Info' : 'Show Info'}</span>
-                        <span className="toggle-icon">{showInfo ? '▲' : '▼'}</span>
-                    </button>
-                </div>
-            </header>
-
-            {/* Collapsible Surah Info Panel */}
-            {showInfo && (
-                <div className="rq-info-panel">
-                    <h3 className="rq-info-title">📋 Surah Information</h3>
-                    <div className="rq-info-grid">
-                        <div className="rq-info-item">
-                            <div className="rq-info-value">{chapter.id}</div>
-                            <div className="rq-info-label">Surah Number</div>
-                        </div>
-                        <div className="rq-info-item">
-                            <div className="rq-info-value">{chapter.verses_count}</div>
-                            <div className="rq-info-label">Verses</div>
-                        </div>
-                        <div className="rq-info-item">
-                            <div className="rq-info-value">{chapter.revelation_order}</div>
-                            <div className="rq-info-label">Revelation Order</div>
-                        </div>
-                        <div className="rq-info-item">
-                            <div className="rq-info-value">{chapter.revelation_place === 'makkah' ? '🕋 Makkah' : '🕌 Madinah'}</div>
-                            <div className="rq-info-label">Revealed In</div>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {/* Toolbar */}
+            {/* Mode Toggle Toolbar */}
             <div className="rq-toolbar">
-                <div className="rq-toolbar-group actions-group">
-                    {/* Play Button */}
-                    <button className="rq-toolbar-btn play-btn" onClick={playAll}>
-                        {isPlaying ? '⏸️ Pause' : '▶️ Play Audio'}
-                    </button>
-
-                    {/* Settings Button */}
-                    <button className="rq-toolbar-btn settings-btn" onClick={() => setShowSettings(true)}>
-                        ⚙️ Settings
-                    </button>
-                </div>
-
                 <div className="rq-toolbar-group mode-group">
-                    {/* Mode Toggle */}
                     <div className="rq-mode-toggle">
                         <button
                             className={`rq-mode-btn ${readingMode === 'translation' ? 'active' : ''}`}
@@ -688,14 +653,14 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                         </button>
                     </div>
                 </div>
-            </div>
 
-            {/* Bismillah */}
-            {chapter.bismillah_pre && (
-                <div className="rq-bismillah">
-                    بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+                {/* Settings Button */}
+                <div className="rq-toolbar-group actions-group">
+                    <button className="rq-toolbar-btn settings-btn" onClick={() => setShowSettings(true)}>
+                        ⚙️ Settings
+                    </button>
                 </div>
-            )}
+            </div>
 
             {/* Verses */}
             <div className="rq-verses">
@@ -873,8 +838,57 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 )}
             </div>
 
-            {/* Navigation Buttons */}
-            <div className="rq-navigation">
+            {/* Sticky Bottom Footer - Dawateislami Style */}
+            <div className="rq-sticky-footer">
+                <div className="rq-sticky-footer-left">
+                    {surahNumber > 1 && (
+                        <Link href={`/read-quran/${surahNumber - 1}`}>
+                            <button className="rq-sticky-btn">
+                                <span>←</span>
+                                <span>Previous</span>
+                            </button>
+                        </Link>
+                    )}
+                </div>
+
+                <div className="rq-sticky-footer-center">
+                    <button
+                        className="rq-sticky-btn rq-sticky-btn-icon"
+                        onClick={() => window.scrollBy({ top: -window.innerHeight * 0.8, behavior: 'smooth' })}
+                        title="Scroll Up"
+                    >
+                        ↑
+                    </button>
+                    <button
+                        className="rq-sticky-btn rq-sticky-btn-icon"
+                        onClick={() => window.scrollBy({ top: window.innerHeight * 0.8, behavior: 'smooth' })}
+                        title="Scroll Down"
+                    >
+                        ↓
+                    </button>
+                    <button
+                        className="rq-sticky-btn rq-sticky-btn-icon"
+                        onClick={() => setShowSettings(true)}
+                        title="Settings"
+                    >
+                        ⚙️
+                    </button>
+                </div>
+
+                <div className="rq-sticky-footer-right">
+                    {surahNumber < 114 && (
+                        <Link href={`/read-quran/${surahNumber + 1}`}>
+                            <button className="rq-sticky-btn">
+                                <span>Next</span>
+                                <span>→</span>
+                            </button>
+                        </Link>
+                    )}
+                </div>
+            </div>
+
+            {/* Navigation Buttons (Keep for backup/non-sticky) */}
+            <div className="rq-navigation" style={{ marginBottom: '80px' }}>
                 {surahNumber > 1 ? (
                     <Link
                         href={`/read-quran/${surahNumber - 1}`}
@@ -1007,6 +1021,31 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                     <button className="rq-settings-close" onClick={() => setShowSettings(false)}>
                         ✕
                     </button>
+                </div>
+
+                {/* Theme Selector */}
+                <div className="rq-settings-section">
+                    <label className="rq-settings-label">Theme</label>
+                    <div className="theme-selector">
+                        <button
+                            className={`theme-btn ${theme === 'light' ? 'active' : ''}`}
+                            onClick={() => handleThemeChange('light')}
+                        >
+                            ☀️ Light
+                        </button>
+                        <button
+                            className={`theme-btn ${theme === 'sepia' ? 'active' : ''}`}
+                            onClick={() => handleThemeChange('sepia')}
+                        >
+                            📖 Sepia
+                        </button>
+                        <button
+                            className={`theme-btn ${theme === 'dark' ? 'active' : ''}`}
+                            onClick={() => handleThemeChange('dark')}
+                        >
+                            🌙 Dark
+                        </button>
+                    </div>
                 </div>
 
                 <div className="rq-settings-section">
