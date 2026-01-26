@@ -156,7 +156,7 @@ export async function getChapter(chapterId: number): Promise<Chapter> {
 
 /**
  * Get verses for a chapter with translations
- * Uses api.quran.com API v4
+ * Uses alquran.cloud API which reliably returns translations
  */
 export async function getVerses(
     chapterId: number,
@@ -165,48 +165,43 @@ export async function getVerses(
     perPage: number = 50
 ): Promise<VersesResponse> {
     try {
-        // Map alquran.cloud translation IDs to Quran.com resource IDs
-        const translationMap: Record<string, string> = {
-            'en.sahih': '131',      // Sahih International
-            'en.pickthall': '22',   // Pickthall
-            'en.yusufali': '21',    // Yusuf Ali
-            'en.asad': '206',       // Muhammad Asad
-            'ur.jalandhry': '97',   // Fateh Muhammad Jalandhry (Urdu)
-            'ur.ahmedali': '96',    // Ahmed Ali (Urdu)
-            'fr.hamidullah': '31',  // Muhammad Hamidullah (French)
-            'es.asad': '83'         // Muhammad Asad (Spanish)
-        };
+        // Use alquran.cloud API which returns translations inline
+        const ALQURAN_API = 'https://api.alquran.cloud/v1';
 
-        const resourceId = translationMap[translationId] || '131';
-
-        // Use api.quran.com v4 - MUST include text_uthmani in fields
-        const url = `${API_BASE}/verses/by_chapter/${chapterId}?language=en&words=false&translations=${resourceId}&fields=text_uthmani&per_page=300`;
+        // Fetch both Arabic and translation
+        const url = `${ALQURAN_API}/surah/${chapterId}/editions/quran-uthmani,${translationId}`;
         const response = await fetchWithRetry(url);
         const data = await response.json();
 
-        if (!data.verses) {
+        if (data.code !== 200 || !data.data) {
             throw new Error('Failed to fetch verses');
         }
 
-        // Map to our interface
-        const verses: VerseWithTranslation[] = data.verses.map((verse: any) => ({
-            id: verse.id,
-            verse_key: verse.verse_key,
-            verse_number: verse.verse_number,
-            hizb_number: verse.hizb_number || 1,
-            rub_el_hizb_number: verse.rub_el_hizb_number || 1,
-            ruku_number: verse.ruku_number || 1,
-            manzil_number: verse.manzil_number || 1,
-            sajdah_number: verse.sajdah_number || null,
-            page_number: verse.page_number || 1,
-            juz_number: verse.juz_number || 1,
-            text_uthmani: verse.text_uthmani,
-            translations: verse.translations || []
+        const arabicData = data.data[0];
+        const translationData = data.data[1];
+
+        // Merge Arabic and translations
+        const verses: VerseWithTranslation[] = arabicData.ayahs.map((ayah: any, index: number) => ({
+            id: ayah.number,
+            verse_key: `${chapterId}:${ayah.numberInSurah}`,
+            verse_number: ayah.numberInSurah,
+            hizb_number: ayah.hizbQuarter || 1,
+            rub_el_hizb_number: 1,
+            ruku_number: ayah.ruku || 1,
+            manzil_number: ayah.manzil || 1,
+            sajdah_number: ayah.sajda ? ayah.number : null,
+            page_number: ayah.page || 1,
+            juz_number: ayah.juz || 1,
+            text_uthmani: ayah.text,
+            translations: [{
+                resource_id: 20,
+                text: translationData?.ayahs?.[index]?.text || ''
+            }]
         }));
 
         return {
             verses,
-            pagination: data.pagination || {
+            pagination: {
                 per_page: perPage,
                 current_page: page,
                 next_page: null,

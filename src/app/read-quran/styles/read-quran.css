@@ -957,7 +957,7 @@
 
 .rq-reading-text {
     text-align: center;
-    font-size: 21px !important;
+    font-size: 32px;
     direction: rtl;
     font-family: var(--rq-font-arabic);
     color: var(--rq-text);
@@ -1118,6 +1118,10 @@
 
     .rq-verse-actions {
         justify-content: center;
+    }
+
+    .rq-reading-text {
+        font-size: 21px !important;
     }
 }
 
@@ -1317,7 +1321,7 @@
     font-family: var(--font-arabic);
     direction: rtl;
     text-align: center;
-    font-size: 21px !important;
+    font-size: 32px;
     line-height: 2.2;
     margin: 24px auto;
     padding: 0 16px;

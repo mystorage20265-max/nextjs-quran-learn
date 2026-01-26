@@ -680,7 +680,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
 
                             <div className="rq-verse-arabic">{cleanArabicText(verse.text_uthmani)}</div>
                             <div className="rq-verse-translation">
-                                {parseTranslationWithFootnotes(verse.translations?.[0]?.text || 'Translation not available')}
+                                {parseTranslationWithFootnotes(verse.translations?.[0]?.text || '')}
                             </div>
 
                             {/* Interactive Tafsir Section - Works with ALL Tafsirs */}
@@ -825,7 +825,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                     </div>
 
                                     <div className="word-by-word-translation">
-                                        {parseTranslationWithFootnotes(verse.translations?.[0]?.text || 'Translation not available')}
+                                        {parseTranslationWithFootnotes(verse.translations?.[0]?.text || '')}
                                     </div>
                                 </div>
                             ))
