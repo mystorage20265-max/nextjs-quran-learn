@@ -1,0 +1,301 @@
+/* ===== DUA CARD STYLES ===== */
+
+.duaCard {
+    position: relative;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 2rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+}
+
+.duaCard::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(129, 181, 50, 0.1) 0%, transparent 50%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+}
+
+.duaCard:hover {
+    transform: translateY(-8px);
+    border-color: rgba(129, 181, 50, 0.3);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 40px rgba(129, 181, 50, 0.15);
+}
+
+.duaCard:hover::before {
+    opacity: 1;
+}
+
+/* ===== CATEGORY BADGE ===== */
+.categoryBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, rgba(129, 181, 50, 0.2) 0%, rgba(111, 160, 37, 0.2) 100%);
+    border: 1px solid rgba(129, 181, 50, 0.3);
+    border-radius: 20px;
+    color: #81b532;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 1.5rem;
+}
+
+.categoryBadge svg {
+    animation: sparkle 2s ease-in-out infinite;
+}
+
+@keyframes sparkle {
+
+    0%,
+    100% {
+        transform: rotate(0deg) scale(1);
+    }
+
+    50% {
+        transform: rotate(180deg) scale(1.1);
+    }
+}
+
+/* ===== HEADER ===== */
+.duaHeader {
+    margin-bottom: 1.5rem;
+}
+
+.duaName {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin: 0;
+    line-height: 1.3;
+}
+
+/* ===== ARABIC TEXT ===== */
+.duaArabic {
+    font-family: 'KFGQPC Uthmanic Script HAFS', 'Amiri', 'Scheherazade', serif;
+    font-size: 2rem;
+    line-height: 2.2;
+    text-align: right;
+    color: #ffffff;
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.02);
+    border-right: 3px solid #81b532;
+    border-radius: 12px;
+}
+
+/* ===== SECTIONS ===== */
+.duaSection {
+    margin: 1.5rem 0;
+}
+
+.sectionLabel {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+}
+
+.sectionText {
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.7;
+    margin: 0;
+    font-size: 1rem;
+}
+
+/* ===== EXPANDED CONTENT ===== */
+.expandedContent {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    animation: slideDown 0.4s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        max-height: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        max-height: 1000px;
+        transform: translateY(0);
+    }
+}
+
+.benefitsSection,
+.occasionsSection {
+    margin-bottom: 1.5rem;
+}
+
+.subsectionTitle {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #81b532;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.subsectionTitle::before {
+    content: '✦';
+    font-size: 0.875rem;
+}
+
+.benefitsList,
+.occasionsList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.benefitsList li,
+.occasionsList li {
+    position: relative;
+    padding-left: 1.5rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 0.75rem;
+    line-height: 1.6;
+}
+
+.benefitsList li::before,
+.occasionsList li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.6rem;
+    width: 6px;
+    height: 6px;
+    background: #81b532;
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(129, 181, 50, 0.5);
+}
+
+/* ===== FOOTER ===== */
+.duaFooter {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.duaReference {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.duaReference span {
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* ===== CARD ACTIONS ===== */
+.cardActions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.actionButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.actionButton:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+
+.actionButton.bookmarked {
+    background: linear-gradient(135deg, #81b532 0%, #6fa025 100%);
+    border-color: #81b532;
+    color: #ffffff;
+    box-shadow: 0 0 20px rgba(129, 181, 50, 0.4);
+}
+
+.actionButton.bookmarked:hover {
+    transform: translateY(-2px) scale(1.05);
+}
+
+.expandButton {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    background: rgba(129, 181, 50, 0.1);
+    border: 1px solid rgba(129, 181, 50, 0.3);
+    border-radius: 10px;
+    color: #81b532;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.expandButton:hover {
+    background: rgba(129, 181, 50, 0.2);
+    border-color: rgba(129, 181, 50, 0.5);
+    transform: translateY(-2px);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .duaCard {
+        padding: 1.5rem;
+    }
+
+    .duaArabic {
+        font-size: 1.75rem;
+        padding: 1rem;
+    }
+
+    .duaName {
+        font-size: 1.25rem;
+    }
+
+    .duaFooter {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .cardActions {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .expandButton {
+        flex: 1;
+    }
+}

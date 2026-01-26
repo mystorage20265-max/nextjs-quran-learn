@@ -6,7 +6,7 @@
 @import './responsive.css';
 
 :root {
-  --font-arabic: 'KFGQPC Uthmanic Script HAFS', serif;
+  --font-arabic: 'UthmanicHafs', 'KFGQPC Uthmanic Script HAFS', 'Amiri Quran', serif;
   --bg: #f7f7fb;
   --card: #fff;
   --accent: #0066cc;
@@ -126,7 +126,7 @@ input:focus,
   :root {
     --navbar-height: var(--navbar-height-mobile);
   }
-  
+
   .container {
     padding: 0 0.75rem;
   }

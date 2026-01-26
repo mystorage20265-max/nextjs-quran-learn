@@ -4,14 +4,6 @@
 /* ============ FONTS ============ */
 @import url('https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Scheherazade+New:wght@400;700&family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
-@font-face {
-    font-family: 'KFGQPC Uthmanic Script';
-    src: url('/fonts/uthmanic.otf') format('opentype');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-}
-
 /* ============ VARIABLES ============ */
 :root {
     /* Colors - Vercel Inspired Deep Teal Theme */
@@ -41,7 +33,7 @@
 
     /* Typography */
     --rq-font-sans: 'Outfit', 'Inter', system-ui, sans-serif;
-    --rq-font-arabic: 'KFGQPC Uthmanic Script', 'Amiri Quran', serif;
+    --rq-font-arabic: 'UthmanicHafs', 'KFGQPC Uthmanic Script HAFS', 'Amiri Quran', serif;
 
     /* Layout */
     --rq-radius-lg: 20px;

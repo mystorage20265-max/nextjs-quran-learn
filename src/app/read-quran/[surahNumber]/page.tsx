@@ -16,6 +16,7 @@ import { saveLastRead, markVerseRead } from '../lib/progress';
 import TafsirSection from '../components/TafsirSection';
 import InteractiveWord from '../components/InteractiveWord';
 import { parseTranslationWithFootnotes } from '../lib/translationUtils';
+import { MushafPage } from '@/components/Quran/MushafPage';
 
 // Convert English numbers to Arabic-Indic numerals (۰۱۲۳۴۵۶۷۸۹)
 const toArabicNumeral = (num: number): string => {
@@ -61,8 +62,8 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
     const [tafsirContent, setTafsirContent] = useState<Record<string, string>>({});
 
     // Settings
-    const [readingMode, setReadingMode] = useState<'translation' | 'reading' | 'word-by-word'>(
-        (initialMode === 'reading' || initialMode === 'translation' || initialMode === 'word-by-word') ? initialMode : 'translation'
+    const [readingMode, setReadingMode] = useState<'translation' | 'reading' | 'word-by-word' | 'mushaf'>(
+        (initialMode === 'reading' || initialMode === 'translation' || initialMode === 'word-by-word' || initialMode === 'mushaf') ? initialMode as any : 'translation'
     );
     const [selectedTranslation, setSelectedTranslation] = useState('en.sahih');
     const [selectedReciter, setSelectedReciter] = useState(7);
@@ -685,6 +686,13 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                             onClick={() => setReadingMode('word-by-word')}
                         >
                             Word-by-Word
+                        </button>
+                        <button
+                            className={`rq-mode-btn ${readingMode === 'mushaf' ? 'active' : ''}`}
+                            onClick={() => setReadingMode('mushaf')}
+                            title="Authentic Mushaf glyph rendering"
+                        >
+                            🕌 Mushaf
                         </button>
                     </div>
                 </div>

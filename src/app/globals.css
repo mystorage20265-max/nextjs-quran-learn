@@ -7,7 +7,20 @@
 /* ServiceNow Inter Font */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
-/* Arabic Font - KFGQPC Uthmanic Script HAFS */
+/* Quran Glyph Fonts (QPC V2) - Page-based fonts for Mushaf rendering */
+@import '../styles/quran-glyph-fonts.css';
+
+/* Arabic Font - Uthmanic Hafs (Authentic Quran Font) */
+@font-face {
+  font-family: 'UthmanicHafs';
+  src: url('/fonts/uthmanic.otf') format('opentype'),
+    url('/kfgqpc-uthmanic-script-hafs-regular/KFGQPC Uthmanic Script HAFS Regular/KFGQPC Uthmanic Script HAFS Regular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Backup font-face for KFGQPC */
 @font-face {
   font-family: 'KFGQPC Uthmanic Script HAFS';
   src: url('/kfgqpc-uthmanic-script-hafs-regular/KFGQPC Uthmanic Script HAFS Regular/KFGQPC Uthmanic Script HAFS Regular.otf') format('opentype');
@@ -52,7 +65,7 @@
 
   /* Typography */
   --font-primary: 'Figtree', 'Inter', system-ui, -apple-system, sans-serif;
-  --font-arabic: 'IndoPak', 'KFGQPC Uthmanic Script HAFS', serif;
+  --font-arabic: 'UthmanicHafs', 'KFGQPC Uthmanic Script HAFS', 'Amiri Quran', serif;
 }
 
 /* Cinematic Global Background */

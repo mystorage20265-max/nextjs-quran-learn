@@ -50,12 +50,6 @@ export default function PrayerTimesPage() {
         return () => clearInterval(timer);
     }, []);
 
-    useEffect(() => {
-        if (locationPermission === 'granted' || locationPermission === 'denied') {
-            loadPrayerTimes();
-        }
-    }, [city, country, calculationMethod, locationPermission]);
-
     async function requestLocationAndLoadPrayerTimes() {
         try {
             setLoading(true);
@@ -105,13 +99,14 @@ export default function PrayerTimesPage() {
         }
     }
 
-    async function loadPrayerTimes() {
-        console.log('🔄 loadPrayerTimes called, permission status:', locationPermission);
+    async function loadPrayerTimes(forceCity = false) {
+        console.log('🔄 loadPrayerTimes called, permission status:', locationPermission, 'forceCity:', forceCity);
         try {
             setLoading(true);
             setError(null);
 
-            if (locationPermission === 'granted') {
+            // Only use location if permission was granted and not forcing city mode
+            if (locationPermission === 'granted' && !forceCity) {
                 console.log('✅ Permission granted, getting location...');
                 try {
                     const location = await getUserLocation();
@@ -127,10 +122,11 @@ export default function PrayerTimesPage() {
                     return;
                 } catch (err) {
                     console.error('❌ Failed to get location:', err);
+                    // Don't change permission state, just fall through to city
                 }
             }
 
-            // Use city if location not available
+            // Use city if location not available or denied
             console.log('🏙️ Using city-based location:', city, country);
             const data = await getPrayerTimesByCity(city, country, calculationMethod);
             console.log('📍 Setting userLocation to (city):', `${city}, ${country}`);
@@ -204,7 +200,7 @@ export default function PrayerTimesPage() {
                     <div style={{ textAlign: 'center', padding: '100px 0' }}>
                         <p style={{ color: '#f59e0b', marginBottom: '24px' }}>{error || 'Failed to load'}</p>
                         <button
-                            onClick={loadPrayerTimes}
+                            onClick={() => loadPrayerTimes(false)}
                             style={{ padding: '12px 24px', background: '#f59e0b', border: 'none', borderRadius: '12px', color: 'white', cursor: 'pointer' }}
                         >
                             Try Again
@@ -311,7 +307,10 @@ export default function PrayerTimesPage() {
                 </div>
 
                 <button
-                    onClick={loadPrayerTimes}
+                    onClick={() => {
+                        setLocationPermission('denied');
+                        loadPrayerTimes(true);
+                    }}
                     style={{ width: '100%', padding: '14px', background: '#f59e0b', border: 'none', borderRadius: '8px', color: 'white', fontSize: '1rem', fontWeight: '600', cursor: 'pointer', marginTop: '24px' }}
                 >
                     Apply Changes

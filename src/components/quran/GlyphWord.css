@@ -1,0 +1,198 @@
+/* Glyph Word Component Styles - Traditional Desktop UI */
+
+.glyph-word-container {
+    position: relative;
+    display: inline-block;
+}
+
+.glyph-word {
+    font-size: 48px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-block;
+    color: #1e293b;
+    padding: 4px 6px;
+    border-radius: 6px;
+    user-select: none;
+}
+
+.glyph-word:hover {
+    color: #10b981;
+    background: rgba(16, 185, 129, 0.08);
+}
+
+.glyph-word:focus {
+    outline: 2px solid #10b981;
+    outline-offset: 3px;
+}
+
+.glyph-word-active {
+    background: rgba(16, 185, 129, 0.12);
+    color: #10b981;
+}
+
+.glyph-word-playing {
+    background: rgba(16, 185, 129, 0.2);
+    color: #059669;
+    animation: pulse-glow 1.5s ease-in-out infinite;
+}
+
+/* Verse End Markers - Circle Style */
+.glyph-word-end {
+    cursor: default;
+    font-size: 20px;
+    color: #10b981;
+    background: transparent;
+    border: 2px solid #10b981;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0 8px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+}
+
+.glyph-word-end:hover {
+    transform: none;
+    background: rgba(16, 185, 129, 0.05);
+    color: #10b981;
+    border-color: #10b981;
+}
+
+/* Tooltip Styles */
+.glyph-word-tooltip {
+    position: absolute;
+    top: -75px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(15, 23, 42, 0.96);
+    backdrop-filter: blur(16px);
+    color: white;
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-family: var(--rq-font-sans, 'Inter', sans-serif);
+    white-space: nowrap;
+    z-index: 1000;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    animation: tooltip-fade-in 0.2s ease-out;
+    pointer-events: none;
+}
+
+.glyph-word-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 7px solid transparent;
+    border-top-color: rgba(15, 23, 42, 0.96);
+}
+
+.glyph-word-translation {
+    display: block;
+    font-size: 12px;
+    color: #cbd5e1;
+    margin-top: 5px;
+    font-style: italic;
+}
+
+/* Animations */
+@keyframes pulse-glow {
+
+    0%,
+    100% {
+        box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 0 25px rgba(16, 185, 129, 0.5);
+    }
+}
+
+@keyframes tooltip-fade-in {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .glyph-word {
+        font-size: 28px;
+        padding: 1px 2px;
+        color: var(--rq-text, #f8fafc);
+    }
+
+    .glyph-word:hover {
+        color: var(--rq-primary, #10b981);
+        background: rgba(16, 185, 129, 0.08);
+    }
+
+    .glyph-word-end {
+        font-size: 14px;
+        width: 26px;
+        height: 26px;
+        margin: 0 4px;
+        border-width: 1.5px;
+    }
+
+    .glyph-word-tooltip {
+        top: -55px;
+        font-size: 11px;
+        padding: 6px 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .glyph-word {
+        font-size: 24px;
+        padding: 1px 1px;
+    }
+
+    .glyph-word-end {
+        font-size: 12px;
+        width: 22px;
+        height: 22px;
+        margin: 0 3px;
+        border-width: 1.5px;
+    }
+
+    .glyph-word-tooltip {
+        top: -50px;
+        font-size: 10px;
+        padding: 5px 8px;
+        max-width: 200px;
+        white-space: normal;
+    }
+
+    .glyph-word-translation {
+        font-size: 9px;
+    }
+}
+
+/* Desktop enhancements */
+@media (min-width: 1024px) {
+    .glyph-word {
+        font-size: 52px;
+        padding: 6px 8px;
+    }
+
+    .glyph-word-end {
+        font-size: 22px;
+        width: 40px;
+        height: 40px;
+        margin: 0 10px;
+    }
+}

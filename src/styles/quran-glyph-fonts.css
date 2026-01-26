@@ -1,0 +1,52 @@
+/**
+ * Quran Complex Glyph Fonts (QPC V2)
+ * CDN-based font loading for all 604 pages
+ * 
+ * Font Source: King Fahd Glorious Quran Printing Complex
+ * Each font file corresponds to one page of the Madinah Mushaf
+ */
+
+/* Note: These fonts are loaded from CDN on-demand */
+/* Font naming: p{page}-v2 where page is 1-604 */
+/* Example: p1-v2 for page 1, p604-v2 for page 604 */
+
+/* We'll generate font-face declarations dynamically in JavaScript */
+/* to avoid creating 604 CSS rules here */
+
+/* Fallback font for loading states */
+@font-face {
+    font-family: 'QPC-Fallback';
+    src: local('Arial'), local('sans-serif');
+    font-display: swap;
+}
+
+/* Base font-face template for reference */
+/* 
+@font-face {
+  font-family: 'p1-v2';
+  src: url('https://cdn.qurancdn.com/fonts/QCF_P001.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+0600-06FF, U+0750-077F, U+FB50-FDFF, U+FE70-FEFF;
+}
+*/
+
+/* Add common font for first few popular pages */
+@font-face {
+    font-family: 'p1-v2';
+    src: url('https://cdn.qurancdn.com/fonts/QCF_P001.woff2') format('woff2');
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'p2-v2';
+    src: url('https://cdn.qurancdn.com/fonts/QCF_P002.woff2') format('woff2');
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'p604-v2';
+    src: url('https://cdn.qurancdn.com/fonts/QCF_P604.woff2') format('woff2');
+    font-display: swap;
+}
+
+/* Additional fonts will be loaded dynamically via JavaScript as needed */
