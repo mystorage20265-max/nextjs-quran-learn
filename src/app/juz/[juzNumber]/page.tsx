@@ -18,7 +18,7 @@ interface PageProps {
 // Generate metadata for the page
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const juzNumber = toNumber(params.juzNumber);
-  
+
   try {
     return {
       title: `Juz ${juzNumber} - Quran`,
@@ -43,28 +43,17 @@ type Ayah = {
 };
 
 async function fetchJuzMerged(juzNum: number) {
-  const arabicEdition = "quran-uthmani";
-  const translationEdition = "en.asad";
-  const [arabicRes, translationRes] = await Promise.all([
-    fetch(`https://api.alquran.cloud/v1/juz/${juzNum}/${arabicEdition}`),
-    fetch(`https://api.alquran.cloud/v1/juz/${juzNum}/${translationEdition}`),
-  ]);
-  const [arabicJson, translationJson] = await Promise.all([
-    arabicRes.json(),
-    translationRes.json(),
-  ]);
-  const translationMap = new Map<number, any>();
-  (translationJson?.data?.ayahs || []).forEach((a: any) => translationMap.set(a.number, a));
-  const ayahs: Ayah[] = (arabicJson?.data?.ayahs || []).map((a: any) => {
-    const t = translationMap.get(a.number);
-    return {
-      number: a.number,
-      numberInSurah: a.numberInSurah,
-      surah: a.surah,
-      text: a.text,
-      translation: t ? (t.text || t.translation || "") : "",
-    };
-  });
+  // Use the migrated quranSectionApi  
+  const juzData = await getJuzData(juzNum, 131); // Sahih International translation (ID: 131)
+
+  const ayahs: Ayah[] = juzData.ayahs.map((a: any) => ({
+    number: a.number,
+    numberInSurah: a.numberInSurah,
+    surah: a.surah,
+    text: a.text,
+    translation: a.translation || '',
+  }));
+
   return ayahs;
 }
 

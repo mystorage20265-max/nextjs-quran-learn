@@ -44,3 +44,53 @@
         box-shadow: 0 0 0 4px var(--color-success-faded);
     }
 }
+
+/* Radix UI Tooltip Styles */
+.tooltipContent {
+    background-color: var(--color-background-level-3);
+    color: var(--color-text-default);
+    padding: var(--spacing-xsmall) var(--spacing-small);
+    border-radius: var(--border-radius-default);
+    font-size: var(--font-size-small);
+    line-height: 1.4;
+    box-shadow: var(--shadow-large);
+    max-width: 200px;
+    z-index: var(--z-index-tooltip);
+    animation: fadeIn 0.2s ease;
+}
+
+.tooltipArrow {
+    fill: var(--color-background-level-3);
+}
+
+/* Radix UI Popover Styles */
+.popoverContent {
+    z-index: var(--z-index-popover);
+    animation: slideUpAndFade 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.popoverArrow {
+    fill: var(--color-background-elevated-new);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUpAndFade {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

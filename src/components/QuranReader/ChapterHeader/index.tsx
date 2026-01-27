@@ -1,5 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
+import ReadingModeActions from './ReadingModeActions';
 import styles from './ChapterHeader.module.scss';
 
 export interface ChapterHeaderProps {
@@ -13,6 +14,14 @@ export interface ChapterHeaderProps {
     onPlayAll?: () => void;
     isPlaying?: boolean;
     showBismillah?: boolean;
+    /** Reading mode state */
+    readingMode?: 'arabic' | 'translation';
+    /** Callback when reading mode changes */
+    onReadingModeChange?: (mode: 'arabic' | 'translation') => void;
+    /** Font size (1-6 scale) */
+    fontSize?: number;
+    /** Callback when font size changes */
+    onFontSizeChange?: (size: number) => void;
 }
 
 /**
@@ -30,6 +39,10 @@ const ChapterHeader: React.FC<ChapterHeaderProps> = ({
     onPlayAll,
     isPlaying = false,
     showBismillah = true,
+    readingMode = 'arabic',
+    onReadingModeChange,
+    fontSize = 3,
+    onFontSizeChange,
 }) => {
     return (
         <div className={styles.container}>
@@ -46,6 +59,16 @@ const ChapterHeader: React.FC<ChapterHeaderProps> = ({
                             <span>{isPlaying ? 'Pause' : 'Listen'}</span>
                         </button>
                     )}
+                </div>
+
+                {/* Reading Mode Actions */}
+                <div className={styles.rightControls}>
+                    <ReadingModeActions
+                        mode={readingMode}
+                        onModeChange={onReadingModeChange}
+                        fontSize={fontSize}
+                        onFontSizeChange={onFontSizeChange}
+                    />
                 </div>
             </div>
 

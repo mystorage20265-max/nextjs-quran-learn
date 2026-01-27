@@ -38,23 +38,14 @@ export default function ScrollReadView({
       setLoading(true);
       setError(null);
 
-      // Fetch both Arabic and English translations
-      const [arabicRes, translationRes] = await Promise.all([
-        fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}/quran-uthmani`),
-        fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}/en.asad`)
-      ]);
+      // Use migrated quranSectionApi instead of alquran.cloud
+      const { getSurahData } = await import('@/utils/quranSectionApi');
+      const surahData = await getSurahData(surahNumber, 131); // Sahih International (ID: 131)
 
-      if (!arabicRes.ok || !translationRes.ok) {
-        throw new Error('Failed to fetch verses');
-      }
-
-      const arabicData = await arabicRes.json();
-      const translationData = await translationRes.json();
-
-      const combinedVerses = arabicData.data.ayahs.map((ayah: any, index: number) => ({
+      const combinedVerses = surahData.ayahs.map((ayah: any) => ({
         number: ayah.numberInSurah,
         arabic: ayah.text,
-        translation: translationData.data.ayahs[index].text
+        translation: ayah.translation || ''
       }));
 
       setVerses(combinedVerses);
@@ -91,8 +82,8 @@ export default function ScrollReadView({
   };
 
   return (
-    <div 
-      className={styles.scrollReadView} 
+    <div
+      className={styles.scrollReadView}
       style={{ backgroundImage: `url(${backgroundImageUrl})` }}
     >
       <div className={styles.overlay} />
@@ -102,7 +93,7 @@ export default function ScrollReadView({
         <div>Verse {currentVerse} of {totalVerses}</div>
       </div>
 
-      <div 
+      <div
         className={styles.versesContainer}
         onScroll={handleScroll}
       >

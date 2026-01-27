@@ -1,0 +1,76 @@
+/**
+ * SCSS Breakpoint Mixins - Quran.com Style
+ * Reusable responsive breakpoints for consistent media queries
+ */
+
+// Breakpoint values
+$breakpoint-mobile: 768px;
+$breakpoint-tablet: 1024px;
+
+// Mobile-only styles (< 768px)
+@mixin mobile {
+    @media (max-width: #{$breakpoint-mobile - 1px}) {
+        @content;
+    }
+}
+
+// Tablet-only styles (768px - 1023px)
+@mixin tablet {
+    @media (min-width: $breakpoint-mobile) and (max-width: #{$breakpoint-tablet - 1px}) {
+        @content;
+    }
+}
+
+// Desktop styles (>= 1024px)
+@mixin desktop {
+    @media (min-width: $breakpoint-tablet) {
+        @content;
+    }
+}
+
+// Smaller than tablet (< 768px) - alias for mobile
+@mixin smallerThanTablet {
+    @media (max-width: #{$breakpoint-mobile - 1px}) {
+        @content;
+    }
+}
+
+// Tablet and up (>= 768px)
+@mixin tabletAndUp {
+    @media (min-width: $breakpoint-mobile) {
+        @content;
+    }
+}
+
+// Desktop and up (>= 1024px)
+@mixin desktopAndUp {
+    @media (min-width: $breakpoint-tablet) {
+        @content;
+    }
+}
+
+// Custom breakpoint
+@mixin customBreakpoint($min-width) {
+    @media (min-width: $min-width) {
+        @content;
+    }
+}
+
+// Usage example:
+/*
+.myComponent {
+  padding: 16px;
+
+  @include mobile {
+    padding: 8px;
+  }
+
+  @include tablet {
+    padding: 12px;
+  }
+
+  @include desktop {
+    padding: 20px;
+  }
+}
+*/

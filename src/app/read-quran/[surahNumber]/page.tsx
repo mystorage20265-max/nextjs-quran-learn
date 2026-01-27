@@ -33,12 +33,14 @@ const cleanArabicText = (text: string | undefined): string => {
     return text
         // Remove verse end marker (۝) - the decorative verse number circle
         .replace(/۝/g, '')
-        // Remove small high Quranic annotation signs that appear as dots/circles
-        .replace(/[\u06D6-\u06DC]/g, '') // Small high ligatures, rounded zeros, etc.
+        // Remove small high Quranic annotation signs - EXCLUDING waqaf marks ۘۙۚۛ
+        .replace(/[\u06D6\u06D7]/g, '') // Only U+06D6-U+06D7 (small high ligatures)
+        // Skip U+06D8-U+06DB as these are waqaf marks (ۘ ۙ ۚ ۛ) - KEEP THESE!
+        .replace(/[\u06DC]/g, '') // U+06DC (small high seen)
         .replace(/[\u06DD-\u06E4]/g, '') // Arabic end of ayah and annotation marks
         .replace(/[\u06E7-\u06E8]/g, '') // Small high yeh/noon
         .replace(/[\u06EA-\u06ED]/g, '') // Empty centre marks, etc.
-    // Keep pause marks (ۚ ۛ ۙ ۘ) and tashkeel for proper recitation
+    // Now waqaf marks (ۘ ۙ ۚ ۛ) and tashkeel are preserved!
 };
 
 interface SurahPageProps {
@@ -787,11 +789,13 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                         <div className="rq-reading-text" style={{ fontSize: `${fontSize + 4}px` }}>
                             {verses.map((verse) => (
                                 <span key={verse.id}>
-                                    {cleanArabicText(verse.text_uthmani)}
+                                    {verse.text_uthmani}
+                                    {' '}
                                     <span className="rq-reading-verse-marker">
                                         {toArabicNumeral(verse.verse_number)}
                                         {verse.sajdah_number && <span className="sajdah-marker-reading">۩</span>}
                                     </span>
+                                    {' '}
                                 </span>
                             ))}
                         </div>
@@ -816,9 +820,16 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
 
                                     <div className="word-by-word-text">
                                         {verse.words && verse.words.length > 0 ? (
-                                            verse.words.map((word) => (
-                                                <InteractiveWord key={word.id} word={word} />
-                                            ))
+                                            <>
+                                                {verse.words.map((word) => (
+                                                    <InteractiveWord key={word.id} word={word} />
+                                                ))}
+                                                <span className="word-by-word-verse-end" data-verse={verse.verse_number}>
+                                                    <span className="verse-end-circle">
+                                                        {toArabicNumeral(verse.verse_number)}
+                                                    </span>
+                                                </span>
+                                            </>
                                         ) : (
                                             <span>{cleanArabicText(verse.text_uthmani)}</span>
                                         )}

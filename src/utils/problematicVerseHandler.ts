@@ -71,7 +71,7 @@ const PROBLEMATIC_VERSE_SOURCES: Record<string, string[]> = {
   '3:94': VERSE_3_94_SOURCES,
   '3:95': VERSE_3_95_SOURCES,
   '3:97': VERSE_3_97_SOURCES,
-  
+
   // Adding Surah Al-Ma'idah (5) verse 2 which is particularly problematic
   '5:2': [
     'https://cdn.islamic.network/quran/audio/128/ar.alafasy/683.mp3',
@@ -84,8 +84,7 @@ const PROBLEMATIC_VERSE_SOURCES: Record<string, string[]> = {
     'https://server7.mp3quran.net/shur/005002.mp3',
     'https://server7.mp3quran.net/basit/005002.mp3',
     'https://server13.mp3quran.net/husr/005002.mp3',
-    'https://server8.mp3quran.net/frs_a/005002.mp3',
-    'https://cdn.alquran.cloud/media/audio/ayah/ar.alafasy/683'
+    'https://server8.mp3quran.net/frs_a/005002.mp3'
   ]
 };
 
@@ -98,89 +97,89 @@ export async function playProblematicVerse(verseKey: string): Promise<HTMLAudioE
   if (!isProblematicVerse(verseKey)) {
     throw new Error(`Verse ${verseKey} is not registered as problematic`);
   }
-  
+
   console.log(`Using specialized handler for verse ${verseKey}`);
   let sources = PROBLEMATIC_VERSE_SOURCES[verseKey];
-  
+
   // Generate additional fallback sources based on patterns
   // This helps when the original sources might not work
   const [surahNumber, ayahNumber] = verseKey.split(':').map(Number);
   const paddedSurah = surahNumber.toString().padStart(3, '0');
   const paddedAyah = ayahNumber.toString().padStart(3, '0');
   const absoluteNumber = VERSE_ABSOLUTE_NUMBERS[verseKey];
-  
+
   // Add dynamically generated sources
   const dynamicSources = [
     // Various absolute verse number formats
     `https://cdn.islamic.network/quran/audio/64/ar.alafasy/${absoluteNumber}.mp3`,
     `https://verses.quran.com/Alafasy/mp3/${paddedSurah}_${paddedAyah}.mp3`,
     `https://verses.quran.com/Alafasy/ogg/${paddedSurah}${paddedAyah}.ogg`,
-    
+
     // Various reciters and formats
     `https://audio.islamicfinder.org/audio/surah/surah_${paddedSurah}/ayat_${paddedAyah}_alafasy.mp3`,
     `https://everyayah.com/data/ahmed_ibn_ali_al_ajamy_128kbps/${paddedSurah}${paddedAyah}.mp3`,
     `https://everyayah.com/data/Ghamadi_40kbps/${paddedSurah}${paddedAyah}.mp3`,
     `https://everyayah.com/data/Husary_128kbps/${paddedSurah}${paddedAyah}.mp3`,
-    
+
     // Try different CDNs
     `https://cdn.alquran.cloud/media/audio/ayah/ar.alafasy/${absoluteNumber}`,
     `https://cdn.qurancdn.com/audio/${paddedSurah}/${paddedAyah}.mp3`,
-    
+
     // Add MP3Quran alternatives
     `https://server7.mp3quran.net/shur/${paddedSurah}${paddedAyah}.mp3`,
     `https://server8.mp3quran.net/frs_a/${paddedSurah}${paddedAyah}.mp3`,
     `https://server11.mp3quran.net/yasser/${paddedSurah}${paddedAyah}.mp3`,
-    
+
     // Alternative hostname formats
     `https://media.blubrry.com/muslim_central/audio.qurancentral.com/mishary-rashid-alafasy/mishary-rashid-alafasy-${paddedSurah}-${paddedAyah}.mp3`
   ];
-  
+
   // Combine original sources with dynamic ones
   sources = [...sources, ...dynamicSources];
-  
+
   // Try each source in sequence until one works
   for (const source of sources) {
     try {
       console.log(`Trying source for ${verseKey}: ${source}`);
       const audio = new Audio(source);
-      
+
       // Wait for the audio to be ready or fail
       await new Promise<void>((resolve, reject) => {
         const timeout = setTimeout(() => reject(new Error('Audio loading timeout')), 8000); // Extended timeout for reliability
-        
+
         audio.oncanplay = () => {
           clearTimeout(timeout);
           console.log(`Audio canplay event triggered for ${verseKey}`);
           resolve();
         };
-        
+
         audio.onloadeddata = () => {
           console.log(`Audio data loaded for ${verseKey}`);
         };
-        
+
         audio.onerror = (e) => {
           clearTimeout(timeout);
           console.error(`Audio error for ${verseKey}:`, e);
           reject(new Error(`Failed to load audio from ${source}`));
         };
-        
+
         // Force load attempt
         audio.load();
       });
-      
+
       // Try playing
       await audio.play();
-      
+
       // If we got here, it worked!
       console.log(`Successfully played verse ${verseKey} with source: ${source}`);
       return audio;
-      
+
     } catch (error) {
       console.warn(`Source failed for ${verseKey}: ${source}`, error);
       // Continue to next source
     }
   }
-  
+
   // If all sources failed
   throw new Error(`All sources failed for verse ${verseKey}`);
 }

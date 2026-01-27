@@ -11,13 +11,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   // Only allow audio files from whitelisted domains
   const allowedDomains = [
-    'cdn.alquran.cloud',
     'cdn.islamic.network',
     'verse.mp3quran.net',
     'server8.mp3quran.net',
     'server7.mp3quran.net',
+    'server11.mp3quran.net',
+    'server12.mp3quran.net',
     'everyayah.com',
     'qurancentral.com',
+    'verses.quran.com',
+    'audio.qurancdn.com',
   ];
   try {
     const parsedUrl = new URL(url);

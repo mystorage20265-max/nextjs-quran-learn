@@ -1,6 +1,8 @@
 import React from 'react';
 import classNames from 'classnames';
 import QuranWord from '../QuranWord';
+import SEOTextForVerse from './SEOTextForVerse';
+import TajweedFontPalettes from './TajweedFontPalettes';
 import { GlyphWord as GlyphWordType } from '@/services/quranGlyphApi';
 import { isCenterAlignedPage } from '@/utils/fontHelper';
 import styles from './VerseText.module.scss';
@@ -43,9 +45,10 @@ const VerseText: React.FC<VerseTextProps> = ({
     return (
         <>
             {/* SEO-friendly hidden text for search engines */}
-            <span className={styles.seoText}>
-                {words.map((w) => w.text_uthmani).join(' ')}
-            </span>
+            <SEOTextForVerse words={words} />
+
+            {/* Tajweed color palette for this page */}
+            <TajweedFontPalettes pageNumber={pageNumber} />
 
             <VerseTextContainer
                 data-testid={`verse-arabic-${verseKey}`}

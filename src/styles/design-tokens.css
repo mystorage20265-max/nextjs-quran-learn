@@ -118,6 +118,26 @@
     --quran-font-scale-5: 42px;
     --quran-font-scale-6: 48px;
 
+    /* ========== TAJWEED COLORS ========== */
+    --tajweed-color-ghunnah: #aab857;
+    --tajweed-color-idghaam: #169777;
+    --tajweed-color-qalqalah: #0e92a6;
+    --tajweed-color-ikhfa: #c5e8fa;
+    --tajweed-color-iqlab: #fa98a7;
+    --tajweed-color-madd: #537FFF;
+    --tajweed-color-hamza-wasl: #AAAAAA;
+    --tajweed-color-silent: #AAAAAA;
+
+    /* ========== ELEVATION LEVELS ========== */
+    --color-background-level-1: rgba(10, 53, 69, 0.5);
+    --color-background-level-2: rgba(10, 53, 69, 0.7);
+    --color-background-level-3: rgba(10, 53, 69, 0.9);
+
+    /* ========== VERSE MARKERS ========== */
+    --verse-marker-bg: rgba(129, 181, 50, 0.1);
+    --verse-marker-border: var(--color-success-medium);
+    --verse-marker-size: 32px;
+
     /* ========== GLASSMORPHISM ========== */
     --glass-bg: rgba(255, 255, 255, 0.03);
     --glass-bg-hover: rgba(255, 255, 255, 0.05);

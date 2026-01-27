@@ -20,7 +20,7 @@ function getCachedAudio(key) {
         const { version, audioUrl, meta } = JSON.parse(raw);
         if (version === CACHE_VERSION) return { audioUrl, meta };
       }
-    } catch {}
+    } catch { }
   }
   return null;
 }
@@ -30,20 +30,45 @@ function setCachedAudio(key, audioUrl, meta) {
   if (typeof sessionStorage !== 'undefined') {
     try {
       sessionStorage.setItem(key, JSON.stringify({ version: CACHE_VERSION, audioUrl, meta }));
-    } catch {}
+    } catch { }
   }
 }
 
 async function fetchAudioForAyah(verse, options) {
   const { audioEdition = 'ar.alafasy', retries = 2, backoffBaseMs = 300, signal, debug } = options || {};
+
+  // NEW: Use Quran.com audio CDN (direct URL generation, no API call needed)
+  // Convert verse ID to verse key format (e.g., "1:1")
+  let verseKey: string | null = null;
+  let audioUrl = null;
+  let meta = { audioEdition, audioStatus: 'missing', retries: 0 };
+
+  try {
+    // Try to import the verse converter
+    const { absoluteToVerseKey } = await import('./verseConverter');
+    verseKey = absoluteToVerseKey(verse.id);
+
+    // Generate Quran.com audio URL
+    const { getVerseAudioUrl } = await import('@/services/quranComApi');
+    audioUrl = getVerseAudioUrl(verseKey, audioEdition);
+
+    if (audioUrl && audioUrl.endsWith('.mp3')) {
+      meta.audioStatus = 'ok';
+      if (debug) console.debug(`[Audio] Generated URL for verse ${verseKey}:`, audioUrl);
+      return { audioUrl, meta };
+    }
+  } catch (error) {
+    console.warn(`[Audio] Failed to generate Quran.com URL for verse ${verse.id}:`, error);
+  }
+
+  // FALLBACK: Try legacy API if Quran.com URL generation failed
   const url = `https://api.alquran.cloud/v1/ayah/${verse.id}/${audioEdition}`;
   let attempt = 0;
   let lastError: string | undefined = undefined;
   let statusCode: number | undefined = undefined;
-  let audioUrl = null;
-  let meta = { audioEdition, audioStatus: 'missing', retries: 0 };
+
   while (attempt <= retries) {
-    if (debug) console.debug(`[Audio] Fetching`, url, `Attempt ${attempt + 1}`);
+    if (debug) console.debug(`[Audio] Fetching (fallback)`, url, `Attempt ${attempt + 1}`);
     try {
       const res = await fetch(url, { signal });
       statusCode = res.status;

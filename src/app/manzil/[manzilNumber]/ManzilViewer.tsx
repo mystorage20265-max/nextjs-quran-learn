@@ -84,31 +84,27 @@ export default function ManzilViewer({ manzilNumber }: ManzilViewerProps) {
   useEffect(() => {
     if (!manzil || !manzil.ayahs || isNaN(manzilNumber)) return;
     setIsFetchingAudio(true);
-    const edition = 'ar.alafasy';
-    // Get ayah numbers for current page
-    const pageAyahNumbers = manzil.ayahs.map((ayah: any) => ayah.number);
-    // Fetch audio for each ayah in parallel (limit concurrency if needed)
-    Promise.all(pageAyahNumbers.map(async (ayahNum, idx) => {
-      try {
-        const res = await fetch(`https://api.alquran.cloud/v1/ayah/${ayahNum}/${edition}`);
-        const data = await res.json();
-        return {
-          number: ayahNum,
-          text: manzil.ayahs[idx].text,
-          translation: manzil.ayahs[idx].translations?.[0]?.text ?? '',
-          audio: data?.data?.audio || null
-        };
-      } catch {
-        return {
-          number: ayahNum,
-          text: manzil.ayahs[idx].text,
-          translation: manzil.ayahs[idx].translations?.[0]?.text ?? '',
-          audio: null
-        };
-      }
-    })).then((ayahObjs: Ayah[]) => {
-      setAyahs(ayahObjs);
-      setIsFetchingAudio(false);
+
+    // Use Quran.com audio URL generation instead of API calls
+    import('@/services/quranComApi').then(({ getVerseAudioUrl }) => {
+      import('@/utils/verseConverter').then(({ absoluteToVerseKey }) => {
+        const ayahObjs: Ayah[] = manzil.ayahs.map((ayah: any, idx: number) => {
+          // Generate verse key from verse number
+          const verseKey = absoluteToVerseKey(ayah.number);
+          // Get audio URL directly (no API call needed!)
+          const audioUrl = getVerseAudioUrl(verseKey, 'ar.alafasy');
+
+          return {
+            number: ayah.number,
+            text: ayah.text,
+            translation: ayah.translations?.[0]?.text ?? '',
+            audio: audioUrl
+          };
+        });
+
+        setAyahs(ayahObjs);
+        setIsFetchingAudio(false);
+      });
     });
   }, [manzil, manzilNumber, offset, limit]);
   // Playback effect: play ayah audio when currentIndex changes
@@ -165,16 +161,16 @@ export default function ManzilViewer({ manzilNumber }: ManzilViewerProps) {
 
   // Handle advancing to next verse when current verse ends
   // ...existing code...
-  
+
   // Function to stop verse audio
   const stopVerse = () => {
     console.log('[Manzil] Stopping audio playback');
     setPlayingVerse(null);
     setLoadingVerse(null);
   };
-  
+
   // (Removed obsolete playAllVersesInSurah and stopAutoPlay logic)
-  
+
   // Function to get total ayahs in a manzil
   const fetchManzilTotalAyahs = async (manzilNum: number) => {
     try {
@@ -191,7 +187,7 @@ export default function ManzilViewer({ manzilNumber }: ManzilViewerProps) {
   const fetchManzilData = async () => {
     setLoading(true);
     setError(null);
-    
+
     try {
       // Get total ayahs in this manzil (only on first load)
       if (totalAyahs === 0) {
@@ -201,21 +197,21 @@ export default function ManzilViewer({ manzilNumber }: ManzilViewerProps) {
         const pages = Math.ceil(total / limit);
         setTotalPages(pages);
       }
-      
+
       // Fetch the manzil with translations
       const manzilData = await getManzilWithTranslations(
         manzilNumber,
         [EDITIONS.ARABIC, EDITIONS.ENGLISH],
         { offset, limit }
       );
-      
+
       // Debug the data structure to ensure we have what we need
-      console.log('Manzil data structure:', { 
+      console.log('Manzil data structure:', {
         ayahsCount: manzilData.ayahs?.length || 0,
         hasTranslations: manzilData.ayahs?.[0]?.translations?.length > 0 || false,
-        sampleAyah: manzilData.ayahs?.[0] 
+        sampleAyah: manzilData.ayahs?.[0]
       });
-      
+
       setManzil(manzilData);
       setLoading(false);
     } catch (err) {
@@ -224,26 +220,26 @@ export default function ManzilViewer({ manzilNumber }: ManzilViewerProps) {
       setLoading(false);
     }
   };
-  
+
   // Fetch data on component mount or when parameters change
   useEffect(() => {
     fetchManzilData();
-    
+
     // Check if we need to start auto-play after navigation
     const shouldStartAutoPlay = window.sessionStorage.getItem('startManzilAutoPlayAfterNav') === 'true';
     if (shouldStartAutoPlay && currentPage === 1) {
       window.sessionStorage.removeItem('startManzilAutoPlayAfterNav');
       // Wait for data to load before starting auto-play
       setTimeout(() => {
-  // (Removed obsolete startManzilAutoPlay call)
+        // (Removed obsolete startManzilAutoPlay call)
       }, 1000);
     }
   }, [manzilNumber, offset, limit]);
-  
+
   // Group ayahs by surah for display
   const ayahsBySurah = useMemo(() => {
     if (!manzil || !manzil.ayahs) return {};
-    
+
     const grouped = {};
     manzil.ayahs.forEach(ayah => {
       const surahNum = ayah.surah.number;
@@ -259,35 +255,35 @@ export default function ManzilViewer({ manzilNumber }: ManzilViewerProps) {
       }
       grouped[surahNum].ayahs.push(ayah);
     });
-    
+
     return grouped;
   }, [manzil]);
-  
+
   // Handle page navigation
   const handlePrevPage = () => {
     if (currentPage <= 1) return;
-    
+
     const newPage = currentPage - 1;
     setCurrentPage(newPage);
     const newOffset = (newPage - 1) * limit;
     setOffset(newOffset);
-    
+
     // Scroll to top of content
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-  
+
   const handleNextPage = () => {
     if (currentPage >= totalPages) return;
-    
+
     const newPage = currentPage + 1;
     setCurrentPage(newPage);
     const newOffset = (newPage - 1) * limit;
     setOffset(newOffset);
-    
+
     // Scroll to top of content
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-  
+
   // Render error state
   if (error) {
     return (
@@ -300,7 +296,7 @@ export default function ManzilViewer({ manzilNumber }: ManzilViewerProps) {
       </div>
     );
   }
-  
+
   // Header button handler: single autoplay toggle
   function handleAutoplayToggle() {
     userInteractedRef.current = true;
@@ -328,15 +324,15 @@ export default function ManzilViewer({ manzilNumber }: ManzilViewerProps) {
           {currentPage === totalPages && (
             <div className="last-page-flag">Last Page of Manzil {manzilNumber}</div>
           )}
-          
-          <ManzilHeader 
-            manzilNumber={manzilNumber} 
+
+          <ManzilHeader
+            manzilNumber={manzilNumber}
             totalVerses={totalAyahs}
             totalPages={totalPages}
             autoplay={autoplay}
             setAutoplay={handleAutoplayToggle}
           />
-          
+
           {/* Top Pagination Controls */}
           {totalPages > 1 && (
             <PaginationControls
@@ -354,11 +350,11 @@ export default function ManzilViewer({ manzilNumber }: ManzilViewerProps) {
               }}
             />
           )}
-          
+
           {/* Display each surah section */}
           <div className="manzil-content ayah-list">
             {ayahs.map((ayah, index) => (
-              <div key={ayah.number} className={`ayah-item${currentPlayingVerse === index ? ' playing' : ''}`}> 
+              <div key={ayah.number} className={`ayah-item${currentPlayingVerse === index ? ' playing' : ''}`}>
                 <div className="ayah-number">
                   <span>{index + 1}</span>
                   <button
@@ -399,7 +395,7 @@ export default function ManzilViewer({ manzilNumber }: ManzilViewerProps) {
               }}
             />
           )}
-          
+
           {/* Manzil Navigation - Only shown on the last page */}
           {currentPage === totalPages && (
             <div className="manzil-navigation">
@@ -422,14 +418,14 @@ export default function ManzilViewer({ manzilNumber }: ManzilViewerProps) {
               </div>
             </div>
           )}
-          
+
           {/* Audio is now handled via iframes */}
         </>
       )}
-      
+
       {/* Toast for audio errors */}
       {errorMessage && (
-        <AudioErrorToast 
+        <AudioErrorToast
           message={errorMessage}
           onClose={() => setErrorMessage(null)}
         />

@@ -156,52 +156,57 @@ export async function getChapter(chapterId: number): Promise<Chapter> {
 
 /**
  * Get verses for a chapter with translations
- * Uses alquran.cloud API which reliably returns translations
+ * Now fully using Quran.com API v4
  */
 export async function getVerses(
     chapterId: number,
-    translationId: string = 'en.sahih', // alquran.cloud format
+    translationId: string = '131', // Quran.com resource ID (Sahih International)
     page: number = 1,
     perPage: number = 50
 ): Promise<VersesResponse> {
     try {
-        // Use alquran.cloud API which returns translations inline
-        const ALQURAN_API = 'https://api.alquran.cloud/v1';
+        // Map alquran.cloud translation IDs to Quran.com resource IDs
+        const translationMap: Record<string, string> = {
+            'en.sahih': '131',
+            'en.pickthall': '19',
+            'en.yusufali': '21',
+            'en.asad': '17',
+            'ur.jalandhry': '151',
+            'fr.hamidullah': '136',
+            'es.asad': '141',
+        };
 
-        // Fetch both Arabic and translation
-        const url = `${ALQURAN_API}/surah/${chapterId}/editions/quran-uthmani,${translationId}`;
+        // Convert old-style translation ID if needed
+        const resourceId = translationMap[translationId] || translationId;
+
+        // Use Quran.com API v4
+        const url = `${API_BASE}/verses/by_chapter/${chapterId}?translations=${resourceId}&per_page=${perPage}&page=${page}`;
         const response = await fetchWithRetry(url);
         const data = await response.json();
 
-        if (data.code !== 200 || !data.data) {
+        if (!data.verses) {
             throw new Error('Failed to fetch verses');
         }
 
-        const arabicData = data.data[0];
-        const translationData = data.data[1];
-
-        // Merge Arabic and translations
-        const verses: VerseWithTranslation[] = arabicData.ayahs.map((ayah: any, index: number) => ({
-            id: ayah.number,
-            verse_key: `${chapterId}:${ayah.numberInSurah}`,
-            verse_number: ayah.numberInSurah,
-            hizb_number: ayah.hizbQuarter || 1,
-            rub_el_hizb_number: 1,
-            ruku_number: ayah.ruku || 1,
-            manzil_number: ayah.manzil || 1,
-            sajdah_number: ayah.sajda ? ayah.number : null,
-            page_number: ayah.page || 1,
-            juz_number: ayah.juz || 1,
-            text_uthmani: ayah.text,
-            translations: [{
-                resource_id: 20,
-                text: translationData?.ayahs?.[index]?.text || ''
-            }]
+        // Map to our VerseWithTranslation type
+        const verses: VerseWithTranslation[] = data.verses.map((verse: any) => ({
+            id: verse.id,
+            verse_key: verse.verse_key,
+            verse_number: verse.verse_number,
+            hizb_number: verse.hizb_number || 1,
+            rub_el_hizb_number: verse.rub_el_hizb_number || 1,
+            ruku_number: verse.ruku_number || 1,
+            manzil_number: verse.manzil_number || 1,
+            sajdah_number: verse.sajdah_number || null,
+            page_number: verse.page_number || 1,
+            juz_number: verse.juz_number || 1,
+            text_uthmani: verse.text_uthmani,
+            translations: verse.translations || []
         }));
 
         return {
             verses,
-            pagination: {
+            pagination: data.pagination || {
                 per_page: perPage,
                 current_page: page,
                 next_page: null,
@@ -220,7 +225,7 @@ export async function getVerses(
  */
 export async function getAllVerses(
     chapterId: number,
-    translationId: string = 'en.sahih'
+    translationId: string = '131' // Quran.com resource ID (Sahih International)
 ): Promise<VerseWithTranslation[]> {
     const data = await getVerses(chapterId, translationId);
     return data.verses;
@@ -409,14 +414,14 @@ export async function getTafsirContent(tafsirId: number | string, chapterId: num
     }
 }
 
-// Popular translations (alquran.cloud edition identifiers)
+// Popular translations (Quran.com resource IDs)
 export const TRANSLATIONS = [
-    { id: 'en.sahih', name: 'Sahih International', language: 'English' },
-    { id: 'en.pickthall', name: 'Pickthall', language: 'English' },
-    { id: 'en.yusufali', name: 'Yusuf Ali', language: 'English' },
-    { id: 'en.asad', name: 'Muhammad Asad', language: 'English' },
-    { id: 'ur.jalandhry', name: 'Fateh Muhammad Jalandhry', language: 'Urdu' },
-    { id: 'ur.ahmedali', name: 'Ahmed Ali', language: 'Urdu' },
-    { id: 'fr.hamidullah', name: 'Muhammad Hamidullah', language: 'French' },
-    { id: 'es.asad', name: 'Muhammad Asad', language: 'Spanish' },
+    { id: '131', name: 'Sahih International', language: 'English', legacy: 'en.sahih' },
+    { id: '19', name: 'Pickthall', language: 'English', legacy: 'en.pickthall' },
+    { id: '21', name: 'Yusuf Ali', language: 'English', legacy: 'en.yusufali' },
+    { id: '17', name: 'Muhammad Asad', language: 'English', legacy: 'en.asad' },
+    { id: '151', name: 'Fateh Muhammad Jalandhry', language: 'Urdu', legacy: 'ur.jalandhry' },
+    { id: '54', name: 'Ahmed Ali', language: 'Urdu', legacy: 'ur.ahmedali' },
+    { id: '136', name: 'Muhammad Hamidullah', language: 'French', legacy: 'fr.hamidullah' },
+    { id: '141', name: 'Muhammad Asad', language: 'Spanish', legacy: 'es.asad' },
 ];

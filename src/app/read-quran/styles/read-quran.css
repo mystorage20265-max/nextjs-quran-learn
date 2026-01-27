@@ -1335,16 +1335,16 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
-    margin: 0 8px;
+    width: 45px;
+    height: 45px;
+    margin: 0 10px;
     vertical-align: middle;
-    font-size: 0.55em;
+    font-size: 0.6em;
     font-family: 'Inter', sans-serif;
     font-weight: 700;
     color: var(--rq-primary);
-    background: rgba(16, 185, 129, 0.1);
-    border: 2px solid var(--rq-primary);
+    background: rgba(45, 125, 164, 0.15);
+    border: 2.5px solid var(--rq-primary);
     border-radius: 50%;
     position: relative;
 }
@@ -1526,6 +1526,46 @@
     font-size: 38px;
     margin-bottom: 24px;
     padding: 0 12px;
+    display: block;
+    overflow: visible;
+}
+
+/* Verse End Marker in Word-by-Word Mode */
+.word-by-word-verse-end {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 16px;
+    vertical-align: middle;
+}
+
+/* Waqaf (Pause) Mark */
+.waqaf-mark {
+    font-size: 0.9em;
+    color: var(--rq-primary);
+    font-weight: 700;
+    display: inline;
+    margin-right: 6px;
+}
+
+/* Verse End Circle in Word-by-Word Mode */
+.verse-end-circle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 45px;
+    min-width: 45px;
+    min-height: 45px;
+    border: 2.5px solid var(--rq-primary);
+    border-radius: 50%;
+    background: rgba(45, 125, 164, 0.15);
+    font-size: 0.6em;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    color: var(--rq-primary);
+    text-decoration: none;
+    flex-shrink: 0;
 }
 
 /* Interactive Word Wrapper */
@@ -1889,6 +1929,18 @@
     .word-tooltip-translation {
         font-size: 14px;
     }
+
+    /* Responsive verse end marker for tablets */
+    .verse-end-circle {
+        width: 36px;
+        height: 36px;
+        font-size: 0.53em;
+    }
+
+    .waqaf-mark {
+        font-size: 0.85em;
+        margin-right: 4px;
+    }
 }
 
 /* Extra small screens */
@@ -1910,5 +1962,22 @@
     .word-tooltip-content {
         min-width: 160px;
         max-width: 240px;
+    }
+
+    /* Responsive verse end marker */
+    .word-by-word-verse-end {
+        margin-left: 8px;
+    }
+
+    .verse-end-circle {
+        width: 34px;
+        height: 34px;
+        border-width: 1.5px;
+        font-size: 0.52em;
+    }
+
+    .waqaf-mark {
+        font-size: 0.8em;
+        margin-right: 3px;
     }
 }

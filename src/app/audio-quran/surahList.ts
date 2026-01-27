@@ -131,15 +131,16 @@ export async function fetchSurahList(): Promise<SurahMeta[]> {
   try {
     // Prefer local surahList for speed/SEO
     if (surahList && surahList.length === 114) return surahList;
-    // Fallback: fetch from Al-Quran Cloud
-    const resp = await fetch('https://api.alquran.cloud/v1/surah');
+    // Fallback: fetch from Quran.com API
+    const resp = await fetch('https://api.quran.com/api/v4/chapters');
     const json = await resp.json();
-    if (!json.data) throw new Error('No surah data');
-    return json.data.map((s: any) => ({
-      number: s.number,
-      englishName: s.englishName,
-      englishNameTranslation: s.englishNameTranslation,
-      ayahs: s.numberOfAyahs,
+    if (!json.chapters) throw new Error('No surah data');
+    return json.chapters.map((s: any) => ({
+      number: s.id,
+      name: s.name_arabic,
+      englishName: s.name_simple,
+      englishNameTranslation: s.translated_name.name,
+      ayahs: s.verses_count,
     }));
   } catch (e) {
     // @ts-ignore

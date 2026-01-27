@@ -8,7 +8,6 @@ export const RADIO_CONFIG = {
     apis: {
         qurancom: 'https://api.quran.com/api/v4',
         mp3quran: 'https://mp3quran.net/api/v3',
-        alquran: 'https://api.alquran.cloud/v1',
         qurancdn: 'https://static.qurancdn.com',
         // This is the correct base URL that works for audio files
         audioDownload: 'https://download.quranicaudio.com/qdc',

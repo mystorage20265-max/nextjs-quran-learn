@@ -23,6 +23,12 @@
     gap: var(--spacing-small);
 }
 
+.rightControls {
+    display: flex;
+    gap: var(--spacing-small);
+    align-items: center;
+}
+
 .playButton {
     display: flex;
     align-items: center;

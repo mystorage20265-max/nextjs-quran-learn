@@ -1,0 +1,164 @@
+@import '../../../styles/breakpoints.scss';
+
+.container {
+    background-color: var(--color-background-elevated-new);
+    border: 1px solid var(--color-borders-default);
+    border-radius: var(--border-radius-medium);
+    box-shadow: var(--shadow-xlarge);
+    max-width: 320px;
+    overflow: hidden;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-medium);
+    border-bottom: 1px solid var(--color-borders-hairline);
+}
+
+.title {
+    font-size: var(--font-size-medium);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-default);
+    margin: 0;
+}
+
+.closeButton {
+    background: transparent;
+    border: none;
+    color: var(--color-text-faded);
+    font-size: var(--font-size-large);
+    cursor: pointer;
+    padding: var(--spacing-xxsmall);
+    line-height: 1;
+    transition: all var(--transition-fast);
+
+    &:hover {
+        color: var(--color-text-default);
+        transform: scale(1.1);
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--color-success-medium);
+        outline-offset: 2px;
+        border-radius: var(--border-radius-default);
+    }
+}
+
+.arabicSection {
+    padding: var(--spacing-large) var(--spacing-medium);
+    text-align: center;
+    background: linear-gradient(135deg,
+            var(--color-background-level-1),
+            var(--color-background-level-2));
+}
+
+.arabicWord {
+    font-family: var(--font-family-arabic);
+    font-size: var(--font-size-xxlarge);
+    color: var(--color-text-default);
+    line-height: 1.6;
+}
+
+.section {
+    padding: var(--spacing-medium);
+    border-bottom: 1px solid var(--color-borders-hairline);
+
+    &:last-of-type {
+        border-bottom: none;
+    }
+}
+
+.sectionLabel {
+    font-size: var(--font-size-xsmall);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-faded);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: var(--spacing-xsmall);
+}
+
+.sectionContent {
+    font-size: var(--font-size-normal);
+    color: var(--color-text-default);
+    line-height: 1.6;
+}
+
+.rootWord {
+    font-family: var(--font-family-arabic);
+    font-size: var(--font-size-large);
+    color: var(--color-success-medium);
+    font-weight: var(--font-weight-semibold);
+}
+
+.metaInfo {
+    padding: var(--spacing-small) var(--spacing-medium);
+    background-color: var(--glass-bg);
+    display: flex;
+    gap: var(--spacing-medium);
+    flex-wrap: wrap;
+}
+
+.metaItem {
+    display: flex;
+    gap: var(--spacing-xxsmall);
+    align-items: baseline;
+}
+
+.metaLabel {
+    font-size: var(--font-size-xsmall);
+    color: var(--color-text-faded);
+    font-weight: var(--font-weight-medium);
+}
+
+.metaValue {
+    font-size: var(--font-size-small);
+    color: var(--color-text-default);
+    font-weight: var(--font-weight-semibold);
+}
+
+.audioSection {
+    padding: var(--spacing-medium);
+    border-top: 1px solid var(--color-borders-hairline);
+}
+
+.audioButton {
+    width: 100%;
+    padding: var(--spacing-small);
+    background: linear-gradient(135deg,
+            var(--color-success-medium),
+            var(--color-success-dark));
+    color: white;
+    border: none;
+    border-radius: var(--border-radius-default);
+    font-size: var(--font-size-small);
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+    transition: all var(--transition-regular);
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-medium);
+    }
+
+    &:active {
+        transform: translateY(0);
+    }
+}
+
+/* Responsive */
+@include mobile {
+    .container {
+        max-width: 280px;
+    }
+
+    .arabicWord {
+        font-size: var(--font-size-xlarge);
+    }
+
+    .metaInfo {
+        flex-direction: column;
+        gap: var(--spacing-xsmall);
+    }
+}

@@ -1,9 +1,11 @@
 
 import { useRef, useState, useCallback, useEffect } from 'react';
+import { absoluteToVerseKey } from '@/utils/verseConverter';
+import { getVerseAudioUrl } from '@/services/quranComApi';
 
 // Type for ayah: must have a global number (for API), and optionally text, etc.
 export interface UseManzilAudioOptions {
-  ayahList: Array<{ number: number; [key: string]: any }>;
+  ayahList: Array<{ number: number;[key: string]: any }>;
   edition?: string; // e.g. "ar.alafasy"
 }
 
@@ -23,21 +25,26 @@ export function useManzilAudio({ ayahList, edition = 'ar.alafasy' }: UseManzilAu
   useEffect(() => {
     let cancelled = false;
     async function fetchAudioUrls() {
-      const urls = await Promise.all(
-        ayahList.map(async (ayah) => {
-          try {
-            const res = await fetch(`https://api.alquran.cloud/v1/ayah/${ayah.number}/${edition}`);
-            const data = await res.json();
-            // Defensive: ensure .audio is a valid .mp3 URL
-            if (data?.data?.audio && typeof data.data.audio === 'string' && data.data.audio.endsWith('.mp3')) {
-              return data.data.audio;
-            }
-            return null;
-          } catch {
-            return null;
+      // Generate audio URLs using Quran.com API (no fetch needed - direct URL generation)
+      const urls = ayahList.map((ayah) => {
+        try {
+          // Convert absolute verse number to verse key (e.g., 1 -> "1:1")
+          const verseKey = absoluteToVerseKey(ayah.number);
+
+          // Use Quran.com audio CDN (https://verses.quran.com)
+          const audioUrl = getVerseAudioUrl(verseKey, edition);
+
+          // Validate URL format
+          if (audioUrl && audioUrl.endsWith('.mp3')) {
+            return audioUrl;
           }
-        })
-      );
+          return null;
+        } catch (error) {
+          console.warn(`Could not get audio URL for verse ${ayah.number}:`, error);
+          return null;
+        }
+      });
+
       if (!cancelled) setAudioUrls(urls);
     }
     fetchAudioUrls();
