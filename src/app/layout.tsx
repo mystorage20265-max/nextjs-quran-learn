@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import Navbar from '@/components/Navbar/Navbar';
 import Footer from '@/components/Footer';
 import { getOrganizationSchema, getWebsiteSchema } from '@/lib/seoSchemas';
+import { ThemeProvider } from '@/components/ThemeProvider';
 import './globals.css';
 import ClientWrapper from '@/components/ClientWrapper';
 
@@ -112,13 +113,16 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <Navbar />
-        <ClientWrapper>
-          <main>
-            {children}
-          </main>
-        </ClientWrapper>
-        <Footer />
+        <ThemeProvider>
+          <a href="#main-content" className="skip-link">Skip to main content</a>
+          <Navbar />
+          <ClientWrapper>
+            <main id="main-content">
+              {children}
+            </main>
+          </ClientWrapper>
+          <Footer />
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -1,23 +1,36 @@
 /* ========================================
-   SERVICENOW CLONE - ADVANCED ANIMATIONS
-   Exact matching: parallax, tracers, 3D, hover
+   LEARN QURAN - HOMEPAGE
+   Warm, Eye-Friendly Theme
    ======================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-
 :root {
-    --sn-bg: #00202e;
-    --sn-bg-dark: #001822;
-    --sn-bg-card: #0a3545;
-    --sn-green: #81b532;
-    --sn-green-hover: #6fa025;
-    --sn-cyan: #00f5d4;
-    --sn-blue: #00c8f0;
-    --sn-purple: #8b5cf6;
-    --sn-pink: #ec4899;
-    --sn-white: #ffffff;
-    --sn-gray: #a3b8c2;
-    --sn-font: 'Inter', -apple-system, sans-serif;
+    /* Warm color palette - Maps to design system */
+    --sn-bg: var(--bg-base, #0f0d0a);
+    --sn-bg-dark: var(--bg-surface, #1a1612);
+    --sn-bg-card: var(--bg-card, #2a2420);
+    --sn-bg-elevated: var(--bg-elevated, #241f1a);
+    
+    /* Warm amber/gold accents */
+    --sn-green: var(--brand-primary, #f59e0b);
+    --sn-green-hover: var(--brand-primary-hover, #d97706);
+    --sn-green-glow: var(--brand-primary-glow, rgba(245, 158, 11, 0.2));
+    
+    /* Secondary accents */
+    --sn-cyan: var(--accent-teal, #2dd4bf);
+    --sn-blue: #60a5fa;
+    --sn-purple: #a78bfa;
+    --sn-gold: var(--accent-gold, #fbbf24);
+    
+    /* Text colors */
+    --sn-white: var(--text-primary, #faf6ed);
+    --sn-gray: var(--text-secondary, #d9c9a3);
+    --sn-muted: var(--text-muted, #a89f8a);
+    
+    /* Borders */
+    --sn-border: var(--border-default, rgba(250, 246, 237, 0.08));
+    --sn-border-strong: var(--border-strong, rgba(250, 246, 237, 0.12));
+    
+    --sn-font: var(--font-sans, 'Figtree', 'Inter', -apple-system, sans-serif);
 }
 
 * {
@@ -34,8 +47,6 @@
     overflow-x: hidden;
     position: relative;
 }
-
-
 
 body:has(.demo-page) {
     background: var(--sn-bg) !important;
@@ -59,22 +70,35 @@ body:has(.demo-page) main {
     position: absolute;
     width: 4px;
     height: 4px;
-    background: var(--sn-cyan);
+    background: var(--sn-gold);
     border-radius: 50%;
-    opacity: 0.3;
+    opacity: 0.25;
     animation: particleFloat 20s linear infinite;
 }
 
+.particle.p0 {
+    background: var(--color-amber-500);
+    width: 5px;
+    height: 5px;
+}
+
 .particle.p1 {
-    background: var(--sn-purple);
+    background: var(--color-amber-400);
 }
 
 .particle.p2 {
-    background: var(--sn-green);
+    background: var(--color-amber-600);
 }
 
 .particle.p3 {
-    background: var(--sn-blue);
+    background: var(--color-teal-400);
+    opacity: 0.12;
+}
+
+.particle.p4 {
+    background: var(--color-amber-300);
+    width: 3px;
+    height: 3px;
 }
 
 @keyframes particleFloat {
@@ -248,13 +272,14 @@ body:has(.demo-page) main {
 }
 
 .floating-btn.contact {
-    background: var(--sn-bg);
+    background: var(--sn-bg-card);
     color: var(--sn-green);
 }
 
 .floating-btn.demo-btn {
-    background: var(--sn-green);
+    background: linear-gradient(135deg, var(--sn-green) 0%, var(--sn-gold) 100%);
     color: var(--sn-bg);
+    border-color: transparent;
 }
 
 .floating-btn svg {
@@ -264,7 +289,7 @@ body:has(.demo-page) main {
 
 .floating-btn:hover {
     transform: translateX(-8px) scale(1.05);
-    box-shadow: 0 8px 30px rgba(129, 181, 50, 0.3);
+    box-shadow: 0 8px 30px var(--sn-green-glow);
 }
 
 /* Magnetic button effect */
@@ -281,13 +306,39 @@ body:has(.demo-page) main {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    background: #001f2b;
+    background: var(--sn-bg);
+}
+
+/* Warm ambient glow for hero */
+.hero-section.split-layout::before {
+    content: '';
+    position: absolute;
+    top: -20%;
+    left: -10%;
+    width: 60%;
+    height: 80%;
+    background: radial-gradient(ellipse, rgba(245, 158, 11, 0.12) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.hero-section.split-layout::after {
+    content: '';
+    position: absolute;
+    bottom: -10%;
+    right: -10%;
+    width: 50%;
+    height: 60%;
+    background: radial-gradient(ellipse, rgba(45, 212, 191, 0.08) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
 }
 
 .hero-bg-carousel {
     position: absolute;
     inset: 0;
     z-index: 0;
+    background: var(--sn-bg);
 }
 
 .hero-bg-slide {
@@ -296,6 +347,11 @@ body:has(.demo-page) main {
     opacity: 0;
     transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
     transform: scale(1);
+    /* Warm gradient backgrounds for each slide */
+    background: radial-gradient(ellipse at 30% 20%, rgba(245, 158, 11, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 80%, rgba(251, 191, 36, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(45, 212, 191, 0.04) 0%, transparent 60%),
+                var(--sn-bg);
 }
 
 .hero-bg-slide.active {
@@ -320,8 +376,20 @@ body:has(.demo-page) main {
 .hero-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to bottom, rgba(0, 31, 43, 0.3) 0%, rgba(0, 31, 43, 0.8) 100%);
+    background: 
+        linear-gradient(180deg, transparent 0%, rgba(15, 13, 10, 0.4) 60%, rgba(15, 13, 10, 0.9) 100%),
+        radial-gradient(ellipse at 20% 0%, rgba(245, 158, 11, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 100%, rgba(45, 212, 191, 0.1) 0%, transparent 50%);
     pointer-events: none;
+}
+
+/* Warm Islamic pattern overlay */
+.hero-overlay::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0L60 30L30 60L0 30L30 0z' fill='none' stroke='%23f59e0b' stroke-opacity='0.03' stroke-width='0.5'/%3E%3C/svg%3E");
+    opacity: 0.5;
 }
 
 .hero-container.container-wide {
@@ -454,26 +522,27 @@ body:has(.demo-page) main {
 
 .btn-explore-platform {
     padding: 18px 36px;
-    background: var(--sn-green);
-    color: #001f2b;
+    background: linear-gradient(135deg, var(--sn-green) 0%, var(--sn-gold) 100%);
+    color: var(--sn-bg);
     border: none;
     border-radius: 100px;
     font-size: 16px;
     font-weight: 800;
     cursor: pointer;
     transition: all 0.3s;
+    box-shadow: 0 4px 20px var(--sn-green-glow);
 }
 
 .btn-explore-platform:hover {
-    background: #95ce3a;
-    transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(129, 181, 50, 0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px var(--sn-green-glow);
+    filter: brightness(1.1);
 }
 
 .btn-watch-video {
     padding: 16px 32px;
     background: transparent;
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    border: 2px solid var(--sn-border-strong);
     color: var(--sn-white);
     border-radius: 100px;
     font-size: 16px;
@@ -483,6 +552,11 @@ body:has(.demo-page) main {
     align-items: center;
     gap: 12px;
     transition: all 0.3s;
+}
+
+.btn-watch-video:hover {
+    border-color: var(--sn-green);
+    background: var(--sn-green-glow);
 }
 
 .btn-watch-video:hover {
@@ -517,10 +591,9 @@ body:has(.demo-page) main {
     overflow: hidden;
     position: relative;
     cursor: pointer;
-    background: #001f2b;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--sn-bg-card);
+    border: 1px solid var(--sn-border);
     transition: transform 0.3s ease-out, box-shadow 0.3s ease-out, border-color 0.3s ease-out;
-    /* Smooth transition for both tilt and reset */
     transform: perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateZ(0px);
     transform-style: preserve-3d;
 }
@@ -552,8 +625,8 @@ body:has(.demo-page) main {
 
 .hero-card-item:hover {
     transform: perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateZ(20px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 30px var(--sn-green-glow);
+    border-color: var(--sn-green);
 }
 
 .card-image-wrapper {
@@ -1224,6 +1297,10 @@ body:has(.demo-page) main {
 .solutions-section {
     padding: 100px 60px;
     text-align: center;
+    position: relative;
+    background: 
+        radial-gradient(ellipse at 70% 20%, rgba(245, 158, 11, 0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 30% 80%, rgba(45, 212, 191, 0.04) 0%, transparent 50%);
 }
 
 .solutions-title {
@@ -1238,9 +1315,10 @@ body:has(.demo-page) main {
 }
 
 .gradient-text {
-    background: linear-gradient(90deg, var(--sn-green), var(--sn-cyan));
+    background: linear-gradient(135deg, var(--sn-green), var(--sn-gold));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .solution-tabs {
@@ -1266,12 +1344,14 @@ body:has(.demo-page) main {
 
 .solution-tab:hover {
     color: var(--sn-white);
+    background: var(--sn-green-glow);
 }
 
 .solution-tab.active {
-    background: var(--sn-green);
+    background: linear-gradient(135deg, var(--sn-green) 0%, var(--sn-gold) 100%);
     color: var(--sn-bg);
     transform: scale(1.05);
+    box-shadow: 0 4px 20px var(--sn-green-glow);
 }
 
 .solution-content {
@@ -1358,8 +1438,8 @@ body:has(.demo-page) main {
 .btn-outline {
     position: relative;
     padding: 14px 28px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: var(--sn-bg-card);
+    border: 1px solid var(--sn-border-strong);
     border-radius: 12px;
     color: var(--sn-white);
     font-family: var(--sn-font);
@@ -1379,12 +1459,11 @@ body:has(.demo-page) main {
 }
 
 .btn-outline:hover {
-    background: var(--sn-green);
+    background: linear-gradient(135deg, var(--sn-green) 0%, var(--sn-gold) 100%);
     color: var(--sn-bg-dark);
-    border-color: var(--sn-green);
+    border-color: transparent;
     transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 15px 35px rgba(129, 181, 50, 0.4),
-        0 0 20px rgba(129, 181, 50, 0.2);
+    box-shadow: 0 15px 35px var(--sn-green-glow);
 }
 
 .btn-outline:active {
@@ -1852,6 +1931,10 @@ body:has(.demo-page) main {
 /* ===== TESTIMONIALS ===== */
 .testimonials-section {
     padding: 100px 60px;
+    position: relative;
+    background: 
+        radial-gradient(ellipse at 20% 50%, rgba(245, 158, 11, 0.05) 0%, transparent 40%),
+        radial-gradient(ellipse at 80% 30%, rgba(251, 191, 36, 0.04) 0%, transparent 40%);
 }
 
 .testimonial-cards {
@@ -2002,6 +2085,10 @@ body:has(.demo-page) main {
 /* ===== INSIGHTS ===== */
 .insights-section {
     padding: 100px 60px;
+    position: relative;
+    background: 
+        radial-gradient(ellipse at 60% 20%, rgba(45, 212, 191, 0.04) 0%, transparent 40%),
+        radial-gradient(ellipse at 40% 80%, rgba(245, 158, 11, 0.05) 0%, transparent 40%);
 }
 
 .insights-header {
@@ -2037,7 +2124,7 @@ body:has(.demo-page) main {
     grid-row: span 2;
     border-radius: 24px;
     padding: 35px;
-    background: linear-gradient(135deg, var(--sn-purple), var(--sn-pink) 50%, var(--sn-cyan));
+    background: linear-gradient(135deg, var(--sn-green) 0%, var(--sn-gold) 50%, var(--sn-cyan) 100%);
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -2185,12 +2272,13 @@ body:has(.demo-page) main {
     border-radius: 20px;
     overflow: hidden;
     transition: all 0.4s;
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--sn-border);
 }
 
 .insight-card:hover {
     transform: translateY(-8px);
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.35);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4), 0 0 30px var(--sn-green-glow);
+    border-color: var(--sn-green);
 }
 
 .insight-image {
@@ -2243,6 +2331,9 @@ body:has(.demo-page) main {
     display: grid;
     grid-template-columns: 380px 1fr;
     gap: 70px;
+    position: relative;
+    background: 
+        radial-gradient(ellipse at 30% 40%, rgba(245, 158, 11, 0.06) 0%, transparent 50%);
 }
 
 .work-left h2 {
@@ -2273,21 +2364,22 @@ body:has(.demo-page) main {
     gap: 24px;
     align-items: center;
     padding: 28px 0;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid var(--sn-border);
     cursor: pointer;
     transition: all 0.3s;
 }
 
 .work-card:last-child {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--sn-border);
 }
 
 .work-card:hover {
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--sn-bg-card);
     margin: 0 -24px;
     padding-left: 24px;
     padding-right: 24px;
     border-radius: 16px;
+    border-color: transparent;
 }
 
 .work-icon {
@@ -2337,10 +2429,10 @@ body:has(.demo-page) main {
 }
 
 .work-card:hover .work-arrow {
-    background: var(--sn-green);
+    background: linear-gradient(135deg, var(--sn-green) 0%, var(--sn-gold) 100%);
     color: var(--sn-bg);
     transform: scale(1.1);
-    box-shadow: 0 8px 25px rgba(129, 181, 50, 0.35);
+    box-shadow: 0 8px 25px var(--sn-green-glow);
 }
 
 .magnetic-arrow {

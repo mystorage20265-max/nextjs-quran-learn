@@ -14,27 +14,26 @@ import {
   GraduationCap,
   Brain,
   LayoutGrid,
-  Info,
   Book,
-  Search,
   Sparkles,
-  Mic2,
   Clock,
   Users,
   PlayCircle,
   Radio,
-  Music,
   LogIn,
   UserPlus,
-  Star,
-  Microscope
+  Microscope,
+  Sun,
+  Moon
 } from 'lucide-react';
+import { useTheme } from '@/components/ThemeProvider';
 import './Navbar.css';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const { resolvedTheme, toggleTheme } = useTheme();
 
   const pathname = usePathname();
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -164,8 +163,15 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Desktop Auth */}
+        {/* Desktop Auth & Theme Toggle */}
         <div className="nav-auth-desktop">
+          <button
+            onClick={toggleTheme}
+            className="theme-toggle-nav"
+            aria-label={`Switch to ${resolvedTheme === 'dark' ? 'light' : 'dark'} mode`}
+          >
+            {resolvedTheme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+          </button>
           <Link href="/login" className="auth-btn login-btn">
             <LogIn size={18} />
             <span>Login</span>
@@ -250,14 +256,27 @@ export default function Navbar() {
               </div>
 
               <div className="sidebar-footer">
-                <Link href="/login" className="sidebar-btn sidebar-login" onClick={closeMenu}>
-                  <LogIn size={18} />
-                  Login
-                </Link>
-                <Link href="/signup" className="sidebar-btn sidebar-signup" onClick={closeMenu}>
-                  <UserPlus size={18} />
-                  Join Now
-                </Link>
+                <div className="sidebar-theme-row">
+                  <span className="sidebar-label">Theme</span>
+                  <button
+                    onClick={toggleTheme}
+                    className="theme-toggle-mobile"
+                    aria-label={`Switch to ${resolvedTheme === 'dark' ? 'light' : 'dark'} mode`}
+                  >
+                    {resolvedTheme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+                    <span>{resolvedTheme === 'dark' ? 'Light' : 'Dark'}</span>
+                  </button>
+                </div>
+                <div className="sidebar-auth-buttons">
+                  <Link href="/login" className="sidebar-btn sidebar-login" onClick={closeMenu}>
+                    <LogIn size={18} />
+                    Login
+                  </Link>
+                  <Link href="/signup" className="sidebar-btn sidebar-signup" onClick={closeMenu}>
+                    <UserPlus size={18} />
+                    Join Now
+                  </Link>
+                </div>
               </div>
             </motion.div>
           </>

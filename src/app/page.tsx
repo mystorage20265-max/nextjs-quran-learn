@@ -47,7 +47,7 @@ export default function HomePage() {
       desc: "The first intelligent platform that connects Quranic sciences with modern adaptive learning technology.",
       primaryBtn: "Start Learning",
       secondaryBtn: "Watch Demo",
-      bg: "bg-[#002d3d]"
+      bg: "bg-[#0f0d0a]"
     },
     {
       title: "Master Tajweed",
@@ -55,7 +55,7 @@ export default function HomePage() {
       desc: "Learn the art of beautiful Quran recitation with interactive audio lessons, expert guidance, and real-time feedback.",
       primaryBtn: "Explore Tajweed",
       secondaryBtn: "Listen to Samples",
-      bg: "bg-[#001f2b]"
+      bg: "bg-[#1a1410]"
     },
     {
       title: "Memorize with confidence",
@@ -63,7 +63,7 @@ export default function HomePage() {
       desc: "Smart repetition techniques, progress tracking, and personalized memorization plans to help you achieve your Hifz goals.",
       primaryBtn: "Start Memorizing",
       secondaryBtn: "See Methods",
-      bg: "bg-[#002530]"
+      bg: "bg-[#12100c]"
     }
   ];
 

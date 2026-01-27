@@ -156,7 +156,7 @@ export async function getChapter(chapterId: number): Promise<Chapter> {
 
 /**
  * Get verses for a chapter with translations
- * Uses alquran.cloud API which reliably returns translations
+ * Uses alquran.cloud API with quran-simple-enhanced for full tashkeel (harakat)
  */
 export async function getVerses(
     chapterId: number,
@@ -168,8 +168,9 @@ export async function getVerses(
         // Use alquran.cloud API which returns translations inline
         const ALQURAN_API = 'https://api.alquran.cloud/v1';
 
-        // Fetch both Arabic and translation
-        const url = `${ALQURAN_API}/surah/${chapterId}/editions/quran-uthmani,${translationId}`;
+        // Use quran-simple-enhanced for Arabic with full tashkeel (harakat/diacritics)
+        // This edition includes: fatha, kasra, damma, sukun, shadda, tanween
+        const url = `${ALQURAN_API}/surah/${chapterId}/editions/quran-simple-enhanced,${translationId}`;
         const response = await fetchWithRetry(url);
         const data = await response.json();
 

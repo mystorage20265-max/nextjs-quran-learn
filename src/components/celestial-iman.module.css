@@ -2,7 +2,7 @@
     position: relative;
     width: 100%;
     min-height: 100vh;
-    background: linear-gradient(135deg, #0a1628 0%, #0d1b2a 50%, #1b263b 100%);
+    background: linear-gradient(135deg, #0f0d0a 0%, #1a1410 50%, #12100c 100%);
     overflow: hidden;
     display: flex;
     align-items: center;
@@ -45,15 +45,15 @@
     height: 160px;
     border-radius: 50%;
     background: radial-gradient(circle at 35% 35%,
-            #81b532 0%,
-            #6a9629 30%,
-            #4a6b1d 70%,
-            #2a3b11 100%);
+            #fbbf24 0%,
+            #f59e0b 30%,
+            #d97706 70%,
+            #92400e 100%);
     box-shadow:
-        0 0 40px rgba(129, 181, 50, 0.8),
-        0 0 80px rgba(129, 181, 50, 0.6),
-        0 0 120px rgba(129, 181, 50, 0.4),
-        0 0 160px rgba(0, 245, 212, 0.3),
+        0 0 40px rgba(245, 158, 11, 0.8),
+        0 0 80px rgba(245, 158, 11, 0.6),
+        0 0 120px rgba(245, 158, 11, 0.4),
+        0 0 160px rgba(251, 191, 36, 0.3),
         inset -20px -20px 40px rgba(0, 0, 0, 0.4),
         inset 10px 10px 30px rgba(255, 255, 255, 0.2);
     display: flex;
@@ -68,8 +68,8 @@
     height: 200%;
     border-radius: 50%;
     background: radial-gradient(circle,
-            rgba(129, 181, 50, 0.3) 0%,
-            rgba(0, 245, 212, 0.2) 30%,
+            rgba(245, 158, 11, 0.3) 0%,
+            rgba(251, 191, 36, 0.2) 30%,
             transparent 70%);
     animation: glowPulse 3s ease-in-out infinite alternate;
 }
@@ -80,7 +80,7 @@
     height: 120%;
     border-radius: 50%;
     background: radial-gradient(circle,
-            rgba(0, 245, 212, 0.4) 0%,
+            rgba(251, 191, 36, 0.4) 0%,
             transparent 70%);
     animation: innerGlowPulse 2s ease-in-out infinite alternate;
 }
@@ -100,7 +100,7 @@
     color: #ffffff;
     text-shadow:
         0 0 10px rgba(255, 255, 255, 0.8),
-        0 0 20px rgba(0, 245, 212, 0.6),
+        0 0 20px rgba(245, 158, 11, 0.6),
         0 2px 4px rgba(0, 0, 0, 0.5);
     letter-spacing: 2px;
 }
@@ -110,7 +110,7 @@
     font-weight: 600;
     color: rgba(255, 255, 255, 0.9);
     letter-spacing: 4px;
-    text-shadow: 0 0 10px rgba(0, 245, 212, 0.8);
+    text-shadow: 0 0 10px rgba(251, 191, 36, 0.8);
 }
 
 .sunRays {
@@ -123,7 +123,7 @@
     background:
         repeating-conic-gradient(from 0deg,
             transparent 0deg,
-            rgba(129, 181, 50, 0.1) 2deg,
+            rgba(245, 158, 11, 0.1) 2deg,
             transparent 4deg,
             transparent 8deg);
     border-radius: 50%;
@@ -203,11 +203,11 @@
     transition: all 0.3s ease;
     pointer-events: none;
     white-space: nowrap;
-    background: rgba(10, 22, 40, 0.9);
+    background: rgba(15, 13, 10, 0.9);
     backdrop-filter: blur(10px);
     padding: 0.5rem 1rem;
     border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(245, 158, 11, 0.2);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
@@ -215,7 +215,7 @@
     font-size: 1rem;
     font-weight: 700;
     color: #ffffff;
-    text-shadow: 0 0 10px rgba(0, 245, 212, 0.6);
+    text-shadow: 0 0 10px rgba(245, 158, 11, 0.6);
 }
 
 .planetNameEn {
@@ -383,10 +383,10 @@
         width: 120px;
         height: 120px;
         box-shadow:
-            0 0 30px rgba(129, 181, 50, 0.8),
-            0 0 60px rgba(129, 181, 50, 0.6),
-            0 0 90px rgba(129, 181, 50, 0.4),
-            0 0 120px rgba(0, 245, 212, 0.3),
+            0 0 30px rgba(245, 158, 11, 0.8),
+            0 0 60px rgba(245, 158, 11, 0.6),
+            0 0 90px rgba(245, 158, 11, 0.4),
+            0 0 120px rgba(251, 191, 36, 0.3),
             inset -15px -15px 30px rgba(0, 0, 0, 0.4),
             inset 8px 8px 20px rgba(255, 255, 255, 0.2);
     }
@@ -458,10 +458,10 @@
         width: 110px;
         height: 110px;
         box-shadow:
-            0 0 25px rgba(129, 181, 50, 0.8),
-            0 0 50px rgba(129, 181, 50, 0.6),
-            0 0 75px rgba(129, 181, 50, 0.4),
-            0 0 100px rgba(0, 245, 212, 0.3),
+            0 0 25px rgba(245, 158, 11, 0.8),
+            0 0 50px rgba(245, 158, 11, 0.6),
+            0 0 75px rgba(245, 158, 11, 0.4),
+            0 0 100px rgba(251, 191, 36, 0.3),
             inset -12px -12px 25px rgba(0, 0, 0, 0.4),
             inset 6px 6px 18px rgba(255, 255, 255, 0.2);
     }

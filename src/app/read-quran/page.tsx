@@ -2,18 +2,50 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
-import { Search, BookOpen, Clock, ArrowRight, Book, GraduationCap } from 'lucide-react';
+import { Search, BookOpen, Clock, ArrowRight, ChevronRight, MapPin } from 'lucide-react';
 import { getChapters, getTafsirs, Chapter, Tafsir } from './lib/api';
 import { getLastRead, getProgressPercentage, getProgress, LastReadPosition } from './lib/progress';
-import './styles/read-quran.css';
+import './styles/reader.css';
 
-type TabType = 'surah' | 'juz' | 'tafsir';
+type TabType = 'surah' | 'juz';
+
+// Juz data with start/end info
+const JUZ_DATA = [
+    { num: 1, name: "Alif Lam Mim", startSurah: 1, startAyah: 1 },
+    { num: 2, name: "Sayaqool", startSurah: 2, startAyah: 142 },
+    { num: 3, name: "Tilkal Rusul", startSurah: 2, startAyah: 253 },
+    { num: 4, name: "Lan Tana Loo", startSurah: 3, startAyah: 93 },
+    { num: 5, name: "Wal Mohsanat", startSurah: 4, startAyah: 24 },
+    { num: 6, name: "La Yuhibbullah", startSurah: 4, startAyah: 148 },
+    { num: 7, name: "Wa Iza Samiu", startSurah: 5, startAyah: 83 },
+    { num: 8, name: "Wa Lau Annana", startSurah: 6, startAyah: 111 },
+    { num: 9, name: "Qalal Malao", startSurah: 7, startAyah: 88 },
+    { num: 10, name: "Wa Alamu", startSurah: 8, startAyah: 41 },
+    { num: 11, name: "Yatazeroon", startSurah: 9, startAyah: 94 },
+    { num: 12, name: "Wa Mamin Dabbah", startSurah: 11, startAyah: 6 },
+    { num: 13, name: "Wa Ma Ubarrio", startSurah: 12, startAyah: 53 },
+    { num: 14, name: "Rubama", startSurah: 15, startAyah: 1 },
+    { num: 15, name: "Subhanallazi", startSurah: 17, startAyah: 1 },
+    { num: 16, name: "Qal Alam", startSurah: 18, startAyah: 75 },
+    { num: 17, name: "Iqtarabo", startSurah: 21, startAyah: 1 },
+    { num: 18, name: "Qadd Aflaha", startSurah: 23, startAyah: 1 },
+    { num: 19, name: "Wa Qalallazina", startSurah: 25, startAyah: 21 },
+    { num: 20, name: "Amman Khalaq", startSurah: 27, startAyah: 56 },
+    { num: 21, name: "Otlu Ma Oohi", startSurah: 29, startAyah: 46 },
+    { num: 22, name: "Wa Manyaqnut", startSurah: 33, startAyah: 31 },
+    { num: 23, name: "Wa Mali", startSurah: 36, startAyah: 22 },
+    { num: 24, name: "Faman Azlam", startSurah: 39, startAyah: 32 },
+    { num: 25, name: "Elahe Yuruddo", startSurah: 41, startAyah: 47 },
+    { num: 26, name: "Ha Meem", startSurah: 46, startAyah: 1 },
+    { num: 27, name: "Qala Fama Khatbukum", startSurah: 51, startAyah: 31 },
+    { num: 28, name: "Qadd Sami Allah", startSurah: 58, startAyah: 1 },
+    { num: 29, name: "Tabarakallazi", startSurah: 67, startAyah: 1 },
+    { num: 30, name: "Amma Yatasa'aloon", startSurah: 78, startAyah: 1 },
+];
 
 export default function ReadQuranPage() {
     const [chapters, setChapters] = useState<Chapter[]>([]);
-    const [tafsirs, setTafsirs] = useState<Tafsir[]>([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
     const [activeTab, setActiveTab] = useState<TabType>('surah');
     const [searchTerm, setSearchTerm] = useState('');
     const [lastRead, setLastRead] = useState<LastReadPosition | null>(null);
@@ -23,20 +55,12 @@ export default function ReadQuranPage() {
     useEffect(() => {
         async function loadData() {
             try {
-                setLoading(true);
-                const [chaptersData, tafsirsData] = await Promise.all([
-                    getChapters(),
-                    getTafsirs()
-                ]);
+                const chaptersData = await getChapters();
                 setChapters(chaptersData);
-                setTafsirs(tafsirsData);
-
-                // Load progress data
                 setLastRead(getLastRead());
                 setProgress(getProgressPercentage());
                 setTotalRead(getProgress().totalRead);
             } catch (err) {
-                setError('Failed to load data. Please try again.');
                 console.error(err);
             } finally {
                 setLoading(false);
@@ -45,17 +69,7 @@ export default function ReadQuranPage() {
         loadData();
     }, []);
 
-    const displayedContent = useMemo(() => {
-        if (activeTab === 'tafsir') {
-            if (!searchTerm) return tafsirs;
-            const query = searchTerm.toLowerCase();
-            return tafsirs.filter(t =>
-                t.name.toLowerCase().includes(query) ||
-                t.author_name.toLowerCase().includes(query) ||
-                t.language_name.toLowerCase().includes(query)
-            );
-        }
-
+    const filteredChapters = useMemo(() => {
         if (!searchTerm) return chapters;
         const query = searchTerm.toLowerCase();
         return chapters.filter(
@@ -65,205 +79,364 @@ export default function ReadQuranPage() {
                 ch.translated_name.name.toLowerCase().includes(query) ||
                 ch.id.toString() === query
         );
-    }, [chapters, tafsirs, searchTerm, activeTab]);
+    }, [chapters, searchTerm]);
 
     if (loading) {
         return (
-            <div className="read-quran-page">
-                <div className="rq-container">
-                    <div className="rq-loading">
-                        <div className="rq-spinner"></div>
-                        <p>Loading the Noble Quran...</p>
+            <div className="quran-reader">
+                <div className="reader-container" style={{ paddingTop: 120 }}>
+                    <div className="reader-loading">
+                        <div className="reader-spinner"></div>
+                        <p className="reader-loading-text">Loading the Noble Quran...</p>
                     </div>
                 </div>
             </div>
         );
     }
 
-    // Juz mapping helper
-    const JUZ_START_SURAHS: { [key: number]: number[] } = {
-        1: [1, 2], 2: [2], 3: [2, 3], 4: [3, 4], 5: [4], 6: [4, 5], 7: [5, 6], 8: [6, 7], 9: [7, 8], 10: [8, 9],
-        11: [9, 10, 11], 12: [11, 12], 13: [12, 13, 14], 14: [15, 16], 15: [17, 18], 16: [18, 19, 20], 17: [21, 22],
-        18: [23, 24, 25], 19: [25, 26, 27], 20: [27, 28, 29], 21: [29, 30, 31, 32, 33], 22: [33, 34, 35, 36],
-        23: [36, 37, 38, 39], 24: [39, 40, 41], 25: [41, 42, 43, 44, 45], 26: [46, 47, 48, 49, 50, 51],
-        27: [51, 52, 53, 54, 55, 56, 57], 28: [58, 59, 60, 61, 62, 63, 64, 65, 66],
-        29: [67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77],
-        30: [78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114]
-    };
-
     return (
-        <div className="read-quran-page">
-            <div className="rq-container">
+        <div className="quran-reader">
+            <div className="reader-container" style={{ paddingTop: 100, maxWidth: 1000 }}>
                 {/* Hero Section */}
-                <header className="rq-hero">
-                    <div className="rq-hero-badge">📖</div>
-                    <h1>Read the Noble Quran</h1>
-                    <p>Explore the Holy Quran with beautiful Arabic text, translations, and audio recitations</p>
+                <header style={{ textAlign: 'center', marginBottom: 48 }}>
+                    <div style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: 64,
+                        height: 64,
+                        background: 'var(--reader-primary-soft)',
+                        borderRadius: '16px',
+                        marginBottom: 20
+                    }}>
+                        <BookOpen size={28} color="var(--reader-primary)" />
+                    </div>
+                    <h1 style={{
+                        fontSize: 'clamp(28px, 5vw, 40px)',
+                        fontWeight: 800,
+                        color: 'var(--reader-text)',
+                        marginBottom: 12,
+                        letterSpacing: '-0.02em'
+                    }}>
+                        Read the Noble Quran
+                    </h1>
+                    <p style={{
+                        fontSize: 16,
+                        color: 'var(--reader-text-secondary)',
+                        maxWidth: 500,
+                        margin: '0 auto',
+                        lineHeight: 1.6
+                    }}>
+                        Beautiful Arabic text with translations and audio recitations from world-renowned Qaris.
+                    </p>
                 </header>
 
-                {/* Search & Tabs */}
-                <div className="rq-controls">
-                    <div className="rq-search-container">
-                        <div className="rq-search">
-                            <Search className="rq-search-icon" size={24} />
-                            <input
-                                type="text"
-                                placeholder="Search by surah name, number..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                            />
-                        </div>
-                    </div>
-
-                    <div className="rq-tabs">
-                        <button
-                            className={`rq-tab ${activeTab === 'surah' ? 'active' : ''}`}
-                            onClick={() => setActiveTab('surah')}
-                        >
-                            <span style={{ marginRight: '8px' }}>📜</span> Surah
-                        </button>
-                        <button
-                            className={`rq-tab ${activeTab === 'juz' ? 'active' : ''}`}
-                            onClick={() => setActiveTab('juz')}
-                        >
-                            <span style={{ marginRight: '8px' }}>📚</span> Juz
-                        </button>
-                        <button
-                            className={`rq-tab ${activeTab === 'tafsir' ? 'active' : ''}`}
-                            onClick={() => setActiveTab('tafsir')}
-                        >
-                            <span style={{ marginRight: '8px' }}>📚</span> Tafsir
-                        </button>
-                    </div>
-                </div>
-
-                {/* Last Read Banner (Clean Vercel Style) */}
+                {/* Continue Reading Card */}
                 {lastRead && (
-                    <div style={{ maxWidth: '800px', margin: '0 auto 40px', animation: 'v-slideUp 1s ease-out 0.8s backwards' }}>
-                        <Link href={`/read-quran/${lastRead.surahId}#verse-${lastRead.verseNumber}`} style={{
+                    <Link
+                        href={`/read-quran/${lastRead.surahId}#verse-${lastRead.verseNumber}`}
+                        style={{
                             display: 'flex',
                             alignItems: 'center',
-                            background: 'rgba(16, 185, 129, 0.1)',
-                            border: '1px solid rgba(16, 185, 129, 0.2)',
-                            borderRadius: '16px',
-                            padding: '16px 24px',
+                            gap: 16,
+                            padding: '20px 24px',
+                            background: 'var(--reader-bg-card)',
+                            border: '1px solid var(--reader-border)',
+                            borderRadius: 16,
                             textDecoration: 'none',
-                            color: 'white',
-                            transition: 'all 0.3s'
-                        }} className="hover:scale-[1.01]">
-                            <Clock size={20} className="text-emerald-500 mr-4" />
-                            <div style={{ flex: 1 }}>
-                                <div style={{ fontSize: '0.9rem', color: 'var(--rq-text-secondary)' }}>Continue Reading</div>
-                                <div style={{ fontWeight: '700' }}>Surah {lastRead.surahName} • Ayah {lastRead.verseNumber}</div>
+                            marginBottom: 32,
+                            transition: 'all 0.2s ease'
+                        }}
+                        className="hover-lift"
+                    >
+                        <div style={{
+                            width: 48,
+                            height: 48,
+                            background: 'var(--reader-primary-soft)',
+                            borderRadius: 12,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                        }}>
+                            <Clock size={22} color="var(--reader-primary)" />
+                        </div>
+                        <div style={{ flex: 1 }}>
+                            <div style={{ fontSize: 13, color: 'var(--reader-text-muted)', marginBottom: 4 }}>
+                                Continue Reading
                             </div>
-                            <ArrowRight size={20} />
-                        </Link>
+                            <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--reader-text)' }}>
+                                Surah {lastRead.surahName} • Ayah {lastRead.verseNumber}
+                            </div>
+                        </div>
+                        <ChevronRight size={20} color="var(--reader-primary)" />
+                    </Link>
+                )}
+
+                {/* Progress Bar */}
+                {progress > 0 && (
+                    <div style={{
+                        background: 'var(--reader-bg-card)',
+                        border: '1px solid var(--reader-border)',
+                        borderRadius: 12,
+                        padding: '16px 20px',
+                        marginBottom: 32
+                    }}>
+                        <div style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            marginBottom: 10
+                        }}>
+                            <span style={{ fontSize: 14, color: 'var(--reader-text-secondary)' }}>
+                                Reading Progress
+                            </span>
+                            <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--reader-primary)' }}>
+                                {progress.toFixed(1)}%
+                            </span>
+                        </div>
+                        <div style={{
+                            height: 6,
+                            background: 'var(--reader-border)',
+                            borderRadius: 3,
+                            overflow: 'hidden'
+                        }}>
+                            <div style={{
+                                height: '100%',
+                                width: `${progress}%`,
+                                background: 'var(--reader-primary)',
+                                borderRadius: 3,
+                                transition: 'width 0.5s ease'
+                            }} />
+                        </div>
+                        <div style={{ fontSize: 12, color: 'var(--reader-text-muted)', marginTop: 8 }}>
+                            {totalRead} verses read
+                        </div>
                     </div>
                 )}
 
-                {/* Content Area */}
-                <div className="rq-content-area">
-                    {activeTab === 'surah' && (
-                        <div className="rq-surah-grid">
-                            {(displayedContent as Chapter[]).map((chapter, index) => (
-                                <SurahCard key={chapter.id} chapter={chapter} index={index} />
-                            ))}
-                        </div>
-                    )}
-
-                    {activeTab === 'juz' && (
-                        <div className="rq-juz-view">
-                            {Array.from({ length: 30 }, (_, i) => i + 1).map((juzNum) => {
-                                const juzSurahs = chapters.filter(ch =>
-                                    JUZ_START_SURAHS[juzNum]?.includes(ch.id)
-                                );
-                                if (juzSurahs.length === 0) return null;
-                                return (
-                                    <div key={juzNum} className="rq-juz-section" style={{ marginBottom: '40px' }}>
-                                        <h2 style={{
-                                            fontSize: '1.5rem',
-                                            fontWeight: '700',
-                                            color: 'var(--rq-primary)',
-                                            marginBottom: '20px',
-                                            paddingBottom: '10px',
-                                            borderBottom: '1px solid var(--rq-border)'
-                                        }}>
-                                            Juz {juzNum}
-                                        </h2>
-                                        <div className="rq-surah-grid">
-                                            {juzSurahs.map((chapter, index) => (
-                                                <SurahCard key={chapter.id} chapter={chapter} index={index} initialMode="reading" />
-                                            ))}
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    )}
-
-                    {activeTab === 'tafsir' && (
-                        <div className="rq-surah-grid">
-                            {(displayedContent as Tafsir[]).map((tafsir, index) => (
-                                <Link
-                                    href={`/read-quran/tafsir/${tafsir.id}`}
-                                    key={tafsir.id}
-                                    className="rq-surah-card"
-                                    style={{ '--delay': index } as React.CSSProperties}
-                                >
-                                    <div className="rq-surah-number">{index + 1}</div>
-                                    <div className="rq-surah-info">
-                                        <div className="rq-surah-header">
-                                            <h3 className="rq-surah-name">{tafsir.name}</h3>
-                                        </div>
-                                        <div className="rq-surah-meta">
-                                            <span className="rq-meta-item">👤 {tafsir.author_name}</span>
-                                            <span className="rq-meta-item">🌐 {tafsir.language_name}</span>
-                                        </div>
-                                    </div>
-                                    <div className="rq-card-hover-icon">
-                                        <ArrowRight size={20} />
-                                    </div>
-                                </Link>
-                            ))}
-                        </div>
-                    )}
-
-                    {displayedContent.length === 0 && (
-                        <div className="rq-no-results">
-                            <p>No content found matching your search.</p>
-                        </div>
-                    )}
+                {/* Search */}
+                <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 12,
+                    padding: '14px 20px',
+                    background: 'var(--reader-bg-card)',
+                    border: '1px solid var(--reader-border)',
+                    borderRadius: 12,
+                    marginBottom: 24
+                }}>
+                    <Search size={20} color="var(--reader-text-muted)" />
+                    <input
+                        type="text"
+                        placeholder="Search surah by name or number..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        style={{
+                            flex: 1,
+                            background: 'transparent',
+                            border: 'none',
+                            color: 'var(--reader-text)',
+                            fontSize: 15,
+                            outline: 'none'
+                        }}
+                    />
                 </div>
+
+                {/* Tabs */}
+                <div className="reading-mode-tabs" style={{ marginBottom: 32 }}>
+                    <button
+                        className={`reading-mode-tab ${activeTab === 'surah' ? 'active' : ''}`}
+                        onClick={() => setActiveTab('surah')}
+                    >
+                        📜 Surah
+                    </button>
+                    <button
+                        className={`reading-mode-tab ${activeTab === 'juz' ? 'active' : ''}`}
+                        onClick={() => setActiveTab('juz')}
+                    >
+                        📚 Juz
+                    </button>
+                </div>
+
+                {/* Surah Grid */}
+                {activeTab === 'surah' && (
+                    <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+                        gap: 12
+                    }}>
+                        {filteredChapters.map((chapter) => (
+                            <SurahCard key={chapter.id} chapter={chapter} />
+                        ))}
+                    </div>
+                )}
+
+                {/* Juz List */}
+                {activeTab === 'juz' && (
+                    <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+                        gap: 12
+                    }}>
+                        {JUZ_DATA.map((juz) => (
+                            <Link
+                                key={juz.num}
+                                href={`/juz/${juz.num}`}
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 16,
+                                    padding: '18px 20px',
+                                    background: 'var(--reader-bg-card)',
+                                    border: '1px solid var(--reader-border)',
+                                    borderRadius: 12,
+                                    textDecoration: 'none',
+                                    transition: 'all 0.2s ease'
+                                }}
+                                className="hover-card"
+                            >
+                                <div style={{
+                                    width: 44,
+                                    height: 44,
+                                    background: 'var(--reader-primary-soft)',
+                                    borderRadius: 10,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    fontWeight: 700,
+                                    fontSize: 15,
+                                    color: 'var(--reader-primary)'
+                                }}>
+                                    {juz.num}
+                                </div>
+                                <div style={{ flex: 1 }}>
+                                    <div style={{
+                                        fontSize: 15,
+                                        fontWeight: 600,
+                                        color: 'var(--reader-text)',
+                                        marginBottom: 4
+                                    }}>
+                                        Juz {juz.num}
+                                    </div>
+                                    <div style={{ fontSize: 13, color: 'var(--reader-text-muted)' }}>
+                                        {juz.name}
+                                    </div>
+                                </div>
+                                <ChevronRight size={18} color="var(--reader-text-muted)" />
+                            </Link>
+                        ))}
+                    </div>
+                )}
+
+                {filteredChapters.length === 0 && activeTab === 'surah' && (
+                    <div style={{
+                        textAlign: 'center',
+                        padding: '60px 20px',
+                        color: 'var(--reader-text-secondary)'
+                    }}>
+                        <p>No surahs found matching "{searchTerm}"</p>
+                    </div>
+                )}
             </div>
+
+            <style jsx>{`
+                .hover-lift:hover {
+                    border-color: var(--reader-border-light);
+                    transform: translateY(-2px);
+                }
+                .hover-card:hover {
+                    border-color: var(--reader-primary);
+                    background: var(--reader-bg-hover);
+                }
+            `}</style>
         </div>
     );
 }
 
 // Surah Card Component
-function SurahCard({ chapter, index, initialMode = 'translation' }: { chapter: Chapter, index: number, initialMode?: string }) {
+function SurahCard({ chapter }: { chapter: Chapter }) {
     return (
         <Link
-            href={`/read-quran/${chapter.id}${initialMode === 'reading' ? '?mode=reading' : ''}`}
-            className="rq-surah-card"
-            style={{ '--delay': index } as React.CSSProperties}
+            href={`/read-quran/${chapter.id}`}
+            style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 16,
+                padding: '18px 20px',
+                background: 'var(--reader-bg-card)',
+                border: '1px solid var(--reader-border)',
+                borderRadius: 12,
+                textDecoration: 'none',
+                transition: 'all 0.2s ease'
+            }}
+            className="surah-card"
         >
-            <div className="rq-surah-number">
+            <div style={{
+                width: 44,
+                height: 44,
+                background: 'var(--reader-bg-elevated)',
+                border: '1px solid var(--reader-border)',
+                borderRadius: 10,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: 700,
+                fontSize: 14,
+                color: 'var(--reader-text-muted)'
+            }}>
                 {chapter.id}
             </div>
-            <div className="rq-surah-info">
-                <div className="rq-surah-header">
-                    <h3 className="rq-surah-name">{chapter.name_simple}</h3>
-                    <span className="rq-surah-arabic">{chapter.name_arabic}</span>
+
+            <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: 12,
+                    marginBottom: 6
+                }}>
+                    <span style={{
+                        fontSize: 15,
+                        fontWeight: 600,
+                        color: 'var(--reader-text)'
+                    }}>
+                        {chapter.name_simple}
+                    </span>
+                    <span style={{
+                        fontFamily: "var(--font-arabic)",
+                        fontSize: 20,
+                        color: 'var(--reader-primary)'
+                    }}>
+                        {chapter.name_arabic}
+                    </span>
                 </div>
-                <div className="rq-surah-meta">
-                    <span className="rq-meta-item">
-                        {chapter.revelation_place === 'makkah' ? '🕋' : '🕌'} {chapter.revelation_place === 'makkah' ? 'Meccan' : 'Medinan'}
+                <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 12,
+                    fontSize: 12,
+                    color: 'var(--reader-text-muted)'
+                }}>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                        <MapPin size={12} />
+                        {chapter.revelation_place === 'makkah' ? 'Meccan' : 'Medinan'}
                     </span>
-                    <span className="rq-meta-item">
-                        📄 {chapter.verses_count} Verses
-                    </span>
+                    <span>•</span>
+                    <span>{chapter.verses_count} verses</span>
                 </div>
             </div>
+
+            <style jsx>{`
+                .surah-card:hover {
+                    border-color: var(--reader-primary);
+                    background: var(--reader-bg-hover);
+                }
+                .surah-card:hover > div:first-child {
+                    background: var(--reader-primary);
+                    border-color: var(--reader-primary);
+                    color: white;
+                }
+            `}</style>
         </Link>
     );
 }

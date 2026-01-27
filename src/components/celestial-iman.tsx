@@ -21,8 +21,8 @@ const PILLARS: Pillar[] = [
         nameAr: 'الشهادة',
         nameEn: 'Shahada',
         planetType: 'ringed',
-        color: '#00f5d4',
-        secondaryColor: '#00a8c0',
+        color: '#f59e0b',      // Amber-500
+        secondaryColor: '#d97706', // Amber-600
         size: 80,
         orbitRadius: 160,
         speed: 60
@@ -32,8 +32,8 @@ const PILLARS: Pillar[] = [
         nameAr: 'الصلاة',
         nameEn: 'Salah',
         planetType: 'striped',
-        color: '#00c8f0',
-        secondaryColor: '#0088b0',
+        color: '#fbbf24',      // Amber-400
+        secondaryColor: '#f59e0b', // Amber-500
         size: 90,
         orbitRadius: 240,
         speed: 80
@@ -43,8 +43,8 @@ const PILLARS: Pillar[] = [
         nameAr: 'الزكاة',
         nameEn: 'Zakat',
         planetType: 'cratered',
-        color: '#81b532',
-        secondaryColor: '#5a8020',
+        color: '#2dd4bf',      // Teal-400 (accent)
+        secondaryColor: '#14b8a6', // Teal-500
         size: 75,
         orbitRadius: 320,
         speed: 100
@@ -54,8 +54,8 @@ const PILLARS: Pillar[] = [
         nameAr: 'الصوم',
         nameEn: 'Sawm',
         planetType: 'gaseous',
-        color: '#8b5cf6',
-        secondaryColor: '#6d28d9',
+        color: '#b45309',      // Amber-700
+        secondaryColor: '#92400e', // Amber-800
         size: 85,
         orbitRadius: 400,
         speed: 120
@@ -65,8 +65,8 @@ const PILLARS: Pillar[] = [
         nameAr: 'الحج',
         nameEn: 'Hajj',
         planetType: 'rocky',
-        color: '#f59e0b',
-        secondaryColor: '#d97706',
+        color: '#fcd34d',      // Amber-300
+        secondaryColor: '#fbbf24', // Amber-400
         size: 95,
         orbitRadius: 480,
         speed: 140
@@ -219,30 +219,31 @@ export default function CelestialIman() {
         const animate = () => {
             time += 0.01;
 
-            // Clear canvas
-            ctx.fillStyle = '#0a1628';
+            // Clear canvas - warm dark brown background
+            ctx.fillStyle = '#0f0d0a';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Draw stars with twinkling
+            // Draw stars with warm tinted twinkling
             stars.forEach(star => {
                 star.opacity += star.twinkleSpeed;
                 if (star.opacity > 1 || star.opacity < 0.2) {
                     star.twinkleSpeed *= -1;
                 }
-                ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
+                // Stars with warm amber tint
+                ctx.fillStyle = `rgba(255, 248, 230, ${star.opacity})`;
                 ctx.beginPath();
                 ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
                 ctx.fill();
             });
 
-            // Draw nebula effect
+            // Draw nebula effect with warm amber tones
             const centerX = canvas.width / 2;
             const centerY = canvas.height / 2;
 
             const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 600);
-            gradient.addColorStop(0, 'rgba(0, 245, 212, 0.05)');
-            gradient.addColorStop(0.3, 'rgba(129, 181, 50, 0.03)');
-            gradient.addColorStop(0.6, 'rgba(0, 200, 240, 0.02)');
+            gradient.addColorStop(0, 'rgba(245, 158, 11, 0.08)');   // Amber glow at center
+            gradient.addColorStop(0.3, 'rgba(251, 191, 36, 0.05)'); // Amber-400
+            gradient.addColorStop(0.6, 'rgba(45, 212, 191, 0.03)'); // Subtle teal accent
             gradient.addColorStop(1, 'transparent');
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
