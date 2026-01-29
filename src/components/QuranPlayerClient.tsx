@@ -2,13 +2,11 @@
 
 import React, { useEffect, useState, useMemo, useRef } from 'react';
 import { Verse } from '@/types/QuranTypes';
+import * as quranComApi from '@/services/quranComApi';
 import VersePlayer from './VersePlayer/VersePlayer';
 import QuranPlayer, { PlaylistItem } from './QuranPlayer';
 import '../app/quran-player/quran-player.css';
 import './QuranPlayer/responsive.css';
-
-const SURAH_AUDIO_API = (surahNum: number, edition: string) =>
-  `https://api.alquran.cloud/v1/surah/${surahNum}/${edition}`;
 
 const getSurahColor = (number: number): string => {
   // Colors from the screenshot
@@ -133,31 +131,33 @@ export default function QuranPlayerClient() {
       setIsLoading(true);
       setError(null);
       try {
-        // Fetch both verse-by-verse and complete Quran reciters
-        const [verseByVerseRes, completeRes, surahsRes] = await Promise.all([
-          fetch('https://api.alquran.cloud/v1/edition?format=audio&type=versebyverse'),
-          fetch('https://api.alquran.cloud/v1/edition?format=audio'),
-          fetch('https://api.alquran.cloud/v1/surah')
+        // Fetch reciters and surahs from Quran.com API
+        const [recitersData, chaptersData] = await Promise.all([
+          quranComApi.getReciters(),
+          quranComApi.getChapters()
         ]);
 
-        if (!verseByVerseRes.ok || !completeRes.ok || !surahsRes.ok) {
-          throw new Error('Failed to fetch data');
-        }
+        // Map reciters to expected format (numeric ID to string identifier)
+        const mappedReciters = recitersData.map(r => ({
+          identifier: String(r.id),
+          englishName: r.name,
+          language: r.style || 'ar',
+          name: r.name,
+          format: 'audio',
+          type: 'versebyverse'
+        }));
 
-        const [verseByVerseData, completeData, surahsData] = await Promise.all([
-          verseByVerseRes.json(),
-          completeRes.json(),
-          surahsRes.json()
-        ]);
+        // Map chapters to expected format
+        const mappedSurahs = chaptersData.map(ch => ({
+          number: ch.id,
+          name: ch.name_arabic,
+          englishName: ch.name_simple,
+          englishNameTranslation: ch.translated_name.name,
+          numberOfAyahs: ch.verses_count
+        }));
 
-        // Combine and deduplicate reciters
-        const allReciters = [...(verseByVerseData.data || []), ...(completeData.data || [])];
-        const uniqueReciters = Array.from(
-          new Map(allReciters.map(r => [r.identifier, r])).values()
-        );
-
-        setReciters(uniqueReciters);
-        setSurahs(surahsData.data || []);
+        setReciters(mappedReciters);
+        setSurahs(mappedSurahs);
       } catch (e) {
         setError('Failed to load data. Please try again.');
         console.error('Error loading data:', e);
@@ -176,33 +176,24 @@ export default function QuranPlayerClient() {
       setCurrentVerse(1);
       setIsPlaying(false);
 
-      // Fetch both audio and text data
-      const [audioRes, textRes] = await Promise.all([
-        fetch(SURAH_AUDIO_API(surahNum, selectedReciter)),
-        fetch(`https://api.alquran.cloud/v1/surah/${surahNum}/en.sahih`)
-      ]);
-
-      if (!audioRes.ok || !textRes.ok) throw new Error('Failed to fetch surah data');
-
-      const [audioData, textData] = await Promise.all([
-        audioRes.json(),
-        textRes.json()
-      ]);
-
-      // Combine audio and text data
-      const verses = audioData.data?.ayahs?.map((ayah: any, index: number) => {
-        const textAyah = textData.data?.ayahs[index];
-        return {
-          number: ayah.number,
-          numberInSurah: ayah.numberInSurah,
-          audio: ayah.audio,
-          text: ayah.text,
-          translation: textAyah?.text || ''
-        };
+      // Fetch verses with translation using Quran.com API
+      const { verses } = await quranComApi.getVersesByChapter(surahNum, {
+        translations: 131, // Sahih International
+        words: false
       });
 
-      setVerses(verses || []);
-      setPlaylist(verses?.map((v: Verse) => ({
+      // Map to expected format with audio URLs
+      const reciterId = parseInt(selectedReciter) || 7; // Default to Alafasy
+      const formattedVerses = verses.map(verse => ({
+        number: verse.id,
+        numberInSurah: verse.verse_number,
+        audio: `https://verses.quran.com/${reciterId}/${verse.verse_key.replace(':', '_')}.mp3`,
+        text: verse.text_uthmani,
+        translation: verse.translations?.[0]?.text || ''
+      }));
+
+      setVerses(formattedVerses || []);
+      setPlaylist(formattedVerses?.map((v: Verse) => ({
         url: v.audio,
         title: `Verse ${v.numberInSurah}`,
         surah: surahNum,

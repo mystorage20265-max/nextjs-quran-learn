@@ -179,12 +179,22 @@ export async function getVerses(
         // Convert old-style translation ID if needed
         const resourceId = translationMap[translationId] || translationId;
 
-        // Use Quran.com API v4
-        const url = `${API_BASE}/verses/by_chapter/${chapterId}?translations=${resourceId}&per_page=${perPage}&page=${page}`;
+        // CRITICAL FIX: Quran.com API v4 requires EXPLICIT fields parameter
+        // Without fields=text_uthmani, the API returns ONLY metadata (no Arabic text)
+        // Without translation_fields, translations may not be properly formatted
+        const url = `${API_BASE}/verses/by_chapter/${chapterId}?language=en&translations=${resourceId}&words=false&fields=text_uthmani&translation_fields=text,resource_id&per_page=${perPage}&page=${page}`;
+        console.log('🌐 API Request URL:', url);
         const response = await fetchWithRetry(url);
         const data = await response.json();
+        console.log('📥 API Response data:', {
+            hasVerses: !!data.verses,
+            versesCount: data.verses?.length,
+            pagination: data.pagination,
+            firstVerseRaw: data.verses?.[0]
+        });
 
         if (!data.verses) {
+            console.error('❌ No verses in API response');
             throw new Error('Failed to fetch verses');
         }
 
@@ -227,7 +237,13 @@ export async function getAllVerses(
     chapterId: number,
     translationId: string = '131' // Quran.com resource ID (Sahih International)
 ): Promise<VerseWithTranslation[]> {
+    console.log('📖 getAllVerses called:', { chapterId, translationId });
     const data = await getVerses(chapterId, translationId);
+    console.log('✅ getAllVerses response:', {
+        versesCount: data.verses.length,
+        firstVerse: data.verses[0]?.verse_key,
+        pagination: data.pagination
+    });
     return data.verses;
 }
 

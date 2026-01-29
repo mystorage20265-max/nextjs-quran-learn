@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import * as quranComApi from '@/services/quranComApi';
 import styles from './AudioSlideView.module.css';
 
 interface AudioSlideViewProps {
@@ -100,9 +101,12 @@ export default function AudioSlideView({ surahNumber, onClose }: AudioSlideViewP
 
   const fetchReciters = async () => {
     try {
-      const res = await fetch('https://api.alquran.cloud/v1/edition?format=audio&type=versebyverse');
-      const data = await res.json();
-      const formatted = (data.data || []).map((r: any) => ({ identifier: r.identifier, name: r.englishName, language: r.language }));
+      const recitersData = await quranComApi.getReciters();
+      const formatted = recitersData.map((r: any) => ({
+        identifier: String(r.id),
+        name: r.name,
+        language: r.style || 'ar'
+      }));
       setReciters(formatted);
     } catch (e) {
       console.error('fetchReciters error', e);
@@ -119,55 +123,32 @@ export default function AudioSlideView({ surahNumber, onClose }: AudioSlideViewP
       setError(null);
       setIsAudioLoaded(false);
 
-      // Fetch verse text and translation
-      const arabicResp = await fetchWithRetry(`https://api.alquran.cloud/v1/ayah/${surahNumber}:${ayahNumber}/${selectedReciter}`);
-      const arabicData = await arabicResp.json();
+      // Fetch verse using Quran.com API
+      const { verses } = await quranComApi.getVersesByChapter(surahNumber, {
+        translations: 17, // Muhammad Asad
+        words: false
+      });
 
-      const translationResp = await fetchWithRetry(`https://api.alquran.cloud/v1/ayah/${surahNumber}:${ayahNumber}/en.asad`);
-      const translationData = await translationResp.json();
+      const verse = verses[ayahNumber - 1]; // ayahNumber is 1-indexed
+      if (!verse) throw new Error('Verse not found');
 
-      if (!arabicData.data || !translationData.data) throw new Error('Invalid API response');
-
-      // Generate all possible audio URLs for this verse using primary and fallback sources
-      const verseNumber = arabicData.data.number;
-      const audioUrls = [
-        `https://cdn.islamic.network/quran/audio/128/${selectedReciter}/${verseNumber}.mp3`,
-        `https://cdn.islamic.network/quran/audio/64/${selectedReciter}/${verseNumber}.mp3`,
-        `https://verses.quran.com/${selectedReciter}/${verseNumber}.mp3`,
-        `https://audio.qurancdn.com/${selectedReciter}/mp3/${verseNumber}.mp3`,
-        `https://download.quranicaudio.com/quran/${selectedReciter}/${verseNumber}.mp3`,
-        // Add ogg format fallbacks
-        `https://cdn.islamic.network/quran/audio/128/${selectedReciter}/${verseNumber}.ogg`,
-        `https://cdn.islamic.network/quran/audio/64/${selectedReciter}/${verseNumber}.ogg`,
-        arabicData.data.audio // Include the API-provided URL as last fallback
-      ].filter(Boolean); // Remove any undefined/null URLs
-
-      // Try each audio URL until we find one that works
-      let workingAudioUrl = null;
-      for (const url of audioUrls) {
-        try {
-          const response = await fetch(url, { method: 'HEAD' });
-          if (response.ok) {
-            workingAudioUrl = url;
-            break;
-          }
-        } catch (error) {
-          console.warn(`Audio source failed: ${url}`, error);
-          continue;
-        }
+      // Get total ayahs from chapter info if not already set
+      if (totalAyahs === 0) {
+        const chapters = await quranComApi.getChapters();
+        const chapter = chapters.find(ch => ch.id === surahNumber);
+        if (chapter) setTotalAyahs(chapter.verses_count);
       }
 
-      if (!workingAudioUrl) {
-        throw new Error('No working audio source found');
-      }
+      // Generate audio URL using Quran.com CDN
+      const reciterId = parseInt(selectedReciter) || 7; // Default to Alafasy
+      const audioUrl = `https://verses.quran.com/${reciterId}/${verse.verse_key.replace(':', '_')}.mp3`;
 
       setCurrentAyah({
         number: ayahNumber,
-        text: arabicData.data.text,
-        translation: translationData.data.text,
-        audio: workingAudioUrl
+        text: verse.text_uthmani,
+        translation: verse.translations?.[0]?.text || '',
+        audio: audioUrl
       });
-      setTotalAyahs(arabicData.data.surah?.numberOfAyahs || 0);
     } catch (e) {
       console.error(e);
       setError('Failed to load verse audio. Please try another reciter.');
@@ -216,7 +197,7 @@ export default function AudioSlideView({ surahNumber, onClose }: AudioSlideViewP
 
     const audio = audioRef.current;
     audio.preload = 'auto'; // Preload audio metadata
-    
+
     const handleError = (e: ErrorEvent) => {
       console.error('Audio error:', e);
       // If we get a "no supported source" error, try to recover by switching to next verse
@@ -255,15 +236,15 @@ export default function AudioSlideView({ surahNumber, onClose }: AudioSlideViewP
             <h1 className={styles.nav_title}>Surah {surahNumber}</h1>
           </div>
           <div className={styles.nav_end}>
-            <button 
-              onClick={() => { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen(); }} 
+            <button
+              onClick={() => { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen(); }}
               className={styles.nav_icon_button}
               aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
             >
               {isFullscreen ? '⊠' : '⊞'}
             </button>
-            <button 
-              onClick={() => setIsSidebarOpen((s) => !s)} 
+            <button
+              onClick={() => setIsSidebarOpen((s) => !s)}
               className={styles.nav_icon_button}
               aria-label="Select reciter"
             >
@@ -278,9 +259,9 @@ export default function AudioSlideView({ surahNumber, onClose }: AudioSlideViewP
           <input placeholder="Search reciters" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
           <div className={styles.reciters_list}>
             {reciters.filter(r => r.name.toLowerCase().includes(searchTerm.toLowerCase())).map(r => (
-              <button 
-                key={r.identifier} 
-                onClick={() => handleReciterSelect(r.identifier)} 
+              <button
+                key={r.identifier}
+                onClick={() => handleReciterSelect(r.identifier)}
                 className={`${styles.sidebar_button} ${selectedReciter === r.identifier ? styles.active : ''}`}
               >
                 <div className={styles.reciter_info}>
@@ -300,7 +281,7 @@ export default function AudioSlideView({ surahNumber, onClose }: AudioSlideViewP
         <div className={styles.ayah_content} aria-live="polite">
           <AnimatePresence mode="wait">
             {isLoading && (
-              <motion.div 
+              <motion.div
                 className={styles.loading_overlay}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -311,7 +292,7 @@ export default function AudioSlideView({ surahNumber, onClose }: AudioSlideViewP
               </motion.div>
             )}
             {error && (
-              <motion.div 
+              <motion.div
                 className={styles.error_message}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -325,7 +306,7 @@ export default function AudioSlideView({ surahNumber, onClose }: AudioSlideViewP
               </motion.div>
             )}
             {currentAyah && (
-              <motion.div 
+              <motion.div
                 className={styles.verse_container}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -336,7 +317,7 @@ export default function AudioSlideView({ surahNumber, onClose }: AudioSlideViewP
                   <div className={styles.verse_number}>
                     {currentAyahIndex} / {totalAyahs}
                   </div>
-                  <motion.div 
+                  <motion.div
                     className={styles.arabic_text}
                     data-length={textLength}
                     initial={{ opacity: 0, y: 20 }}
@@ -345,7 +326,7 @@ export default function AudioSlideView({ surahNumber, onClose }: AudioSlideViewP
                   >
                     {currentAyah.text}
                   </motion.div>
-                  <motion.div 
+                  <motion.div
                     className={styles.translation_text}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -354,7 +335,7 @@ export default function AudioSlideView({ surahNumber, onClose }: AudioSlideViewP
                     {currentAyah.translation}
                   </motion.div>
                 </div>
-                
+
                 <div className={styles.verse_nav}>
                   <button
                     onClick={handlePrevious}
@@ -377,7 +358,7 @@ export default function AudioSlideView({ surahNumber, onClose }: AudioSlideViewP
         </div>
 
         <div className={styles.progress_bar}>
-          <div 
+          <div
             className={styles.progress_indicator}
             style={{ width: `${(currentAyahIndex / totalAyahs) * 100}%` }}
             role="progressbar"
@@ -388,15 +369,15 @@ export default function AudioSlideView({ surahNumber, onClose }: AudioSlideViewP
         </div>
 
         <div className={styles.controls}>
-          <button 
+          <button
             className={styles.control_button}
-            onClick={handlePrevious} 
+            onClick={handlePrevious}
             disabled={currentAyahIndex <= 1 || isLoading}
             aria-label="Previous verse"
           >
             ⮜
           </button>
-          <button 
+          <button
             className={`${styles.control_button} ${styles.play_pause}`}
             onClick={togglePlayPause}
             disabled={!isAudioLoaded || isLoading || !currentAyah?.audio}
@@ -404,9 +385,9 @@ export default function AudioSlideView({ surahNumber, onClose }: AudioSlideViewP
           >
             {isLoading ? '⏳' : isPlaying ? '⏸' : '▶'}
           </button>
-          <button 
+          <button
             className={styles.control_button}
-            onClick={handleNext} 
+            onClick={handleNext}
             disabled={currentAyahIndex >= totalAyahs || isLoading}
             aria-label="Next verse"
           >
@@ -421,10 +402,10 @@ export default function AudioSlideView({ surahNumber, onClose }: AudioSlideViewP
           </div>
         )}
 
-        <audio 
-          ref={audioRef} 
-          src={currentAyah?.audio} 
-          onEnded={handleAudioEnd} 
+        <audio
+          ref={audioRef}
+          src={currentAyah?.audio}
+          onEnded={handleAudioEnd}
           onLoadedData={() => setIsAudioLoaded(true)}
           preload="auto"
           crossOrigin="anonymous"

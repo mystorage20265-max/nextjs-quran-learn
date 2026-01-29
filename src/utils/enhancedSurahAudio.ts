@@ -139,7 +139,7 @@ class EnhancedSurahAudioPlayer {
    * @param reciterId The ID of the reciter to use
    */
   setReciter(reciterId: string): void {
-    if (RECITERS[reciterId]) {
+    if (RECITERS[reciterId as keyof typeof RECITERS]) {
       this.currentReciterId = reciterId;
     } else {
       console.warn(`Unknown reciter: ${reciterId}. Using default.`);
@@ -166,7 +166,7 @@ class EnhancedSurahAudioPlayer {
       this.currentSurah = surahNumber;
 
       // Get reciter code
-      const reciter = RECITERS[this.currentReciterId]?.code || 'alafasy';
+      const reciter = RECITERS[this.currentReciterId as keyof typeof RECITERS]?.code || 'alafasy';
 
       // Try each audio source until one works
       let playSuccess = false;
@@ -380,125 +380,119 @@ class EnhancedSurahAudioPlayer {
         // Try API-based approach as last resort
         try {
           console.log(`Trying API fallback for ayah ${surahNumber}:${ayahNumber}`);
-          const fallbackUrl = `https://api.alquran.cloud/v1/ayah/${surahNumber}:${ayahNumber}/audio/ar.alafasy`;
-          const response = await fetch(fallbackUrl);
-          const data = await response.json();
+          // Use Quran.com CDN directly for verse audio
+          const fallbackUrl = `https://verses.quran.com/7/${surahNumber}_${ayahNumber}.mp3`; // Reciter ID 7 = Alafasy  
+          this.audioElement.src = fallbackUrl;
+          await this.audioElement.play();
 
-          if (data.code === 200 && data.data && data.data.audio) {
-            // Use the audio URL from the API response
-            this.audioElement.src = data.data.audio;
-            await this.audioElement.play();
+          // Update state
+          if (this.onPlayCallback) this.onPlayCallback();
 
-            // Update state
-            if (this.onPlayCallback) this.onPlayCallback();
+          // Set up ended callback
+          const handleApiEnded = () => {
+            this.audioElement?.removeEventListener('ended', handleApiEnded);
+            if (this.onEndCallback) this.onEndCallback();
+          };
 
-            // Set up ended callback
-            const handleApiEnded = () => {
-              this.audioElement?.removeEventListener('ended', handleApiEnded);
-              if (this.onEndCallback) this.onEndCallback();
-            };
+          this.audioElement?.addEventListener('ended', handleApiEnded, { once: true });
 
-            this.audioElement?.addEventListener('ended', handleApiEnded, { once: true });
+          console.log(`Successfully played ayah ${surahNumber}:${ayahNumber} using CDN fallback`);
 
-            console.log(`Successfully played ayah ${surahNumber}:${ayahNumber} using API fallback`);
-
-            // Reset loading state
-            this.isLoading = false;
-            if (this.onLoadingCallback) this.onLoadingCallback(false);
-            return;
-          }
-        } catch (apiError) {
-          console.warn("API fallback failed:", apiError);
-        }
-
-        // If we reached here, everything failed - try specialized handler again for verse 5:2
-        // This is an additional safety net specifically for verse 5:2 and other problematic verses
-        if (verseKey === '5:2' || isProblematicVerse(verseKey)) {
-          console.log(`Trying specialized handler again for verse ${verseKey} as last resort`);
-          try {
-            // For verse 5:2 specifically, use the specialized approach
-            if (verseKey === '5:2') {
-              // Create a new audio element to avoid issues with previous attempts
-              const emergencyAudio = new Audio();
-
-              // Set up one-time event listeners
-              emergencyAudio.addEventListener('play', () => {
-                if (this.onPlayCallback) this.onPlayCallback();
-              }, { once: true });
-
-              emergencyAudio.addEventListener('ended', () => {
-                if (this.onEndCallback) this.onEndCallback();
-              }, { once: true });
-
-              emergencyAudio.addEventListener('error', (e) => {
-                if (this.onErrorCallback) {
-                  this.onErrorCallback(new Error(`Emergency audio error: ${e}`));
-                }
-              }, { once: true });
-
-              // Last resort URLs specific to verse 5:2, using different reciters
-              const lastResortUrls = [
-                "https://server7.mp3quran.net/basit/005002.mp3", // Abdul Basit
-                "https://server13.mp3quran.net/husr/005002.mp3", // Husary
-                "https://server8.mp3quran.net/frs_a/005002.mp3", // Al-Fares
-                "https://server11.mp3quran.net/shatri/005002.mp3", // Shatri
-                "https://server12.mp3quran.net/maher/005002.mp3", // Maher
-                "https://server10.mp3quran.net/minsh/005002.mp3" // Minshawi
-              ];
-
-              // Try each last resort URL until one works
-              for (const url of lastResortUrls) {
-                try {
-                  emergencyAudio.src = url;
-                  emergencyAudio.load();
-                  await emergencyAudio.play();
-                  console.log(`Successfully played verse 5:2 with last resort URL: ${url}`);
-
-                  // Reset loading state and return
-                  this.isLoading = false;
-                  if (this.onLoadingCallback) this.onLoadingCallback(false);
-                  return;
-                } catch (urlError) {
-                  console.warn(`Last resort URL failed for verse 5:2: ${url}`, urlError);
-                }
-              }
-            } else if (isProblematicVerse(verseKey)) {
-              // For other problematic verses, try the specialized handler again
-              const audioElement = await playProblematicVerse(verseKey);
-
-              if (audioElement) {
-                audioElement.onplay = () => {
-                  if (this.onPlayCallback) this.onPlayCallback();
-                };
-                audioElement.onended = () => {
-                  if (this.onEndCallback) this.onEndCallback();
-                };
-                audioElement.onerror = (e) => {
-                  if (this.onErrorCallback) {
-                    this.onErrorCallback(new Error(`Audio error: ${e}`));
-                  }
-                };
-
-                // Reset loading state
-                this.isLoading = false;
-                if (this.onLoadingCallback) this.onLoadingCallback(false);
-                return;
-              }
-            }
-          } catch (lastResortError) {
-            console.error(`Last resort playback attempt failed for ${verseKey}:`, lastResortError);
-          }
-        }
-
-        // If we still got here, everything failed
-        const errorMsg = `Unable to play ayah ${surahNumber}:${ayahNumber} from any source`;
-        console.error(errorMsg);
-
-        if (this.onErrorCallback) {
-          this.onErrorCallback(new Error(errorMsg));
+          // Reset loading state
+          this.isLoading = false;
+          if (this.onLoadingCallback) this.onLoadingCallback(false);
+          return;
+        } catch (cdnError) {
+          console.warn("CDN fallback failed:", cdnError);
         }
       }
 
+      // If we reached here, everything failed - try specialized handler again for verse 5:2
+      // This is an additional safety net specifically for verse 5:2 and other problematic verses
+      if (verseKey === '5:2' || isProblematicVerse(verseKey)) {
+        console.log(`Trying specialized handler again for verse ${verseKey} as last resort`);
+        try {
+          // For verse 5:2 specifically, use the specialized approach
+          if (verseKey === '5:2') {
+            // Create a new audio element to avoid issues with previous attempts
+            const emergencyAudio = new Audio();
+
+            // Set up one-time event listeners
+            emergencyAudio.addEventListener('play', () => {
+              if (this.onPlayCallback) this.onPlayCallback();
+            }, { once: true });
+
+            emergencyAudio.addEventListener('ended', () => {
+              if (this.onEndCallback) this.onEndCallback();
+            }, { once: true });
+
+            emergencyAudio.addEventListener('error', (e) => {
+              if (this.onErrorCallback) {
+                this.onErrorCallback(new Error(`Emergency audio error: ${e}`));
+              }
+            }, { once: true });
+
+            // Last resort URLs specific to verse 5:2, using different reciters
+            const lastResortUrls = [
+              "https://server7.mp3quran.net/basit/005002.mp3", // Abdul Basit
+              "https://server13.mp3quran.net/husr/005002.mp3", // Husary
+              "https://server8.mp3quran.net/frs_a/005002.mp3", // Al-Fares
+              "https://server11.mp3quran.net/shatri/005002.mp3", // Shatri
+              "https://server12.mp3quran.net/maher/005002.mp3", // Maher
+              "https://server10.mp3quran.net/minsh/005002.mp3" // Minshawi
+            ];
+
+            // Try each last resort URL until one works
+            for (const url of lastResortUrls) {
+              try {
+                emergencyAudio.src = url;
+                emergencyAudio.load();
+                await emergencyAudio.play();
+                console.log(`Successfully played verse 5:2 with last resort URL: ${url}`);
+
+                // Reset loading state and return
+                this.isLoading = false;
+                if (this.onLoadingCallback) this.onLoadingCallback(false);
+                return;
+              } catch (urlError) {
+                console.warn(`Last resort URL failed for verse 5:2: ${url}`, urlError);
+              }
+            }
+          } else if (isProblematicVerse(verseKey)) {
+            // For other problematic verses, try the specialized handler again
+            const audioElement = await playProblematicVerse(verseKey);
+
+            if (audioElement) {
+              audioElement.onplay = () => {
+                if (this.onPlayCallback) this.onPlayCallback();
+              };
+              audioElement.onended = () => {
+                if (this.onEndCallback) this.onEndCallback();
+              };
+              audioElement.onerror = (e) => {
+                if (this.onErrorCallback) {
+                  this.onErrorCallback(new Error(`Audio error: ${e}`));
+                }
+              };
+
+              // Reset loading state
+              this.isLoading = false;
+              if (this.onLoadingCallback) this.onLoadingCallback(false);
+              return;
+            }
+          }
+        } catch (lastResortError) {
+          console.error(`Last resort playback attempt failed for ${verseKey}:`, lastResortError);
+        }
+      }
+
+      // If we still got here, everything failed
+      const errorMsg = `Unable to play ayah ${surahNumber}:${ayahNumber} from any source`;
+      console.error(errorMsg);
+
+      if (this.onErrorCallback) {
+        this.onErrorCallback(new Error(errorMsg));
+      }
     } catch (error) {
       console.error(`Error playing ayah ${surahNumber}:${ayahNumber}:`, error);
 
@@ -677,12 +671,9 @@ class EnhancedSurahAudioPlayer {
 
           // Create an entirely new audio element disconnected from our events
           const emergencyAudio = new Audio();
-          const paddedAyah = ayahNumber.toString().padStart(3, '0');
 
-          // Special URL format specifically for problematic verse 3
-          const emergencyUrl = ayahNumber === 3
-            ? `https://cdn.alquran.cloud/media/audio/ayah/ar.alafasy/3`
-            : `https://cdn.islamic.network/quran/audio/128/ar.alafasy/1${ayahNumber}.mp3`;
+          // Special URL format for Quran.com CDN - using reciter ID 7 (Alafasy)
+          const emergencyUrl = `https://verses.quran.com/7/1_${ayahNumber}.mp3`;
 
           // Set up one-time event listeners for this emergency audio
           emergencyAudio.addEventListener('play', () => {

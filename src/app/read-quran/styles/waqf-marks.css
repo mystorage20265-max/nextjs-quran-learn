@@ -1,0 +1,5 @@
+/* Waqf Mark Styling - Target Unicode characters directly */
+/* This CSS will style waqf marks: ۘ (U+06D8), ۙ (U+06D9), ۚ (U+06DA), ۛ (U+06DB) */
+
+/* Unfortunately, CSS cannot directly select Unicode characters without wrapping them */
+/* So we need to handle this via the formatTextWithWaqf function in the component */

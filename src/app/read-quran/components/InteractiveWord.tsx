@@ -8,6 +8,42 @@ interface InteractiveWordProps {
     onPlayAudio?: (wordId: number) => void;
 }
 
+// Format text with waqf marks - wrap each in a zero-width overlay span
+const formatTextWithWaqf = (text: string): (string | React.ReactElement)[] => {
+    if (!text) return [];
+
+    // Regex to match waqf marks: ۘ (U+06D8), ۙ (U+06D9), ۚ (U+06DA), ۛ (U+06DB)
+    const waqfRegex = /([\u06D8\u06D9\u06DA\u06DB])/g;
+    const parts = text.split(waqfRegex);
+
+    return parts.map((part, index) => {
+        // Check if this part is a waqf mark
+        if (waqfRegex.test(part)) {
+            return (
+                <span
+                    key={`waqf-${index}`}
+                    style={{
+                        fontSize: '0.7em',
+                        color: '#2d7da4',
+                        fontWeight: 600,
+                        display: 'inline-block',
+                        width: 0,                   // Takes NO horizontal space
+                        overflow: 'visible',        // Content shows even though width is 0
+                        position: 'relative',
+                        top: '-0.8em',              // Position above
+                        right: '0.3em',             // Position over the word (RTL)
+                        textAlign: 'center'
+                    }}
+                    title={`Waqf Mark: ${part}`}
+                >
+                    {part}
+                </span>
+            );
+        }
+        return part;
+    });
+};
+
 export default function InteractiveWord({ word, onPlayAudio }: InteractiveWordProps) {
     const [showTooltip, setShowTooltip] = useState(false);
     const [isPinned, setIsPinned] = useState(false);
@@ -90,8 +126,11 @@ export default function InteractiveWord({ word, onPlayAudio }: InteractiveWordPr
                 role="button"
                 tabIndex={0}
                 aria-label={`${word.text_uthmani}: ${translation}`}
+                style={{
+                    position: 'relative'  // Create positioning context for waqf marks
+                }}
             >
-                {word.text_uthmani}
+                {formatTextWithWaqf(word.text_uthmani)}
             </span>
 
             {showTooltip && (

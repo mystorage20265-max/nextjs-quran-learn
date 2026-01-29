@@ -6,13 +6,9 @@ import { motion } from "framer-motion";
 import Navbar from "../../components/Navbar/Navbar";
 import "../demo-styles.css";
 import "./AudioQuran.css";
+import * as quranComApi from "../../services/quranComApi";
 
-// API endpoints
-const SURAH_LIST_API = "https://api.alquran.cloud/v1/surah";
-const RECITERS_API =
-  "https://api.alquran.cloud/v1/edition?format=audio&type=versebyverse";
-const SURAH_AUDIO_API = (surahNum: number, edition: string) =>
-  `https://api.alquran.cloud/v1/surah/${surahNum}/${edition}`;
+
 
 function formatTime(sec: number) {
   if (!isFinite(sec) || isNaN(sec)) return "--:--";
@@ -27,16 +23,13 @@ export default function AudioQuranPage() {
   const [surahs, setSurahs] = useState<any[]>([]);
   const [selectedReciter, setSelectedReciter] = useState("");
   const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(true);
   const [globalError, setGlobalError] = useState("");
   const [nowPlayingSurah, setNowPlayingSurah] = useState<number | null>(null);
   const [nowPlayingAyahIndex, setNowPlayingAyahIndex] = useState<number | null>(
     null
   );
   const [isPlaying, setIsPlaying] = useState(false);
-  const [prefetching, setPrefetching] = useState(false);
   const [ayahLists, setAyahLists] = useState<any>({});
-  const [durationsMap, setDurationsMap] = useState<any>({});
   const [perSurahError, setPerSurahError] = useState<any>({});
   const [currentPage, setCurrentPage] = useState(1);
   const SURAH_PER_PAGE = 20;
@@ -44,7 +37,6 @@ export default function AudioQuranPage() {
   const audioRef = useRef<HTMLAudioElement>(
     typeof window !== "undefined" ? new window.Audio() : null
   );
-  const prefetchIdRef = useRef(0);
 
   // Time tracking state
   const [currentTimeState, setCurrentTimeState] = useState(0);
@@ -54,25 +46,39 @@ export default function AudioQuranPage() {
   useEffect(() => {
     let cancelled = false;
     const load = async () => {
-      setLoading(true);
       try {
-        const [recRes, surRes] = await Promise.all([
-          fetch(RECITERS_API),
-          fetch(SURAH_LIST_API),
+        // Fetch using Quran.com API
+        const [recitations, chapters] = await Promise.all([
+          quranComApi.getReciters(),
+          quranComApi.getChapters(),
         ]);
-        if (!recRes.ok || !surRes.ok)
-          throw new Error("Failed to fetch data from API");
-        const recJson = await recRes.json();
-        const surJson = await surRes.json();
         if (cancelled) return;
-        setReciters(recJson.data || []);
-        setSurahs(surJson.data || []);
-        if (recJson.data?.length > 0)
-          setSelectedReciter(recJson.data[0].identifier);
+
+        // Map reciters to include identifier field
+        const mappedReciters = recitations.map((r: any) => ({
+          id: r.id,
+          identifier: `${r.id}`, // Use ID as string identifier
+          name: r.translated_name?.name || r.reciter_name,
+          englishName: r.translated_name?.name || r.reciter_name,
+          format: 'audio',
+          language: r.translated_name?.language_name || 'en'
+        }));
+
+        // Map chapters to match old structure  
+        const mappedSurahs = chapters.map((ch: any) => ({
+          number: ch.id,
+          englishName: ch.name_simple,
+          englishNameTranslation: ch.translated_name.name,
+          numberOfAyahs: ch.verses_count,
+          name: ch.name_arabic
+        }));
+
+        setReciters(mappedReciters);
+        setSurahs(mappedSurahs);
+        if (mappedReciters.length > 0)
+          setSelectedReciter(mappedReciters[0].identifier);
       } catch (err) {
         setGlobalError("Error loading reciters or surahs.");
-      } finally {
-        if (!cancelled) setLoading(false);
       }
     };
     load();
@@ -137,10 +143,18 @@ export default function AudioQuranPage() {
       if (!selectedReciter) return [];
       if (ayahLists[surahNum]) return ayahLists[surahNum];
       try {
-        const res = await fetch(SURAH_AUDIO_API(surahNum, selectedReciter));
-        if (!res.ok) throw new Error("Failed to fetch audio");
-        const json = await res.json();
-        const urls = json.data?.ayahs?.map((a: any) => a.audio) || [];
+        // Fetch verse data from Quran.com API
+        const { verses } = await quranComApi.getVersesByChapter(surahNum, {
+          words: false
+        });
+
+        // Generate audio URLs for each verse
+        const reciterId = Number(selectedReciter);
+        const urls = verses.map((verse: any) => {
+          const verseKey = verse.verse_key;
+          return `https://verses.quran.com/${reciterId}/${verseKey.replace(':', '_')}.mp3`;
+        });
+
         setAyahLists((prev: any) => ({ ...prev, [surahNum]: urls }));
         return urls;
       } catch {
@@ -305,7 +319,6 @@ export default function AudioQuranPage() {
                 onChange={(e) => {
                   setSelectedReciter(e.target.value);
                   setAyahLists({});
-                  setDurationsMap({});
                   setPerSurahError({});
                 }}
                 className="reciter-select"

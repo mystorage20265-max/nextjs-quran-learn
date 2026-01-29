@@ -1,96 +1,88 @@
+/**
+ * QuranWord Component Styles
+ * Styles for interactive Quran word display with tooltips and popovers
+ */
+
 .container {
     display: inline-block;
-    position: relative;
     cursor: pointer;
-    padding: 2px 4px;
-    margin: 0 2px;
-    border-radius: 4px;
-    transition: all var(--transition-fast);
+    white-space: nowrap;
+}
 
-    /* Accessibility */
-    outline: none;
+.interactionDisabled {
+    cursor: auto;
+}
 
-    &:focus-visible {
-        outline: 2px solid var(--color-success-medium);
-        outline-offset: 2px;
-    }
+.additionalWordGap {
+    margin-inline-end: var(--spacing-xxsmall);
+}
+
+.additionalStopSignGap {
+    margin-inline-end: var(--spacing-small);
+}
+
+.wbwContainer {
+    text-align: center;
+    padding-block-start: var(--spacing-micro);
+    padding-block-end: var(--spacing-micro);
+    padding-inline-start: var(--spacing-micro);
+    padding-inline-end: var(--spacing-micro);
 }
 
 .highlightOnHover {
     &:hover {
-        background-color: var(--color-success-faded);
-        transform: translateY(-1px);
-    }
-
-    &:active {
-        transform: translateY(0);
+        color: var(--color-success-medium);
     }
 }
 
 .highlighted {
-    background-color: var(--color-success-faded);
-    box-shadow: 0 0 0 2px var(--color-success-medium);
-    animation: pulse 1.5s ease-in-out infinite;
+    color: var(--color-success-medium);
 }
 
-@keyframes pulse {
-
-    0%,
-    100% {
-        box-shadow: 0 0 0 2px var(--color-success-medium);
-    }
-
-    50% {
-        box-shadow: 0 0 0 4px var(--color-success-faded);
-    }
-}
-
-/* Radix UI Tooltip Styles */
 .tooltipContent {
-    background-color: var(--color-background-level-3);
-    color: var(--color-text-default);
-    padding: var(--spacing-xsmall) var(--spacing-small);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-micro);
+    padding: var(--spacing-small);
+    background-color: var(--color-background-alternative-faded);
     border-radius: var(--border-radius-default);
+    color: var(--color-text-default);
     font-size: var(--font-size-small);
-    line-height: 1.4;
-    box-shadow: var(--shadow-large);
-    max-width: 200px;
-    z-index: var(--z-index-tooltip);
-    animation: fadeIn 0.2s ease;
+    max-width: 300px;
+    z-index: 1000;
 }
 
 .tooltipArrow {
-    fill: var(--color-background-level-3);
+    fill: var(--color-background-alternative-faded);
 }
 
-/* Radix UI Popover Styles */
+.tooltipText {
+    padding-block-start: var(--spacing-micro);
+    padding-block-end: var(--spacing-micro);
+    padding-inline-start: var(--spacing-micro);
+    padding-inline-end: var(--spacing-micro);
+    white-space: normal;
+    margin: 0;
+}
+
+// Use higher specificity to override popover container margins
+div.popoverTrigger {
+    margin-block-start: 0;
+    margin-block-end: 0;
+    margin-inline-start: 0;
+    margin-inline-end: 0;
+}
+
 .popoverContent {
-    z-index: var(--z-index-popover);
-    animation: slideUpAndFade 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    background-color: var(--color-background-default);
+    border-radius: var(--border-radius-default);
+    box-shadow: var(--shadow-large);
+    padding: var(--spacing-medium);
+    z-index: 1001;
+    max-width: 400px;
 }
 
 .popoverArrow {
-    fill: var(--color-background-elevated-new);
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
-}
-
-@keyframes slideUpAndFade {
-    from {
-        opacity: 0;
-        transform: translateY(8px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    fill: var(--color-background-default);
 }

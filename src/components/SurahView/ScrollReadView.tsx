@@ -109,7 +109,7 @@ export default function ScrollReadView({
           verses.map((verse, index) => (
             <div
               key={verse.number}
-              ref={el => verseRefs.current[index] = el}
+              ref={(el) => { verseRefs.current[index] = el; }}
               onClick={() => handleVerseClick(verse.number)}
               className={`${styles.verseCard} ${currentVerse === verse.number ? styles.active : ''}`}
             >

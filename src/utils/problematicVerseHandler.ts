@@ -121,8 +121,8 @@ export async function playProblematicVerse(verseKey: string): Promise<HTMLAudioE
     `https://everyayah.com/data/Ghamadi_40kbps/${paddedSurah}${paddedAyah}.mp3`,
     `https://everyayah.com/data/Husary_128kbps/${paddedSurah}${paddedAyah}.mp3`,
 
-    // Try different CDNs
-    `https://cdn.alquran.cloud/media/audio/ayah/ar.alafasy/${absoluteNumber}`,
+    // Try Quran.com CDN
+    `https://verses.quran.com/7/${surahNumber}_${ayahNumber}.mp3`, // Reciter ID 7 = Alafasy
     `https://cdn.qurancdn.com/audio/${paddedSurah}/${paddedAyah}.mp3`,
 
     // Add MP3Quran alternatives

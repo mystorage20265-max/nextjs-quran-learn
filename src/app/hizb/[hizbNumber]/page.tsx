@@ -2,67 +2,60 @@
 // --- SERVER COMPONENT ---
 import Navbar from '../../../components/Navbar/Navbar';
 import Footer from '../../components/Footer';
+import * as quranComApi from '../../../services/quranComApi';
 
-const TRANSLATION_EDITION = "en.asad";
-const ARABIC_EDITION = "quran-uthmani";
-const AUDIO_EDITION = "ar.alafasy";
+const TRANSLATION_EDITION = 17; // Muhammad Asad translation ID in Quran.com API
+const AUDIO_RECITER = 7; // Mishary Alafasy reciter ID
 
 export async function generateStaticParams() {
   return Array.from({ length: 60 }, (_, i) => ({ hizbNumber: String(i + 1) }));
 }
 
-async function fetchQuarter(quarter, edition) {
-  const res = await fetch(`https://api.alquran.cloud/v1/hizbQuarter/${quarter}/${edition}`);
-  if (!res.ok) throw new Error(`Failed to fetch hizbQuarter ${quarter} ${edition}`);
-  const json = await res.json();
-  return json.data?.ayahs ?? [];
+async function fetchHizb(hizbNumber: number) {
+  // Quran.com API uses hizb_number (1-60), not hizbQuarter (1-240)
+  // Each hizb contains 4 quarters
+  const { verses } = await quranComApi.getVersesByHizb(hizbNumber, {
+    translations: TRANSLATION_EDITION,
+    words: false
+  });
+
+  return verses.map((verse: any) => ({
+    number: verse.id,
+    numberInSurah: verse.verse_number,
+    surah: {
+      number: verse.chapter_id,
+      name: verse.chapter?.name_arabic || '',
+      englishName: verse.chapter?.name_simple || ''
+    },
+    text: verse.text_uthmani,
+    translation: verse.translations?.[0]?.text || '',
+    audio: `https://verses.quran.com/${AUDIO_RECITER}/${verse.verse_key.replace(':', '_')}.mp3`
+  }));
 }
 
 export default async function HizbPage({ params }) {
   const hizbId = Number(params.hizbNumber);
-  const firstQuarter = (hizbId - 1) * 4 + 1;
-  const quarters = [firstQuarter, firstQuarter + 1, firstQuarter + 2, firstQuarter + 3];
-
 
   // Ayah type for type safety
   type Ayah = {
     number: number;
+    numberInSurah: number;
     surah: any;
     text: string;
     translation?: string | null;
     audio?: string | null;
   };
 
-  let arabic: Ayah[] = [], translation: Ayah[] = [], audio: Ayah[] = [];
+  let merged: Ayah[] = [];
   let error: string | null = null;
+
   try {
-    const [arabicArrays, translationArrays, audioArrays] = await Promise.all([
-      Promise.all(quarters.map((q) => fetchQuarter(q, ARABIC_EDITION))),
-      Promise.all(quarters.map((q) => fetchQuarter(q, TRANSLATION_EDITION))),
-      Promise.all(quarters.map((q) => fetchQuarter(q, AUDIO_EDITION))),
-    ]);
-    arabic = arabicArrays.flat();
-    translation = translationArrays.flat();
-    audio = audioArrays.flat();
+    merged = await fetchHizb(hizbId);
   } catch (e: any) {
     error = e.message || "Failed to load Hizb data.";
   }
 
-  const audioMap = new Map<number, any>(audio.map((a) => [a.number, a]));
-  const transMap = new Map<number, any>(translation.map((t) => [t.number, t]));
-  const merged: Ayah[] = arabic.map((a) => {
-    const num = a.number;
-    const translation = transMap.get(num)?.text;
-    return {
-      number: num,
-      surah: a.surah,
-      text: a.text,
-      translation: typeof translation === "string" ? translation : undefined,
-      audio: audioMap.get(num)?.audio ?? undefined,
-    };
-  });
-
   // Pass data to client component
   const HizbViewerClient = (await import("./HizbViewerClient")).default;
-  return <HizbViewerClient hizb={hizbId} ayahs={merged} />;
+  return <HizbViewerClient hizb={hizbId} ayahs={merged} error={error} />;
 }

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import ToggleMenu from '../Controls/ToggleMenu';
 import './AudioView.css';
+import * as quranComApi from '../../services/quranComApi';
 
 interface AudioViewProps {
   surahNumber: number;
@@ -23,17 +24,23 @@ interface Verse {
 }
 
 interface Reciter {
+  id: number;
   identifier: string;
   name: string;
   englishName: string;
-  format: string;
-  language: string;
+  format?: string;
+  language?: string;
+  style?: string;
+  translated_name?: {
+    name: string;
+    language_name: string;
+  };
 }
 
-export default function AudioView({ 
-  surahNumber, 
-  surahName, 
-  backgroundImage, 
+export default function AudioView({
+  surahNumber,
+  surahName,
+  backgroundImage,
   onClose,
   onShowSlideView,
   onShowScrollRead,
@@ -60,12 +67,19 @@ export default function AudioView({
   useEffect(() => {
     const fetchReciters = async () => {
       try {
-        const response = await fetch('https://api.alquran.cloud/v1/edition/format/audio');
-        if (!response.ok) {
-          throw new Error('Failed to fetch reciters');
-        }
-        const data = await response.json();
-        setReciters(data.data.filter((reciter: any) => reciter.format === 'audio'));
+        const recitations = await quranComApi.getReciters();
+        // Map Quran.com API response to our Reciter interface
+        const mappedReciters: Reciter[] = recitations.map((r: any) => ({
+          id: r.id,
+          identifier: `reciter_${r.id}`, // Use ID as identifier
+          name: r.translated_name?.name || r.reciter_name || 'Unknown',
+          englishName: r.translated_name?.name || r.reciter_name || 'Unknown',
+          format: 'audio',
+          language: r.translated_name?.language_name || 'en',
+          style: r.style,
+          translated_name: r.translated_name
+        }));
+        setReciters(mappedReciters);
       } catch (err) {
         console.error('Error fetching reciters:', err);
         setError('Failed to load reciters. Please try again later.');
@@ -87,31 +101,26 @@ export default function AudioView({
         setIsLoading(true);
         setError(null);
 
-        // Fetch Arabic text and translation
-        const [arabicResponse, translationResponse, reciterResponse] = await Promise.all([
-          fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}/ar.asad`),
-          fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}/en.asad`),
-          fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}/${selectedReciter.identifier}`)
-        ]);
+        // Fetch verses with translations using Quran.com API
+        // Translation ID 17 = Muhammad Asad (equivalent to en.asad)
+        const { verses } = await quranComApi.getVersesByChapter(surahNumber, {
+          translations: 17, // Muhammad Asad translation
+          words: false
+        });
 
-        if (!arabicResponse.ok || !translationResponse.ok) {
-          throw new Error('Failed to fetch verses');
-        }
+        // Process verses and add audio URLs
+        const processedVerses = verses.map((verse) => {
+          // Generate verse key format: "surahNumber:verseNumber"
+          const verseKey = verse.verse_key;
+          // Get audio URL from Quran.com CDN using reciter ID
+          const audioUrl = `https://verses.quran.com/${selectedReciter.id}/${verseKey.replace(':', '_')}.mp3`;
 
-        const arabicData = await arabicResponse.json();
-        const translationData = await translationResponse.json();
-
-        const reciterData = await reciterResponse.json();
-        
-        // Process verses and add audio URLs from selected reciter
-        const processedVerses = arabicData.data.ayahs.map((ayah: any, index: number) => {
-          const reciterAyah = reciterData.data.ayahs[index];
           return {
-            number: ayah.number,
-            numberInSurah: ayah.numberInSurah,
-            text: ayah.text,
-            translation: translationData.data.ayahs[index].text,
-            audio: reciterAyah.audio // Use the selected reciter's audio URL
+            number: verse.id,
+            numberInSurah: verse.verse_number,
+            text: verse.text_uthmani,
+            translation: verse.translations?.[0]?.text || '',
+            audio: audioUrl
           };
         });
 
@@ -147,7 +156,7 @@ export default function AudioView({
 
       // If there's a pending play promise, wait for it
       if (playPromiseRef.current) {
-        await playPromiseRef.current.catch(() => {});
+        await playPromiseRef.current.catch(() => { });
       }
 
       // Create new audio instance if needed
@@ -191,7 +200,7 @@ export default function AudioView({
       // Play audio
       await audioRef.current.play();
       setIsPlaying(true);
-      
+
       // Set current verse and update UI
       setCurrentVerse(verses[currentVerseIndex]);
       setLoadAttempts(0);
@@ -204,7 +213,7 @@ export default function AudioView({
       console.error('Error playing audio:', err);
       setError('Failed to play audio. Please try again.');
       setIsPlaying(false);
-      
+
       // Handle retry logic with exponential backoff
       if (loadAttempts < 3) {
         setLoadAttempts(prev => prev + 1);
@@ -263,9 +272,9 @@ export default function AudioView({
         // Set up event listeners
         audio.oncanplay = async () => {
           if (!mounted) return;
-          
+
           setIsAudioLoading(false);
-          
+
           if (isPlaying) {
             try {
               playPromiseRef.current = audio.play();
@@ -342,13 +351,13 @@ export default function AudioView({
 
         // Reset play promise
         playPromiseRef.current = null;
-        
+
         // Update verse index
         const nextIndex = currentVerseIndex + 1;
         setCurrentVerseIndex(nextIndex);
         setCurrentVerse(verses[nextIndex]);
         setLoadAttempts(0);
-        
+
         // Audio playback will be handled by useEffect
       } catch (err) {
         console.error('Error handling next verse:', err);
@@ -372,13 +381,13 @@ export default function AudioView({
 
         // Reset play promise
         playPromiseRef.current = null;
-        
+
         // Update verse index
         const prevIndex = currentVerseIndex - 1;
         setCurrentVerseIndex(prevIndex);
         setCurrentVerse(verses[prevIndex]);
         setLoadAttempts(0);
-        
+
         // Audio playback will be handled by useEffect
       } catch (err) {
         console.error('Error handling previous verse:', err);
@@ -392,7 +401,7 @@ export default function AudioView({
       try {
         // Small delay for smoother transition
         await new Promise(resolve => setTimeout(resolve, 300));
-        
+
         // Move to next verse maintaining play state
         await handleNext();
       } catch (err) {
@@ -437,7 +446,7 @@ export default function AudioView({
     // Set initial verse when verses are loaded
     if (verses.length > 0 && currentVerseIndex >= 0 && currentVerseIndex < verses.length) {
       setCurrentVerse(verses[currentVerseIndex]);
-      
+
       // Initialize audio element
       if (!audioRef.current) {
         const audio = new Audio();
@@ -447,7 +456,7 @@ export default function AudioView({
         audioRef.current = audio;
       }
     }
-    
+
     // Clean up function
     return () => {
       if (audioRef.current) {
@@ -459,7 +468,7 @@ export default function AudioView({
   }, [verses, currentVerseIndex]);
 
   return (
-    <motion.div 
+    <motion.div
       className="audio-view-container"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -476,7 +485,7 @@ export default function AudioView({
         flexDirection: 'column'
       }}
     >
-      <ToggleMenu 
+      <ToggleMenu
         onFullScreen={handleFullScreen}
         onScrollViewToggle={() => {
           onClose();
@@ -486,9 +495,9 @@ export default function AudioView({
           onClose();
           setTimeout(() => onShowSlideView?.(true), 100);
         }}
-        onAudioViewToggle={() => {}}
+        onAudioViewToggle={() => { }}
         onIntroductionToggle={() => onShowIntroduction?.(true)}
-        onBookmarkToggle={() => {}}
+        onBookmarkToggle={() => { }}
         onShareClick={handleShare}
         isFullScreen={isFullscreen}
         isScrollView={false}
@@ -501,15 +510,15 @@ export default function AudioView({
       <div className="top-bar">
         {/* Go Back Button - Left, spans 2 rows */}
         <button className="go-back-btn" onClick={onClose}>Go Back</button>
-        
+
         {/* Surah Name - Center */}
         <div className="surah-info">
           <span>{surahName}</span>
         </div>
-        
+
         {/* Change Reciter Button - Right, Row 1 */}
         {selectedReciter && !showReciters && (
-          <button 
+          <button
             className="change-reciter"
             onClick={() => {
               if (audioRef.current) {
@@ -524,7 +533,7 @@ export default function AudioView({
             Change Reciter
           </button>
         )}
-        
+
         {/* Current Reciter - Right, Row 2 */}
         {selectedReciter && !showReciters && (
           <div className="current-reciter">
@@ -551,7 +560,7 @@ export default function AudioView({
             </div>
             <div className="reciters-list">
               {reciters
-                .filter(reciter => 
+                .filter(reciter =>
                   reciter.englishName.toLowerCase().includes(searchQuery.toLowerCase()) ||
                   reciter.name.toLowerCase().includes(searchQuery.toLowerCase())
                 )
@@ -576,7 +585,7 @@ export default function AudioView({
             </div>
           </div>
         )}
-        
+
         {isLoading ? (
           <div className="loading-state">Loading verses...</div>
         ) : error ? (
@@ -607,21 +616,21 @@ export default function AudioView({
 
             {/* Audio Controls */}
             <div className="audio-controls">
-              <button 
+              <button
                 onClick={handlePrevious}
                 disabled={currentVerseIndex === 0 || isLoading || isAudioLoading}
                 className={isAudioLoading ? 'loading' : ''}
               >
                 Previous
               </button>
-              <button 
+              <button
                 onClick={isPlaying ? handlePause : handlePlay}
                 disabled={isLoading || isAudioLoading}
                 className={`play-btn ${isAudioLoading ? 'loading' : ''}`}
               >
                 {isAudioLoading ? 'Loading...' : isPlaying ? 'Pause' : 'Play'}
               </button>
-              <button 
+              <button
                 onClick={handleNext}
                 disabled={currentVerseIndex === verses.length - 1 || isLoading || isAudioLoading}
                 className={isAudioLoading ? 'loading' : ''}

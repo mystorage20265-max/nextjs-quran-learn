@@ -40,7 +40,7 @@
 
     /* Typography */
     --rq-font-sans: 'Outfit', 'Inter', system-ui, sans-serif;
-    --rq-font-arabic: 'KFGQPC Uthmanic Script', 'Amiri Quran', serif;
+    --rq-font-arabic: 'Scheherazade New', 'Amiri Quran', 'KFGQPC Uthmanic Script', serif;
 
     /* Layout */
     --rq-radius-lg: 12px;
@@ -948,34 +948,105 @@
     color: var(--rq-primary);
 }
 
+
 .rq-reading-mode {
     background: var(--rq-bg-card);
     padding: 40px;
     border-radius: var(--rq-radius-md);
     border: 1px solid var(--rq-border);
+    max-width: 1000px;
+    margin: 0 auto;
 }
 
 .rq-reading-text {
-    text-align: center;
+    text-align: justify;
     font-size: 32px;
     direction: rtl;
     font-family: var(--rq-font-arabic);
     color: var(--rq-text);
-    line-height: 2.5;
-    word-spacing: 2px;
+    line-height: 2.8;
+    word-spacing: 4px;
+    /* CRITICAL: Prevent any background highlighting */
+    background: transparent !important;
+}
+
+/* Each verse span - prevent any background colors */
+.rq-reading-text>span {
+    display: inline;
+    background: transparent !important;
+    background-color: transparent !important;
+    /* Prevent any mark/highlight elements */
+    position: relative;
+}
+
+/* Prevent mark elements from showing backgrounds */
+.rq-reading-text mark,
+.rq-reading-text>span mark {
+    background: transparent !important;
+    background-color: transparent !important;
+    color: inherit !important;
 }
 
 .rq-reading-verse-marker {
     display: inline-flex;
-    width: 20px;
-    height: 20px;
+    width: 28px;
+    height: 28px;
     align-items: center;
     justify-content: center;
-    border: 1px solid var(--rq-text-muted);
+    border: 2px solid var(--rq-primary);
+    background: var(--rq-primary);
     border-radius: 50%;
-    font-size: 0.8rem;
-    margin: 0 8px;
+    font-size: 0.9rem;
+    margin: 0 12px;
     vertical-align: middle;
+    color: white;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(45, 125, 164, 0.4);
+}
+
+/* ============ HIDE QURANIC ANNOTATION MARKS ============ */
+/* Hide small circles and dots that appear as white marks */
+.rq-reading-text {
+    /* Hide specific Unicode ranges for Quranic annotation marks */
+    font-feature-settings:
+        'ss01' 0,
+        /* Stylistic sets that might show annotations */
+        'ss02' 0,
+        'ss03' 0;
+}
+
+/* Target specific annotation characters and make them invisible */
+.rq-reading-text span::after {
+    /* This targets the small high rounded zero (۟) U+06DF and similar marks */
+    content: none;
+}
+
+/* ============ ANTI-HIGHLIGHTING RULES (Reading Mode) ============ */
+/* Force transparent backgrounds on ALL elements and pseudo-elements */
+.rq-reading-mode *,
+.rq-reading-mode *::before,
+.rq-reading-mode *::after {
+    background-image: none !important;
+}
+
+/* Override browser find-in-page highlighting */
+.rq-reading-text ::selection {
+    background: rgba(45, 125, 164, 0.3) !important;
+    color: inherit !important;
+}
+
+.rq-reading-text ::-moz-selection {
+    background: rgba(45, 125, 164, 0.3) !important;
+    color: inherit !important;
+}
+
+/* Override any injected mark/highlight elements */
+.rq-reading-mode mark,
+.rq-reading-mode .highlight,
+.rq-reading-mode [style*="background"] {
+    background: transparent !important;
+    background-color: transparent !important;
+    color: inherit !important;
 }
 
 /* ============ BISMILLAH ============ */

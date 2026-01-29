@@ -1,0 +1,179 @@
+/**
+ * WaqfMark Styles
+ * Styling for Quranic waqf (pause) marks with multiple display modes
+ */
+
+/* Base waqf mark styling */
+.waqfMark {
+    font-family: inherit;
+    font-weight: 600;
+    display: inline-block;
+    line-height: 0;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: all 0.2s ease;
+
+    /* Accessibility */
+    &:focus {
+        outline: 2px solid currentColor;
+        outline-offset: 2px;
+    }
+}
+
+/* ============ DISPLAY STYLES ============ */
+
+/* Superscript display (default) */
+.superscript {
+    position: relative;
+    vertical-align: super;
+    top: -0.7em;
+    font-size: 0.7em;
+    /* Will be overridden by inline fontSize prop */
+    width: 0;
+    overflow: visible;
+    right: 0.3em;
+    text-align: center;
+
+    /* Prevent taking up horizontal space */
+    margin-left: 0;
+    margin-right: 0;
+    padding: 0;
+}
+
+/* Inline display */
+.inline {
+    vertical-align: baseline;
+    margin-left: 0.1em;
+    margin-right: 0.1em;
+}
+
+/* Tooltip-only (hidden by default) */
+.tooltip {
+    opacity: 0;
+    pointer-events: none;
+
+    &:hover,
+    &:focus {
+        opacity: 1;
+        pointer-events: auto;
+    }
+}
+
+/* ============ POSITIONING VARIANTS ============ */
+
+/* Above word (default for superscript) */
+.above {
+    position: relative;
+    top: -0.8em;
+}
+
+/* End of word */
+.end {
+    position: relative;
+    top: -0.4em;
+    margin-left: 0.2em;
+}
+
+/* Floating (absolute positioned) */
+.floating {
+    position: absolute;
+    top: -0.6em;
+    right: 0.2em;
+    z-index: 10;
+}
+
+/* ============ FONT-SPECIFIC ADJUSTMENTS ============ */
+
+/* IndoPak Nastaleeq adjustments */
+.font-indopak {
+    font-family: 'indopak-nastaleeq-waqf-lazim', 'Noto Nastaliq Urdu', serif;
+    font-size: 0.75em;
+    top: -0.6em;
+}
+
+/* Uthmani script adjustments */
+.font-uthmani {
+    font-family: 'KFGQPC Uthmanic Script', 'Amiri Quran', 'Scheherazade New', serif;
+    font-size: 0.7em;
+    top: -0.7em;
+}
+
+/* Tajweed font adjustments */
+.font-tajweed {
+    font-family: 'Hafs', 'Amiri Quran Colored', serif;
+    font-size: 0.65em;
+    top: -0.75em;
+}
+
+/* ============ RESPONSIVE ADJUSTMENTS ============ */
+
+@media (max-width: 768px) {
+    .waqfMark.superscript {
+        font-size: 0.65em;
+        top: -0.6em;
+    }
+
+    .waqfMark.inline {
+        font-size: 0.9em;
+    }
+}
+
+@media (max-width: 480px) {
+    .waqfMark.superscript {
+        font-size: 0.6em;
+        top: -0.5em;
+    }
+}
+
+/* ============ INTERACTIVE STATES ============ */
+
+.waqfMark {
+    cursor: help;
+
+    &:hover {
+        opacity: 0.8;
+        transform: scale(1.1);
+    }
+
+    &:active {
+        transform: scale(0.95);
+    }
+}
+
+/* ============ SEMANTIC COLOR OVERRIDES ============ */
+/* These colors are set via inline style based on semantic color scheme */
+/* No static rules needed - handled by WaqfMark component */
+
+/* ============ PRINT STYLES ============ */
+
+@media print {
+    .waqfMark {
+        color: inherit !important;
+        opacity: 0.7;
+    }
+
+    .waqfMark.tooltip {
+        display: none;
+    }
+}
+
+/* ============ HIGH CONTRAST MODE ============ */
+
+@media (prefers-contrast: high) {
+    .waqfMark {
+        font-weight: 700;
+        text-shadow: 0 0 1px currentColor;
+    }
+}
+
+/* ============ REDUCED MOTION ============ */
+
+@media (prefers-reduced-motion: reduce) {
+    .waqfMark {
+        transition: none;
+
+        &:hover {
+            transform: none;
+        }
+    }
+}

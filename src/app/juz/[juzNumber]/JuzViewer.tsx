@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import * as quranComApi from '@/services/quranComApi';
 
 type Ayah = {
   number: number;
@@ -54,7 +55,7 @@ class AudioManager {
 }
 
 // --- Main JuzPlayer component ---
-export default function JuzPlayer({ juz, arabicEdition = "quran-uthmani", translationEdition = "en.asad", audioEdition = "ar.alafasy" }: JuzPlayerProps) {
+export default function JuzPlayer({ juz }: JuzPlayerProps) {
   const [ayahs, setAyahs] = useState<Ayah[]>([]);
   const [audioMap, setAudioMap] = useState<Map<number, { ayahNumber: number; url: string }>>(new Map());
   const [currentIndex, setCurrentIndex] = useState<number | null>(null);
@@ -68,34 +69,29 @@ export default function JuzPlayer({ juz, arabicEdition = "quran-uthmani", transl
 
   // Server fetch: merge Arabic + English
   useEffect(() => {
-    async function fetchJuzMerged() {
+    async function fetchJuzData() {
       setLoading(true);
       setError(null);
       try {
-        const arabicUrl = `https://api.alquran.cloud/v1/juz/${juz}/${arabicEdition}`;
-        const translationUrl = `https://api.alquran.cloud/v1/juz/${juz}/${translationEdition}`;
-        const [arabicRes, translationRes] = await Promise.all([
-          fetch(arabicUrl),
-          fetch(translationUrl),
-        ]);
-        const arabicJson = await arabicRes.json();
-        const translationJson = await translationRes.json();
-        if (!arabicJson?.data?.ayahs) throw new Error("Arabic ayahs missing");
-        if (!translationJson?.data?.ayahs) throw new Error("Translation ayahs missing");
-        // Build translation map
-        const translationMap = new Map<number, any>();
-        translationJson.data.ayahs.forEach((a: any) => translationMap.set(a.number, a));
-        // Merge
-        const merged = arabicJson.data.ayahs.map((a: any) => {
-          const t = translationMap.get(a.number);
-          return {
-            number: a.number,
-            numberInSurah: a.numberInSurah,
-            surah: a.surah,
-            text: a.text,
-            translation: t ? (t.text || t.translation || "") : "",
-          };
+        // Fetch juz data with translation using Quran.com API
+        const { verses } = await quranComApi.getVersesByJuz(juz, {
+          translations: 131, // Sahih International
+          words: false
         });
+
+        // Map to expected format
+        const merged = verses.map((verse: any) => ({
+          number: verse.id,
+          numberInSurah: verse.verse_number,
+          surah: {
+            number: verse.verse_key.split(':')[0],
+            name: '', // Not needed for display
+            englishName: ''
+          },
+          text: verse.text_uthmani,
+          translation: verse.translations?.[0]?.text || ''
+        }));
+
         setAyahs(merged);
       } catch (err) {
         setError("Failed to load Juz or translation. Try again later.");
@@ -103,37 +99,24 @@ export default function JuzPlayer({ juz, arabicEdition = "quran-uthmani", transl
         setLoading(false);
       }
     }
-    fetchJuzMerged();
-  }, [juz, arabicEdition, translationEdition]);
+    fetchJuzData();
+  }, [juz]);
 
-  // Build audio map client-side
+  // Build audio map using Quran.com CDN
   useEffect(() => {
-    let mounted = true;
-    async function buildAudioMap() {
-      const map = new Map();
-      const concurrency = 5;
-      let idx = 0;
-      async function worker() {
-        while (idx < ayahs.length) {
-          const i = idx++;
-          const ayah = ayahs[i];
-          try {
-            const r = await fetch(`https://api.alquran.cloud/v1/ayah/${ayah.number}/${audioEdition}`);
-            const j = await r.json();
-            const url = j?.data?.audio || j?.data?.audioSecondary || null;
-            if (url) map.set(ayah.number, { ayahNumber: ayah.number, url });
-            else console.warn("No audio URL for ayah", ayah.number, j);
-          } catch (e) {
-            console.error("Audio fetch failed for", ayah.number, e);
-          }
-        }
-      }
-      await Promise.all(Array.from({ length: concurrency }).map(() => worker()));
-      if (mounted) setAudioMap(map);
-    }
-    if (ayahs.length > 0) buildAudioMap();
-    return () => { mounted = false; };
-  }, [ayahs, audioEdition]);
+    if (ayahs.length === 0) return;
+
+    const map = new Map();
+
+    // Generate audio URLs using Quran.com CDN (reciter ID 7 = Alafasy)
+    ayahs.forEach((ayah) => {
+      const surahNum = typeof ayah.surah === 'object' ? ayah.surah.number : ayah.surah;
+      const audioUrl = `https://verses.quran.com/7/${surahNum}_${ayah.numberInSurah}.mp3`;
+      map.set(ayah.number, { ayahNumber: ayah.number, url: audioUrl });
+    });
+
+    setAudioMap(map);
+  }, [ayahs]);
 
   // AudioManager setup
   useEffect(() => {

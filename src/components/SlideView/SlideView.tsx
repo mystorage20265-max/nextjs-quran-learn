@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useSwipeable } from 'react-swipeable';
+import * as quranComApi from '@/services/quranComApi';
 import ToggleMenu from '../Controls/ToggleMenu';
 import './SlideView.css';
 
@@ -48,7 +49,7 @@ export default function SlideView({
     if (navbar) {
       (navbar as HTMLElement).style.display = 'none';
     }
-    
+
     return () => {
       if (navbar) {
         (navbar as HTMLElement).style.display = '';
@@ -60,24 +61,18 @@ export default function SlideView({
     async function fetchVerses() {
       try {
         setIsLoading(true);
-        const [arabicResponse, translationResponse] = await Promise.all([
-          fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}/quran-uthmani`),
-          fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}/en.asad`)
-        ]);
+        // Fetch verses with translation using Quran.com API (translation ID 17 = Muhammad Asad)
+        const { verses } = await quranComApi.getVersesByChapter(surahNumber, {
+          translations: 17,
+          words: false
+        });
 
-        const arabicData = await arabicResponse.json();
-        const translationData = await translationResponse.json();
-
-        if (arabicData.code === 200 && translationData.code === 200) {
-          const combinedVerses = arabicData.data.ayahs.map((verse: any, index: number) => ({
-            number: verse.numberInSurah,
-            text: verse.text,
-            translation: translationData.data.ayahs[index].text
-          }));
-          setVerses(combinedVerses);
-        } else {
-          throw new Error('Failed to fetch verses');
-        }
+        const combinedVerses = verses.map((verse: any) => ({
+          number: verse.verse_number,
+          text: verse.text_uthmani,
+          translation: verse.translations?.[0]?.text || ''
+        }));
+        setVerses(combinedVerses);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load verses');
       } finally {
@@ -174,8 +169,8 @@ export default function SlideView({
   const currentVerse = verses[currentVerseIndex];
 
   return typeof document !== 'undefined' ? createPortal(
-    <div 
-      className="slide-view" 
+    <div
+      className="slide-view"
       style={{
         backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(${backgroundImageUrl})`,
         backgroundSize: 'cover',
@@ -188,19 +183,19 @@ export default function SlideView({
       }}
       {...handlers}
     >
-      <ToggleMenu 
+      <ToggleMenu
         onFullScreen={toggleFullscreen}
         onScrollViewToggle={() => {
           onBack();
           setTimeout(() => onShowScrollRead?.(true), 100);
         }}
-        onSlideViewToggle={() => {}}
+        onSlideViewToggle={() => { }}
         onAudioViewToggle={() => {
           onBack();
           setTimeout(() => onShowAudioView?.(true), 100);
         }}
         onIntroductionToggle={() => onShowIntroduction?.(true)}
-        onBookmarkToggle={() => {}}
+        onBookmarkToggle={() => { }}
         onShareClick={handleShare}
         isFullScreen={isFullscreen}
         isScrollView={false}
@@ -228,8 +223,8 @@ export default function SlideView({
           </div>
         </div>
         <div className="controls">
-          <button 
-            onClick={toggleFullscreen} 
+          <button
+            onClick={toggleFullscreen}
             className="control-button"
             title="Grid View"
           >
@@ -241,8 +236,8 @@ export default function SlideView({
       </div>
 
       <div className="verse-navigation">
-        <button 
-          className="nav-button prev" 
+        <button
+          className="nav-button prev"
           onClick={goToPreviousVerse}
           disabled={currentVerseIndex === 0}
           aria-label="Previous verse"
@@ -251,8 +246,8 @@ export default function SlideView({
             <path d="M15 19l-7-7 7-7" />
           </svg>
         </button>
-        <button 
-          className="nav-button next" 
+        <button
+          className="nav-button next"
           onClick={goToNextVerse}
           disabled={currentVerseIndex === verses.length - 1}
           aria-label="Next verse"

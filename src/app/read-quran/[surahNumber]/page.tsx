@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback, use } from 'react';
+import React, { useState, useEffect, useRef, useCallback, use } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import { WaqfMark, INDO_PAK_STOP_SIGN_CHARS, isWaqfMark, WaqfDisplayStyle, WaqfColorScheme } from '@/components/Verse/WaqfMark';
 import {
     getChapter,
     getAllVerses,
@@ -40,8 +41,40 @@ const cleanArabicText = (text: string | undefined): string => {
         .replace(/[\u06DD-\u06E4]/g, '') // Arabic end of ayah and annotation marks
         .replace(/[\u06E7-\u06E8]/g, '') // Small high yeh/noon
         .replace(/[\u06EA-\u06ED]/g, '') // Empty centre marks, etc.
-    // Now waqaf marks (ۘ ۙ ۚ ۛ) and tashkeel are preserved!
+        // CRITICAL: Remove spaces before waqf marks so they stick to the word
+        .replace(/\s+([\u06D8\u06D9\u06DA\u06DB])/g, '$1');
+    // Now waqaf marks (ۘ ۙ ۚ ۛ) are preserved and tight to words!
 };
+
+// Format text with waqf marks - wrap each with WaqfMark component
+// Supports all 13 IndoPak waqf characters
+const formatTextWithWaqf = (text: string): (string | React.ReactElement)[] => {
+    if (!text) return [];
+
+    // Build regex from all 13 IndoPak waqf characters
+    const waqfChars = Array.from(INDO_PAK_STOP_SIGN_CHARS).join('');
+    const waqfRegex = new RegExp(`([${waqfChars}])`, 'g');
+    const parts = text.split(waqfRegex);
+
+    return parts.map((part, index) => {
+        // Check if this part is a waqf mark
+        if (part && isWaqfMark(part)) {
+            return (
+                <WaqfMark
+                    key={`waqf-${index}`}
+                    text={part}
+                    font="uthmani"
+                    displayStyle={WaqfDisplayStyle.SUPERSCRIPT}
+                    colorScheme={WaqfColorScheme.DEFAULT}
+                    showTooltip={false}  // Can be toggled via user preference
+                    fontSize={0.7}
+                />
+            );
+        }
+        return part;
+    });
+};
+
 
 interface SurahPageProps {
     params: Promise<{ surahNumber: string }>;
@@ -108,6 +141,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
             try {
                 setLoading(true);
                 setError(null);
+                console.log('🚀 Starting to load Surah data for:', { surahNumber, selectedTranslation });
 
                 const [chapterData, versesData] = await Promise.all([
                     getChapter(surahNumber),
@@ -116,6 +150,11 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
 
                 if (isCancelled) return;
 
+                console.log('📦 Received data:', {
+                    chapter: chapterData?.name_simple,
+                    versesCount: versesData?.length,
+                    firstVerse: versesData?.[0]
+                });
                 setChapter(chapterData);
                 setVerses(versesData);
 
@@ -128,7 +167,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                     }
                 }
             } catch (err) {
-                console.error(err);
+                console.error('❌ Error loading surah data:', err);
                 if (!isCancelled) {
                     setError('Failed to load Surah data. Please try again.');
                 }
@@ -784,19 +823,28 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                         </div>
                     ))
                 ) : readingMode === 'reading' ? (
-                    // Reading Mode (Mushaf style)
+                    // Reading Mode (Mushaf style) - Redesigned to prevent highlighting issues
                     <div className="rq-reading-mode">
                         <div className="rq-reading-text" style={{ fontSize: `${fontSize + 4}px` }}>
-                            {verses.map((verse) => (
-                                <span key={verse.id}>
-                                    {verse.text_uthmani}
+                            {verses.map((verse, index) => (
+                                <React.Fragment key={verse.id}>
+                                    {/* Each verse in its own span with explicit no-background */}
+                                    <span
+                                        style={{
+                                            background: 'transparent',
+                                            backgroundColor: 'transparent',
+                                            position: 'relative'  // Create positioning context for waqf marks
+                                        }}
+                                    >
+                                        {formatTextWithWaqf(cleanArabicText(verse.text_uthmani))}
+                                    </span>
                                     {' '}
                                     <span className="rq-reading-verse-marker">
                                         {toArabicNumeral(verse.verse_number)}
                                         {verse.sajdah_number && <span className="sajdah-marker-reading">۩</span>}
                                     </span>
                                     {' '}
-                                </span>
+                                </React.Fragment>
                             ))}
                         </div>
                     </div>
