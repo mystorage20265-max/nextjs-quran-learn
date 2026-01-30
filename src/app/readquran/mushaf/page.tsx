@@ -6,9 +6,24 @@
  */
 
 import React, { useState } from 'react';
+import { Scheherazade_New, Amiri_Quran } from 'next/font/google';
 import { MushafReadingView } from '../components/MushafReadingView/MushafReadingView';
 import type { ThemeMode } from '../types';
 import '../styles/tokens.scss';
+import '../../read-quran/styles/read-quran.css'; // Import CSS variables
+
+// Load Arabic fonts
+const scheherazade = Scheherazade_New({
+    weight: ['400', '700'],
+    subsets: ['arabic'],
+    display: 'swap',
+});
+
+const amiri = Amiri_Quran({
+    weight: '400',
+    subsets: ['arabic'],
+    display: 'swap',
+});
 
 export default function MushafDemo() {
     const [theme, setTheme] = useState<ThemeMode>('dark');
@@ -17,7 +32,7 @@ export default function MushafDemo() {
     const [initialPage, setInitialPage] = useState(1);
 
     return (
-        <div className={`theme-${theme}`} style={{
+        <div className={`${scheherazade.className} theme-${theme}`} style={{
             minHeight: '100vh',
             background: theme === 'dark' ? '#1a1a1a' :
                 theme === 'light' ? '#ffffff' : '#f4f1ea',

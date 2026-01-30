@@ -6,6 +6,7 @@
  */
 
 import React, { useState } from 'react';
+import { Scheherazade_New, Amiri_Quran } from 'next/font/google';
 import {
     VerseCard,
     useVerseState,
@@ -17,6 +18,20 @@ import {
     type Word,
 } from './index';
 import './styles/tokens.scss';
+import '../read-quran/styles/read-quran.css'; // Import CSS variables
+
+// Load Arabic fonts
+const scheherazade = Scheherazade_New({
+    weight: ['400', '700'],
+    subsets: ['arabic'],
+    display: 'swap',
+});
+
+const amiri = Amiri_Quran({
+    weight: '400',
+    subsets: ['arabic'],
+    display: 'swap',
+});
 
 export default function ReadQuranPage() {
     const verseState = useVerseState({
@@ -75,7 +90,7 @@ export default function ReadQuranPage() {
     };
 
     return (
-        <div className={`theme-${verseState.preferences.theme}`} style={{
+        <div className={`${scheherazade.className} theme-${verseState.preferences.theme}`} style={{
             minHeight: '100vh',
             padding: '2rem',
             background: verseState.preferences.theme === 'dark' ? '#1a1a1a' :
