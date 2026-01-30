@@ -1,0 +1,42 @@
+/**
+ * Standalone Quran UI - WaqfMark Styles
+ * Self-contained styling for pause marks
+ */
+
+@import '../../styles/tokens.scss';
+@import '../../styles/mixins.scss';
+
+.waqf-mark {
+  @include arabic-text;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--quran-font-size-md);
+  margin: 0 var(--quran-spacing-xxsmall);
+  font-weight: var(--quran-font-weight-bold);
+  transition: var(--quran-transition-color);
+  
+  // Type-specific colors (defined in utils, applied via inline style)
+  // Colors are set programmatically based on type
+  
+  // ========================================================================
+  // RESPONSIVE SIZING
+  // ========================================================================
+  
+  @include tablet {
+    font-size: var(--quran-font-size-lg);
+  }
+  
+  @include mobile-only {
+    font-size: var(--quran-font-size-sm);
+  }
+  
+  // ========================================================================
+  // HOVER EFFECTS
+  // ========================================================================
+  
+  &:hover {
+    opacity: 0.8;
+    cursor: help;
+  }
+}

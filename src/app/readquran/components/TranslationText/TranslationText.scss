@@ -1,0 +1,42 @@
+/**
+ * Standalone Quran UI - TranslationText Styles
+ * Self-contained styling for translation display
+ */
+
+@import '../../styles/tokens.scss';
+@import '../../styles/mixins.scss';
+
+.translation-text {
+  @include flex-column;
+  gap: var(--quran-spacing-small);
+  
+  &__content {
+    @include latin-text;
+    line-height: var(--quran-line-height-relaxed);
+    color: var(--quran-color-text-default);
+    font-size: var(--quran-font-size-base);
+    
+    @include tablet {
+      font-size: var(--quran-font-size-md);
+    }
+  }
+  
+  &__source {
+    @include latin-text;
+    font-size: var(--quran-font-size-sm);
+    color: var(--quran-color-text-faded);
+    font-style: italic;
+    margin-top: var(--quran-spacing-xxsmall);
+  }
+  
+  // ========================================================================
+  // RTL SUPPORT FOR RTL TRANSLATIONS
+  // ========================================================================
+  
+  &__content[lang='ar'],
+  &__content[lang='ur'],
+  &__content[lang='fa'] {
+    @include arabic-text;
+    text-align: right;
+  }
+}

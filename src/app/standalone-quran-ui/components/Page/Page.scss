@@ -1,0 +1,153 @@
+/**
+ * Standalone Quran UI - Page Component Styles
+ * Enhanced for line-based Mushaf layout
+ */
+
+.quran-page {
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto 40px;
+  padding: 40px 24px;
+  background: var(--page-background, rgba(255, 255, 255, 0.03));
+  border-radius: 12px;
+  border: 1px solid var(--page-border, rgba(255, 255, 255, 0.08));
+  
+  // Center the entire page container
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &__content {
+    width: 100%;
+    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  // Line-based rendering container
+  &__lines {
+    direction: rtl;
+    text-align: center; // Center all lines by default
+    margin-bottom: 16px;
+    width: 100%;
+  }
+
+  // Translation section (appears after all lines)
+  &__translations {
+    direction: ltr;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid var(--divider-color, rgba(255, 255, 255, 0.08));
+    width: 100%;
+  }
+
+  &__translation {
+    text-align: left;
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-secondary, #b8b5ad);
+    padding: 12px;
+    background: var(--translation-bg, rgba(0, 0, 0, 0.2));
+    border-left: 3px solid var(--accent-color, #bd9361);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background: var(--translation-hover, rgba(0, 0, 0, 0.3));
+    }
+
+    .verse-number {
+      font-weight: 600;
+      color: var(--accent-color, #bd9361);
+      margin-right: 4px;
+    }
+
+    .translation-text {
+      color: var(--text-secondary, #b8b5ad);
+    }
+  }
+
+  &__footer {
+    text-align: center;
+    padding-top: 16px;
+    border-top: 1px solid var(--divider-color, rgba(255, 255, 255, 0.08));
+    width: 100%;
+
+    .page-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      background: var(--accent-color, #bd9361);
+      color: var(--page-number-text, #1a1a1a);
+      border-radius: 50%;
+      font-size: 15px;
+      font-weight: 600;
+    }
+  }
+}
+
+// Light theme
+.theme-light .quran-page {
+  --page-background: rgba(0, 0, 0, 0.02);
+  --page-border: rgba(0, 0, 0, 0.08);
+  --text-secondary: #666;
+  --translation-bg: rgba(0, 0, 0, 0.03);
+  --translation-hover: rgba(0, 0, 0, 0.05);
+  --divider-color: rgba(0, 0, 0, 0.08);
+}
+
+// Sepia theme
+.theme-sepia .quran-page {
+  --page-background: rgba(92, 80, 65, 0.1);
+  --page-border: rgba(92, 80, 65, 0.2);
+  --text-secondary: #6b5d4f;
+  --translation-bg: rgba(92, 80, 65, 0.08);
+  --translation-hover: rgba(92, 80, 65, 0.12);
+  --divider-color: rgba(92, 80, 65, 0.15);
+  --accent-color: #8b6f47;
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .quran-page {
+    padding: 24px 16px;
+    margin-bottom: 24px;
+    border-radius: 8px;
+    max-width: 100%;
+
+    &__content {
+      max-width: 100%;
+    }
+
+    &__translation {
+      font-size: 13px;
+      padding: 10px;
+    }
+
+    &__footer .page-number {
+      width: 32px;
+      height: 32px;
+      font-size: 14px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .quran-page {
+    padding: 16px 12px;
+    margin-bottom: 16px;
+
+    &__translation {
+      font-size: 12px;
+      padding: 8px;
+    }
+  }
+}

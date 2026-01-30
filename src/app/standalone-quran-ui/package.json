@@ -1,0 +1,32 @@
+{
+    "name": "standalone-quran-ui",
+    "version": "1.0.0",
+    "description": "Self-contained Quran reading & word-by-word translation UI component library",
+    "main": "index.ts",
+    "types": "index.ts",
+    "scripts": {
+        "dev": "echo 'This is a standalone component library. Import components into your project.'",
+        "type-check": "tsc --noEmit"
+    },
+    "keywords": [
+        "quran",
+        "islamic",
+        "translation",
+        "word-by-word",
+        "react",
+        "typescript",
+        "ui-components"
+    ],
+    "peerDependencies": {
+        "react": ">=16.8.0",
+        "react-dom": ">=16.8.0"
+    },
+    "devDependencies": {
+        "@types/react": "^18.0.0",
+        "@types/react-dom": "^18.0.0",
+        "sass": "^1.55.0",
+        "typescript": "^5.0.0"
+    },
+    "author": "",
+    "license": "MIT"
+}

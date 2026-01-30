@@ -1,0 +1,101 @@
+/**
+ * Standalone Quran UI - BottomActions Styles
+ * Self-contained styling for tab navigation
+ */
+
+@import '../../styles/tokens.scss';
+@import '../../styles/mixins.scss';
+
+.bottom-actions {
+  @include flex-column;
+  gap: var(--quran-spacing-medium);
+  margin-top: var(--quran-spacing-large);
+  
+  // ========================================================================
+  // TABS
+  // ========================================================================
+  
+  &__tabs {
+    @include flex-start;
+    gap: var(--quran-spacing-medium);
+    overflow-x: auto;
+    @include hide-scrollbar;
+    padding-bottom: var(--quran-spacing-xxsmall);
+    
+    @include mobile-only {
+      gap: var(--quran-spacing-small);
+    }
+  }
+  
+  &__tab {
+    @include reset-button;
+    @include flex-start;
+    gap: var(--quran-spacing-xsmall);
+    padding: var(--quran-spacing-small) var(--quran-spacing-medium);
+    color: var(--quran-color-text-faded);
+    font-size: var(--quran-font-size-base);
+    font-weight: var(--quran-font-weight-medium);
+    font-family: var(--quran-font-latin);
+    white-space: nowrap;
+    border-radius: var(--quran-radius-md);
+    transition: var(--quran-transition-all);
+    position: relative;
+    
+    &:hover {
+      color: var(--quran-color-accent);
+      background-color: var(--quran-color-bg-hover);
+    }
+    
+    &--active {
+      color: var(--quran-color-accent);
+      
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background-color: var(--quran-color-accent);
+        border-radius: var(--quran-radius-full);
+      }
+    }
+    
+    @include focus-ring;
+    
+    @include mobile-only {
+      padding: var(--quran-spacing-xsmall) var(--quran-spacing-small);
+      font-size: var(--quran-font-size-sm);
+    }
+  }
+  
+  &__tab-icon {
+    @include flex-center;
+    width: 1.25rem;
+    height: 1.25rem;
+    
+    @include mobile-only {
+      width: 1rem;
+      height: 1rem;
+    }
+  }
+  
+  &__tab-label {
+    @include latin-text;
+  }
+  
+  // ========================================================================
+  // CONTENT
+  // ========================================================================
+  
+  &__content {
+    @include fade-in;
+    padding: var(--quran-spacing-medium);
+    background-color: var(--quran-color-bg-card);
+    border-radius: var(--quran-radius-lg);
+    
+    @include mobile-only {
+      padding: var(--quran-spacing-small);
+    }
+  }
+}

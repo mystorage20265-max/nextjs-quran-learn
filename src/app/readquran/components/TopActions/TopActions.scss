@@ -1,0 +1,108 @@
+/**
+ * Standalone Quran UI - TopActions Styles
+ * Self-contained styling for verse header actions
+ */
+
+@import '../../styles/tokens.scss';
+@import '../../styles/mixins.scss';
+
+.top-actions {
+  @include flex-between;
+  padding: var(--quran-spacing-small);
+  margin-bottom: var(--quran-spacing-medium);
+  
+  &__left,
+  &__right {
+    @include flex-start;
+    gap: var(--quran-spacing-small);
+  }
+  
+  // ========================================================================
+  // VERSE NUMBER
+  // ========================================================================
+  
+  &__verse-number {
+    @include flex-center;
+    gap: var(--quran-spacing-xsmall);
+    padding: var(--quran-spacing-xsmall) var(--quran-spacing-small);
+    background-color: var(--quran-color-bg-card);
+    border: 1px solid var(--quran-color-border-default);
+    border-radius: var(--quran-radius-full);
+  }
+  
+  &__verse-number-arabic {
+    @include arabic-text;
+    font-size: var(--quran-font-size-md);
+    font-weight: var(--quran-font-weight-semibold);
+    color: var(--quran-color-accent);
+  }
+  
+  &__verse-number-latin {
+    @include latin-text;
+    font-size: var(--quran-font-size-sm);
+    font-weight: var(--quran-font-weight-medium);
+    color: var(--quran-color-text-faded);
+  }
+  
+  // ========================================================================
+  // ACTION BUTTONS
+  // ========================================================================
+  
+  &__button {
+    @include reset-button;
+    @include flex-center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: var(--quran-radius-full);
+    background-color: transparent;
+    color: var(--quran-color-text-default);
+    transition: var(--quran-transition-all);
+    
+    &:hover {
+      background-color: var(--quran-color-bg-hover);
+      color: var(--quran-color-accent);
+    }
+    
+    &:active {
+      transform: scale(0.95);
+    }
+    
+    @include focus-ring;
+    
+    &--active {
+      color: var(--quran-color-accent);
+      background-color: var(--quran-color-accent-faded);
+    }
+  }
+  
+  &__icon {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+  
+  // ========================================================================
+  // RESPONSIVE
+  // ========================================================================
+  
+  @include mobile-only {
+    padding: var(--quran-spacing-xsmall);
+    
+    &__verse-number {
+      padding: var(--quran-spacing-xxsmall) var(--quran-spacing-xsmall);
+    }
+    
+    &__verse-number-arabic {
+      font-size: var(--quran-font-size-base);
+    }
+    
+    &__button {
+      width: 2rem;
+      height: 2rem;
+    }
+    
+    &__icon {
+      width: 1rem;
+      height: 1rem;
+    }
+  }
+}

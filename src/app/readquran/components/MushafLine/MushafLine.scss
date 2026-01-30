@@ -1,0 +1,120 @@
+/**
+ * Standalone Quran UI - MushafLine Component Styles
+ */
+
+.mushaf-line {
+  direction: rtl;
+  text-align: justify;
+  // Prioritize high-quality Uthmani fonts that handle marks correctly
+  font-family: 'KFGQPC HAFS Uthmanic Script', 'Simply Quran', 'p15-v4', 'p13-v4', 'Noto Naskh Arabic', 'Traditional Arabic', serif;
+  font-size: 28px;
+  line-height: 2.8;
+  color: var(--text-primary, #e8e6e3);
+  margin-bottom: 12px;
+  transition: background-color 0.2s ease;
+  
+  // Enable OpenType features for proper Arabic rendering
+  font-feature-settings: "calt" 1, "liga" 1, "mark" 1, "mkmk" 1;
+  -webkit-font-feature-settings: "calt" 1, "liga" 1, "mark" 1, "mkmk" 1;
+  -moz-font-feature-settings: "calt" 1, "liga" 1, "mkmk" 1;
+  
+  // Optimize text rendering for Arabic script
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  // Highlighted state (Audio/Active)
+  &--highlighted {
+    background-color: var(--highlight-bg, rgba(189, 147, 97, 0.08));
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin: 0 -12px 12px; // Negative margin to expand background without shifting text
+    
+    // Premium Accent (Right side in RTL)
+    border-right: 3px solid #bd9361; 
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
+    
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  // Center-aligned lines
+  &--centered {
+    text-align: center !important;
+    justify-content: center;
+    display: block;
+  }
+
+  &__content {
+    display: inline;
+  }
+
+  // Regular words
+  &__word {
+    display: inline;
+    cursor: pointer;
+    transition: all 0.2s ease-out;
+    white-space: nowrap;
+    border-radius: 4px;
+    // Add mild padding to hit-area without affecting flow too much
+    padding: 2px 1px;
+    margin: -2px -1px;
+
+    &:hover {
+      background-color: var(--word-hover, rgba(189, 147, 97, 0.15));
+      color: var(--word-hover-text, #bd9361);
+    }
+  }
+
+  // Verse end markers
+  &__verse-end {
+    display: inline;
+    margin: 0 4px;
+    color: var(--verse-end-color, #bd9361);
+    font-size: 0.9em;
+    font-weight: bold;
+    opacity: 0.9;
+  }
+}
+
+// Themes
+.theme-light .mushaf-line {
+  --text-primary: #1a1a1a;
+  --highlight-bg: rgba(189, 147, 97, 0.1);
+  --word-hover: rgba(189, 147, 97, 0.15);
+  --word-hover-text: #8b6f47;
+}
+
+.theme-sepia .mushaf-line {
+  --text-primary: #3d3426;
+  --verse-end-color: #8b6f47;
+  --highlight-bg: rgba(139, 111, 71, 0.12);
+  --word-hover: rgba(139, 111, 71, 0.2);
+  --word-hover-text: #5c452b;
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .mushaf-line {
+    font-size: 26px;
+    line-height: 2.4;
+    margin-bottom: 10px;
+    
+    // Reduce padding on mobile to save space
+    &--highlighted {
+        padding: 6px 8px;
+        margin: 0 -8px 10px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .mushaf-line {
+    font-size: 24px;
+    line-height: 2.2;
+    margin-bottom: 8px;
+
+    &__verse-end {
+      font-size: 0.85em;
+    }
+  }
+}

@@ -1,0 +1,320 @@
+/**
+ * Standalone Quran UI - SCSS Mixins
+ * Self-contained utility mixins for responsive design and common patterns
+ */
+
+// ============================================================================
+// RESPONSIVE BREAKPOINT MIXINS
+// ============================================================================
+
+$breakpoint-mobile: 480px;
+$breakpoint-tablet: 768px;
+$breakpoint-desktop: 1024px;
+$breakpoint-wide: 1280px;
+
+@mixin mobile {
+  @media (max-width: #{$breakpoint-mobile - 1px}) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (min-width: #{$breakpoint-tablet}) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: #{$breakpoint-desktop}) {
+    @content;
+  }
+}
+
+@mixin wide {
+  @media (min-width: #{$breakpoint-wide}) {
+    @content;
+  }
+}
+
+@mixin mobile-only {
+  @media (max-width: #{$breakpoint-tablet - 1px}) {
+    @content;
+  }
+}
+
+@mixin tablet-only {
+  @media (min-width: #{$breakpoint-tablet}) and (max-width: #{$breakpoint-desktop - 1px}) {
+    @content;
+  }
+}
+
+// ============================================================================
+// RTL SUPPORT MIXINS
+// ============================================================================
+
+@mixin rtl {
+  [dir='rtl'] & {
+    @content;
+  }
+}
+
+@mixin ltr {
+  [dir='ltr'] & {
+    @content;
+  }
+}
+
+// Logical properties for bidirectional support
+@mixin margin-inline($start, $end) {
+  margin-inline-start: $start;
+  margin-inline-end: $end;
+}
+
+@mixin padding-inline($start, $end) {
+  padding-inline-start: $start;
+  padding-inline-end: $end;
+}
+
+// ============================================================================
+// TYPOGRAPHY MIXINS
+// ============================================================================
+
+@mixin arabic-text {
+  font-family: var(--quran-font-arabic);
+  font-weight: var(--quran-font-weight-normal);
+  line-height: var(--quran-line-height-relaxed);
+  direction: rtl;
+}
+
+@mixin latin-text {
+  font-family: var(--quran-font-latin);
+  font-weight: var(--quran-font-weight-normal);
+  line-height: var(--quran-line-height-normal);
+  direction: ltr;
+}
+
+@mixin text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@mixin text-line-clamp($lines) {
+  display: -webkit-box;
+  -webkit-line-clamp: $lines;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+// ============================================================================
+// LAYOUT MIXINS
+// ============================================================================
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin flex-start {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+@mixin flex-end {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+// ============================================================================
+// VISUAL EFFECT MIXINS
+// ============================================================================
+
+@mixin hover-lift {
+  transition: var(--quran-transition-transform);
+  
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+@mixin hover-glow($color: var(--quran-color-accent)) {
+  transition: var(--quran-transition-all);
+  
+  &:hover {
+    box-shadow: 0 0 12px rgba($color, 0.3);
+  }
+}
+
+@mixin focus-ring {
+  &:focus-visible {
+    outline: 2px solid var(--quran-color-accent);
+    outline-offset: 2px;
+  }
+}
+
+@mixin card-shadow {
+  box-shadow: var(--quran-shadow-md);
+  
+  &:hover {
+    box-shadow: var(--quran-shadow-lg);
+  }
+}
+
+// ============================================================================
+// INTERACTION STATE MIXINS
+// ============================================================================
+
+@mixin interactive {
+  cursor: pointer;
+  user-select: none;
+  transition: var(--quran-transition-all);
+  
+  &:hover {
+    background-color: var(--quran-color-bg-hover);
+  }
+  
+  &:active {
+    transform: scale(0.98);
+  }
+  
+  @include focus-ring;
+}
+
+@mixin disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+// ============================================================================
+// SCROLLBAR STYLING MIXINS
+// ============================================================================
+
+@mixin custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--quran-color-border-default) transparent;
+  
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: var(--quran-color-border-default);
+    border-radius: var(--quran-radius-full);
+    
+    &:hover {
+      background: var(--quran-color-border-hover);
+    }
+  }
+}
+
+@mixin hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+// ============================================================================
+// ANIMATION MIXINS
+// ============================================================================
+
+@mixin fade-in($duration: var(--quran-transition-normal)) {
+  animation: fadeIn $duration ease;
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}
+
+@mixin slide-up($duration: var(--quran-transition-normal)) {
+  animation: slideUp $duration ease;
+  
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+@mixin pulse {
+  animation: pulse 2s ease-in-out infinite;
+  
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
+  }
+}
+
+// ============================================================================
+// UTILITY MIXINS
+// ============================================================================
+
+@mixin sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+@mixin reset-button {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+@mixin aspect-ratio($width, $height) {
+  aspect-ratio: $width / $height;
+  
+  @supports not (aspect-ratio: 1 / 1) {
+    &::before {
+      content: '';
+      display: block;
+      padding-bottom: calc(($height / $width) * 100%);
+    }
+  }
+}

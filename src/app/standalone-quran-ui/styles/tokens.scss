@@ -1,0 +1,221 @@
+/**
+ * Standalone Quran UI - Design Tokens
+ * Self-contained design system tokens (spacing, colors, typography)
+ */
+
+// ============================================================================
+// SPACING TOKENS
+// ============================================================================
+
+:root {
+  // Base spacing scale
+  --quran-spacing-xxsmall: 0.25rem;    /* 4px */
+  --quran-spacing-xsmall: 0.5rem;      /* 8px */
+  --quran-spacing-small: 0.75rem;      /* 12px */
+  --quran-spacing-medium: 1rem;        /* 16px */
+  --quran-spacing-medium2: 1.5rem;     /* 24px */ 
+  --quran-spacing-large: 2rem;         /* 32px */
+  --quran-spacing-xlarge: 2.5rem;      /* 40px */
+  --quran-spacing-xxlarge: 3rem;       /* 48px */
+  --quran-spacing-mega: 4rem;          /* 64px */
+}
+
+// ============================================================================
+// TYPOGRAPHY TOKENS
+// ============================================================================
+
+:root {
+  // Font families
+  --quran-font-arabic: 'Scheherazade New', 'Amiri', 'Traditional Arabic', serif;
+  --quran-font-latin: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  
+  // Font sizes
+  --quran-font-size-xs: 0.75rem;       /* 12px */
+  --quran-font-size-sm: 0.875rem;      /* 14px */
+  --quran-font-size-base: 1rem;        /* 16px */
+  --quran-font-size-md: 1.125rem;      /* 18px */
+  --quran-font-size-lg: 1.25rem;       /* 20px */
+  --quran-font-size-xl: 1.5rem;        /* 24px */
+  --quran-font-size-2xl: 2rem;         /* 32px */
+  --quran-font-size-3xl: 2.5rem;       /* 40px */
+  
+  // Font weights
+  --quran-font-weight-normal: 400;
+  --quran-font-weight-medium: 500;
+  --quran-font-weight-semibold: 600;
+  --quran-font-weight-bold: 700;
+  
+  // Line heights
+  --quran-line-height-tight: 1.25;
+  --quran-line-height-normal: 1.5;
+  --quran-line-height-relaxed: 1.75;
+  --quran-line-height-loose: 2;
+}
+
+// ============================================================================
+// COLOR TOKENS - DARK THEME (DEFAULT)
+// ============================================================================
+
+:root {
+  // Primary colors
+  --quran-color-primary: #ffffff;
+  --quran-color-primary-faded: #e7e9ea;
+  --quran-color-primary-dim: #777777;
+  
+  // Background colors
+  --quran-color-bg-default: #1f2125;
+  --quran-color-bg-elevated: #2a2d31;
+  --quran-color-bg-card: #252830;
+  --quran-color-bg-hover: rgba(255, 255, 255, 0.05);
+  --quran-color-bg-active: rgba(255, 255, 255, 0.1);
+  
+  // Accent colors
+  --quran-color-accent: #2ca4ab;
+  --quran-color-accent-hover: #3bb5bd;
+  --quran-color-accent-faded: rgba(44, 164, 171, 0.1);
+  
+  // Semantic colors
+  --quran-color-success: #2ca4ab;
+  --quran-color-warning: #ffb300;
+  --quran-color-error: #ff0000;
+  
+  // Text colors
+  --quran-color-text-default: #e7e9ea;
+  --quran-color-text-faded: #999999;
+  --quran-color-text-dim: #666666;
+  
+  // Border colors
+  --quran-color-border-default: rgba(255, 255, 255, 0.1);
+  --quran-color-border-hover: rgba(255, 255, 255, 0.2);
+  
+  // Shadow colors
+  --quran-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --quran-shadow-md: 0 4px 8px rgba(0, 0, 0, 0.4);
+  --quran-shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.5);
+}
+
+// ============================================================================
+// COLOR TOKENS - LIGHT THEME
+// ============================================================================
+
+.theme-light {
+  // Primary colors
+  --quran-color-primary: #000000;
+  --quran-color-primary-faded: #333333;
+  --quran-color-primary-dim: #666666;
+  
+  // Background colors
+  --quran-color-bg-default: #ffffff;
+  --quran-color-bg-elevated: #f8f9fa;
+  --quran-color-bg-card: #ffffff;
+  --quran-color-bg-hover: rgba(0, 0, 0, 0.05);
+  --quran-color-bg-active: rgba(0, 0, 0, 0.1);
+  
+  // Accent colors
+  --quran-color-accent: #2ca4ab;
+  --quran-color-accent-hover: #258c91;
+  --quran-color-accent-faded: rgba(44, 164, 171, 0.1);
+  
+  // Semantic colors
+  --quran-color-success: #2ca4ab;
+  --quran-color-warning: #ffb300;
+  --quran-color-error: #ff0000;
+  
+  // Text colors
+  --quran-color-text-default: #1a1a1a;
+  --quran-color-text-faded: #666666;
+  --quran-color-text-dim: #999999;
+  
+  // Border colors
+  --quran-color-border-default: rgba(0, 0, 0, 0.1);
+  --quran-color-border-hover: rgba(0, 0, 0, 0.2);
+  
+  // Shadow colors
+  --quran-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.1);
+  --quran-shadow-md: 0 4px 8px rgba(0, 0, 0, 0.15);
+  --quran-shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+// ============================================================================
+// COLOR TOKENS - SEPIA THEME
+// ============================================================================
+
+.theme-sepia {
+  // Primary colors
+  --quran-color-primary: #3d3020;
+  --quran-color-primary-faded: #5a4a35;
+  --quran-color-primary-dim: #8b7a64;
+  
+  // Background colors
+  --quran-color-bg-default: #f4ecd8;
+  --quran-color-bg-elevated: #eee4c8;
+  --quran-color-bg-card: #f9f3e3;
+  --quran-color-bg-hover: rgba(61, 48, 32, 0.05);
+  --quran-color-bg-active: rgba(61, 48, 32, 0.1);
+  
+  // Accent colors
+  --quran-color-accent: #a67c52;
+  --quran-color-accent-hover: #8b6640;
+  --quran-color-accent-faded: rgba(166, 124, 82, 0.1);
+  
+  // Semantic colors
+  --quran-color-success: #a67c52;
+  --quran-color-warning: #d4a259;
+  --quran-color-error: #c54e4e;
+  
+  // Text colors
+  --quran-color-text-default: #3d3020;
+  --quran-color-text-faded: #8b7a64;
+  --quran-color-text-dim: #b3a893;
+  
+  // Border colors
+  --quran-color-border-default: rgba(61, 48, 32, 0.15);
+  --quran-color-border-hover: rgba(61, 48, 32, 0.25);
+  
+  // Shadow colors
+  --quran-shadow-sm: 0 1px 2px rgba(61, 48, 32, 0.1);
+  --quran-shadow-md: 0 4px 8px rgba(61, 48, 32, 0.15);
+  --quran-shadow-lg: 0 8px 16px rgba(61, 48, 32, 0.2);
+}
+
+// ============================================================================
+// BORDER RADIUS TOKENS
+// ============================================================================
+
+:root {
+  --quran-radius-sm: 0.25rem;   /* 4px */
+  --quran-radius-md: 0.5rem;    /* 8px */
+  --quran-radius-lg: 0.75rem;   /* 12px */
+  --quran-radius-xl: 1rem;      /* 16px */
+  --quran-radius-full: 9999px;  /* Fully rounded */
+}
+
+// ============================================================================
+// TRANSITION TOKENS
+// ============================================================================
+
+:root {
+  --quran-transition-fast: 150ms ease;
+  --quran-transition-normal: 250ms ease;
+  --quran-transition-slow: 350ms ease;
+  
+  --quran-transition-color: color var(--quran-transition-fast);
+  --quran-transition-bg: background-color var(--quran-transition-fast);
+  --quran-transition-transform: transform var(--quran-transition-normal);
+  --quran-transition-all: all var(--quran-transition-normal);
+}
+
+// ============================================================================
+// Z-INDEX TOKENS
+// ============================================================================
+
+:root {
+  --quran-z-base: 0;
+  --quran-z-dropdown: 1000;
+  --quran-z-sticky: 1100;
+  --quran-z-fixed: 1200;
+  --quran-z-modal-backdrop: 1300;
+  --quran-z-modal: 1400;
+  --quran-z-popover: 1500;
+  --quran-z-tooltip: 1600;
+}

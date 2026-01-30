@@ -1,0 +1,191 @@
+/**
+ * Standalone Quran UI - Page Navigation Styles
+ */
+
+.page-navigation {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+
+  &__container {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 20px;
+    background: var(--nav-background, rgba(26, 26, 26, 0.95));
+    border: 1px solid var(--nav-border, rgba(255, 255, 255, 0.1));
+    border-radius: 40px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+  }
+
+  &__button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: transparent;
+    border: none;
+    color: var(--nav-text, #e8e6e3);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 20px;
+    transition: all 0.2s ease;
+
+    svg {
+      transition: transform 0.2s ease;
+    }
+
+    &:hover:not(:disabled) {
+      background: var(--nav-hover, rgba(255, 255, 255, 0.08));
+
+      svg {
+        transform: scale(1.1);
+      }
+    }
+
+    &:active:not(:disabled) {
+      transform: scale(0.95);
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    &--prev {
+      order: 1;
+    }
+
+    &--next {
+      order: 3;
+    }
+  }
+
+  &__info {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0 12px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--nav-text, #e8e6e3);
+    order: 2;
+    min-width: 80px;
+    justify-content: center;
+  }
+
+  &__current {
+    color: var(--accent-color, #bd9361);
+  }
+
+  &__separator {
+    color: var(--nav-text-dim, #888);
+    margin: 0 4px;
+  }
+
+  &__total {
+    color: var(--nav-text-dim, #888);
+  }
+
+  &__input-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    order: 2;
+  }
+
+  &__input {
+    width: 60px;
+    padding: 6px 12px;
+    background: var(--input-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--input-border, rgba(255, 255, 255, 0.1));
+    border-radius: 8px;
+    color: var(--nav-text, #e8e6e3);
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    transition: all 0.2s ease;
+
+    &:focus {
+      outline: none;
+      border-color: var(--accent-color, #bd9361);
+      background: var(--input-bg-focus, rgba(255, 255, 255, 0.08));
+    }
+
+    /* Remove spinner */
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    -moz-appearance: textfield;
+  }
+
+  &__hint {
+    margin-top: 8px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--hint-text, rgba(255, 255, 255, 0.4));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  &:hover &__hint {
+    opacity: 1;
+  }
+}
+
+// Light theme
+.theme-light .page-navigation {
+  &__container {
+    --nav-background: rgba(255, 255, 255, 0.95);
+    --nav-border: rgba(0, 0, 0, 0.1);
+    --nav-text: #1a1a1a;
+    --nav-text-dim: #666;
+    --nav-hover: rgba(0, 0, 0, 0.05);
+    --input-bg: rgba(0, 0, 0, 0.03);
+    --input-border: rgba(0, 0, 0, 0.1);
+    --input-bg-focus: rgba(0, 0, 0, 0.05);
+    --hint-text: rgba(0, 0, 0, 0.4);
+  }
+}
+
+// Sepia theme
+.theme-sepia .page-navigation {
+  &__container {
+    --nav-background: rgba(241, 234, 220, 0.95);
+    --nav-border: rgba(92, 80, 65, 0.2);
+    --nav-text: #3d3426;
+    --nav-text-dim: #6b5d4f;
+    --nav-hover: rgba(92, 80, 65, 0.08);
+    --input-bg: rgba(92, 80, 65, 0.05);
+    --input-border: rgba(92, 80, 65, 0.15);
+    --input-bg-focus: rgba(92, 80, 65, 0.1);
+    --hint-text: rgba(92, 80, 65, 0.4);
+    --accent-color: #8b6f47;
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .page-navigation {
+    bottom: 16px;
+
+    &__container {
+      padding: 10px 16px;
+      gap: 12px;
+    }
+
+    &__button span {
+      display: none;
+    }
+
+    &__hint {
+      display: none;
+    }
+  }
+}

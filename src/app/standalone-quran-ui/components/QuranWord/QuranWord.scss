@@ -1,0 +1,179 @@
+/**
+ * Standalone Quran UI - QuranWord Styles
+ * Self-contained styling for interactive word component
+ */
+
+@import '../../styles/tokens.scss';
+@import '../../styles/mixins.scss';
+
+.quran-word {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  padding: var(--quran-spacing-xxsmall);
+  margin: 0 var(--quran-spacing-xxsmall);
+  transition: var(--quran-transition-all);
+  border-radius: var(--quran-radius-sm);
+  
+  &__text {
+    @include arabic-text;
+    font-size: var(--quran-font-size-2xl);
+    color: var(--quran-color-text-default);
+    transition: var(--quran-transition-color);
+    
+    @include tablet {
+      font-size: var(--quran-font-size-3xl);
+    }
+  }
+  
+  // ========================================================================
+  // INTERACTION STATES
+  // ========================================================================
+  
+  &--clickable {
+    cursor: pointer;
+    user-select: none;
+    
+    &:hover {
+      background-color: var(--quran-color-bg-hover);
+      
+      .quran-word__text {
+        color: var(--quran-color-accent);
+      }
+    }
+    
+    &:active {
+      transform: scale(0.98);
+    }
+    
+    &:focus-visible {
+      outline: 2px solid var(--quran-color-accent);
+      outline-offset: 2px;
+    }
+  }
+  
+  &--highlighted {
+    background-color: var(--quran-color-accent-faded);
+    
+    .quran-word__text {
+      color: var(--quran-color-accent);
+    }
+  }
+  
+  // ========================================================================
+  // TOOLTIP (HOVER)
+  // ========================================================================
+  
+  &__tooltip {
+    position: absolute;
+    top: calc(100% + var(--quran-spacing-xsmall));
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--quran-color-bg-elevated);
+    border: 1px solid var(--quran-color-border-default);
+    border-radius: var(--quran-radius-md);
+    padding: var(--quran-spacing-small);
+    box-shadow: var(--quran-shadow-lg);
+    z-index: var(--quran-z-tooltip);
+    white-space: nowrap;
+    @include fade-in;
+    
+    // Tooltip arrow
+    &::before {
+      content: '';
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 6px solid transparent;
+      border-bottom-color: var(--quran-color-border-default);
+    }
+    
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 5px solid transparent;
+      border-bottom-color: var(--quran-color-bg-elevated);
+      margin-bottom: -1px;
+    }
+  }
+  
+  &__tooltip-transliteration {
+    @include latin-text;
+    font-size: var(--quran-font-size-sm);
+    color: var(--quran-color-text-faded);
+    margin-bottom: var(--quran-spacing-xxsmall);
+    font-style: italic;
+  }
+  
+  &__tooltip-translation {
+    @include latin-text;
+    font-size: var(--quran-font-size-sm);
+    color: var(--quran-color-text-default);
+    font-weight: var(--quran-font-weight-medium);
+  }
+  
+  // ========================================================================
+  // WORD-BY-WORD INLINE DISPLAY
+  // ========================================================================
+  
+  &--word-by-word {
+    display: inline-flex;
+    flex-direction: column;
+    gap: var(--quran-spacing-xsmall);
+    margin: var(--quran-spacing-small);
+  }
+  
+  &__inline {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    margin-top: var(--quran-spacing-xxsmall);
+  }
+  
+  &__inline-transliteration {
+    @include latin-text;
+    font-size: var(--quran-font-size-xs);
+    color: var(--quran-color-text-faded);
+    font-style: italic;
+    text-align: center;
+  }
+  
+  &__inline-translation {
+    @include latin-text;
+    font-size: var(--quran-font-size-xs);
+    color: var(--quran-color-text-faded);
+    text-align: center;
+    font-weight: var(--quran-font-weight-medium);
+  }
+  
+  // ========================================================================
+  // MOBILE OPTIMIZATIONS
+  // ========================================================================
+  
+  @include mobile-only {
+    padding: var(--quran-spacing-xxsmall);
+    
+    &__text {
+      font-size: var(--quran-font-size-xl);
+    }
+    
+    // Hide hover tooltip on mobile (use tap instead)
+    &__tooltip {
+      display: none;
+    }
+  }
+  
+  // ========================================================================
+  // RTL SUPPORT
+  // ========================================================================
+  
+  @include rtl {
+    direction: rtl;
+  }
+}

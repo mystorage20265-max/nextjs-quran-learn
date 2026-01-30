@@ -1,0 +1,124 @@
+/**
+ * Standalone Quran UI - VerseCard Styles
+ * Self-contained styling for complete verse card
+ */
+
+@import '../../styles/tokens.scss';
+@import '../../styles/mixins.scss';
+
+.verse-card {
+  @include flex-column;
+  position: relative;
+  gap: var(--quran-spacing-medium);
+  padding: var(--quran-spacing-large);
+  background-color: var(--quran-color-bg-card);
+  border-radius: var(--quran-radius-lg);
+  border: 1px solid var(--quran-color-border-default);
+  transition: var(--quran-transition-all);
+  
+  // Minimal variant for cleaner UI
+  &.minimal-card {
+    border: none;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    padding: 2.5rem;
+    
+    // Hover effect for the whole card
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+    }
+  }
+
+  @include tablet {
+    padding: var(--quran-spacing-xlarge);
+  }
+  
+  @include mobile-only {
+    padding: var(--quran-spacing-medium);
+    gap: var(--quran-spacing-small);
+  }
+  
+  // ========================================================================
+  // ARABIC TEXT CONTAINER
+  // ========================================================================
+  
+  &__arabic {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    direction: rtl;
+    text-align: center;
+    line-height: var(--quran-line-height-loose);
+    margin: var(--quran-spacing-medium) 0;
+    
+    // Dynamic Font Size Support
+    font-size: var(--quran-word-font-size, 28px);
+
+    @include tablet {
+      margin: var(--quran-spacing-large) 0;
+    }
+    
+    @include mobile-only {
+      margin: var(--quran-spacing-small) 0;
+    }
+  }
+  
+  // Word-by-word layout
+  &--word-by-word &__arabic {
+    flex-direction: row;
+    justify-content: center;
+    gap: var(--quran-spacing-small);
+    
+    @include mobile-only {
+      gap: var(--quran-spacing-xsmall);
+    }
+  }
+  
+  // ========================================================================
+  // TRANSLATIONS CONTAINER
+  // ========================================================================
+  
+  &__translations {
+    @include flex-column;
+    gap: var(--quran-spacing-large);
+    margin-top: var(--quran-spacing-medium);
+    padding-top: var(--quran-spacing-medium);
+    border-top: 1px solid var(--quran-color-border-default);
+    
+    // In minimal mode, lighter separator
+    .minimal-card & {
+        border-top: 1px dashed var(--quran-color-border-default);
+        opacity: 0.9;
+    }
+    
+    @include mobile-only {
+      gap: var(--quran-spacing-medium);
+      margin-top: var(--quran-spacing-small);
+      padding-top: var(--quran-spacing-small);
+    }
+  }
+  
+  // ========================================================================
+  // SEPARATOR
+  // ========================================================================
+  
+  &__separator {
+    height: 1px;
+    background-color: var(--quran-color-border-default);
+    margin-top: var(--quran-spacing-large);
+    
+    @include mobile-only {
+      margin-top: var(--quran-spacing-medium);
+    }
+  }
+  
+  // ========================================================================
+  // HIGHLIGHTED STATE
+  // ========================================================================
+  
+  &--highlighted {
+    background-color: var(--quran-color-accent-faded);
+    border-color: var(--quran-color-accent);
+  }
+}

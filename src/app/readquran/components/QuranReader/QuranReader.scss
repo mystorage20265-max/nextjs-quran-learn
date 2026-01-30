@@ -1,0 +1,275 @@
+@import '../../styles/tokens.scss';
+@import '../../styles/mixins.scss';
+
+// ============================================================================
+// QURAN READER CONTAINER
+// ============================================================================
+
+.quran-reader {
+  @include flex-column;
+  min-height: 100vh;
+  background-color: var(--quran-color-bg-default);
+  color: var(--quran-color-text-default);
+  font-family: var(--quran-font-family-latin);
+
+  // ============================================================================
+  // HEADER
+  // ============================================================================
+
+  &__header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: var(--quran-color-bg-card);
+    border-bottom: 1px solid var(--quran-color-border-default);
+    padding: var(--quran-spacing-lg) var(--quran-spacing-xl);
+    box-shadow: var(--quran-shadow-sm);
+
+    @include mobile {
+      padding: var(--quran-spacing-md);
+    }
+  }
+
+  &__chapter-info {
+    text-align: center;
+    margin-bottom: var(--quran-spacing-md);
+  }
+
+  &__chapter-name {
+    @include arabic-text;
+    font-size: var(--quran-font-size-2xl);
+    font-weight: var(--quran-font-weight-bold);
+    color: var(--quran-color-primary);
+    margin: 0 0 var(--quran-spacing-sm) 0;
+
+    @include mobile {
+      font-size: var(--quran-font-size-xl);
+    }
+  }
+
+  &__chapter-meta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--quran-spacing-sm);
+    font-size: var(--quran-font-size-sm);
+    color: var(--quran-color-text-faded);
+    margin: 0;
+
+    .separator {
+      color: var(--quran-color-border-default);
+    }
+
+    .capitalize {
+      text-transform: capitalize;
+    }
+
+    @include mobile {
+      font-size: var(--quran-font-size-xs);
+      flex-wrap: wrap;
+    }
+  }
+
+  &__navigation {
+    @include flex-between;
+    align-items: center;
+    gap: var(--quran-spacing-md);
+    max-width: 500px;
+    margin: 0 auto;
+
+    .nav-button {
+      @include interactive;
+      @include reset-button;
+      padding: var(--quran-spacing-sm) var(--quran-spacing-lg);
+      background-color: var(--quran-color-accent);
+      color: white;
+      border-radius: var(--quran-border-radius-md);
+      font-weight: var(--quran-font-weight-medium);
+      font-size: var(--quran-font-size-sm);
+      transition: all var(--quran-transition-normal);
+
+      &:hover:not(:disabled) {
+        @include hover-lift;
+        background-color: var(--quran-color-accent-hover);
+      }
+
+      &:disabled {
+        @include disabled;
+      }
+
+      @include mobile {
+        padding: var(--quran-spacing-xs) var(--quran-spacing-md);
+        font-size: var(--quran-font-size-xs);
+      }
+    }
+
+    .chapter-number {
+      font-size: var(--quran-font-size-base);
+      font-weight: var(--quran-font-weight-medium);
+      color: var(--quran-color-text-default);
+    }
+  }
+
+  // ============================================================================
+  // VERSES CONTAINER
+  // ============================================================================
+
+  &__verses {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--quran-spacing-xl);
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+
+    @include custom-scrollbar;
+
+    @include mobile {
+      padding: var(--quran-spacing-md);
+    }
+  }
+
+  // ============================================================================
+  // LOADING STATES
+  // ============================================================================
+
+  &__loading,
+  &__error {
+    @include flex-center;
+    flex-direction: column;
+    min-height: 60vh;
+    text-align: center;
+    padding: var(--quran-spacing-xl);
+
+    h3 {
+      font-size: var(--quran-font-size-xl);
+      color: var(--quran-color-primary);
+      margin: 0 0 var(--quran-spacing-sm) 0;
+    }
+
+    p {
+      font-size: var(--quran-font-size-base);
+      color: var(--quran-color-text-faded);
+      margin: 0 0 var(--quran-spacing-lg) 0;
+    }
+
+    button {
+      @include interactive;
+      @include reset-button;
+      padding: var(--quran-spacing-md) var(--quran-spacing-xl);
+      background-color: var(--quran-color-accent);
+      color: white;
+      border-radius: var(--quran-border-radius-md);
+      font-weight: var(--quran-font-weight-medium);
+
+      &:hover {
+        @include hover-lift;
+        background-color: var(--quran-color-accent-hover);
+      }
+    }
+  }
+
+  &__spinner {
+    border: 3px solid var(--quran-color-border-default);
+    border-top: 3px solid var(--quran-color-accent);
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    animation: spin 1s linear infinite;
+    margin-bottom: var(--quran-spacing-md);
+
+    &.small {
+      width: 24px;
+      height: 24px;
+      border-width: 2px;
+      margin: 0 var(--quran-spacing-sm) 0 0;
+    }
+  }
+
+  &__loading-more {
+    @include flex-center;
+    padding: var(--quran-spacing-xl);
+    color: var(--quran-color-text-faded);
+    font-size: var(--quran-font-size-sm);
+  }
+
+  // ============================================================================
+  // END OF CHAPTER
+  // ============================================================================
+
+  &__end-of-chapter {
+    @include flex-center;
+    flex-direction: column;
+    padding: var(--quran-spacing-2xl) var(--quran-spacing-xl);
+    text-align: center;
+
+    .divider {
+      width: 100%;
+      max-width: 300px;
+      height: 1px;
+      background: linear-gradient(
+        to right,
+        transparent,
+        var(--quran-color-border-default),
+        transparent
+      );
+      margin-bottom: var(--quran-spacing-lg);
+    }
+
+    p {
+      font-size: var(--quran-font-size-base);
+      color: var(--quran-color-text-faded);
+      margin: 0 0 var(--quran-spacing-lg) 0;
+    }
+
+    .next-chapter-button {
+      @include interactive;
+      @include reset-button;
+      padding: var(--quran-spacing-md) var(--quran-spacing-2xl);
+      background-color: var(--quran-color-accent);
+      color: white;
+      border-radius: var(--quran-border-radius-full);
+      font-weight: var(--quran-font-weight-medium);
+      font-size: var(--quran-font-size-base);
+
+      &:hover {
+        @include hover-lift;
+        @include hover-glow;
+        background-color: var(--quran-color-accent-hover);
+      }
+    }
+  }
+}
+
+// ============================================================================
+// ANIMATIONS
+// ============================================================================
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+// ============================================================================
+// RESPONSIVE ADJUSTMENTS
+// ============================================================================
+
+@include tablet {
+  .quran-reader {
+    &__verses {
+      padding: var(--quran-spacing-lg);
+    }
+  }
+}
+
+@include mobile {
+  .quran-reader {
+    &__header {
+      position: relative; // Not sticky on mobile
+    }
+  }
+}
