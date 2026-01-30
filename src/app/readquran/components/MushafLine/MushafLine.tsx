@@ -39,9 +39,9 @@ export const MushafLine: React.FC<MushafLineProps> = ({
   const pageNumber = (firstWord as any).pageNumber || 1;
   const hizbNumber = (firstWord as any).hizbNumber;
 
-  // Font Config for V2
+  // Font Config for V2 - Use Quran.com CDN
   const fontName = `p${pageNumber}-v2`;
-  const fontUrl = `/fonts/quran/hafs/v2/woff2/p${pageNumber}.woff2`;
+  const fontUrl = `https://fonts.qurancdn.com/hafs/v2/woff2/p${pageNumber}.woff2`;
 
   return (
     <>
@@ -58,24 +58,23 @@ export const MushafLine: React.FC<MushafLineProps> = ({
         id={lineKey}
         data-page={pageNumber}
         data-hizb={hizbNumber}
-        className={`mushaf-line ${isHighlighted ? 'mushaf-line--highlighted' : ''} ${
-          isCenterAligned ? 'mushaf-line--centered' : ''
-        } ${className}`}
+        className={`mushaf-line ${isHighlighted ? 'mushaf-line--highlighted' : ''} ${isCenterAligned ? 'mushaf-line--centered' : ''
+          } ${className}`}
         dir="rtl"
       >
         <div className="mushaf-line__content">
           {words.map((word, idx) => {
             // 1. Handle Pause Marks
             if (word.charType === CharType.Pause) {
-               return (
-                 <span
+              return (
+                <span
                   key={`${word.location}-${idx}`}
                   className="mushaf-line__word"
                   style={{ fontFamily: fontName }}
-                 >
-                   {word.codeV2}
-                 </span>
-               );
+                >
+                  {word.codeV2}
+                </span>
+              );
             }
 
             // 2. Handle Verse Ends
