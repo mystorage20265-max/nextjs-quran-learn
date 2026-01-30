@@ -13,7 +13,6 @@ import {
     useQuranData,
     useAllChapters,
     QuranDataType,
-    type Verse,
     type Word,
 } from './index';
 import { AudioPlayerBar } from './components/AudioPlayerBar/AudioPlayerBar';
@@ -114,10 +113,10 @@ export default function ReadQuranPage() {
         verseState.toggleBookmark(verseKey);
     };
 
-    const handlePlayClick = (verse: Verse) => {
+    const handlePlayClick = (verseKey: string) => {
         // Use audio.play which will automatically generate the URL via audioService
-        audio.play(verse.verseKey);
-        progress.markAsRead(verse.verseKey);
+        audio.play(verseKey);
+        progress.markAsRead(verseKey);
     };
 
     const handleTafsirClick = (verseKey: string) => {
@@ -250,7 +249,7 @@ export default function ReadQuranPage() {
                                         isBookmarked={verseState.bookmarkedVerses.has(verse.verseKey)}
                                         onWordClick={handleWordClick}
                                         onBookmarkToggle={handleBookmarkToggle}
-                                        onPlayClick={() => handlePlayClick(verse)}
+                                        onPlayClick={handlePlayClick}
                                     />
                                     {/* Tafsir Button */}
                                     <button
