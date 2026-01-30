@@ -39,9 +39,10 @@ export const MushafLine: React.FC<MushafLineProps> = ({
   const pageNumber = (firstWord as any).pageNumber || 1;
   const hizbNumber = (firstWord as any).hizbNumber;
 
-  // Font Config for V2 - Use Quran.com CDN
-  const fontName = `p${pageNumber}-v2`;
-  const fontUrl = `https://fonts.qurancdn.com/hafs/v2/woff2/p${pageNumber}.woff2`;
+  // Font Config for V2 - Use jsDelivr CDN with correct GitHub repo
+  const paddedPageNumber = String(pageNumber).padStart(3, '0'); // Convert 1 to "001"
+  const fontName = `QCF_P${paddedPageNumber}`;
+  const fontUrl = `https://cdn.jsdelivr.net/gh/mustafa0x/qpc-fonts@master/mushaf-woff2/QCF_P${paddedPageNumber}.woff2`;
 
   return (
     <>
@@ -72,7 +73,7 @@ export const MushafLine: React.FC<MushafLineProps> = ({
                   className="mushaf-line__word"
                   style={{ fontFamily: fontName }}
                 >
-                  {word.codeV2}
+                  {word.codeV1}
                 </span>
               );
             }
@@ -90,7 +91,7 @@ export const MushafLine: React.FC<MushafLineProps> = ({
               );
             }
 
-            // 3. Regular Words (Render V2 Glyph)
+            // 3. Regular Words (Render V1 Glyph for QCF fonts)
             return (
               <React.Fragment key={`${word.location}-${idx}`}>
                 <span
@@ -98,7 +99,7 @@ export const MushafLine: React.FC<MushafLineProps> = ({
                   data-location={word.location}
                   style={{ fontFamily: fontName }}
                 >
-                  {word.codeV2}
+                  {word.codeV1}
                 </span>
                 {' '}
               </React.Fragment>
