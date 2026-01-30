@@ -4,7 +4,7 @@
 
 .mushaf-line {
   direction: rtl;
-  text-align: justify;
+  text-align: center;
   // Prioritize high-quality Uthmani fonts that handle marks correctly
   font-family: 'KFGQPC HAFS Uthmanic Script', 'Simply Quran', 'p15-v4', 'p13-v4', 'Noto Naskh Arabic', 'Traditional Arabic', serif;
   font-size: 28px;
@@ -12,12 +12,12 @@
   color: var(--text-primary, #e8e6e3);
   margin-bottom: 12px;
   transition: background-color 0.2s ease;
-  
+
   // Enable OpenType features for proper Arabic rendering
   font-feature-settings: "calt" 1, "liga" 1, "mark" 1, "mkmk" 1;
   -webkit-font-feature-settings: "calt" 1, "liga" 1, "mark" 1, "mkmk" 1;
   -moz-font-feature-settings: "calt" 1, "liga" 1, "mkmk" 1;
-  
+
   // Optimize text rendering for Arabic script
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -29,11 +29,11 @@
     border-radius: 6px;
     padding: 8px 12px;
     margin: 0 -12px 12px; // Negative margin to expand background without shifting text
-    
+
     // Premium Accent (Right side in RTL)
-    border-right: 3px solid #bd9361; 
+    border-right: 3px solid #bd9361;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
-    
+
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
@@ -98,11 +98,11 @@
     font-size: 26px;
     line-height: 2.4;
     margin-bottom: 10px;
-    
+
     // Reduce padding on mobile to save space
     &--highlighted {
-        padding: 6px 8px;
-        margin: 0 -8px 10px;
+      padding: 6px 8px;
+      margin: 0 -8px 10px;
     }
   }
 }
