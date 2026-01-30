@@ -1,0 +1,221 @@
+/**
+ * SearchBar Styles
+ * Modern search modal with command palette style
+ */
+
+.search-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    z-index: 1300;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.search-modal {
+    position: fixed;
+    top: 20vh;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 600px;
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(30, 41, 59, 0.98));
+    backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(255, 255, 255, 0.05);
+    z-index: 1400;
+    overflow: hidden;
+    animation: slideDown 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+/* Input Container */
+.search-input-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 20px 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.search-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.search-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: white;
+    font-size: 1.125rem;
+    font-weight: 400;
+    padding: 0;
+}
+
+.search-input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.search-kbd {
+    padding: 4px 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.75rem;
+    font-family: monospace;
+    flex-shrink: 0;
+}
+
+/* Suggestions */
+.search-suggestions {
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 8px;
+}
+
+.search-suggestions::-webkit-scrollbar {
+    width: 8px;
+}
+
+.search-suggestions::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.search-suggestions::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}
+
+.search-suggestion {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 16px;
+    background: transparent;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+}
+
+.search-suggestion:hover,
+.search-suggestion.active {
+    background: rgba(59, 130, 246, 0.15);
+}
+
+.suggestion-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.suggestion-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.suggestion-title {
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.suggestion-meta {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.85rem;
+}
+
+.suggestion-arrow {
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    opacity: 0;
+    transform: translateX(-8px);
+    transition: all 0.2s;
+}
+
+.search-suggestion:hover .suggestion-arrow,
+.search-suggestion.active .suggestion-arrow {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Help Text */
+.search-help {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.search-help-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.8rem;
+}
+
+.search-help-item kbd {
+    padding: 3px 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-family: monospace;
+}
+
+/* Empty State */
+.search-empty {
+    padding: 40px 20px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.95rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .search-modal {
+        top: 10vh;
+        max-width: 95%;
+        border-radius: 16px;
+    }
+
+    .search-input-container {
+        padding: 16px 20px;
+    }
+
+    .search-input {
+        font-size: 1rem;
+    }
+
+    .search-help {
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .search-help-item {
+        font-size: 0.75rem;
+    }
+}

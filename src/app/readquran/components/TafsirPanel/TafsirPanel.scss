@@ -1,0 +1,261 @@
+/**
+ * TafsirPanel Styles
+ */
+
+.tafsir-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 1100;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.tafsir-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    max-width: 500px;
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(30, 41, 59, 0.98));
+    backdrop-filter: blur(20px) saturate(180%);
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: -10px 0 40px rgba(0, 0, 0, 0.5);
+    z-index: 1200;
+    display: flex;
+    flex-direction: column;
+    animation: slideInRight 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+    }
+
+    to {
+        transform: translateX(0);
+    }
+}
+
+/* Header */
+.tafsir-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tafsir-title {
+    flex: 1;
+}
+
+.tafsir-title h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+    margin: 0 0 4px 0;
+}
+
+.tafsir-verse {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.tafsir-close {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.tafsir-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(90deg);
+}
+
+/* Source Selector */
+.tafsir-source-selector {
+    padding: 16px 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tafsir-source-selector label {
+    display: block;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+}
+
+.tafsir-select {
+    width: 100%;
+    padding: 10px 14px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    color: white;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.tafsir-select:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.tafsir-select:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.tafsir-select option {
+    background: #1e293b;
+}
+
+/* Content */
+.tafsir-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+}
+
+.tafsir-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.tafsir-content::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.tafsir-content::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}
+
+/* States */
+.tafsir-loading,
+.tafsir-error,
+.tafsir-empty,
+.tafsir-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.loading-spinner {
+    font-size: 3rem;
+    margin-bottom: 16px;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.error-icon,
+.placeholder-icon {
+    font-size: 3rem;
+    margin-bottom: 16px;
+}
+
+.tafsir-loading p,
+.tafsir-error p,
+.tafsir-empty p,
+.tafsir-placeholder p {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+.tafsir-error p {
+    color: #fca5a5;
+}
+
+/* Text Content */
+.tafsir-text {
+    animation: fadeIn 0.3s ease-out;
+}
+
+.tafsir-html {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1rem;
+    line-height: 1.8;
+    margin-bottom: 24px;
+}
+
+.tafsir-html p {
+    margin-bottom: 16px;
+}
+
+.tafsir-html h1,
+.tafsir-html h2,
+.tafsir-html h3,
+.tafsir-html h4 {
+    color: white;
+    margin: 24px 0 12px 0;
+    font-weight: 600;
+}
+
+.tafsir-html ul,
+.tafsir-html ol {
+    margin-left: 24px;
+    margin-bottom: 16px;
+}
+
+.tafsir-html li {
+    margin-bottom: 8px;
+}
+
+.tafsir-html a {
+    color: #60a5fa;
+    text-decoration: none;
+}
+
+.tafsir-html a:hover {
+    text-decoration: underline;
+}
+
+.tafsir-meta {
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.85rem;
+    font-style: italic;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .tafsir-panel {
+        max-width: 100%;
+    }
+
+    .tafsir-header {
+        padding: 20px;
+    }
+
+    .tafsir-content {
+        padding: 20px;
+    }
+
+    .tafsir-html {
+        font-size: 0.95rem;
+    }
+}

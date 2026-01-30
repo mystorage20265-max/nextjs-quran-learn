@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 10px 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .info {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f0f0f0;
+            border-radius: 5px;
+        }
+        .error {
+            color: red;
+        }
+        .success {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <h1>Quran Audio Test</h1>
+    
+    <div class="info">
+        <h3>Testing Audio URL:</h3>
+        <p id="audioUrl">https://verses.quran.com/ar.alafasy/1:1.mp3</p>
+    </div>
+
+    <button onclick="testAudio()">Test Audio (Surah Al-Fatiha, Verse 1)</button>
+    <button onclick="testAudio2()">Test Audio (Surah Al-Baqarah, Verse 1)</button>
+    <button onclick="stopAudio()">Stop</button>
+
+    <div class="info">
+        <h3>Status:</h3>
+        <p id="status">Click a button to test audio</p>
+    </div>
+
+    <audio id="quranAudio" controls style="width: 100%; margin-top: 20px;"></audio>
+
+    <script>
+        const audio = document.getElementById('quranAudio');
+        audio.crossOrigin = 'anonymous';
+
+        function updateStatus(message, isError = false) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = isError ? 'error' : 'success';
+            console.log(message);
+        }
+
+        function testAudio() {
+            const url = 'https://verses.quran.com/ar.alafasy/1:1.mp3';
+            document.getElementById('audioUrl').textContent = url;
+            
+            audio.src = url;
+            audio.load();
+            
+            updateStatus('Loading audio from: ' + url);
+            
+            audio.play()
+                .then(() => updateStatus('Audio playing successfully! ✅'))
+                .catch(err => {
+                    updateStatus('Error playing audio: ' + err.message, true);
+                    console.error('Full error:', err);
+                });
+        }
+
+        function testAudio2() {
+            const url = 'https://verses.quran.com/ar.alafasy/2:1.mp3';
+            document.getElementById('audioUrl').textContent = url;
+            
+            audio.src = url;
+            audio.load();
+            
+            updateStatus('Loading audio from: ' + url);
+            
+            audio.play()
+                .then(() => updateStatus('Audio playing successfully! ✅'))
+                .catch(err => {
+                    updateStatus('Error playing audio: ' + err.message, true);
+                    console.error('Full error:', err);
+                });
+        }
+
+        function stopAudio() {
+            audio.pause();
+            audio.currentTime = 0;
+            updateStatus('Audio stopped');
+        }
+
+        // Event listeners
+        audio.addEventListener('error', function(e) {
+            let errorMsg = 'Audio error: ';
+            if (audio.error) {
+                switch(audio.error.code) {
+                    case MediaError.MEDIA_ERR_ABORTED:
+                        errorMsg += 'Loading aborted';
+                        break;
+                    case MediaError.MEDIA_ERR_NETWORK:
+                        errorMsg += 'Network error';
+                        break;
+                    case MediaError.MEDIA_ERR_DECODE:
+                        errorMsg += 'Decode error';
+                        break;
+                    case MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED:
+                        errorMsg += 'Format not supported or URL invalid';
+                        break;
+                    default:
+                        errorMsg += 'Unknown error';
+                }
+            }
+            updateStatus(errorMsg, true);
+            console.error('Audio error details:', audio.error);
+        });
+
+        audio.addEventListener('canplay', function() {
+            console.log('Audio can play - ready to start');
+        });
+
+        audio.addEventListener('loadstart', function() {
+            console.log('Audio loading started');
+        });
+    </script>
+</body>
+</html>

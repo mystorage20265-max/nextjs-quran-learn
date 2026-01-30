@@ -1,24 +1,32 @@
 'use client';
 
 /**
- * Standalone Quran UI Demo Page
- * Showcases the component library with interactive examples
+ * Enhanced ReadQuran Page
+ * Premium Quran reading experience with advanced features
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Scheherazade_New, Amiri_Quran } from 'next/font/google';
 import {
     VerseCard,
     useVerseState,
-    useAudioPlayer,
     useQuranData,
     useAllChapters,
     QuranDataType,
     type Verse,
     type Word,
 } from './index';
+import { AudioPlayerBar } from './components/AudioPlayerBar/AudioPlayerBar';
+import { SettingsPanel } from './components/SettingsPanel/SettingsPanel';
+import { SearchBar } from './components/SearchBar/SearchBar';
+import { TafsirPanel } from './components/TafsirPanel/TafsirPanel';
+import { StickyToolbar } from './components/StickyToolbar/StickyToolbar';
+import { useEnhancedAudio } from './hooks/useEnhancedAudio';
+import { useSettings } from './hooks/useSettings';
+import { useProgress } from './hooks/useProgress';
 import './styles/tokens.scss';
-import '../read-quran/styles/read-quran.css'; // Import CSS variables
+import './styles.css';
+import '../read-quran/styles/read-quran.css';
 
 // Load Arabic fonts
 const scheherazade = Scheherazade_New({
@@ -34,36 +42,71 @@ const amiri = Amiri_Quran({
 });
 
 export default function ReadQuranPage() {
+    // State management
+    const audio = useEnhancedAudio();
+    const { preferences, updatePreferences } = useSettings();
+    const progress = useProgress();
     const verseState = useVerseState({
-        theme: 'dark',
-        showTranslation: true,
-        showWordByWord: false,
+        theme: preferences.theme,
+        showTranslation: preferences.showTranslation,
+        showWordByWord: preferences.showWordByWord,
     });
 
-    const audioPlayer = useAudioPlayer();
+    // UI State
     const [selectedChapter, setSelectedChapter] = useState<number>(1);
-    const [activeExample, setActiveExample] = useState<'basic' | 'word-by-word' | 'interactive'>('interactive');
+    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const [isTafsirOpen, setIsTafsirOpen] = useState(false);
+    const [selectedVerseForTafsir, setSelectedVerseForTafsir] = useState<string | null>(null);
 
-    // Fetch all chapters for the selector
+    // Fetch all chapters
     const { chapters } = useAllChapters();
 
-    // Fetch real Quran data for selected chapter with pagination
+    // Fetch chapter data with pagination
     const { verses, isLoading, error, currentPage, totalPages, goToPage } = useQuranData(selectedChapter, {
         type: QuranDataType.Chapter,
-        translations: [131], // Sahih International
+        translations: preferences.selectedTranslations,
         wordTranslationLanguage: 'en',
-        wordTransliteration: true,
-        perPage: 10, // Show 10 verses at a time
+        wordTransliteration: preferences.showTransliteration,
+        perPage: 10,
     });
 
     const currentChapter = chapters.find(ch => ch.id === selectedChapter);
 
-    const handleWordClick = (word: Word) => {
-        console.log('Word clicked:', word);
-        verseState.highlightWord(word.location);
+    // Sync verseState with preferences
+    useEffect(() => {
+        verseState.updatePreferences({
+            theme: preferences.theme,
+            showTranslation: preferences.showTranslation,
+            showWordByWord: preferences.showWordByWord,
+        });
+    }, [preferences]);
 
+    // Setup playlist when verses load
+    useEffect(() => {
+        if (verses.length > 0) {
+            const verseKeys = verses.map(v => v.verseKey);
+            audio.setPlaylist(verseKeys);
+        }
+    }, [verses]);
+
+    // Keyboard shortcuts
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                setIsSearchOpen(true);
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, []);
+
+    // Handlers
+    const handleWordClick = (word: Word) => {
         if (word.audioUrl) {
-            audioPlayer.playWord(word);
+            audio.playWord(word.audioUrl);
         }
     };
 
@@ -72,7 +115,31 @@ export default function ReadQuranPage() {
     };
 
     const handlePlayClick = (verse: Verse) => {
-        audioPlayer.play(verse.verseKey, verse.audioUrl);
+        // Use audio.play which will automatically generate the URL via audioService
+        audio.play(verse.verseKey);
+        progress.markAsRead(verse.verseKey);
+    };
+
+    const handleTafsirClick = (verseKey: string) => {
+        setSelectedVerseForTafsir(verseKey);
+        setIsTafsirOpen(true);
+    };
+
+    const handleSearch = (verseKey: string) => {
+        const [chapterStr] = verseKey.split(':');
+        const chapterId = parseInt(chapterStr);
+
+        if (chapterId !== selectedChapter) {
+            setSelectedChapter(chapterId);
+        }
+
+        // Scroll to verse after a short delay
+        setTimeout(() => {
+            const verseElement = document.querySelector(`[data-verse-key="${verseKey}"]`);
+            if (verseElement) {
+                verseElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }, 500);
     };
 
     const handlePreviousPage = () => {
@@ -89,451 +156,178 @@ export default function ReadQuranPage() {
         }
     };
 
+    const getFontClass = () => {
+        return preferences.arabicFont === 'amiri' ? amiri.className : scheherazade.className;
+    };
+
     return (
-        <div className={`${scheherazade.className} theme-${verseState.preferences.theme}`} style={{
-            minHeight: '100vh',
-            padding: '2rem',
-            background: verseState.preferences.theme === 'dark' ? '#1a1a1a' :
-                verseState.preferences.theme === 'light' ? '#ffffff' : '#f4f1ea'
-        }}>
-            <div style={{
-                maxWidth: '1200px',
-                margin: '0 auto',
-            }}>
-                {/* Header */}
-                <header style={{
-                    marginBottom: '3rem',
-                    textAlign: 'center',
-                }}>
-                    <h1 style={{
-                        fontSize: '2.5rem',
-                        fontWeight: '700',
-                        marginBottom: '1rem',
-                        color: verseState.preferences.theme === 'dark' ? '#ffffff' : '#1a1a1a',
-                    }}>
-                        Read Quran - Interactive Experience
-                    </h1>
-                    <p style={{
-                        fontSize: '1.125rem',
-                        color: verseState.preferences.theme === 'dark' ? '#b0b0b0' : '#666',
-                        maxWidth: '700px',
-                        margin: '0 auto',
-                    }}>
-                        Experience the Noble Quran with live API data, beautiful interfaces,
-                        and Word-by-Word translation support.
-                    </p>
+        <div
+            className={`${getFontClass()} theme-${preferences.theme} readquran-page`}
+            style={{
+                '--arabic-font-size': `${preferences.arabicFontSize}px`,
+                '--translation-font-size': `${preferences.translationFontSize}px`,
+            } as React.CSSProperties}
+        >
+            <div className="readquran-container">
+                {/* Hero Section */}
+                <header className="readquran-hero">
+                    <div className="hero-content">
+                        <div className="hero-badge">📖</div>
+                        <h1 className="hero-title">Read Quran</h1>
+                        <p className="hero-description">
+                            Experience the Noble Quran with beautiful interfaces, word-by-word translation,
+                            and audio playback from multiple reciters.
+                        </p>
+
+                        {/* Progress Stats */}
+                        <div className="hero-stats">
+                            <div className="stat-item">
+                                <div className="stat-value">{progress.totalVersesRead}</div>
+                                <div className="stat-label">Verses Read</div>
+                            </div>
+                            <div className="stat-item">
+                                <div className="stat-value">{progress.readingStreak}</div>
+                                <div className="stat-label">Day Streak</div>
+                            </div>
+                            <div className="stat-item">
+                                <div className="stat-value">{progress.formattedReadingTime}</div>
+                                <div className="stat-label">Total Time</div>
+                            </div>
+                        </div>
+                    </div>
                 </header>
 
-                {/* Theme Switcher */}
-                <div style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    gap: '1rem',
-                    marginBottom: '2rem',
-                    flexWrap: 'wrap',
-                }}>
-                    <button
-                        onClick={() => verseState.updatePreferences({ theme: 'dark' })}
-                        style={{
-                            padding: '0.75rem 1.5rem',
-                            fontSize: '1rem',
-                            fontWeight: '600',
-                            borderRadius: '8px',
-                            border: verseState.preferences.theme === 'dark' ? '2px solid #4a90e2' : '2px solid #ccc',
-                            background: verseState.preferences.theme === 'dark' ? '#4a90e2' : '#fff',
-                            color: verseState.preferences.theme === 'dark' ? '#fff' : '#333',
-                            cursor: 'pointer',
-                            transition: 'all 0.2s',
-                        }}
-                    >
-                        🌙 Dark Theme
-                    </button>
-                    <button
-                        onClick={() => verseState.updatePreferences({ theme: 'light' })}
-                        style={{
-                            padding: '0.75rem 1.5rem',
-                            fontSize: '1rem',
-                            fontWeight: '600',
-                            borderRadius: '8px',
-                            border: verseState.preferences.theme === 'light' ? '2px solid #4a90e2' : '2px solid #ccc',
-                            background: verseState.preferences.theme === 'light' ? '#4a90e2' : '#fff',
-                            color: verseState.preferences.theme === 'light' ? '#fff' : '#333',
-                            cursor: 'pointer',
-                            transition: 'all 0.2s',
-                        }}
-                    >
-                        ☀️ Light Theme
-                    </button>
-                    <button
-                        onClick={() => verseState.updatePreferences({ theme: 'sepia' })}
-                        style={{
-                            padding: '0.75rem 1.5rem',
-                            fontSize: '1rem',
-                            fontWeight: '600',
-                            borderRadius: '8px',
-                            border: verseState.preferences.theme === 'sepia' ? '2px solid #8b6f47' : '2px solid #ccc',
-                            background: verseState.preferences.theme === 'sepia' ? '#8b6f47' : '#fff',
-                            color: verseState.preferences.theme === 'sepia' ? '#fff' : '#333',
-                            cursor: 'pointer',
-                            transition: 'all 0.2s',
-                        }}
-                    >
-                        📜 Sepia Theme
-                    </button>
-                </div>
-
-                {/* Surah Selector */}
-                <div style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    gap: '1rem',
-                    marginBottom: '2rem',
-                    padding: '1.5rem',
-                    borderRadius: '12px',
-                    background: verseState.preferences.theme === 'dark' ? '#2a2a2a' :
-                        verseState.preferences.theme === 'light' ? '#f5f5f5' : '#e8e4d9',
-                    border: '1px solid',
-                    borderColor: verseState.preferences.theme === 'dark' ? '#3a3a3a' : '#ddd',
-                }}>
-                    <label htmlFor="surah-select" style={{
-                        fontSize: '1.125rem',
-                        fontWeight: '600',
-                        color: verseState.preferences.theme === 'dark' ? '#fff' : '#1a1a1a',
-                    }}>
-                        📖 Select Surah
-                    </label>
+                {/* Chapter Selector */}
+                <div className="chapter-selector">
+                    <label htmlFor="surah-select">📖 Select Surah</label>
                     <select
                         id="surah-select"
                         value={selectedChapter}
                         onChange={(e) => setSelectedChapter(Number(e.target.value))}
-                        style={{
-                            width: '100%',
-                            maxWidth: '500px',
-                            padding: '0.75rem 1rem',
-                            fontSize: '1rem',
-                            fontWeight: '500',
-                            borderRadius: '8px',
-                            border: '2px solid',
-                            borderColor: verseState.preferences.theme === 'dark' ? '#4a90e2' : '#ccc',
-                            background: verseState.preferences.theme === 'dark' ? '#1a1a1a' : '#fff',
-                            color: verseState.preferences.theme === 'dark' ? '#fff' : '#333',
-                            cursor: 'pointer',
-                            outline: 'none',
-                        }}
+                        className="chapter-select"
                     >
                         {chapters.map((chapter) => (
                             <option key={chapter.id} value={chapter.id}>
-                                {chapter.id}. {chapter.nameArabic} - {chapter.name} ({chapter.translatedName}) - {chapter.versesCount} verses
+                                {chapter.id}. {chapter.nameArabic} - {chapter.name} ({chapter.versesCount} verses)
                             </option>
                         ))}
                     </select>
                     {currentChapter && (
-                        <div style={{
-                            textAlign: 'center',
-                            fontSize: '0.875rem',
-                            color: verseState.preferences.theme === 'dark' ? '#b0b0b0' : '#666',
-                        }}>
-                            <span style={{ marginRight: '1rem' }}>
-                                📍 {currentChapter.revelationPlace === 'makkah' ? 'Makkan' : 'Medinan'}
-                            </span>
-                            <span>
-                                📄 {currentChapter.versesCount} verses
-                            </span>
+                        <div className="chapter-meta">
+                            <span>📍 {currentChapter.revelationPlace === 'makkah' ? 'Makkan' : 'Medinan'}</span>
+                            <span>📄 {currentChapter.versesCount} verses</span>
                         </div>
                     )}
                 </div>
 
-                {/* Example Selector */}
-                <div style={{
-                    marginBottom: '2rem',
-                    padding: '1.5rem',
-                    borderRadius: '12px',
-                    background: verseState.preferences.theme === 'dark' ? '#2a2a2a' :
-                        verseState.preferences.theme === 'light' ? '#f5f5f5' : '#e8e4d9',
-                }}>
-                    <h2 style={{
-                        fontSize: '1.25rem',
-                        fontWeight: '600',
-                        marginBottom: '1rem',
-                        color: verseState.preferences.theme === 'dark' ? '#ffffff' : '#1a1a1a',
-                    }}>Reading Mode</h2>
-                    <div style={{
-                        display: 'flex',
-                        gap: '1rem',
-                        flexWrap: 'wrap',
-                    }}>
-                        <button
-                            onClick={() => {
-                                setActiveExample('basic');
-                                verseState.setShowTranslation(true);
-                                verseState.setShowWordByWord(false);
-                            }}
-                            style={{
-                                padding: '0.75rem 1.5rem',
-                                borderRadius: '8px',
-                                border: activeExample === 'basic' ? '2px solid #10b981' : '2px solid transparent',
-                                background: activeExample === 'basic' ? '#10b981' : (verseState.preferences.theme === 'dark' ? '#3a3a3a' : '#e5e5e5'),
-                                color: activeExample === 'basic' ? '#ffffff' : (verseState.preferences.theme === 'dark' ? '#ffffff' : '#1a1a1a'),
-                                cursor: 'pointer',
-                                fontWeight: '600',
-                                transition: 'all 0.2s',
-                            }}
-                        >
-                            📖 Basic Display
-                        </button>
-                        <button
-                            onClick={() => {
-                                setActiveExample('word-by-word');
-                                verseState.setShowTranslation(true);
-                                verseState.setShowWordByWord(true);
-                            }}
-                            style={{
-                                padding: '0.75rem 1.5rem',
-                                borderRadius: '8px',
-                                border: activeExample === 'word-by-word' ? '2px solid #10b981' : '2px solid transparent',
-                                background: activeExample === 'word-by-word' ? '#10b981' : (verseState.preferences.theme === 'dark' ? '#3a3a3a' : '#e5e5e5'),
-                                color: activeExample === 'word-by-word' ? '#ffffff' : (verseState.preferences.theme === 'dark' ? '#ffffff' : '#1a1a1a'),
-                                cursor: 'pointer',
-                                fontWeight: '600',
-                                transition: 'all 0.2s',
-                            }}
-                        >
-                            🔤 Word-by-Word
-                        </button>
-                        <button
-                            onClick={() => {
-                                setActiveExample('interactive');
-                                verseState.setShowTranslation(true);
-                                verseState.setShowWordByWord(false);
-                            }}
-                            style={{
-                                padding: '0.75rem 1.5rem',
-                                borderRadius: '8px',
-                                border: activeExample === 'interactive' ? '2px solid #10b981' : '2px solid transparent',
-                                background: activeExample === 'interactive' ? '#10b981' : (verseState.preferences.theme === 'dark' ? '#3a3a3a' : '#e5e5e5'),
-                                color: activeExample === 'interactive' ? '#ffffff' : (verseState.preferences.theme === 'dark' ? '#ffffff' : '#1a1a1a'),
-                                cursor: 'pointer',
-                                fontWeight: '600',
-                                transition: 'all 0.2s',
-                            }}
-                        >
-                            ✨ Interactive
-                        </button>
-                    </div>
-                </div>
-
-                {/* Example Description */}
-                <div style={{
-                    marginBottom: '2rem',
-                    padding: '1.5rem',
-                    borderRadius: '12px',
-                    background: verseState.preferences.theme === 'dark' ? '#2a2a2a' :
-                        verseState.preferences.theme === 'light' ? '#f5f5f5' : '#e8e4d9',
-                    color: verseState.preferences.theme === 'dark' ? '#b0b0b0' : '#666',
-                }}>
-                    {activeExample === 'basic' && (
-                        <>
-                            <h3 style={{ fontSize: '1.125rem', fontWeight: '600', marginBottom: '0.5rem', color: verseState.preferences.theme === 'dark' ? '#ffffff' : '#1a1a1a' }}>Basic Display</h3>
-                            <p>Shows Arabic text with English translation. Perfect for reading and comprehension.</p>
-                        </>
-                    )}
-                    {activeExample === 'word-by-word' && (
-                        <>
-                            <h3 style={{ fontSize: '1.125rem', fontWeight: '600', marginBottom: '0.5rem', color: verseState.preferences.theme === 'dark' ? '#ffffff' : '#1a1a1a' }}>Word-by-Word Display</h3>
-                            <p>Each Arabic word is shown with its transliteration and translation below. Great for learning and study.</p>
-                        </>
-                    )}
-                    {activeExample === 'interactive' && (
-                        <>
-                            <h3 style={{ fontSize: '1.125rem', fontWeight: '600', marginBottom: '0.5rem', color: verseState.preferences.theme === 'dark' ? '#ffffff' : '#1a1a1a' }}>Interactive Display</h3>
-                            <p>Click on any word to see its meaning, transliteration, and hear its pronunciation. Features audio playback and bookmarking.</p>
-                        </>
-                    )}
-                </div>
-
-
                 {/* Verses Display */}
-                <div style={{
-                    marginBottom: '3rem',
-                }}>
+                <div className="verses-container">
                     {isLoading && (
-                        <div style={{
-                            textAlign: 'center',
-                            padding: '3rem',
-                            color: verseState.preferences.theme === 'dark' ? '#b0b0b0' : '#666',
-                        }}>
-                            <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>⏳</div>
+                        <div className="loading-state">
+                            <div className="loading-spinner">⏳</div>
                             <p>Loading Quran verses...</p>
                         </div>
                     )}
 
                     {error && (
-                        <div style={{
-                            textAlign: 'center',
-                            padding: '3rem',
-                            color: '#ef4444',
-                            background: verseState.preferences.theme === 'dark' ? '#2a1a1a' : '#fee',
-                            borderRadius: '12px',
-                            border: '1px solid #ef4444',
-                        }}>
-                            <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>⚠️</div>
+                        <div className="error-state">
+                            <div className="error-icon">⚠️</div>
                             <p>Error loading verses: {error.message}</p>
                         </div>
                     )}
 
                     {!isLoading && !error && verses.length > 0 && (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-                            {verses.map((verse) => {
-                                const isHighlighted = audioPlayer.currentVerseKey === verse.verseKey;
-                                const isBookmarked = verseState.bookmarkedVerses.has(verse.verseKey);
-
-                                return (
+                        <div className="verses-list">
+                            {verses.map((verse) => (
+                                <div key={verse.verseKey} data-verse-key={verse.verseKey}>
                                     <VerseCard
-                                        key={verse.verseKey}
                                         verse={verse}
-                                        theme={verseState.preferences.theme}
-                                        showTranslation={verseState.showTranslation}
-                                        showWordByWord={verseState.showWordByWord}
-                                        showWordByWordTransliteration={verseState.showWordByWordTransliteration}
-                                        isHighlighted={isHighlighted}
-                                        isBookmarked={isBookmarked}
+                                        theme={preferences.theme}
+                                        showTranslation={preferences.showTranslation}
+                                        showWordByWord={preferences.showWordByWord}
+                                        showWordByWordTransliteration={preferences.showTransliteration}
+                                        isHighlighted={audio.currentVerseKey === verse.verseKey}
+                                        isBookmarked={verseState.bookmarkedVerses.has(verse.verseKey)}
                                         onWordClick={handleWordClick}
                                         onBookmarkToggle={handleBookmarkToggle}
                                         onPlayClick={() => handlePlayClick(verse)}
                                     />
-                                );
-                            })}
+                                    {/* Tafsir Button */}
+                                    <button
+                                        className="verse-tafsir-btn"
+                                        onClick={() => handleTafsirClick(verse.verseKey)}
+                                    >
+                                        📚 View Tafsir
+                                    </button>
+                                </div>
+                            ))}
                         </div>
                     )}
 
-                    {/* Pagination Controls */}
+                    {/* Pagination */}
                     {!isLoading && !error && verses.length > 0 && totalPages > 1 && (
-                        <div style={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            gap: '1rem',
-                            marginTop: '2rem',
-                            padding: '1.5rem',
-                            borderRadius: '12px',
-                            background: verseState.preferences.theme === 'dark' ? '#2a2a2a' :
-                                verseState.preferences.theme === 'light' ? '#f5f5f5' : '#e8e4d9',
-                        }}>
+                        <div className="pagination">
                             <button
                                 onClick={handlePreviousPage}
                                 disabled={currentPage === 1}
-                                style={{
-                                    padding: '0.75rem 1.5rem',
-                                    fontSize: '1rem',
-                                    fontWeight: '600',
-                                    borderRadius: '8px',
-                                    border: '2px solid #4a90e2',
-                                    background: currentPage === 1 ? '#555' : '#4a90e2',
-                                    color: '#fff',
-                                    cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
-                                    opacity: currentPage === 1 ? 0.5 : 1,
-                                    transition: 'all 0.2s',
-                                }}
+                                className="pagination-btn"
                             >
                                 ← Previous
                             </button>
-
-                            <div style={{
-                                fontSize: '1rem',
-                                fontWeight: '600',
-                                color: verseState.preferences.theme === 'dark' ? '#fff' : '#1a1a1a',
-                            }}>
+                            <div className="pagination-info">
                                 Page {currentPage} of {totalPages}
                             </div>
-
                             <button
                                 onClick={handleNextPage}
                                 disabled={currentPage === totalPages}
-                                style={{
-                                    padding: '0.75rem 1.5rem',
-                                    fontSize: '1rem',
-                                    fontWeight: '600',
-                                    borderRadius: '8px',
-                                    border: '2px solid #4a90e2',
-                                    background: currentPage === totalPages ? '#555' : '#4a90e2',
-                                    color: '#fff',
-                                    cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
-                                    opacity: currentPage === totalPages ? 0.5 : 1,
-                                    transition: 'all 0.2s',
-                                }}
+                                className="pagination-btn"
                             >
                                 Next →
                             </button>
                         </div>
                     )}
                 </div>
-
-
-                {/* Features Grid */}
-                <div style={{
-                    marginTop: '4rem',
-                    marginBottom: '3rem',
-                }}>
-                    <h2 style={{
-                        fontSize: '2rem',
-                        fontWeight: '700',
-                        marginBottom: '2rem',
-                        textAlign: 'center',
-                        color: verseState.preferences.theme === 'dark' ? '#ffffff' : '#1a1a1a',
-                    }}>Features</h2>
-                    <div style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-                        gap: '1.5rem',
-                    }}>
-                        {[
-                            { icon: '🎨', title: 'Beautiful Themes', desc: 'Dark, Light, and Sepia modes' },
-                            { icon: '🔤', title: 'Word-by-Word', desc: 'Learn Arabic with translations' },
-                            { icon: '🔊', title: 'Audio Playback', desc: 'Listen to recitations' },
-                            { icon: '🔖', title: 'Bookmarks', desc: 'Save your favorite verses' },
-                            { icon: '📱', title: 'Responsive', desc: 'Works on all devices' },
-                            { icon: '⚡', title: 'Fast & Modern', desc: 'Built with Next.js 14' },
-                        ].map((feature, idx) => (
-                            <div key={idx} style={{
-                                padding: '1.5rem',
-                                borderRadius: '12px',
-                                background: verseState.preferences.theme === 'dark' ? '#2a2a2a' :
-                                    verseState.preferences.theme === 'light' ? '#f5f5f5' : '#e8e4d9',
-                                textAlign: 'center',
-                            }}>
-                                <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>{feature.icon}</div>
-                                <h3 style={{
-                                    fontSize: '1.125rem',
-                                    fontWeight: '600',
-                                    marginBottom: '0.5rem',
-                                    color: verseState.preferences.theme === 'dark' ? '#ffffff' : '#1a1a1a',
-                                }}>{feature.title}</h3>
-                                <p style={{
-                                    fontSize: '0.875rem',
-                                    color: verseState.preferences.theme === 'dark' ? '#b0b0b0' : '#666',
-                                }}>{feature.desc}</p>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Footer */}
-                <footer style={{
-                    textAlign: 'center',
-                    padding: '2rem 0',
-                    borderTop: '1px solid',
-                    borderColor: verseState.preferences.theme === 'dark' ? '#3a3a3a' : '#ddd',
-                    color: verseState.preferences.theme === 'dark' ? '#b0b0b0' : '#666',
-                }}>
-                    <p style={{ marginBottom: '0.5rem' }}>
-                        Built with ❤️ for the Muslim developer community
-                    </p>
-                    <p style={{ fontSize: '0.875rem' }}>
-                        See <code>README.md</code> for complete documentation and usage examples
-                    </p>
-                </footer>
             </div>
+
+            {/* Audio Player */}
+            <AudioPlayerBar
+                visible={audio.currentVerseKey !== null}
+                verseInfo={currentChapter ? {
+                    surahName: currentChapter.name,
+                    verseNumber: audio.currentVerseKey ? parseInt(audio.currentVerseKey.split(':')[1]) : 0,
+                } : undefined}
+                onClose={audio.stop}
+            />
+
+            {/* Settings Panel */}
+            <SettingsPanel
+                isOpen={isSettingsOpen}
+                onClose={() => setIsSettingsOpen(false)}
+            />
+
+            {/* Search Bar */}
+            <SearchBar
+                isOpen={isSearchOpen}
+                onClose={() => setIsSearchOpen(false)}
+                onSearch={handleSearch}
+                chapters={chapters}
+            />
+
+            {/* Tafsir Panel */}
+            <TafsirPanel
+                isOpen={isTafsirOpen}
+                verseKey={selectedVerseForTafsir}
+                onClose={() => setIsTafsirOpen(false)}
+            />
+
+            {/* Sticky Toolbar */}
+            <StickyToolbar
+                onSearchClick={() => setIsSearchOpen(true)}
+                onSettingsClick={() => setIsSettingsOpen(true)}
+                onBookmarksClick={() => alert('Bookmarks feature coming soon!')}
+                theme={preferences.theme}
+                onThemeChange={(theme) => updatePreferences({ theme })}
+            />
         </div>
     );
 }
