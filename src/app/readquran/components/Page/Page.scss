@@ -11,7 +11,7 @@
   background: var(--page-background, rgba(255, 255, 255, 0.03));
   border-radius: 12px;
   border: 1px solid var(--page-border, rgba(255, 255, 255, 0.08));
-  
+
   // Center the entire page container
   display: flex;
   flex-direction: column;
@@ -118,8 +118,8 @@
 // Responsive
 @media (max-width: 768px) {
   .quran-page {
-    padding: 24px 16px;
-    margin-bottom: 24px;
+    padding: 20px 12px;
+    margin-bottom: 20px;
     border-radius: 8px;
     max-width: 100%;
 
@@ -142,12 +142,19 @@
 
 @media (max-width: 480px) {
   .quran-page {
-    padding: 16px 12px;
-    margin-bottom: 16px;
+    padding: 12px 8px;
+    margin-bottom: 12px;
+    border-radius: 6px;
 
     &__translation {
       font-size: 12px;
       padding: 8px;
+    }
+
+    &__footer .page-number {
+      width: 28px;
+      height: 28px;
+      font-size: 13px;
     }
   }
 }

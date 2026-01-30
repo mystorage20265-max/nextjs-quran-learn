@@ -138,10 +138,20 @@
 // Responsive
 @media (max-width: 768px) {
   .mushaf-reading {
-    padding: 16px;
+    padding: 12px 8px;
 
     &__container {
       padding-bottom: 100px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .mushaf-reading {
+    padding: 8px 4px;
+
+    &__container {
+      padding-bottom: 90px;
     }
   }
 }
