@@ -120,11 +120,10 @@
   }
 
   // ========================================================================
-  // HIGHLIGHTED STATE
+  // HIGHLIGHTED STATE - Disabled (no visual change)
   // ========================================================================
 
   &--highlighted {
-    background-color: var(--quran-color-accent-faded);
-    border-color: var(--quran-color-accent);
+    // No visual changes when verse is active during audio playback
   }
 }

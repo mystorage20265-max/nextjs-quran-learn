@@ -67,15 +67,18 @@ class TafsirService {
         }
 
         try {
-            const response = await fetch(
-                `https://api.quran.com/api/v4/quran/tafsirs/${this.currentSource.id}?verse_key=${verseKey}`
-            );
+            const url = `https://api.quran.com/api/v4/quran/tafsirs/${this.currentSource.id}?verse_key=${verseKey}`;
+            console.log('🔍 Fetching tafsir from:', url);
+
+            const response = await fetch(url);
 
             if (!response.ok) {
+                console.error('❌ Tafsir API error:', response.status, response.statusText);
                 throw new Error(`Failed to fetch tafsir: ${response.statusText}`);
             }
 
             const data = await response.json();
+            console.log('📦 Tafsir API response:', data);
 
             if (data.tafsirs && data.tafsirs.length > 0) {
                 const tafsir = data.tafsirs[0];

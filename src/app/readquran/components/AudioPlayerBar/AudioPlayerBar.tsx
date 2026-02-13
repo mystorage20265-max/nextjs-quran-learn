@@ -57,7 +57,14 @@ export function AudioPlayerBar({ visible, verseInfo, onClose }: AudioPlayerBarPr
     };
 
     return (
-        <div className="audio-player-bar">
+        <div className={`audio-player-bar ${audio.isPlaying ? 'playing' : ''}`}>
+            {/* Background Visualizer */}
+            <div className="audio-visualizer">
+                {[...Array(20)].map((_, i) => (
+                    <span key={i} style={{ animationDelay: `${i * 0.05}s` }} />
+                ))}
+            </div>
+
             {/* Progress Bar */}
             <div
                 className="player-progress"
@@ -72,14 +79,19 @@ export function AudioPlayerBar({ visible, verseInfo, onClose }: AudioPlayerBarPr
 
             {/* Main Controls */}
             <div className="player-content">
-                {/* Verse Info */}
-                <div className="player-info">
-                    <div className="player-verse">{audio.currentVerseKey}</div>
-                    {verseInfo && (
-                        <div className="player-surah">
-                            {verseInfo.surahName} - Ayah {verseInfo.verseNumber}
-                        </div>
-                    )}
+                {/* Verse Info & Art */}
+                <div className="player-info-container">
+                    <div className="player-art">
+                        <span className="art-icon">🕌</span>
+                    </div>
+                    <div className="player-info">
+                        <div className="player-verse">{audio.currentVerseKey}</div>
+                        {verseInfo && (
+                            <div className="player-surah">
+                                {verseInfo.surahName} - Ayah {verseInfo.verseNumber}
+                            </div>
+                        )}
+                    </div>
                 </div>
 
                 {/* Controls */}

@@ -148,6 +148,7 @@ export interface TopActionsProps {
   verseNumber: number;
   verseKey: string;
   isBookmarked?: boolean;
+  isPlaying?: boolean;
   onBookmarkToggle?: () => void;
   onPlayClick?: () => void;
   className?: string;

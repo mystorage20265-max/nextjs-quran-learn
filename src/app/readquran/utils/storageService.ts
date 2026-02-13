@@ -51,7 +51,7 @@ const DEFAULT_PREFERENCES: UserPreferences = {
     arabicFont: 'scheherazade',
     selectedTranslations: [131], // Sahih International
     showTranslation: true,
-    showWordByWord: false,
+    showWordByWord: true,
     showTransliteration: true,
     reciterId: 7, // Mishary
     playbackSpeed: 1,

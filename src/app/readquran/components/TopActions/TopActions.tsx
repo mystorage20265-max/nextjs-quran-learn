@@ -12,6 +12,7 @@ export const TopActions: React.FC<TopActionsProps> = ({
   verseNumber,
   verseKey,
   isBookmarked = false,
+  isPlaying = false,
   onBookmarkToggle,
   onPlayClick,
   className,
@@ -34,18 +35,32 @@ export const TopActions: React.FC<TopActionsProps> = ({
           <button
             className="top-actions__button"
             onClick={onPlayClick}
-            aria-label="Play verse audio"
-            title="Play verse"
+            aria-label={isPlaying ? "Pause verse audio" : "Play verse audio"}
+            title={isPlaying ? "Pause verse" : "Play verse"}
           >
-            <svg
-              className="top-actions__icon"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <polygon points="5 3 19 12 5 21 5 3" />
-            </svg>
+            {isPlaying ? (
+              // Pause icon
+              <svg
+                className="top-actions__icon"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                stroke="none"
+              >
+                <rect x="6" y="4" width="4" height="16" />
+                <rect x="14" y="4" width="4" height="16" />
+              </svg>
+            ) : (
+              // Play icon
+              <svg
+                className="top-actions__icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <polygon points="5 3 19 12 5 21 5 3" />
+              </svg>
+            )}
           </button>
         )}
 

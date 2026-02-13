@@ -1,0 +1,90 @@
+.surah-grid-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    height: 100%;
+}
+
+.surah-grid-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.surah-grid-header h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--rq-text);
+}
+
+.surah-search {
+    position: relative;
+    width: 200px;
+}
+
+.surah-search input {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 8px 12px 8px 32px;
+    color: white;
+    font-size: 0.85rem;
+    outline: none;
+    transition: all 0.2s;
+}
+
+.surah-search input:focus {
+    border-color: #10b981;
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+}
+
+.search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.8rem;
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.surah-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+    overflow-y: auto;
+    max-height: 480px;
+    /* Adjust based on layout needs */
+    padding-right: 8px;
+    /* For scrollbar space */
+    padding-bottom: 16px;
+}
+
+/* Custom Scrollbar for Grid */
+.surah-grid::-webkit-scrollbar {
+    width: 6px;
+}
+
+.surah-grid::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 3px;
+}
+
+.surah-grid::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}
+
+.surah-grid::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.no-results {
+    text-align: center;
+    padding: 24px;
+    color: var(--rq-text-secondary);
+    font-style: italic;
+}

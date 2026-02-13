@@ -58,6 +58,7 @@ export const VerseCard: React.FC<VerseCardProps> = ({
         verseNumber={verse.verseNumber}
         verseKey={verse.verseKey}
         isBookmarked={isBookmarked}
+        isPlaying={isHighlighted}
         onBookmarkToggle={onBookmarkToggle ? handleBookmarkToggle : undefined}
         onPlayClick={onPlayClick ? handlePlayClick : undefined}
       />

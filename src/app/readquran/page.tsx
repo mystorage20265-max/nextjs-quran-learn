@@ -19,7 +19,8 @@ import { AudioPlayerBar } from './components/AudioPlayerBar/AudioPlayerBar';
 import { SettingsPanel } from './components/SettingsPanel/SettingsPanel';
 import { SearchBar } from './components/SearchBar/SearchBar';
 import { TafsirPanel } from './components/TafsirPanel/TafsirPanel';
-import { StickyToolbar } from './components/StickyToolbar/StickyToolbar';
+// import { StickyToolbar } from './components/StickyToolbar/StickyToolbar'; // Hidden from UI
+import { Dashboard } from './components/Dashboard/Dashboard';
 import { useEnhancedAudio } from './hooks/useEnhancedAudio';
 import { useSettings } from './hooks/useSettings';
 import { useProgress } from './hooks/useProgress';
@@ -162,62 +163,25 @@ export default function ReadQuranPage() {
     return (
         <div
             className={`${getFontClass()} theme-${preferences.theme} readquran-page`}
+            suppressHydrationWarning
             style={{
                 '--arabic-font-size': `${preferences.arabicFontSize}px`,
                 '--translation-font-size': `${preferences.translationFontSize}px`,
             } as React.CSSProperties}
         >
             <div className="readquran-container">
-                {/* Hero Section */}
-                <header className="readquran-hero">
-                    <div className="hero-content">
-                        <div className="hero-badge">📖</div>
-                        <h1 className="hero-title">Read Quran</h1>
-                        <p className="hero-description">
-                            Experience the Noble Quran with beautiful interfaces, word-by-word translation,
-                            and audio playback from multiple reciters.
-                        </p>
-
-                        {/* Progress Stats */}
-                        <div className="hero-stats">
-                            <div className="stat-item">
-                                <div className="stat-value">{progress.totalVersesRead}</div>
-                                <div className="stat-label">Verses Read</div>
-                            </div>
-                            <div className="stat-item">
-                                <div className="stat-value">{progress.readingStreak}</div>
-                                <div className="stat-label">Day Streak</div>
-                            </div>
-                            <div className="stat-item">
-                                <div className="stat-value">{progress.formattedReadingTime}</div>
-                                <div className="stat-label">Total Time</div>
-                            </div>
-                        </div>
-                    </div>
-                </header>
-
-                {/* Chapter Selector */}
-                <div className="chapter-selector">
-                    <label htmlFor="surah-select">📖 Select Surah</label>
-                    <select
-                        id="surah-select"
-                        value={selectedChapter}
-                        onChange={(e) => setSelectedChapter(Number(e.target.value))}
-                        className="chapter-select"
-                    >
-                        {chapters.map((chapter) => (
-                            <option key={chapter.id} value={chapter.id}>
-                                {chapter.id}. {chapter.nameArabic} - {chapter.name} ({chapter.versesCount} verses)
-                            </option>
-                        ))}
-                    </select>
-                    {currentChapter && (
-                        <div className="chapter-meta">
-                            <span>📍 {currentChapter.revelationPlace === 'makkah' ? 'Makkan' : 'Medinan'}</span>
-                            <span>📄 {currentChapter.versesCount} verses</span>
-                        </div>
-                    )}
-                </div>
+                {/* New Dashboard Layout */}
+                <Dashboard
+                    chapters={chapters}
+                    selectedChapterId={selectedChapter}
+                    onSelectChapter={(id) => setSelectedChapter(id)}
+                    stats={{
+                        versesRead: progress.totalVersesRead,
+                        daysRead: progress.readingStreak, // Using streak as placeholder for days read
+                        dayStreak: progress.readingStreak,
+                        totalTime: progress.formattedReadingTime
+                    }}
+                />
 
                 {/* Verses Display */}
                 <div className="verses-container">
@@ -256,7 +220,7 @@ export default function ReadQuranPage() {
                                         className="verse-tafsir-btn"
                                         onClick={() => handleTafsirClick(verse.verseKey)}
                                     >
-                                        📚 View Tafsir
+                                        📚 Tafsir Ibn Kathir
                                     </button>
                                 </div>
                             ))}
@@ -319,14 +283,14 @@ export default function ReadQuranPage() {
                 onClose={() => setIsTafsirOpen(false)}
             />
 
-            {/* Sticky Toolbar */}
-            <StickyToolbar
+            {/* Sticky Toolbar - Hidden for cleaner Dashboard UI */}
+            {/* <StickyToolbar
                 onSearchClick={() => setIsSearchOpen(true)}
                 onSettingsClick={() => setIsSettingsOpen(true)}
                 onBookmarksClick={() => alert('Bookmarks feature coming soon!')}
                 theme={preferences.theme}
                 onThemeChange={(theme) => updatePreferences({ theme })}
-            />
+            /> */}
         </div>
     );
 }

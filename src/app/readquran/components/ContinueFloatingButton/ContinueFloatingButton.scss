@@ -1,0 +1,72 @@
+.continue-floating-btn {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 100px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    z-index: 100;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-family: var(--rq-font-sans);
+}
+
+.continue-floating-btn:hover {
+    background: rgba(30, 41, 59, 0.95);
+    border-color: #10b981;
+    transform: translateY(-4px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(16, 185, 129, 0.2);
+}
+
+.continue-text {
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9rem;
+}
+
+.continue-location {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.separator {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.ayah {
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 500;
+}
+
+.continue-arrow {
+    margin-left: 4px;
+    font-size: 1.2rem;
+    transition: transform 0.2s;
+}
+
+.continue-floating-btn:hover .continue-arrow {
+    transform: translateX(4px);
+    color: #10b981;
+}
+
+@media (max-width: 768px) {
+    .continue-floating-btn {
+        bottom: 24px;
+        right: 24px;
+        padding: 10px 20px;
+    }
+
+    .continue-text {
+        display: none;
+    }
+}
