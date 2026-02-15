@@ -7,14 +7,15 @@ import {
     getChapter,
     getAllVerses,
     getVersesWithWords,
+    getVerseTafsir,
     Chapter,
     VerseWithTranslation,
     POPULAR_RECITERS,
     TRANSLATIONS
 } from '../lib/api';
 import { saveLastRead, markVerseRead } from '../lib/progress';
+import { getSurahInfo, SurahInfoData } from '../lib/surahInfo';
 import TafsirSection from '../components/TafsirSection';
-import InteractiveWord from '../components/InteractiveWord';
 import { parseTranslationWithFootnotes } from '../lib/translationUtils';
 import { MushafPage } from '@/components/Quran/MushafPage';
 
@@ -62,7 +63,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
     const [tafsirContent, setTafsirContent] = useState<Record<string, string>>({});
 
     // Settings
-    const [readingMode, setReadingMode] = useState<'translation' | 'reading' | 'word-by-word' | 'mushaf'>(
+    const [readingMode, setReadingMode] = useState<'translation' | 'reading' | 'mushaf'>(
         (initialMode === 'reading' || initialMode === 'translation' || initialMode === 'word-by-word' || initialMode === 'mushaf') ? initialMode as any : 'translation'
     );
     const [selectedTranslation, setSelectedTranslation] = useState('en.sahih');
@@ -70,9 +71,8 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
     const [fontSize, setFontSize] = useState(28);
     const [showSettings, setShowSettings] = useState(false);
 
-    // Word-by-word data
+    // Word-by-word data (used for transliteration)
     const [versesWithWords, setVersesWithWords] = useState<VerseWithTranslation[]>([]);
-    const [wordDataLoading, setWordDataLoading] = useState(false);
 
     // Audio
     const [isPlaying, setIsPlaying] = useState(false);
@@ -85,6 +85,14 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
     const [toastMessage, setToastMessage] = useState('');
     const [toastType, setToastType] = useState<'success' | 'warning'>('success');
     const [showInfo, setShowInfo] = useState(false);
+
+    // Transliteration & expanded verse
+    const [showTransliteration, setShowTransliteration] = useState(true);
+    const [expandedVerse, setExpandedVerse] = useState<number | null>(null);
+    const [inlineTafsir, setInlineTafsir] = useState<Record<string, string>>({});
+    const [tafsirLoading, setTafsirLoading] = useState<string | null>(null);
+    const [showBenefits, setShowBenefits] = useState(false);
+    const [surahInfo, setSurahInfo] = useState<SurahInfoData | null>(null);
 
     // Debounce ref for IntersectionObserver
     const lastSaveRef = useRef<number>(0);
@@ -142,57 +150,25 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
         };
     }, [surahNumber, selectedTranslation, tafsirId]);
 
-    // Fetch word-by-word data when mode is switched
+    // Load surah info (benefits/virtues)
     useEffect(() => {
-        let isCancelled = false;
+        const info = getSurahInfo(surahNumber);
+        setSurahInfo(info);
+    }, [surahNumber]);
 
-        async function loadWordData() {
-            if (readingMode !== 'word-by-word' || surahNumber < 1 || surahNumber > 114) {
-                return;
-            }
-
-            try {
-                setWordDataLoading(true);
-
-                // Map alquran.cloud translation IDs to Quran.com resource IDs
-                const translationMap: Record<string, string> = {
-                    'en.sahih': '131',      // Sahih International
-                    'en.pickthall': '22',   // Pickthall
-                    'en.yusufali': '21',    // Yusuf Ali
-                    'en.asad': '206',       // Muhammad Asad
-                    'ur.jalandhry': '97',   // Fateh Muhammad Jalandhry (Urdu)
-                    'ur.ahmedali': '96',    // Ahmed Ali (Urdu)
-                    'fr.hamidullah': '31',  // Muhammad Hamidullah (French)
-                    'es.asad': '83'         // Muhammad Asad (Spanish)
-                };
-
-                // Get verse translation resource ID and fetch word-by-word data
-                // Note: Word translations and transliterations are in English by default
-                const resourceId = translationMap[selectedTranslation] || '131';
-                const wordData = await getVersesWithWords(surahNumber, resourceId);
-
-                if (!isCancelled) {
-                    setVersesWithWords(wordData);
-                }
-            } catch (err) {
-                console.error('Error fetching word data:', err);
-                if (!isCancelled) {
-                    // Fallback to regular verses if word data fails
-                    setVersesWithWords(verses);
-                }
-            } finally {
-                if (!isCancelled) {
-                    setWordDataLoading(false);
-                }
-            }
+    // Preload transliteration data for translation mode
+    useEffect(() => {
+        if (readingMode === 'translation' && showTransliteration && versesWithWords.length === 0) {
+            // Fetch word data in the background for transliteration
+            const translationMap: Record<string, string> = {
+                'en.sahih': '131', 'en.pickthall': '22', 'en.yusufali': '21',
+                'en.asad': '206', 'ur.jalandhry': '97', 'ur.ahmedali': '96',
+                'fr.hamidullah': '31', 'es.asad': '83'
+            };
+            const resourceId = translationMap[selectedTranslation] || '131';
+            getVersesWithWords(surahNumber, resourceId).then(setVersesWithWords).catch(() => { });
         }
-
-        loadWordData();
-
-        return () => {
-            isCancelled = true;
-        };
-    }, [readingMode, surahNumber, verses, selectedTranslation]);
+    }, [readingMode, showTransliteration, surahNumber, selectedTranslation, versesWithWords.length]);
 
     // Confirmation State
     const [pendingChange, setPendingChange] = useState<{ type: 'reciter' | 'translation', value: string | number, name: string } | null>(null);
@@ -546,6 +522,40 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
         }
     }, [isPlaying, stopAudio, playVerse]);
 
+    // Get transliteration text for a verse by joining word transliterations
+    const getTransliteration = useCallback((verseNumber: number): string => {
+        const wordVerse = versesWithWords.find(v => v.verse_number === verseNumber);
+        if (!wordVerse?.words || wordVerse.words.length === 0) return '';
+        return wordVerse.words
+            .filter(w => w.transliteration?.text)
+            .map(w => w.transliteration.text)
+            .join(' ');
+    }, [versesWithWords]);
+
+    // Load inline tafsir for a specific verse
+    const loadInlineTafsir = useCallback(async (verseKey: string) => {
+        if (inlineTafsir[verseKey]) return; // Already loaded
+        setTafsirLoading(verseKey);
+        try {
+            const text = await getVerseTafsir(verseKey);
+            setInlineTafsir(prev => ({ ...prev, [verseKey]: text }));
+        } catch {
+            setInlineTafsir(prev => ({ ...prev, [verseKey]: 'Failed to load tafsir.' }));
+        } finally {
+            setTafsirLoading(null);
+        }
+    }, [inlineTafsir]);
+
+    // Toggle verse expansion
+    const toggleExpandVerse = useCallback((verseNumber: number, verseKey: string) => {
+        if (expandedVerse === verseNumber) {
+            setExpandedVerse(null);
+        } else {
+            setExpandedVerse(verseNumber);
+            loadInlineTafsir(verseKey);
+        }
+    }, [expandedVerse, loadInlineTafsir]);
+
     if (loading) {
         return (
             <div className="rq-container">
@@ -652,6 +662,34 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 </div>
             )}
 
+            {/* Benefits & Virtues Section */}
+            {surahInfo && (
+                <div className="rq-benefits-section">
+                    <button
+                        onClick={() => setShowBenefits(!showBenefits)}
+                        className="rq-benefits-toggle"
+                    >
+                        <span>Benefits & Virtues</span>
+                        <span className="toggle-icon">{showBenefits ? '−' : '+'}</span>
+                    </button>
+                    {showBenefits && (
+                        <div className="rq-benefits-content">
+                            <p className="rq-benefits-theme">{surahInfo.theme}</p>
+                            {surahInfo.otherNames.length > 0 && (
+                                <p className="rq-benefits-names">
+                                    Also known as: {surahInfo.otherNames.join(', ')}
+                                </p>
+                            )}
+                            <ul className="rq-benefits-list">
+                                {surahInfo.benefits.map((benefit, i) => (
+                                    <li key={i}>{benefit}</li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+                </div>
+            )}
+
             {/* Toolbar */}
             <div className="rq-toolbar">
                 <div className="rq-toolbar-group actions-group">
@@ -664,6 +702,17 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                     <button className="rq-toolbar-btn settings-btn" onClick={() => setShowSettings(true)}>
                         ⚙️ Settings
                     </button>
+
+                    {/* Transliteration Toggle */}
+                    {readingMode === 'translation' && (
+                        <button
+                            className={`rq-toolbar-btn ${showTransliteration ? 'active-toggle' : ''}`}
+                            onClick={() => setShowTransliteration(!showTransliteration)}
+                            title="Toggle transliteration"
+                        >
+                            Aā {showTransliteration ? 'On' : 'Off'}
+                        </button>
+                    )}
                 </div>
 
                 <div className="rq-toolbar-group mode-group">
@@ -680,12 +729,6 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                             onClick={() => setReadingMode('reading')}
                         >
                             Reading
-                        </button>
-                        <button
-                            className={`rq-mode-btn ${readingMode === 'word-by-word' ? 'active' : ''}`}
-                            onClick={() => setReadingMode('word-by-word')}
-                        >
-                            Word-by-Word
                         </button>
                         <button
                             className={`rq-mode-btn ${readingMode === 'mushaf' ? 'active' : ''}`}
@@ -709,121 +752,169 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
             <div className="rq-verses">
                 {readingMode === 'translation' ? (
                     // Translation Mode
-                    verses.map((verse) => (
-                        <div
-                            key={verse.id}
-                            className={`rq-verse ${currentVerse === verse.verse_number ? 'playing' : ''}`}
-                            id={`verse-${verse.verse_number}`}
-                        >
-                            {/* Verse number in top left - Arabic-Indic numerals */}
-                            <span className="rq-verse-number-corner">
-                                {toArabicNumeral(verse.verse_number)}
-                                {verse.sajdah_number && <span className="sajdah-marker" title="Sajdah (Prostration)">۩</span>}
-                            </span>
+                    verses.map((verse) => {
+                        const translitText = showTransliteration ? getTransliteration(verse.verse_number) : '';
+                        const isExpanded = expandedVerse === verse.verse_number;
+                        return (
+                            <div
+                                key={verse.id}
+                                className={`rq-verse ${currentVerse === verse.verse_number ? 'playing' : ''} ${isExpanded ? 'expanded' : ''}`}
+                                id={`verse-${verse.verse_number}`}
+                            >
+                                {/* Verse number in top left - Arabic-Indic numerals */}
+                                <span className="rq-verse-number-corner">
+                                    {toArabicNumeral(verse.verse_number)}
+                                    {verse.sajdah_number && <span className="sajdah-marker" title="Sajdah (Prostration)">۩</span>}
+                                </span>
 
-                            <div className="rq-verse-arabic">{cleanArabicText(verse.text_uthmani)}</div>
-                            <div className="rq-verse-translation">
-                                {parseTranslationWithFootnotes(verse.translations?.[0]?.text || 'Translation not available')}
-                            </div>
+                                <div className="rq-verse-arabic" style={{ fontSize: `${fontSize}px` }}>{cleanArabicText(verse.text_uthmani)}</div>
 
-                            {/* Interactive Tafsir Section - Works with ALL Tafsirs */}
-                            {tafsirId && tafsirContent[verse.verse_key] && (
-                                <TafsirSection
-                                    verseKey={verse.verse_key}
-                                    content={tafsirContent[verse.verse_key]}
-                                />
-                            )}
+                                {/* Transliteration line */}
+                                {showTransliteration && translitText && (
+                                    <div className="rq-verse-transliteration">{translitText}</div>
+                                )}
 
-                            <div className="rq-verse-actions">
-                                <button
-                                    className="rq-verse-action-btn"
-                                    onClick={() => playVerse(verse.verse_number)}
-                                    title="Play"
-                                    aria-label={`Play verse ${verse.verse_number}`}
-                                >
-                                    🔊
-                                </button>
-                                <button
-                                    className="rq-verse-action-btn"
-                                    onClick={() => copyVerse(verse)}
-                                    title="Copy"
-                                    aria-label={`Copy verse ${verse.verse_number}`}
-                                >
-                                    📋
-                                </button>
-                                <button
-                                    className={`rq-verse-action-btn ${isBookmarked(verse.verse_key) ? 'active' : ''}`}
-                                    onClick={() => toggleBookmark(verse.verse_key)}
-                                    title={isBookmarked(verse.verse_key) ? 'Remove Bookmark' : 'Bookmark'}
-                                    aria-label={isBookmarked(verse.verse_key) ? `Remove bookmark from verse ${verse.verse_number}` : `Bookmark verse ${verse.verse_number}`}
-                                >
-                                    {isBookmarked(verse.verse_key) ? '⭐' : '🔖'}
-                                </button>
-                                <button
-                                    className="rq-verse-action-btn"
-                                    aria-label={`Share verse ${verse.verse_number}`}
-                                    onClick={async () => {
-                                        const shareText = `${verse.text_uthmani}\n\n${verse.translations?.[0]?.text || ''}\n\n— Quran ${verse.verse_key}`;
-                                        const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}/read-quran/${surahNumber}#verse-${verse.verse_number}` : '';
+                                <div className="rq-verse-translation">
+                                    {parseTranslationWithFootnotes(verse.translations?.[0]?.text || 'Translation not available')}
+                                </div>
 
-                                        // Try Web Share API first (works on mobile and some desktops)
-                                        if (typeof navigator !== 'undefined' && navigator.share) {
-                                            try {
-                                                // Share with URL for best mobile app compatibility
-                                                await navigator.share({
-                                                    title: `Quran ${verse.verse_key} - ${chapter?.name_simple || 'Verse'}`,
-                                                    text: shareText,
-                                                    url: shareUrl,
-                                                });
-                                                // Only show toast if share completed (not cancelled)
-                                                setToastMessage('Shared successfully!');
-                                                setShowBookmarkToast(true);
-                                                setTimeout(() => setShowBookmarkToast(false), 2000);
-                                                return; // Exit early on success
-                                            } catch (err: any) {
-                                                // AbortError = user cancelled, don't show anything
-                                                if (err.name === 'AbortError') {
-                                                    return;
+                                {/* Interactive Tafsir Section - Works with ALL Tafsirs */}
+                                {tafsirId && tafsirContent[verse.verse_key] && (
+                                    <TafsirSection
+                                        verseKey={verse.verse_key}
+                                        content={tafsirContent[verse.verse_key]}
+                                    />
+                                )}
+
+                                {/* Expanded Detail View */}
+                                {isExpanded && (
+                                    <div className="rq-verse-detail">
+                                        <div className="rq-verse-detail-meta">
+                                            <span>Juz {verse.juz_number}</span>
+                                            <span>Hizb {verse.hizb_number}</span>
+                                            <span>Page {verse.page_number}</span>
+                                            <span>Ruku {verse.ruku_number}</span>
+                                        </div>
+                                        <div className="rq-verse-detail-tafsir">
+                                            <strong>Tafsir (Ibn Kathir)</strong>
+                                            {tafsirLoading === verse.verse_key ? (
+                                                <p className="rq-tafsir-loading">Loading tafsir…</p>
+                                            ) : inlineTafsir[verse.verse_key] ? (
+                                                <p
+                                                    className="rq-tafsir-text"
+                                                    dangerouslySetInnerHTML={{
+                                                        __html:
+                                                            inlineTafsir[verse.verse_key].replace(/<[^>]*>/g, '').substring(0, 600)
+                                                            + (inlineTafsir[verse.verse_key].length > 600 ? '…' : '')
+                                                    }}
+                                                />
+                                            ) : (
+                                                <p className="rq-tafsir-loading">No tafsir available.</p>
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
+
+                                <div className="rq-verse-actions">
+                                    <button
+                                        className="rq-verse-action-btn"
+                                        onClick={() => playVerse(verse.verse_number)}
+                                        title="Play"
+                                        aria-label={`Play verse ${verse.verse_number}`}
+                                    >
+                                        🔊
+                                    </button>
+                                    <button
+                                        className="rq-verse-action-btn"
+                                        onClick={() => copyVerse(verse)}
+                                        title="Copy"
+                                        aria-label={`Copy verse ${verse.verse_number}`}
+                                    >
+                                        📋
+                                    </button>
+                                    <button
+                                        className={`rq-verse-action-btn ${isBookmarked(verse.verse_key) ? 'active' : ''}`}
+                                        onClick={() => toggleBookmark(verse.verse_key)}
+                                        title={isBookmarked(verse.verse_key) ? 'Remove Bookmark' : 'Bookmark'}
+                                        aria-label={isBookmarked(verse.verse_key) ? `Remove bookmark from verse ${verse.verse_number}` : `Bookmark verse ${verse.verse_number}`}
+                                    >
+                                        {isBookmarked(verse.verse_key) ? '⭐' : '🔖'}
+                                    </button>
+                                    {/* Tafsir toggle */}
+                                    <button
+                                        className={`rq-verse-action-btn ${isExpanded ? 'active' : ''}`}
+                                        onClick={() => toggleExpandVerse(verse.verse_number, verse.verse_key)}
+                                        title={isExpanded ? 'Collapse' : 'Show Tafsir & Details'}
+                                        aria-label={`Tafsir for verse ${verse.verse_number}`}
+                                    >
+                                        📖
+                                    </button>
+                                    <button
+                                        className="rq-verse-action-btn"
+                                        aria-label={`Share verse ${verse.verse_number}`}
+                                        onClick={async () => {
+                                            const shareText = `${verse.text_uthmani}\n\n${verse.translations?.[0]?.text || ''}\n\n— Quran ${verse.verse_key}`;
+                                            const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}/read-quran/${surahNumber}#verse-${verse.verse_number}` : '';
+
+                                            // Try Web Share API first (works on mobile and some desktops)
+                                            if (typeof navigator !== 'undefined' && navigator.share) {
+                                                try {
+                                                    // Share with URL for best mobile app compatibility
+                                                    await navigator.share({
+                                                        title: `Quran ${verse.verse_key} - ${chapter?.name_simple || 'Verse'}`,
+                                                        text: shareText,
+                                                        url: shareUrl,
+                                                    });
+                                                    // Only show toast if share completed (not cancelled)
+                                                    setToastMessage('Shared successfully!');
+                                                    setShowBookmarkToast(true);
+                                                    setTimeout(() => setShowBookmarkToast(false), 2000);
+                                                    return; // Exit early on success
+                                                } catch (err: any) {
+                                                    // AbortError = user cancelled, don't show anything
+                                                    if (err.name === 'AbortError') {
+                                                        return;
+                                                    }
+                                                    // NotAllowedError or other = try clipboard fallback
+                                                    console.log('Share API failed, trying clipboard:', err.message);
                                                 }
-                                                // NotAllowedError or other = try clipboard fallback
-                                                console.log('Share API failed, trying clipboard:', err.message);
                                             }
-                                        }
 
-                                        // Fallback: Copy to clipboard (browser doesn't support native share)
-                                        try {
-                                            await navigator.clipboard.writeText(shareText + '\n\n' + shareUrl);
-                                            setToastType('warning');
-                                            setToastMessage('📋 Copied! Native share requires Chrome.');
-                                            setShowBookmarkToast(true);
-                                            setTimeout(() => {
-                                                setShowBookmarkToast(false);
-                                                setToastType('success'); // Reset for next use
-                                            }, 3000);
-                                        } catch (clipboardErr) {
-                                            // Last resort fallback for older browsers
-                                            const textArea = document.createElement('textarea');
-                                            textArea.value = shareText + '\n\n' + shareUrl;
-                                            document.body.appendChild(textArea);
-                                            textArea.select();
-                                            document.execCommand('copy');
-                                            document.body.removeChild(textArea);
-                                            setToastType('warning');
-                                            setToastMessage('📋 Copied! Native share requires Chrome.');
-                                            setShowBookmarkToast(true);
-                                            setTimeout(() => {
-                                                setShowBookmarkToast(false);
-                                                setToastType('success'); // Reset for next use
-                                            }, 3000);
-                                        }
-                                    }}
-                                    title="Share"
-                                >
-                                    📤
-                                </button>
+                                            // Fallback: Copy to clipboard (browser doesn't support native share)
+                                            try {
+                                                await navigator.clipboard.writeText(shareText + '\n\n' + shareUrl);
+                                                setToastType('warning');
+                                                setToastMessage('📋 Copied! Native share requires Chrome.');
+                                                setShowBookmarkToast(true);
+                                                setTimeout(() => {
+                                                    setShowBookmarkToast(false);
+                                                    setToastType('success'); // Reset for next use
+                                                }, 3000);
+                                            } catch (clipboardErr) {
+                                                // Last resort fallback for older browsers
+                                                const textArea = document.createElement('textarea');
+                                                textArea.value = shareText + '\n\n' + shareUrl;
+                                                document.body.appendChild(textArea);
+                                                textArea.select();
+                                                document.execCommand('copy');
+                                                document.body.removeChild(textArea);
+                                                setToastType('warning');
+                                                setToastMessage('📋 Copied! Native share requires Chrome.');
+                                                setShowBookmarkToast(true);
+                                                setTimeout(() => {
+                                                    setShowBookmarkToast(false);
+                                                    setToastType('success'); // Reset for next use
+                                                }, 3000);
+                                            }
+                                        }}
+                                        title="Share"
+                                    >
+                                        📤
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                    ))
+                        );
+                    })
                 ) : readingMode === 'reading' ? (
                     // Reading Mode (Mushaf style)
                     <div className="rq-reading-mode">
@@ -840,44 +931,8 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                         </div>
                     </div>
                 ) : (
-                    // Word-by-Word Mode
-                    <div className="word-by-word-mode">
-                        {wordDataLoading ? (
-                            <div className="rq-loading">
-                                <div className="rq-spinner"></div>
-                                <p>Loading word-by-word data...</p>
-                            </div>
-                        ) : versesWithWords.length > 0 ? (
-                            versesWithWords.map((verse) => (
-                                <div key={verse.id} className="word-by-word-verse" id={`verse-${verse.verse_number}`}>
-                                    <div className="word-by-word-verse-header">
-                                        <div className="word-by-word-verse-number">
-                                            <span className="verse-number-badge">{verse.verse_number}</span>
-                                            <span>Verse {verse.verse_number}</span>
-                                        </div>
-                                    </div>
-
-                                    <div className="word-by-word-text">
-                                        {verse.words && verse.words.length > 0 ? (
-                                            verse.words.map((word) => (
-                                                <InteractiveWord key={word.id} word={word} />
-                                            ))
-                                        ) : (
-                                            <span>{cleanArabicText(verse.text_uthmani)}</span>
-                                        )}
-                                    </div>
-
-                                    <div className="word-by-word-translation">
-                                        {parseTranslationWithFootnotes(verse.translations?.[0]?.text || 'Translation not available')}
-                                    </div>
-                                </div>
-                            ))
-                        ) : (
-                            <div className="rq-loading">
-                                <p>Switch to word-by-word mode to see interactive translations</p>
-                            </div>
-                        )}
-                    </div>
+                    // Mushaf Mode
+                    chapter && <MushafPage chapterNumber={chapter.id} mode="chapter" />
                 )}
             </div>
 

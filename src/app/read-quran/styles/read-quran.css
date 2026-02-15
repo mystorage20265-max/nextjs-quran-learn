@@ -1231,16 +1231,39 @@
 /* ============ AUDIO HIGHLIGHTING ============ */
 .rq-verse.playing {
     border-color: var(--rq-primary);
-    box-shadow: 0 0 20px rgba(16, 185, 129, 0.15), inset 0 0 20px rgba(16, 185, 129, 0.05);
-    transform: scale(1.01);
-    background: rgba(16, 185, 129, 0.08);
-    /* Subtle green tint */
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.12);
+    background: rgba(16, 185, 129, 0.04);
     transition: all 0.5s ease-out;
+    animation: rq-versePulse 2s ease-in-out infinite;
 }
 
 .rq-verse.playing .rq-verse-number-corner {
     background: var(--rq-primary);
     color: white;
+}
+
+@keyframes rq-versePulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 15px rgba(16, 185, 129, 0.10);
+    }
+
+    50% {
+        box-shadow: 0 0 25px rgba(16, 185, 129, 0.18);
+    }
+}
+
+@keyframes rq-fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* ============ READING MODE (Mushaf Style) ============ */
@@ -1675,5 +1698,170 @@
     .word-tooltip-content {
         min-width: 160px;
         max-width: 240px;
+    }
+}
+
+/* ============ TRANSLITERATION ============ */
+.rq-verse-transliteration {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--rq-secondary);
+    font-style: italic;
+    font-family: 'JetBrains Mono', 'Inter', monospace;
+    text-align: center;
+    margin-bottom: 16px;
+    padding: 0 20px;
+    opacity: 0.85;
+}
+
+/* ============ BENEFITS & VIRTUES ============ */
+.rq-benefits-section {
+    margin-bottom: 24px;
+    border: 1px solid var(--rq-border);
+    border-radius: var(--rq-radius-lg);
+    overflow: hidden;
+}
+
+.rq-benefits-toggle {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    background: transparent;
+    border: none;
+    color: var(--rq-text-secondary);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: var(--rq-font-sans);
+    transition: color 0.2s;
+}
+
+.rq-benefits-toggle:hover {
+    color: var(--rq-text);
+}
+
+.rq-benefits-toggle .toggle-icon {
+    font-size: 1.1rem;
+    color: var(--rq-text-muted);
+}
+
+.rq-benefits-content {
+    padding: 0 24px 24px;
+    animation: rq-fadeIn 0.3s ease-out;
+}
+
+.rq-benefits-theme {
+    font-size: 0.95rem;
+    color: var(--rq-text-secondary);
+    line-height: 1.6;
+    margin-bottom: 12px;
+}
+
+.rq-benefits-names {
+    font-size: 0.85rem;
+    color: var(--rq-text-muted);
+    font-style: italic;
+    margin-bottom: 16px;
+}
+
+.rq-benefits-list {
+    padding: 0;
+    margin: 0;
+}
+
+.rq-benefits-list li {
+    font-size: 0.9rem;
+    color: var(--rq-text-secondary);
+    line-height: 1.7;
+    padding: 8px 0 8px 16px;
+    border-left: 2px solid rgba(16, 185, 129, 0.2);
+    margin-bottom: 8px;
+    list-style: none;
+}
+
+/* ============ VERSE DETAIL (EXPANDED) ============ */
+.rq-verse.expanded {
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+.rq-verse-detail {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--rq-border);
+    animation: rq-fadeIn 0.3s ease-out;
+}
+
+.rq-verse-detail-meta {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+
+.rq-verse-detail-meta span {
+    font-size: 0.8rem;
+    color: var(--rq-text-muted);
+    background: rgba(255, 255, 255, 0.04);
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--rq-border);
+}
+
+.rq-verse-detail-tafsir {
+    margin-top: 8px;
+}
+
+.rq-verse-detail-tafsir strong {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--rq-text-secondary);
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.rq-tafsir-text {
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: var(--rq-text-muted);
+    margin: 0;
+}
+
+.rq-tafsir-loading {
+    font-size: 0.85rem;
+    color: var(--rq-text-muted);
+    font-style: italic;
+    margin: 0;
+}
+
+/* ============ TOOLBAR TOGGLE STATE ============ */
+.rq-toolbar-btn.active-toggle {
+    border-color: var(--rq-primary);
+    color: var(--rq-primary);
+}
+
+/* ============ RESPONSIVE: NEW ELEMENTS ============ */
+@media (max-width: 768px) {
+    .rq-verse-transliteration {
+        font-size: 0.85rem;
+        padding: 0;
+    }
+
+    .rq-benefits-toggle {
+        padding: 12px 16px;
+        font-size: 0.9rem;
+    }
+
+    .rq-benefits-content {
+        padding: 0 16px 16px;
+    }
+
+    .rq-verse-detail-meta {
+        gap: 8px;
+    }
+
+    .rq-verse-detail-meta span {
+        font-size: 0.75rem;
     }
 }

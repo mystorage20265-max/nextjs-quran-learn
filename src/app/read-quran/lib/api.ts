@@ -39,6 +39,7 @@ export interface Verse {
 export interface Word {
     id: number;
     position: number;
+    char_type_name?: string;
     text_uthmani: string;
     text_imlaei: string;
     translation: {
@@ -265,6 +266,7 @@ export async function getVersesWithWords(
             words: verse.words?.map((word: any) => ({
                 id: word.id,
                 position: word.position,
+                char_type_name: word.char_type_name || 'word',
                 text_uthmani: word.text_uthmani,
                 text_imlaei: word.text_imlaei || word.text_uthmani,
                 translation: word.translation || { text: '', language_name: 'english' },
@@ -406,6 +408,24 @@ export async function getTafsirContent(tafsirId: number | string, chapterId: num
     } catch (error) {
         console.error(`Error fetching tafsir ${tafsirId} for chapter ${chapterId}:`, error);
         return {};
+    }
+}
+
+/**
+ * Get tafsir for a single verse (lazy loaded on demand)
+ */
+export async function getVerseTafsir(
+    verseKey: string,
+    tafsirId: number | string = 169 // Ibn Kathir (English)
+): Promise<string> {
+    try {
+        const url = `${API_BASE}/tafsirs/${tafsirId}/by_ayah/${verseKey}`;
+        const response = await fetchWithRetry(url);
+        const data = await response.json();
+        return data.tafsir?.text || '';
+    } catch (error) {
+        console.error(`Error fetching tafsir for ${verseKey}:`, error);
+        return '';
     }
 }
 
