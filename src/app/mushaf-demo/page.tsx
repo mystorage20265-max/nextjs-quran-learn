@@ -1,4 +1,4 @@
-import MushafPage from '@/components/Quran/MushafPage';
+import MushafPage from '@/components/quran/MushafPage';
 import Link from 'next/link';
 
 export default function MushafDemoPage() {

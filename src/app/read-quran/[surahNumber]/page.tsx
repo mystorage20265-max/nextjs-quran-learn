@@ -17,7 +17,7 @@ import { saveLastRead, markVerseRead } from '../lib/progress';
 import { getSurahInfo, SurahInfoData } from '../lib/surahInfo';
 import TafsirSection from '../components/TafsirSection';
 import { parseTranslationWithFootnotes } from '../lib/translationUtils';
-import { MushafPage } from '@/components/Quran/MushafPage';
+import { MushafPage } from '@/components/quran/MushafPage';
 
 // Convert English numbers to Arabic-Indic numerals (۰۱۲۳۴۵۶۷۸۹)
 const toArabicNumeral = (num: number): string => {
