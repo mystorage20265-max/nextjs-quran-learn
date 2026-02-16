@@ -1,14 +1,13 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 /* Primary Font - Figtree */
 @import url('https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&display=swap');
 /* ServiceNow Inter Font */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-
 /* Quran Glyph Fonts (QPC V2) - Page-based fonts for Mushaf rendering */
 @import '../styles/quran-glyph-fonts.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 /* Arabic Font - Uthmanic Hafs (Authentic Quran Font) */
 @font-face {
