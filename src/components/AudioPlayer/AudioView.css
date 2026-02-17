@@ -92,7 +92,7 @@
   text-align: center;
 }
 
-.surah-info > span {
+.surah-info>span {
   font-size: clamp(1.3rem, 2.5vw, 1.8rem);
   font-weight: 800;
   color: #ffffff;
@@ -176,7 +176,7 @@
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
 }
 
-.current-reciter > span {
+.current-reciter>span {
   font-size: 0.7rem;
   color: #ffffff;
   font-weight: 600;
@@ -196,7 +196,7 @@
     padding: 18px 40px;
   }
 
-  .surah-info > span {
+  .surah-info>span {
     font-size: 1.8rem;
   }
 
@@ -217,7 +217,7 @@
     min-width: 120px;
   }
 
-  .current-reciter > span {
+  .current-reciter>span {
     font-size: 0.75rem;
   }
 }
@@ -230,7 +230,7 @@
     padding: 16px 32px;
   }
 
-  .surah-info > span {
+  .surah-info>span {
     font-size: 1.6rem;
   }
 
@@ -251,7 +251,7 @@
     min-width: 115px;
   }
 
-  .current-reciter > span {
+  .current-reciter>span {
     font-size: 0.72rem;
   }
 }
@@ -264,7 +264,7 @@
     padding: 14px 18px;
   }
 
-  .surah-info > span {
+  .surah-info>span {
     font-size: 1.4rem;
   }
 
@@ -285,7 +285,7 @@
     min-width: 105px;
   }
 
-  .current-reciter > span {
+  .current-reciter>span {
     font-size: 0.68rem;
   }
 }
@@ -298,7 +298,7 @@
     padding: 12px 14px;
   }
 
-  .surah-info > span {
+  .surah-info>span {
     font-size: 1.2rem;
   }
 
@@ -319,7 +319,7 @@
     min-width: 100px;
   }
 
-  .current-reciter > span {
+  .current-reciter>span {
     font-size: 0.65rem;
   }
 }
@@ -332,7 +332,7 @@
     padding: 9px 10px;
   }
 
-  .surah-info > span {
+  .surah-info>span {
     font-size: clamp(0.95rem, 2.2vw, 1.15rem);
   }
 
@@ -345,12 +345,12 @@
     padding: 5px 9px;
   }
 
-  .current-reciter > span {
+  .current-reciter>span {
     font-size: clamp(0.58rem, 0.8vw, 0.65rem);
   }
 
   .go-back-btn,
-  .top-bar > button {
+  .top-bar>button {
     padding: 5px 9px;
     font-size: 0.63rem;
   }
@@ -364,7 +364,7 @@
     padding: 8px 8px;
   }
 
-  .surah-info > span {
+  .surah-info>span {
     font-size: clamp(0.88rem, 2vw, 1.05rem);
   }
 
@@ -377,12 +377,12 @@
     padding: 4px 8px;
   }
 
-  .current-reciter > span {
+  .current-reciter>span {
     font-size: 0.55rem;
   }
 
   .go-back-btn,
-  .top-bar > button {
+  .top-bar>button {
     padding: 5px 8px;
     font-size: 0.6rem;
   }
@@ -705,9 +705,12 @@
 }
 
 @keyframes pulse-glow {
-  0%, 100% {
+
+  0%,
+  100% {
     box-shadow: 0 8px 24px rgba(102, 126, 234, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2);
   }
+
   50% {
     box-shadow: 0 8px 32px rgba(102, 126, 234, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.2);
   }
@@ -784,7 +787,7 @@
 }
 
 .arabic-text {
-  font-family: 'Uthmanic', 'Noto Naskh Arabic', serif;
+  font-family: 'IndoPak Nastaleeq', 'Uthmanic', 'Noto Naskh Arabic', serif;
   font-size: clamp(2rem, 6vw, 4.5rem);
   line-height: 1.8;
   width: 100%;
@@ -956,7 +959,7 @@
     padding: 10px 14px;
     font-size: 0.9rem;
   }
-  
+
   .verse-content {
     max-width: 800px;
   }
@@ -1475,7 +1478,7 @@
   .audio-controls {
     padding-bottom: max(15px, env(safe-area-inset-bottom));
   }
-  
+
   .verse-display {
     padding-left: max(10px, env(safe-area-inset-left));
     padding-right: max(10px, env(safe-area-inset-right));

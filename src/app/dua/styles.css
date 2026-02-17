@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap');
 
 .font-arabic {
-  font-family: 'Noto Naskh Arabic', serif;
+  font-family: 'IndoPak Nastaleeq', 'Noto Naskh Arabic', serif;
 }
 
 /* Dua Page Specific Styles */
@@ -17,7 +17,7 @@
 }
 
 .dua-arabic {
-  font-family: 'Noto Naskh Arabic', serif;
+  font-family: 'IndoPak Nastaleeq', 'Noto Naskh Arabic', serif;
   font-size: 1.75rem;
   line-height: 2.5;
   text-align: right;
@@ -30,6 +30,7 @@
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);

@@ -77,7 +77,8 @@
 
 .scroll-view {
   flex: 1;
-  padding-bottom: 160px; /* Space for player controls */
+  padding-bottom: 160px;
+  /* Space for player controls */
   overflow-y: auto;
 }
 
@@ -109,7 +110,7 @@
 }
 
 .verse-text {
-  font-family: var(--arabic-font, 'Noto Naskh Arabic'), serif;
+  font-family: var(--arabic-font, 'IndoPak Nastaleeq', 'Noto Naskh Arabic'), serif;
   font-size: 2rem;
   line-height: 2;
   text-align: center;

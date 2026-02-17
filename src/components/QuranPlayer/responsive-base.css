@@ -4,34 +4,34 @@
   --sidebar-width: clamp(240px, 25vw, 320px);
   --content-max-width: 1200px;
   --card-min-width: clamp(280px, 45vw, 320px);
-  
+
   /* Spacing */
   --spacing-xs: clamp(0.25rem, 0.5vw, 0.5rem);
   --spacing-sm: clamp(0.5rem, 1vw, 1rem);
   --spacing-md: clamp(1rem, 2vw, 1.5rem);
   --spacing-lg: clamp(1.5rem, 3vw, 2rem);
   --spacing-xl: clamp(2rem, 4vw, 3rem);
-  
+
   /* Typography */
   --font-size-xs: clamp(0.75rem, 1.5vw, 0.875rem);
   --font-size-sm: clamp(0.875rem, 1.75vw, 1rem);
   --font-size-base: clamp(1rem, 2vw, 1.125rem);
   --font-size-lg: clamp(1.125rem, 2.25vw, 1.25rem);
   --font-size-xl: clamp(1.25rem, 2.5vw, 1.5rem);
-  
+
   /* Arabic text sizes */
   --arabic-size-short: clamp(2rem, 6vw, 4rem);
   --arabic-size-medium: clamp(1.6rem, 5vw, 3rem);
   --arabic-size-long: clamp(1.2rem, 4vw, 2.25rem);
-  
+
   /* Translation text */
   --translation-size: clamp(0.95rem, 2vw, 1.25rem);
-  
+
   /* Controls & UI */
   --control-height: clamp(44px, 6vh, 56px);
   --button-size: clamp(36px, 5vw, 48px);
   --icon-size: clamp(20px, 3vw, 24px);
-  
+
   /* Safe areas & margins */
   --safe-area-inset-top: env(safe-area-inset-top, 0px);
   --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
@@ -86,7 +86,7 @@
 
 /* Text content styling */
 .arabic-text {
-  font-family: "Noto Naskh Arabic", "Uthmanic", serif;
+  font-family: 'IndoPak Nastaleeq', "Noto Naskh Arabic", "Uthmanic", serif;
   text-align: center;
   direction: rtl;
   line-height: 1.8;
@@ -131,15 +131,15 @@
     grid-template-columns: 1fr;
     padding: var(--spacing-sm);
   }
-  
+
   .verse-container {
     padding: var(--spacing-sm);
   }
-  
+
   .audio-controls {
     gap: var(--spacing-sm);
   }
-  
+
   .player-button {
     --button-size: clamp(32px, 4.5vw, 44px);
   }
@@ -150,7 +150,7 @@
     --header-height: clamp(50px, 7vh, 60px);
     --control-height: clamp(40px, 5.5vh, 48px);
   }
-  
+
   .translation-text {
     font-size: clamp(0.85rem, 1.8vw, 1rem);
   }
@@ -161,7 +161,7 @@
   .player-button {
     background: rgba(255, 255, 255, 0.15);
   }
-  
+
   .player-button:hover {
     background: rgba(255, 255, 255, 0.25);
   }
@@ -176,11 +176,12 @@
 
 /* Print styles */
 @media print {
+
   .audio-controls,
   .player-button {
     display: none;
   }
-  
+
   .verse-container {
     overflow: visible;
     max-height: none;
@@ -194,6 +195,7 @@
 
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
+
   .player-button,
   .audio-controls {
     transition: none;
@@ -203,10 +205,11 @@
 /* Touch device optimizations */
 @media (hover: none) and (pointer: coarse) {
   .player-button {
-    min-height: 44px; /* iOS minimum touch target */
+    min-height: 44px;
+    /* iOS minimum touch target */
     min-width: 44px;
   }
-  
+
   .audio-controls {
     position: sticky;
   }
