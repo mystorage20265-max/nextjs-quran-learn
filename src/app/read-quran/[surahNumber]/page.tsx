@@ -36,25 +36,54 @@ import '../styles/reader.css';
 // Clean Arabic text - only remove verse markers, keep all diacritics (harakat/tashkeel)
 const cleanArabicText = (text: string): string => {
     return text
-        // Only remove verse end markers and sajdah symbols, NOT diacritics
+        // Remove verse end markers and sajdah symbols
         .replace(/۝/g, '')     // End of ayah marker
         .replace(/۩/g, '')     // Sajdah marker
         .replace(/\u06DD/g, '') // Arabic end of ayah
-        // Fix spacing around waqf/pause marks - attach them to the preceding word
-        .replace(/\s+([\u06D6-\u06DC\u06DE-\u06E4\u06E7\u06E8\u06EB-\u06ED])/g, '$1')
-        // Remove trailing space after waqf marks before next word
-        .replace(/([\u06D6-\u06DC\u06DE-\u06E4\u06E7\u06E8\u06EB-\u06ED])\s+/g, '$1 ')
+        // Remove Quranic annotation signs (U+0610-061A: Alef above, sign marks that render as colored glyphs)
+        .replace(/[\u0610-\u061A]/g, '')
+        // Remove ALL waqf/pause marks and small annotation marks (these render as yellow glyphs in some fonts)
+        // U+06D6-06DC: Small high ligatures/marks, U+06DD: End of Ayah, U+06DE-06ED: Small annotation marks
+        .replace(/[\u06D6-\u06ED]/g, '')
+        // Remove Arabic small high/low marks (U+06EE-06EF, U+06F0-06F9 are digits so skip)
+        .replace(/[\u06EE\u06EF]/g, '')
+        // Remove Arabic presentation forms small marks (U+FBB2-FBC2: ornate annotation glyphs)
+        .replace(/[\uFBB2-\uFBC2]/g, '')
         // Collapse multiple spaces into one
         .replace(/\s{2,}/g, ' ')
         .trim();
 };
 
 // Remove Bismillah from the beginning of verse 1 text (it's shown separately)
+// The API may use alef wasla (ٱ U+0671) or regular alef (ا), with varying diacritics
 const removeBismillah = (text: string): string => {
-    return text
-        .replace(/^بِسْمِ\s+اللَّهِ\s+الرَّحْمَٰنِ\s+الرَّحِيمِ\s*/u, '')
-        .replace(/^بسم\s+الله\s+الرحمن\s+الرحيم\s*/u, '')
-        .trim();
+    // Strip all Arabic diacritics/tashkeel for comparison
+    const stripDiacritics = (s: string) => s.replace(/[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06ED]/g, '');
+    const stripped = stripDiacritics(text);
+    // Match "بسم الله الرحمن الرحيم" with either alef form (ا or ٱ)
+    const bismillahPattern = /^بسم\s+[اٱ]لله\s+[اٱ]لرحم[اٰ]ن\s+[اٱ]لرحيم\s*/u;
+    const match = stripped.match(bismillahPattern);
+    if (match) {
+        // Find how many base characters were matched, then remove that many from the original
+        const matchedLen = match[0].length;
+        // Count non-diacritic chars in original to find the right cutoff point
+        let count = 0;
+        let cutIndex = 0;
+        for (let i = 0; i < text.length; i++) {
+            const code = text.charCodeAt(i);
+            const isDiacritic = (code >= 0x0610 && code <= 0x061A) ||
+                (code >= 0x064B && code <= 0x065F) ||
+                code === 0x0670 ||
+                (code >= 0x06D6 && code <= 0x06ED);
+            if (!isDiacritic) count++;
+            if (count >= matchedLen) {
+                cutIndex = i + 1;
+                break;
+            }
+        }
+        return text.slice(cutIndex).trim();
+    }
+    return text;
 };
 
 // Convert number to Arabic-Indic numerals (٠١٢٣٤٥٦٧٨٩)
@@ -576,20 +605,22 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                     {/* Word-by-Word Display */}
                                     <div className="reader-verse-words">
                                         {verse.words && verse.words.length > 0 ? (
-                                            verse.words.map((word, idx) => (
-                                                <div
-                                                    key={word.id || idx}
-                                                    className="word-item"
-                                                >
-                                                    <span className="word-arabic">{word.text_uthmani}</span>
-                                                    {word.transliteration?.text && (
-                                                        <span className="word-transliteration">{word.transliteration.text}</span>
-                                                    )}
-                                                    {word.translation?.text && (
-                                                        <span className="word-translation">{word.translation.text}</span>
-                                                    )}
-                                                </div>
-                                            ))
+                                            verse.words
+                                                .filter((word: any) => word.char_type_name !== 'end')
+                                                .map((word, idx) => (
+                                                    <div
+                                                        key={word.id || idx}
+                                                        className="word-item"
+                                                    >
+                                                        <span className="word-arabic">{cleanArabicText(word.text_uthmani)}</span>
+                                                        {word.transliteration?.text && (
+                                                            <span className="word-transliteration">{word.transliteration.text}</span>
+                                                        )}
+                                                        {word.translation?.text && (
+                                                            <span className="word-translation">{word.translation.text}</span>
+                                                        )}
+                                                    </div>
+                                                ))
                                         ) : (
                                             <div className="reader-verse-arabic">{verse.verse_number === 1 && chapter.bismillah_pre ? cleanArabicText(removeBismillah(verse.text_uthmani)) : cleanArabicText(verse.text_uthmani)}</div>
                                         )}
