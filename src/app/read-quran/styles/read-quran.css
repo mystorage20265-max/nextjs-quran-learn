@@ -4,8 +4,10 @@
 /* ============ FONTS ============ */
 @import url('https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Scheherazade+New:wght@400;700&family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
+/* Note: KFGQPC Uthmanic Script HAFS is declared in globals.css */
+/* Uthmanic (secondary) font */
 @font-face {
-    font-family: 'KFGQPC Uthmanic Script';
+    font-family: 'Uthmanic';
     src: url('/fonts/uthmanic.otf') format('opentype');
     font-weight: normal;
     font-style: normal;
@@ -41,7 +43,7 @@
 
     /* Typography */
     --rq-font-sans: 'Outfit', 'Inter', system-ui, sans-serif;
-    --rq-font-arabic: 'KFGQPC Uthmanic Script', 'Amiri Quran', serif;
+    --rq-font-arabic: 'KFGQPC Uthmanic Script HAFS', 'Uthmanic', 'Scheherazade New', 'Amiri Quran', 'Traditional Arabic', serif;
 
     /* Layout */
     --rq-radius-lg: 20px;
@@ -1264,11 +1266,11 @@
     font-family: var(--rq-font-arabic);
     font-size: 36px;
     line-height: 2.5;
-    text-align: justify;
+    text-align: right;
     direction: rtl;
     color: var(--rq-text);
-    word-spacing: 0.3em;
-    letter-spacing: 0.02em;
+    word-spacing: 0;
+    letter-spacing: 0;
 }
 
 /* Verse End Marker - The circled Ayah number */

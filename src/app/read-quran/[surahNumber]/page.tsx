@@ -40,6 +40,20 @@ const cleanArabicText = (text: string): string => {
         .replace(/۝/g, '')     // End of ayah marker
         .replace(/۩/g, '')     // Sajdah marker
         .replace(/\u06DD/g, '') // Arabic end of ayah
+        // Fix spacing around waqf/pause marks - attach them to the preceding word
+        .replace(/\s+([\u06D6-\u06DC\u06DE-\u06E4\u06E7\u06E8\u06EB-\u06ED])/g, '$1')
+        // Remove trailing space after waqf marks before next word
+        .replace(/([\u06D6-\u06DC\u06DE-\u06E4\u06E7\u06E8\u06EB-\u06ED])\s+/g, '$1 ')
+        // Collapse multiple spaces into one
+        .replace(/\s{2,}/g, ' ')
+        .trim();
+};
+
+// Remove Bismillah from the beginning of verse 1 text (it's shown separately)
+const removeBismillah = (text: string): string => {
+    return text
+        .replace(/^بِسْمِ\s+اللَّهِ\s+الرَّحْمَٰنِ\s+الرَّحِيمِ\s*/u, '')
+        .replace(/^بسم\s+الله\s+الرحمن\s+الرحيم\s*/u, '')
         .trim();
 };
 
@@ -71,8 +85,8 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
 
     // Settings
     const [readingMode, setReadingMode] = useState<ReadingMode>(
-        (initialMode === 'reading' || initialMode === 'word-by-word' || initialMode === 'mushaf') 
-            ? initialMode as ReadingMode 
+        (initialMode === 'reading' || initialMode === 'word-by-word' || initialMode === 'mushaf')
+            ? initialMode as ReadingMode
             : 'mushaf' // Default to Mushaf view (Quran.com style)
     );
     const [selectedTranslation, setSelectedTranslation] = useState('en.sahih');
@@ -291,26 +305,26 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
         }
 
         const audio = new Audio(audioUrl);
-            audioRef.current = audio;
+        audioRef.current = audio;
 
-            audio.onplay = () => {
-                if (isMountedRef.current && myPlaybackId === playbackIdRef.current) {
-                    setIsPlaying(true);
-                    setCurrentVerse(verseNumber);
-                }
-            };
+        audio.onplay = () => {
+            if (isMountedRef.current && myPlaybackId === playbackIdRef.current) {
+                setIsPlaying(true);
+                setCurrentVerse(verseNumber);
+            }
+        };
 
-            audio.onended = () => {
-                if (!isMountedRef.current || myPlaybackId !== playbackIdRef.current) return;
-                if (verseNumber < verses.length) {
-                    playVerse(verseNumber + 1);
-                } else {
-                    setIsPlaying(false);
-                    setCurrentVerse(null);
-                }
-            };
+        audio.onended = () => {
+            if (!isMountedRef.current || myPlaybackId !== playbackIdRef.current) return;
+            if (verseNumber < verses.length) {
+                playVerse(verseNumber + 1);
+            } else {
+                setIsPlaying(false);
+                setCurrentVerse(null);
+            }
+        };
 
-            audio.onerror = () => {
+        audio.onerror = () => {
             if (isMountedRef.current && myPlaybackId === playbackIdRef.current) {
                 setIsPlaying(false);
                 showToast('Audio failed to load', 'warning');
@@ -368,8 +382,8 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                     <div className="reader-loading">
                         <p style={{ color: '#f85149', marginBottom: 16 }}>{error || 'Surah not found'}</p>
                         <Link href="/read-quran" className="reader-nav-btn primary">
-                        ← Back to Surahs
-                    </Link>
+                            ← Back to Surahs
+                        </Link>
                     </div>
                 </div>
             </div>
@@ -387,13 +401,13 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                         <Link href="/read-quran" className="reader-back-btn">
                             <ChevronLeft size={18} />
                             <span>All Surahs</span>
-            </Link>
+                        </Link>
 
                         <div className="reader-surah-info">
                             <h1 className="reader-surah-name">
                                 <span>{chapter.name_simple}</span>
                                 <span className="reader-surah-name-arabic">{chapter.name_arabic}</span>
-                    </h1>
+                            </h1>
                             <p className="reader-surah-meta">
                                 {chapter.translated_name.name} • {chapter.verses_count} verses • {chapter.revelation_place === 'makkah' ? 'Meccan' : 'Medinan'}
                             </p>
@@ -402,13 +416,13 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                         <div className="reader-header-actions">
                             {/* Verse Navigation */}
                             <div className="verse-nav-dropdown">
-                    <button
+                                <button
                                     className="verse-nav-trigger"
                                     onClick={() => setShowVerseNav(!showVerseNav)}
-                    >
+                                >
                                     <span>Ayah</span>
                                     <ChevronDown size={16} />
-                    </button>
+                                </button>
 
                                 {showVerseNav && (
                                     <div className="verse-nav-panel">
@@ -422,9 +436,9 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                     {v.verse_number}
                                                 </button>
                                             ))}
-                    </div>
-                </div>
-            )}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
 
                             <button
@@ -433,7 +447,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                 title={isPlaying ? 'Stop (Space)' : 'Play (Space)'}
                             >
                                 {isPlaying ? <Pause size={18} /> : <Play size={18} />}
-                    </button>
+                            </button>
 
                             <button
                                 className="reader-action-btn"
@@ -441,9 +455,9 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                 title="Settings (⌘S)"
                             >
                                 <Settings size={18} />
-                    </button>
+                            </button>
                         </div>
-                </div>
+                    </div>
 
                     {/* Reading Mode Tabs */}
                     <div className="reading-mode-tabs">
@@ -472,29 +486,29 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                             Reading
                         </button>
                     </div>
-            </div>
+                </div>
 
-            {/* Bismillah */}
-            {chapter.bismillah_pre && (
+                {/* Bismillah */}
+                {chapter.bismillah_pre && (
                     <div className="reader-bismillah">
                         <div className="reader-bismillah-text">
-                    بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+                            بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
                         </div>
                         <div className="reader-bismillah-translation">
                             In the Name of Allah—the Most Compassionate, Most Merciful.
                         </div>
-                </div>
-            )}
+                    </div>
+                )}
 
-            {/* Verses */}
+                {/* Verses */}
                 {readingMode === 'mushaf' ? (
                     // Mushaf Mode - Quran.com Style
                     <div className="reader-mushaf">
                         <div className="reader-mushaf-text">
                             {verses.map((verse) => (
                                 <span key={verse.id}>
-                                    {cleanArabicText(verse.text_uthmani)}
-                                    <span 
+                                    {verse.verse_number === 1 && chapter.bismillah_pre ? cleanArabicText(removeBismillah(verse.text_uthmani)) : cleanArabicText(verse.text_uthmani)}
+                                    <span
                                         className="verse-number-badge"
                                         onClick={() => playVerse(verse.verse_number)}
                                         title={`Play verse ${verse.verse_number}`}
@@ -504,7 +518,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                 </span>
                             ))}
                         </div>
-                        
+
                         {/* Translation below mushaf text */}
                         {showTranslation && (
                             <div className="mushaf-translations">
@@ -525,7 +539,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                         <div className="reader-continuous-text">
                             {verses.map((verse) => (
                                 <span key={verse.id}>
-                                    {cleanArabicText(verse.text_uthmani)}
+                                    {verse.verse_number === 1 && chapter.bismillah_pre ? cleanArabicText(removeBismillah(verse.text_uthmani)) : cleanArabicText(verse.text_uthmani)}
                                     <span className="verse-end-marker">{verse.verse_number}</span>
                                 </span>
                             ))}
@@ -541,9 +555,9 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                             </div>
                         ) : (
                             displayVerses.map((verse) => (
-                        <div
-                            key={verse.id}
-                            id={`verse-${verse.verse_number}`}
+                                <div
+                                    key={verse.id}
+                                    id={`verse-${verse.verse_number}`}
                                     className={`reader-verse ${currentVerse === verse.verse_number ? 'playing' : ''}`}
                                 >
                                     <div className="reader-verse-header">
@@ -577,9 +591,9 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                 </div>
                                             ))
                                         ) : (
-                                            <div className="reader-verse-arabic">{cleanArabicText(verse.text_uthmani)}</div>
+                                            <div className="reader-verse-arabic">{verse.verse_number === 1 && chapter.bismillah_pre ? cleanArabicText(removeBismillah(verse.text_uthmani)) : cleanArabicText(verse.text_uthmani)}</div>
                                         )}
-                            </div>
+                                    </div>
 
                                     {showTranslation && (
                                         <div className="reader-verse-translation">
@@ -591,10 +605,10 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                         <button className="verse-action-btn" onClick={() => copyVerse(verse)}>
                                             <Copy size={14} />
                                             <span>Copy</span>
-                                </button>
-                                <button
+                                        </button>
+                                        <button
                                             className={`verse-action-btn ${bookmarks.includes(verse.verse_key) ? 'bookmarked' : ''}`}
-                                    onClick={() => toggleBookmark(verse.verse_key)}
+                                            onClick={() => toggleBookmark(verse.verse_key)}
                                         >
                                             <Bookmark size={14} />
                                             <span>{bookmarks.includes(verse.verse_key) ? 'Saved' : 'Save'}</span>
@@ -602,23 +616,23 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                         <button className="verse-action-btn" onClick={() => shareVerse(verse)}>
                                             <Share2 size={14} />
                                             <span>Share</span>
-                                </button>
-                                <button
+                                        </button>
+                                        <button
                                             className={`verse-tafsir-toggle ${expandedTafsir === verse.verse_number ? 'active' : ''}`}
                                             onClick={() => setExpandedTafsir(expandedTafsir === verse.verse_number ? null : verse.verse_number)}
                                         >
                                             <BookOpen size={14} />
                                             <span>Tafsir</span>
-                                </button>
-                            </div>
+                                        </button>
+                                    </div>
 
                                     {expandedTafsir === verse.verse_number && (
                                         <div className="verse-tafsir-panel">
                                             <div className="verse-tafsir-title">Brief Tafsir</div>
                                             <div className="verse-tafsir-content">
                                                 Tafsir content for verse {verse.verse_number} would be loaded here. You can integrate with a Tafsir API to display detailed explanations.
-                        </div>
-                        </div>
+                                            </div>
+                                        </div>
                                     )}
                                 </div>
                             ))
@@ -643,12 +657,12 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                         >
                                             <Volume2 size={14} />
                                         </button>
-                                        </div>
                                     </div>
+                                </div>
 
                                 <div className="reader-verse-arabic">
-                                    {cleanArabicText(verse.text_uthmani)}
-                                    </div>
+                                    {verse.verse_number === 1 && chapter.bismillah_pre ? cleanArabicText(removeBismillah(verse.text_uthmani)) : cleanArabicText(verse.text_uthmani)}
+                                </div>
 
                                 {showTranslation && (
                                     <div className="reader-verse-translation">
@@ -690,29 +704,29 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                         <div className="verse-tafsir-title">Brief Tafsir</div>
                                         <div className="verse-tafsir-content">
                                             Tafsir content for verse {verse.verse_number} would be loaded here. You can integrate with a Tafsir API to display detailed explanations.
+                                        </div>
+                                    </div>
+                                )}
                             </div>
-                    </div>
-                )}
-            </div>
                         ))}
                     </div>
                 )}
 
                 {/* Surah Navigation */}
                 <div className="reader-nav-buttons">
-                {surahNumber > 1 ? (
+                    {surahNumber > 1 ? (
                         <Link href={`/read-quran/${surahNumber - 1}`} className="reader-nav-btn">
                             <ChevronLeft size={18} />
                             <span>Previous Surah</span>
-                    </Link>
-                ) : <div></div>}
+                        </Link>
+                    ) : <div></div>}
 
-                {surahNumber < 114 && (
+                    {surahNumber < 114 && (
                         <Link href={`/read-quran/${surahNumber + 1}`} className="reader-nav-btn primary">
                             <span>Next Surah</span>
                             <ChevronRight size={18} />
-                    </Link>
-                )}
+                        </Link>
+                    )}
                 </div>
             </div>
 
@@ -726,30 +740,30 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                     <div className="audio-player-info">
                         <div className="audio-player-verse">Verse {currentVerse} of {verses.length}</div>
                         <div className="audio-player-surah">{chapter.name_simple} • {chapter.name_arabic}</div>
-                        </div>
+                    </div>
 
                     <div className="audio-player-controls">
                         <button className="audio-control-btn" onClick={playPrev} title="Previous (←)">
                             <SkipBack size={18} />
-                            </button>
+                        </button>
                         <button className="audio-control-btn primary" onClick={stopAudio} title="Stop (Space)">
                             <Square size={20} />
-                            </button>
+                        </button>
                         <button className="audio-control-btn" onClick={playNext} title="Next (→)">
                             <SkipForward size={18} />
-                            </button>
-                        </div>
+                        </button>
+                    </div>
 
                     <div className="audio-player-progress">
                         <span className="audio-progress-text">{currentVerse}/{verses.length}</span>
                         <div className="audio-progress-bar">
                             <div
                                 className="audio-progress-fill"
-                                    style={{ width: `${(currentVerse / verses.length) * 100}%` }}
-                                />
-                            </div>
+                                style={{ width: `${(currentVerse / verses.length) * 100}%` }}
+                            />
                         </div>
                     </div>
+                </div>
             )}
 
             {/* Settings Panel */}
@@ -761,57 +775,57 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                             <h2 className="settings-title">Settings</h2>
                             <button className="settings-close-btn" onClick={() => setShowSettings(false)}>
                                 <X size={18} />
-                    </button>
-                </div>
+                            </button>
+                        </div>
 
                         <div className="settings-content">
                             {/* Font Size */}
                             <div className="settings-section">
                                 <label className="settings-label">Arabic Font Size</label>
                                 <div className="font-size-control">
-                    <input
-                        type="range"
+                                    <input
+                                        type="range"
                                         min="24"
                                         max="52"
-                        value={fontSize}
-                        onChange={(e) => setFontSize(parseInt(e.target.value))}
+                                        value={fontSize}
+                                        onChange={(e) => setFontSize(parseInt(e.target.value))}
                                         className="font-size-slider"
-                    />
+                                    />
                                     <span className="font-size-value">{fontSize}px</span>
-                    </div>
-                </div>
+                                </div>
+                            </div>
 
                             {/* Translation */}
                             <div className="settings-section">
                                 <label className="settings-label">Translation</label>
-                    <select
+                                <select
                                     className="settings-select"
-                        value={selectedTranslation}
+                                    value={selectedTranslation}
                                     onChange={(e) => setSelectedTranslation(e.target.value)}
-                    >
-                        {TRANSLATIONS.map((t) => (
-                            <option key={t.id} value={t.id}>
-                                {t.name} ({t.language})
-                            </option>
-                        ))}
-                    </select>
-                </div>
+                                >
+                                    {TRANSLATIONS.map((t) => (
+                                        <option key={t.id} value={t.id}>
+                                            {t.name} ({t.language})
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
 
                             {/* Reciter */}
                             <div className="settings-section">
                                 <label className="settings-label">Reciter</label>
-                    <select
+                                <select
                                     className="settings-select"
-                        value={selectedReciter}
+                                    value={selectedReciter}
                                     onChange={(e) => setSelectedReciter(parseInt(e.target.value))}
-                    >
-                        {POPULAR_RECITERS.map((r) => (
-                            <option key={r.id} value={r.id}>
-                                {r.name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
+                                >
+                                    {POPULAR_RECITERS.map((r) => (
+                                        <option key={r.id} value={r.id}>
+                                            {r.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
 
                             {/* Toggles */}
                             <div className="settings-section">
@@ -824,7 +838,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                         className={`toggle-switch ${showTranslation ? 'active' : ''}`}
                                         onClick={() => setShowTranslation(!showTranslation)}
                                     />
-            </div>
+                                </div>
 
                                 <div className="settings-toggle">
                                     <div className="toggle-info">
@@ -844,7 +858,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                 <div className="keyboard-hint">
                                     <span className="keyboard-key">Space</span>
                                     <span className="keyboard-action">Play / Pause</span>
-                    </div>
+                                </div>
                                 <div className="keyboard-hint">
                                     <span className="keyboard-key">←</span>
                                     <span className="keyboard-action">Previous verse</span>

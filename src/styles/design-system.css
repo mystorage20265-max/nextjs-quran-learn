@@ -17,7 +17,7 @@
   --color-amber-700: #b45309;
   --color-amber-800: #92400e;
   --color-amber-900: #78350f;
-  
+
   /* Warm Stone/Sand - Neutral backgrounds */
   --color-stone-50: #fafaf9;
   --color-stone-100: #f5f5f4;
@@ -30,7 +30,7 @@
   --color-stone-800: #292524;
   --color-stone-900: #1c1917;
   --color-stone-950: #0c0a09;
-  
+
   /* Warm Teal - Secondary accent (calming) */
   --color-teal-50: #f0fdfa;
   --color-teal-100: #ccfbf1;
@@ -42,7 +42,7 @@
   --color-teal-700: #0f766e;
   --color-teal-800: #115e59;
   --color-teal-900: #134e4a;
-  
+
   /* Cream/Parchment - For reading surfaces */
   --color-cream-50: #fefdfb;
   --color-cream-100: #fdfbf7;
@@ -50,11 +50,11 @@
   --color-cream-300: #f5edd8;
   --color-cream-400: #ebe0c4;
   --color-cream-500: #d9c9a3;
-  
+
   /* Deep Brown - For dark mode backgrounds */
   --color-brown-900: #1a1612;
   --color-brown-950: #0f0d0a;
-  
+
   /* Pure values */
   --color-white: #ffffff;
   --color-black: #000000;
@@ -71,37 +71,37 @@
   --bg-card: #2a2420;
   --bg-card-hover: #352e28;
   --bg-overlay: rgba(15, 13, 10, 0.85);
-  
+
   /* Text hierarchy - Warm cream tones */
   --text-primary: #faf6ed;
   --text-secondary: #d9c9a3;
   --text-muted: #a89f8a;
   --text-disabled: #6b6358;
   --text-inverse: #1a1612;
-  
+
   /* Arabic text - Soft cream for eye comfort */
   --text-arabic: #fdfbf7;
   --text-arabic-secondary: #f5edd8;
-  
+
   /* Brand colors - Warm amber gold */
   --brand-primary: #f59e0b;
   --brand-primary-hover: #d97706;
   --brand-primary-active: #b45309;
   --brand-primary-soft: rgba(245, 158, 11, 0.12);
   --brand-primary-glow: rgba(245, 158, 11, 0.2);
-  
+
   /* Accent colors */
   --accent-teal: #2dd4bf;
   --accent-teal-soft: rgba(45, 212, 191, 0.1);
   --accent-gold: #fbbf24;
   --accent-gold-soft: rgba(251, 191, 36, 0.12);
-  
+
   /* Borders - Subtle warm tones */
   --border-subtle: rgba(250, 246, 237, 0.05);
   --border-default: rgba(250, 246, 237, 0.08);
   --border-strong: rgba(250, 246, 237, 0.12);
   --border-focus: var(--brand-primary);
-  
+
   /* Shadows - Warm undertones */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
@@ -109,23 +109,23 @@
   --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.7);
   --shadow-glow: 0 0 30px var(--brand-primary-glow);
   --shadow-inner: inset 0 2px 4px rgba(0, 0, 0, 0.3);
-  
+
   /* Interactive states */
   --interactive-hover: rgba(250, 246, 237, 0.05);
   --interactive-active: rgba(250, 246, 237, 0.08);
   --interactive-selected: var(--brand-primary-soft);
-  
+
   /* Status colors - Warmer variants */
   --status-success: #22c55e;
   --status-warning: #fbbf24;
   --status-error: #f87171;
   --status-info: #60a5fa;
-  
+
   /* Scrollbar */
   --scrollbar-track: var(--bg-surface);
   --scrollbar-thumb: rgba(250, 246, 237, 0.15);
   --scrollbar-thumb-hover: var(--brand-primary);
-  
+
   /* Glassmorphism - Warm tint */
   --glass-bg: rgba(42, 36, 32, 0.7);
   --glass-bg-strong: rgba(42, 36, 32, 0.85);
@@ -144,37 +144,37 @@
   --bg-card: #ffffff;
   --bg-card-hover: #f5edd8;
   --bg-overlay: rgba(253, 251, 247, 0.9);
-  
+
   /* Text hierarchy - Warm dark browns */
   --text-primary: #1a1612;
   --text-secondary: #44403c;
   --text-muted: #78716c;
   --text-disabled: #a8a29e;
   --text-inverse: #faf6ed;
-  
+
   /* Arabic text - Deep brown for contrast */
   --text-arabic: #1a1612;
   --text-arabic-secondary: #292524;
-  
+
   /* Brand colors - Deeper amber for contrast */
   --brand-primary: #d97706;
   --brand-primary-hover: #b45309;
   --brand-primary-active: #92400e;
   --brand-primary-soft: rgba(217, 119, 6, 0.1);
   --brand-primary-glow: rgba(217, 119, 6, 0.15);
-  
+
   /* Accent colors */
   --accent-teal: #0d9488;
   --accent-teal-soft: rgba(13, 148, 136, 0.1);
   --accent-gold: #b45309;
   --accent-gold-soft: rgba(180, 83, 9, 0.1);
-  
+
   /* Borders - Subtle warm tones */
   --border-subtle: rgba(26, 22, 18, 0.05);
   --border-default: rgba(26, 22, 18, 0.1);
   --border-strong: rgba(26, 22, 18, 0.15);
   --border-focus: var(--brand-primary);
-  
+
   /* Shadows - Softer for light mode */
   --shadow-sm: 0 1px 2px rgba(26, 22, 18, 0.06);
   --shadow-md: 0 4px 12px rgba(26, 22, 18, 0.1);
@@ -182,23 +182,23 @@
   --shadow-xl: 0 16px 48px rgba(26, 22, 18, 0.15);
   --shadow-glow: 0 0 30px var(--brand-primary-glow);
   --shadow-inner: inset 0 2px 4px rgba(26, 22, 18, 0.05);
-  
+
   /* Interactive states */
   --interactive-hover: rgba(26, 22, 18, 0.04);
   --interactive-active: rgba(26, 22, 18, 0.06);
   --interactive-selected: var(--brand-primary-soft);
-  
+
   /* Status colors */
   --status-success: #16a34a;
   --status-warning: #d97706;
   --status-error: #dc2626;
   --status-info: #2563eb;
-  
+
   /* Scrollbar */
   --scrollbar-track: var(--bg-base);
   --scrollbar-thumb: rgba(26, 22, 18, 0.2);
   --scrollbar-thumb-hover: var(--brand-primary);
-  
+
   /* Glassmorphism - Warm cream tint */
   --glass-bg: rgba(255, 255, 255, 0.75);
   --glass-bg-strong: rgba(255, 255, 255, 0.9);
@@ -211,9 +211,9 @@
 :root {
   /* Font families */
   --font-sans: 'Figtree', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-arabic: 'KFGQPC Uthmanic Script HAFS', 'Uthmanic', 'Traditional Arabic', serif;
+  --font-arabic: 'KFGQPC Uthmanic Script HAFS', 'Uthmanic', 'Scheherazade New', 'Amiri Quran', 'Traditional Arabic', serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
-  
+
   /* Font sizes - Slightly larger for readability */
   --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.8rem);
   --text-sm: clamp(0.875rem, 0.8rem + 0.25vw, 0.925rem);
@@ -225,7 +225,7 @@
   --text-4xl: clamp(2.25rem, 1.9rem + 1.5vw, 3rem);
   --text-5xl: clamp(3rem, 2.5rem + 2vw, 4rem);
   --text-6xl: clamp(3.75rem, 3rem + 3vw, 5rem);
-  
+
   /* Arabic font sizes - Optimized for KFGQPC */
   --arabic-sm: clamp(1.5rem, 1.25rem + 1vw, 1.75rem);
   --arabic-base: clamp(1.75rem, 1.5rem + 1vw, 2rem);
@@ -233,7 +233,7 @@
   --arabic-xl: clamp(2.5rem, 2rem + 1.5vw, 3rem);
   --arabic-2xl: clamp(3rem, 2.5rem + 2vw, 4rem);
   --arabic-3xl: clamp(3.5rem, 3rem + 2.5vw, 5rem);
-  
+
   /* Line heights - Relaxed for reading comfort */
   --leading-none: 1;
   --leading-tight: 1.25;
@@ -242,7 +242,7 @@
   --leading-relaxed: 1.75;
   --leading-loose: 2;
   --leading-arabic: 2.2;
-  
+
   /* Letter spacing */
   --tracking-tighter: -0.05em;
   --tracking-tight: -0.025em;
@@ -250,7 +250,7 @@
   --tracking-wide: 0.025em;
   --tracking-wider: 0.05em;
   --tracking-widest: 0.1em;
-  
+
   /* Font weights */
   --font-light: 300;
   --font-normal: 400;
@@ -263,41 +263,71 @@
 :root {
   --space-0: 0;
   --space-px: 1px;
-  --space-0-5: 0.125rem;  /* 2px */
-  --space-1: 0.25rem;     /* 4px */
-  --space-1-5: 0.375rem;  /* 6px */
-  --space-2: 0.5rem;      /* 8px */
-  --space-2-5: 0.625rem;  /* 10px */
-  --space-3: 0.75rem;     /* 12px */
-  --space-3-5: 0.875rem;  /* 14px */
-  --space-4: 1rem;        /* 16px */
-  --space-5: 1.25rem;     /* 20px */
-  --space-6: 1.5rem;      /* 24px */
-  --space-7: 1.75rem;     /* 28px */
-  --space-8: 2rem;        /* 32px */
-  --space-9: 2.25rem;     /* 36px */
-  --space-10: 2.5rem;     /* 40px */
-  --space-11: 2.75rem;    /* 44px */
-  --space-12: 3rem;       /* 48px */
-  --space-14: 3.5rem;     /* 56px */
-  --space-16: 4rem;       /* 64px */
-  --space-20: 5rem;       /* 80px */
-  --space-24: 6rem;       /* 96px */
-  --space-28: 7rem;       /* 112px */
-  --space-32: 8rem;       /* 128px */
-  --space-36: 9rem;       /* 144px */
-  --space-40: 10rem;      /* 160px */
+  --space-0-5: 0.125rem;
+  /* 2px */
+  --space-1: 0.25rem;
+  /* 4px */
+  --space-1-5: 0.375rem;
+  /* 6px */
+  --space-2: 0.5rem;
+  /* 8px */
+  --space-2-5: 0.625rem;
+  /* 10px */
+  --space-3: 0.75rem;
+  /* 12px */
+  --space-3-5: 0.875rem;
+  /* 14px */
+  --space-4: 1rem;
+  /* 16px */
+  --space-5: 1.25rem;
+  /* 20px */
+  --space-6: 1.5rem;
+  /* 24px */
+  --space-7: 1.75rem;
+  /* 28px */
+  --space-8: 2rem;
+  /* 32px */
+  --space-9: 2.25rem;
+  /* 36px */
+  --space-10: 2.5rem;
+  /* 40px */
+  --space-11: 2.75rem;
+  /* 44px */
+  --space-12: 3rem;
+  /* 48px */
+  --space-14: 3.5rem;
+  /* 56px */
+  --space-16: 4rem;
+  /* 64px */
+  --space-20: 5rem;
+  /* 80px */
+  --space-24: 6rem;
+  /* 96px */
+  --space-28: 7rem;
+  /* 112px */
+  --space-32: 8rem;
+  /* 128px */
+  --space-36: 9rem;
+  /* 144px */
+  --space-40: 10rem;
+  /* 160px */
 }
 
 /* ============ BORDER RADIUS ============ */
 :root {
   --radius-none: 0;
-  --radius-sm: 0.25rem;   /* 4px */
-  --radius-md: 0.5rem;    /* 8px */
-  --radius-lg: 0.75rem;   /* 12px */
-  --radius-xl: 1rem;      /* 16px */
-  --radius-2xl: 1.5rem;   /* 24px */
-  --radius-3xl: 2rem;     /* 32px */
+  --radius-sm: 0.25rem;
+  /* 4px */
+  --radius-md: 0.5rem;
+  /* 8px */
+  --radius-lg: 0.75rem;
+  /* 12px */
+  --radius-xl: 1rem;
+  /* 16px */
+  --radius-2xl: 1.5rem;
+  /* 24px */
+  --radius-3xl: 2rem;
+  /* 32px */
   --radius-full: 9999px;
 }
 
@@ -326,7 +356,7 @@
   --duration-500: 500ms;
   --duration-700: 700ms;
   --duration-1000: 1000ms;
-  
+
   /* Easings */
   --ease-linear: linear;
   --ease-in: cubic-bezier(0.4, 0, 1, 1);
@@ -334,11 +364,11 @@
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
   --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  
+
   /* Common transitions */
   --transition-colors: color var(--duration-150) var(--ease-out),
-                       background-color var(--duration-150) var(--ease-out),
-                       border-color var(--duration-150) var(--ease-out);
+    background-color var(--duration-150) var(--ease-out),
+    border-color var(--duration-150) var(--ease-out);
   --transition-opacity: opacity var(--duration-200) var(--ease-out);
   --transition-transform: transform var(--duration-200) var(--ease-out);
   --transition-all: all var(--duration-200) var(--ease-out);
@@ -362,17 +392,28 @@
 
 /* ============ CONTAINER WIDTHS ============ */
 :root {
-  --container-xs: 20rem;    /* 320px */
-  --container-sm: 24rem;    /* 384px */
-  --container-md: 28rem;    /* 448px */
-  --container-lg: 32rem;    /* 512px */
-  --container-xl: 36rem;    /* 576px */
-  --container-2xl: 42rem;   /* 672px */
-  --container-3xl: 48rem;   /* 768px */
-  --container-4xl: 56rem;   /* 896px */
-  --container-5xl: 64rem;   /* 1024px */
-  --container-6xl: 72rem;   /* 1152px */
-  --container-7xl: 80rem;   /* 1280px */
+  --container-xs: 20rem;
+  /* 320px */
+  --container-sm: 24rem;
+  /* 384px */
+  --container-md: 28rem;
+  /* 448px */
+  --container-lg: 32rem;
+  /* 512px */
+  --container-xl: 36rem;
+  /* 576px */
+  --container-2xl: 42rem;
+  /* 672px */
+  --container-3xl: 48rem;
+  /* 768px */
+  --container-4xl: 56rem;
+  /* 896px */
+  --container-5xl: 64rem;
+  /* 1024px */
+  --container-6xl: 72rem;
+  /* 1152px */
+  --container-7xl: 80rem;
+  /* 1280px */
   --container-full: 100%;
 }
 
@@ -384,9 +425,9 @@
 .theme-transition *::before,
 .theme-transition *::after {
   transition: background-color var(--duration-500) var(--ease-out),
-              border-color var(--duration-500) var(--ease-out),
-              color var(--duration-500) var(--ease-out),
-              box-shadow var(--duration-500) var(--ease-out) !important;
+    border-color var(--duration-500) var(--ease-out),
+    color var(--duration-500) var(--ease-out),
+    box-shadow var(--duration-500) var(--ease-out) !important;
 }
 
 /* Glass card */
@@ -446,7 +487,7 @@
 /* Warm glow effect */
 .warm-glow {
   box-shadow: 0 0 40px var(--brand-primary-glow),
-              0 0 80px rgba(245, 158, 11, 0.1);
+    0 0 80px rgba(245, 158, 11, 0.1);
 }
 
 /* Soft card with warm shadow */

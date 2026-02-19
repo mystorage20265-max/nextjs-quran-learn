@@ -85,6 +85,20 @@ export default function RootLayout({
           rel="stylesheet"
         />
         <link
+          rel="preload"
+          href="/fonts/kfgqpc-uthmanic.otf"
+          as="font"
+          type="font/otf"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          href="/fonts/uthmanic.otf"
+          as="font"
+          type="font/otf"
+          crossOrigin="anonymous"
+        />
+        <link
           rel="icon"
           href="/favicon.ico"
           type="image/x-icon"

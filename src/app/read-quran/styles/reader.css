@@ -14,36 +14,36 @@
   --reader-bg-card: var(--bg-card);
   --reader-bg-hover: var(--bg-card-hover);
   --reader-bg-verse: var(--bg-card);
-  
+
   /* Accent colors - Warm amber gold */
   --reader-primary: var(--brand-primary);
   --reader-primary-hover: var(--brand-primary-hover);
   --reader-primary-soft: var(--brand-primary-soft);
   --reader-primary-glow: var(--brand-primary-glow);
-  
+
   /* Secondary Accent */
   --reader-gold: var(--accent-gold);
   --reader-gold-soft: var(--accent-gold-soft);
-  
+
   /* Text colors - Warm cream tones */
   --reader-text: var(--text-primary);
   --reader-text-secondary: var(--text-secondary);
   --reader-text-muted: var(--text-muted);
   --reader-text-arabic: var(--text-arabic);
-  
+
   /* Borders */
   --reader-border: var(--border-default);
   --reader-border-light: var(--border-strong);
-  
+
   /* Typography */
   --font-arabic: var(--font-arabic);
   --font-ui: var(--font-sans);
-  
+
   /* Spacing */
   --reader-radius: var(--radius-lg);
   --reader-radius-lg: var(--radius-xl);
   --reader-radius-xl: var(--radius-2xl);
-  
+
   /* Shadows */
   --reader-shadow: var(--shadow-md);
   --reader-shadow-lg: var(--shadow-xl);
@@ -478,7 +478,8 @@
   margin-bottom: 20px;
   word-spacing: 0.05em;
   letter-spacing: 0;
-  font-feature-settings: "liga" 1, "calt" 1; /* Enable ligatures for proper Arabic rendering */
+  font-feature-settings: "liga" 1, "calt" 1;
+  /* Enable ligatures for proper Arabic rendering */
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -688,6 +689,7 @@
     opacity: 0;
     transform: translateX(-50%) translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
@@ -813,8 +815,13 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 .reader-settings-panel {
@@ -832,8 +839,13 @@
 }
 
 @keyframes slideIn {
-  from { transform: translateX(100%); }
-  to { transform: translateX(0); }
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
 }
 
 .settings-header {
@@ -1012,7 +1024,7 @@
   background: white;
   border-radius: 50%;
   transition: transform 0.2s ease;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .toggle-switch.active::after {
@@ -1084,7 +1096,9 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .reader-loading-text {
@@ -1166,6 +1180,7 @@
     opacity: 0;
     transform: translateX(-50%) translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
@@ -1183,17 +1198,17 @@
 
 .reader-mushaf-text {
   font-family: var(--font-arabic);
-  font-size: var(--arabic-font-size, 34px);
-  line-height: 2.6;
-  text-align: justify;
-  text-align-last: center;
+  font-size: var(--arabic-font-size, 26px);
+  line-height: 1.6;
+  text-align: right;
   direction: rtl;
   color: var(--reader-text);
-  word-spacing: 0.12em;
-  letter-spacing: 0.02em;
+  word-spacing: 0;
+  letter-spacing: 0;
   font-feature-settings: "liga" 1, "calt" 1, "kern" 1;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Ornamental Verse Number Badge - Quran.com Style */
@@ -1272,55 +1287,28 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 42px;
-  height: 42px;
-  padding: 0 6px;
-  margin: 0 12px;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 5px;
+  margin: 0 8px;
   vertical-align: middle;
   background: transparent;
-  border: 2px solid var(--reader-text-muted);
+  border: 1.5px solid var(--reader-text-muted);
   border-radius: 50%;
-  font-family: 'KFGQPC Uthmanic Script HAFS', var(--font-ui);
-  font-size: 15px;
-  font-weight: 500;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 600;
   color: var(--reader-text-secondary);
   transition: all 0.2s ease;
   position: relative;
-}
-
-/* Decorative dots on the badge */
-.verse-number-badge::before,
-.verse-number-badge::after {
-  content: '';
-  position: absolute;
-  width: 5px;
-  height: 5px;
-  background: var(--reader-text-muted);
-  border-radius: 50%;
-}
-
-.verse-number-badge::before {
-  top: -3px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.verse-number-badge::after {
-  bottom: -3px;
-  left: 50%;
-  transform: translateX(-50%);
+  line-height: 1;
+  cursor: pointer;
 }
 
 .verse-number-badge:hover {
   background: var(--reader-primary-soft);
   border-color: var(--reader-primary);
   color: var(--reader-primary);
-  cursor: pointer;
-}
-
-.verse-number-badge:hover::before,
-.verse-number-badge:hover::after {
-  background: var(--reader-primary);
 }
 
 /* Mushaf Translations Section */
@@ -1365,12 +1353,12 @@
 
 .reader-continuous-text {
   font-family: var(--font-arabic);
-  font-size: var(--arabic-font-size, 32px);
-  line-height: 2.4;
+  font-size: var(--arabic-font-size, 26px);
+  line-height: 1.6;
   text-align: center;
   direction: rtl;
   color: var(--reader-text-arabic);
-  word-spacing: 0.08em;
+  word-spacing: 0;
   font-feature-settings: "liga" 1, "calt" 1;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -1380,17 +1368,18 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  margin: 0 8px;
+  width: 24px;
+  height: 24px;
+  margin: 0 6px;
   background: var(--reader-primary-soft);
-  border: 2px solid var(--reader-primary);
+  border: 1.5px solid var(--reader-primary);
   border-radius: 50%;
   font-family: var(--font-ui);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   color: var(--reader-primary);
-  vertical-align: middle;
+  vertical-align: text-bottom;
+  line-height: 1;
 }
 
 /* ============ RESPONSIVE ============ */
@@ -1400,161 +1389,161 @@
     padding: 12px 16px;
     margin: 0 -16px 24px;
   }
-  
+
   .reader-container {
     padding: 0 16px 120px;
   }
-  
+
   .reader-header-content {
     flex-wrap: wrap;
   }
-  
+
   .reader-surah-info {
     order: -1;
     width: 100%;
     margin-bottom: 12px;
   }
-  
+
   .reader-surah-name {
     font-size: 16px;
     flex-direction: column;
     gap: 4px;
   }
-  
+
   .reader-surah-name-arabic {
     font-size: 22px;
   }
-  
+
   .reader-verse {
     padding: 24px 16px;
   }
-  
+
   .reader-verse-arabic {
     font-size: clamp(26px, 6vw, 32px);
     line-height: 2;
   }
-  
+
   .reader-verse-number {
     width: 36px;
     height: 36px;
     font-size: 13px;
   }
-  
+
   .reader-verse-translation {
     font-size: 15px;
     padding-left: 16px;
   }
-  
+
   .reader-verse-actions {
     flex-wrap: wrap;
     gap: 8px;
   }
-  
+
   .verse-action-btn {
     flex: 1;
     min-width: calc(50% - 4px);
     justify-content: center;
     padding: 12px 10px;
   }
-  
+
   .verse-tafsir-toggle {
     margin-left: 0;
     width: 100%;
     margin-top: 8px;
   }
-  
+
   .reader-audio-player {
     flex-wrap: wrap;
     padding: 16px 20px;
     gap: 12px;
     border-radius: 16px;
   }
-  
+
   .audio-player-info {
     width: 100%;
     text-align: center;
   }
-  
+
   .audio-player-controls {
     width: 100%;
     justify-content: center;
   }
-  
+
   .audio-player-progress {
     display: none;
   }
-  
+
   .reader-bismillah {
     padding: 32px 20px;
   }
-  
+
   .reader-bismillah-text {
     font-size: 28px;
   }
-  
+
   .verse-nav-panel {
     width: calc(100vw - 32px);
     max-width: 360px;
   }
-  
+
   .verse-nav-grid {
     grid-template-columns: repeat(5, 1fr);
   }
-  
+
   .reading-mode-tabs {
     width: 100%;
   }
-  
+
   .reader-settings-panel {
     max-width: 100%;
   }
-  
+
   .reader-nav-buttons {
     flex-direction: column;
   }
-  
+
   .reader-nav-btn {
     justify-content: center;
   }
-  
+
   /* Word-by-word responsive */
   .word-item {
     padding: 10px 12px;
     min-width: 60px;
   }
-  
+
   .word-arabic {
     font-size: 22px;
   }
-  
+
   .word-transliteration,
   .word-translation {
     font-size: 10px;
   }
-  
+
   /* Mushaf mode responsive */
   .reader-mushaf {
     padding: 28px 20px;
   }
-  
+
   .reader-mushaf-text {
-    font-size: clamp(24px, 6vw, 32px);
-    line-height: 2.2;
-    word-spacing: 0.08em;
+    font-size: clamp(20px, 5vw, 26px);
+    line-height: 1.6;
+    word-spacing: 0;
   }
-  
+
   .verse-number-badge {
-    min-width: 32px;
-    height: 32px;
-    font-size: 13px;
+    min-width: 24px;
+    height: 24px;
+    font-size: 11px;
     margin: 0 6px;
   }
-  
+
   .mushaf-translations {
     margin-top: 28px;
     padding-top: 24px;
   }
-  
+
   .mushaf-translation-item {
     padding: 12px 0;
     font-size: 15px;
@@ -1566,16 +1555,16 @@
   .reader-back-btn span {
     display: none;
   }
-  
+
   .reader-action-btn {
     width: 38px;
     height: 38px;
   }
-  
+
   .verse-nav-trigger span {
     display: none;
   }
-  
+
   .verse-nav-trigger {
     padding: 10px;
   }
@@ -1583,6 +1572,7 @@
 
 /* ============ PRINT STYLES ============ */
 @media print {
+
   .reader-sticky-header,
   .reader-audio-player,
   .reader-verse-actions,
@@ -1590,22 +1580,22 @@
   .reader-nav-buttons {
     display: none !important;
   }
-  
+
   .quran-reader {
     padding-top: 0;
     background: white;
   }
-  
+
   .reader-verse {
     break-inside: avoid;
     page-break-inside: avoid;
     border-bottom: 1px solid #ddd;
   }
-  
+
   .reader-verse-arabic {
     color: black;
   }
-  
+
   .reader-verse-translation {
     color: #333;
     border-left-color: #ccc;
@@ -1616,12 +1606,11 @@
 /* High-specificity rules to ensure KFGQPC Uthmanic Script is always used for Arabic */
 .quran-reader .reader-verse-arabic,
 .quran-reader .reader-bismillah-text,
+.quran-reader .reader-mushaf-text,
 .quran-reader .reader-continuous-text,
 .quran-reader .reader-surah-name-arabic,
 .quran-reader .word-arabic,
 .quran-reader .interactive-word,
-.quran-reader .word-tooltip-arabic,
-[dir="rtl"],
-[lang="ar"] {
-  font-family: 'KFGQPC Uthmanic Script HAFS', 'Uthmanic', 'Traditional Arabic', serif !important;
+.quran-reader .word-tooltip-arabic {
+  font-family: 'KFGQPC Uthmanic Script HAFS', 'Uthmanic', 'Scheherazade New', 'Amiri Quran', 'Traditional Arabic', serif !important;
 }
