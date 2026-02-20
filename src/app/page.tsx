@@ -1,478 +1,437 @@
-// Learn Quran - ADVANCED ANIMATIONS
-// Parallax, Scroll Reveals, 3D Effects, Micro-interactions
 'use client';
-
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import dynamic from 'next/dynamic';
-import { MessageSquare, Monitor, Pause, Play, ArrowRight, BookOpen, Heart, GraduationCap, Users, Sparkles } from 'lucide-react';
-import './demo-styles.css';
 
-const CelestialIman = dynamic(() => import('@/components/celestial-iman'), {
-  ssr: false,
-  loading: () => <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #0a1628 0%, #0d1b2a 50%, #1b263b 100%)' }} />
-});
+const SURAHS = [
+  { num: 1, ar: 'الفاتحة', name: 'Al-Fatihah', meaning: 'The Opening', v: 7, t: 'Meccan' },
+  { num: 2, ar: 'البقرة', name: 'Al-Baqarah', meaning: 'The Cow', v: 286, t: 'Medinan' },
+  { num: 3, ar: 'آل عمران', name: 'Al-Imran', meaning: 'Family of Imran', v: 200, t: 'Medinan' },
+  { num: 4, ar: 'النساء', name: 'An-Nisa', meaning: 'The Women', v: 176, t: 'Medinan' },
+  { num: 5, ar: 'المائدة', name: "Al-Ma'idah", meaning: 'The Table Spread', v: 120, t: 'Medinan' },
+  { num: 6, ar: 'الأنعام', name: "Al-An'am", meaning: 'The Cattle', v: 165, t: 'Meccan' },
+  { num: 7, ar: 'الأعراف', name: "Al-A'raf", meaning: 'The Heights', v: 206, t: 'Meccan' },
+  { num: 8, ar: 'الأنفال', name: 'Al-Anfal', meaning: 'The Spoils of War', v: 75, t: 'Medinan' },
+  { num: 9, ar: 'التوبة', name: 'At-Tawbah', meaning: 'The Repentance', v: 129, t: 'Medinan' },
+  { num: 10, ar: 'يونس', name: 'Yunus', meaning: 'Jonah', v: 109, t: 'Meccan' },
+  { num: 11, ar: 'هود', name: 'Hud', meaning: 'Hud', v: 123, t: 'Meccan' },
+  { num: 12, ar: 'يوسف', name: 'Yusuf', meaning: 'Joseph', v: 111, t: 'Meccan' },
+  { num: 13, ar: 'الرعد', name: "Ar-Ra'd", meaning: 'The Thunder', v: 43, t: 'Medinan' },
+  { num: 14, ar: 'إبراهيم', name: 'Ibrahim', meaning: 'Abraham', v: 52, t: 'Meccan' },
+  { num: 15, ar: 'الحجر', name: 'Al-Hijr', meaning: 'The Rocky Tract', v: 99, t: 'Meccan' },
+  { num: 16, ar: 'النحل', name: 'An-Nahl', meaning: 'The Bee', v: 128, t: 'Meccan' },
+  { num: 17, ar: 'الإسراء', name: "Al-Isra'", meaning: 'The Night Journey', v: 111, t: 'Meccan' },
+  { num: 18, ar: 'الكهف', name: 'Al-Kahf', meaning: 'The Cave', v: 110, t: 'Meccan' },
+  { num: 19, ar: 'مريم', name: 'Maryam', meaning: 'Mary', v: 98, t: 'Meccan' },
+  { num: 20, ar: 'طه', name: 'Ta-Ha', meaning: 'Ta-Ha', v: 135, t: 'Meccan' },
+  { num: 21, ar: 'الأنبياء', name: "Al-Anbiya'", meaning: 'The Prophets', v: 112, t: 'Meccan' },
+  { num: 22, ar: 'الحج', name: 'Al-Hajj', meaning: 'The Pilgrimage', v: 78, t: 'Medinan' },
+  { num: 23, ar: 'المؤمنون', name: "Al-Mu'minun", meaning: 'The Believers', v: 118, t: 'Meccan' },
+  { num: 24, ar: 'النور', name: 'An-Nur', meaning: 'The Light', v: 64, t: 'Medinan' },
+  { num: 25, ar: 'الفرقان', name: 'Al-Furqan', meaning: 'The Criterion', v: 77, t: 'Meccan' },
+  { num: 26, ar: 'الشعراء', name: "Ash-Shu'ara'", meaning: 'The Poets', v: 227, t: 'Meccan' },
+  { num: 27, ar: 'النمل', name: 'An-Naml', meaning: 'The Ant', v: 93, t: 'Meccan' },
+  { num: 28, ar: 'القصص', name: 'Al-Qasas', meaning: 'The Stories', v: 88, t: 'Meccan' },
+  { num: 29, ar: 'العنكبوت', name: 'Al-Ankabut', meaning: 'The Spider', v: 69, t: 'Meccan' },
+  { num: 30, ar: 'الروم', name: 'Ar-Rum', meaning: 'The Romans', v: 60, t: 'Meccan' },
+  { num: 31, ar: 'لقمان', name: 'Luqman', meaning: 'Luqman', v: 34, t: 'Meccan' },
+  { num: 32, ar: 'السجدة', name: 'As-Sajdah', meaning: 'The Prostration', v: 30, t: 'Meccan' },
+  { num: 33, ar: 'الأحزاب', name: 'Al-Ahzab', meaning: 'The Combined Forces', v: 73, t: 'Medinan' },
+  { num: 34, ar: 'سبأ', name: 'Saba', meaning: 'Sheba', v: 54, t: 'Meccan' },
+  { num: 35, ar: 'فاطر', name: 'Fatir', meaning: 'Originator', v: 45, t: 'Meccan' },
+  { num: 36, ar: 'يس', name: 'Ya-Sin', meaning: 'Ya-Sin', v: 83, t: 'Meccan' },
+  { num: 37, ar: 'الصافات', name: 'As-Saffat', meaning: 'Those Lined Up', v: 182, t: 'Meccan' },
+  { num: 38, ar: 'ص', name: 'Sad', meaning: 'Sad', v: 88, t: 'Meccan' },
+  { num: 39, ar: 'الزمر', name: 'Az-Zumar', meaning: 'The Groups', v: 75, t: 'Meccan' },
+  { num: 40, ar: 'غافر', name: 'Ghafir', meaning: 'The Forgiver', v: 85, t: 'Meccan' },
+  { num: 41, ar: 'فصلت', name: 'Fussilat', meaning: 'Explained in Detail', v: 54, t: 'Meccan' },
+  { num: 42, ar: 'الشورى', name: 'Ash-Shuraa', meaning: 'The Consultation', v: 53, t: 'Meccan' },
+  { num: 43, ar: 'الزخرف', name: 'Az-Zukhruf', meaning: 'The Gold Adornments', v: 89, t: 'Meccan' },
+  { num: 44, ar: 'الدخان', name: 'Ad-Dukhan', meaning: 'The Smoke', v: 59, t: 'Meccan' },
+  { num: 45, ar: 'الجاثية', name: 'Al-Jathiyah', meaning: 'The Crouching', v: 37, t: 'Meccan' },
+  { num: 46, ar: 'الأحقاف', name: 'Al-Ahqaf', meaning: 'The Wind-Curved Dunes', v: 35, t: 'Meccan' },
+  { num: 47, ar: 'محمد', name: 'Muhammad', meaning: 'Muhammad', v: 38, t: 'Medinan' },
+  { num: 48, ar: 'الفتح', name: 'Al-Fath', meaning: 'The Victory', v: 29, t: 'Medinan' },
+  { num: 49, ar: 'الحجرات', name: 'Al-Hujurat', meaning: 'The Rooms', v: 18, t: 'Medinan' },
+  { num: 50, ar: 'ق', name: 'Qaf', meaning: 'Qaf', v: 45, t: 'Meccan' },
+  { num: 51, ar: 'الذاريات', name: 'Adh-Dhariyat', meaning: 'The Scattering Winds', v: 60, t: 'Meccan' },
+  { num: 52, ar: 'الطور', name: 'At-Tur', meaning: 'The Mount', v: 49, t: 'Meccan' },
+  { num: 53, ar: 'النجم', name: 'An-Najm', meaning: 'The Star', v: 62, t: 'Meccan' },
+  { num: 54, ar: 'القمر', name: 'Al-Qamar', meaning: 'The Moon', v: 55, t: 'Meccan' },
+  { num: 55, ar: 'الرحمن', name: 'Ar-Rahman', meaning: 'The Beneficent', v: 78, t: 'Medinan' },
+  { num: 56, ar: 'الواقعة', name: "Al-Waqi'ah", meaning: 'The Inevitable', v: 96, t: 'Meccan' },
+  { num: 57, ar: 'الحديد', name: 'Al-Hadid', meaning: 'The Iron', v: 29, t: 'Medinan' },
+  { num: 58, ar: 'المجادلة', name: 'Al-Mujadila', meaning: 'The Pleading Woman', v: 22, t: 'Medinan' },
+  { num: 59, ar: 'الحشر', name: 'Al-Hashr', meaning: 'The Exile', v: 24, t: 'Medinan' },
+  { num: 60, ar: 'الممتحنة', name: 'Al-Mumtahanah', meaning: 'She That Is Examined', v: 13, t: 'Medinan' },
+  { num: 61, ar: 'الصف', name: 'As-Saf', meaning: 'The Ranks', v: 14, t: 'Medinan' },
+  { num: 62, ar: 'الجمعة', name: "Al-Jumu'ah", meaning: 'The Friday', v: 11, t: 'Medinan' },
+  { num: 63, ar: 'المنافقون', name: 'Al-Munafiqun', meaning: 'The Hypocrites', v: 11, t: 'Medinan' },
+  { num: 64, ar: 'التغابن', name: 'At-Taghabun', meaning: 'The Mutual Disillusion', v: 18, t: 'Medinan' },
+  { num: 65, ar: 'الطلاق', name: 'At-Talaq', meaning: 'The Divorce', v: 12, t: 'Medinan' },
+  { num: 66, ar: 'التحريم', name: 'At-Tahrim', meaning: 'The Prohibition', v: 12, t: 'Medinan' },
+  { num: 67, ar: 'الملك', name: 'Al-Mulk', meaning: 'The Sovereignty', v: 30, t: 'Meccan' },
+  { num: 68, ar: 'القلم', name: 'Al-Qalam', meaning: 'The Pen', v: 52, t: 'Meccan' },
+  { num: 69, ar: 'الحاقة', name: 'Al-Haqqah', meaning: 'The Reality', v: 52, t: 'Meccan' },
+  { num: 70, ar: 'المعارج', name: "Al-Ma'arij", meaning: 'The Ascending Stairways', v: 44, t: 'Meccan' },
+  { num: 71, ar: 'نوح', name: 'Nuh', meaning: 'Noah', v: 28, t: 'Meccan' },
+  { num: 72, ar: 'الجن', name: 'Al-Jinn', meaning: 'The Jinn', v: 28, t: 'Meccan' },
+  { num: 73, ar: 'المزمل', name: 'Al-Muzzammil', meaning: 'The Enshrouded One', v: 20, t: 'Meccan' },
+  { num: 74, ar: 'المدثر', name: 'Al-Muddaththir', meaning: 'The Cloaked One', v: 56, t: 'Meccan' },
+  { num: 75, ar: 'القيامة', name: 'Al-Qiyamah', meaning: 'The Resurrection', v: 40, t: 'Meccan' },
+  { num: 76, ar: 'الإنسان', name: 'Al-Insan', meaning: 'The Man', v: 31, t: 'Medinan' },
+  { num: 77, ar: 'المرسلات', name: 'Al-Mursalat', meaning: 'The Emissaries', v: 50, t: 'Meccan' },
+  { num: 78, ar: 'النبأ', name: "An-Naba'", meaning: 'The Tidings', v: 40, t: 'Meccan' },
+  { num: 79, ar: 'النازعات', name: "An-Nazi'at", meaning: 'Those Who Drag Forth', v: 46, t: 'Meccan' },
+  { num: 80, ar: 'عبس', name: "Abasa", meaning: 'He Frowned', v: 42, t: 'Meccan' },
+  { num: 81, ar: 'التكوير', name: 'At-Takwir', meaning: 'The Overthrowing', v: 29, t: 'Meccan' },
+  { num: 82, ar: 'الانفطار', name: 'Al-Infitar', meaning: 'The Cleaving', v: 19, t: 'Meccan' },
+  { num: 83, ar: 'المطففين', name: 'Al-Mutaffifin', meaning: 'The Defrauding', v: 36, t: 'Meccan' },
+  { num: 84, ar: 'الانشقاق', name: 'Al-Inshiqaq', meaning: 'The Sundering', v: 25, t: 'Meccan' },
+  { num: 85, ar: 'البروج', name: 'Al-Buruj', meaning: 'The Mansions of Stars', v: 22, t: 'Meccan' },
+  { num: 86, ar: 'الطارق', name: 'At-Tariq', meaning: 'The Morning Star', v: 17, t: 'Meccan' },
+  { num: 87, ar: 'الأعلى', name: "Al-A'la", meaning: 'The Most High', v: 19, t: 'Meccan' },
+  { num: 88, ar: 'الغاشية', name: 'Al-Ghashiyah', meaning: 'The Overwhelming', v: 26, t: 'Meccan' },
+  { num: 89, ar: 'الفجر', name: 'Al-Fajr', meaning: 'The Dawn', v: 30, t: 'Meccan' },
+  { num: 90, ar: 'البلد', name: 'Al-Balad', meaning: 'The City', v: 20, t: 'Meccan' },
+  { num: 91, ar: 'الشمس', name: 'Ash-Shams', meaning: 'The Sun', v: 15, t: 'Meccan' },
+  { num: 92, ar: 'الليل', name: 'Al-Layl', meaning: 'The Night', v: 21, t: 'Meccan' },
+  { num: 93, ar: 'الضحى', name: 'Ad-Duhaa', meaning: 'The Morning Hours', v: 11, t: 'Meccan' },
+  { num: 94, ar: 'الشرح', name: 'Ash-Sharh', meaning: 'The Relief', v: 8, t: 'Meccan' },
+  { num: 95, ar: 'التين', name: 'At-Tin', meaning: 'The Fig', v: 8, t: 'Meccan' },
+  { num: 96, ar: 'العلق', name: "Al-'Alaq", meaning: 'The Clot', v: 19, t: 'Meccan' },
+  { num: 97, ar: 'القدر', name: 'Al-Qadr', meaning: 'The Power', v: 5, t: 'Meccan' },
+  { num: 98, ar: 'البينة', name: 'Al-Bayyinah', meaning: 'The Clear Proof', v: 8, t: 'Medinan' },
+  { num: 99, ar: 'الزلزلة', name: 'Az-Zalzalah', meaning: 'The Earthquake', v: 8, t: 'Medinan' },
+  { num: 100, ar: 'العاديات', name: "Al-'Adiyat", meaning: 'The Courser', v: 11, t: 'Meccan' },
+  { num: 101, ar: 'القارعة', name: "Al-Qari'ah", meaning: 'The Calamity', v: 11, t: 'Meccan' },
+  { num: 102, ar: 'التكاثر', name: 'At-Takathur', meaning: 'The Rivalry in World', v: 8, t: 'Meccan' },
+  { num: 103, ar: 'العصر', name: "Al-'Asr", meaning: 'The Declining Day', v: 3, t: 'Meccan' },
+  { num: 104, ar: 'الهمزة', name: 'Al-Humazah', meaning: 'The Traducer', v: 9, t: 'Meccan' },
+  { num: 105, ar: 'الفيل', name: 'Al-Fil', meaning: 'The Elephant', v: 5, t: 'Meccan' },
+  { num: 106, ar: 'قريش', name: 'Quraysh', meaning: 'Quraysh', v: 4, t: 'Meccan' },
+  { num: 107, ar: 'الماعون', name: "Al-Ma'un", meaning: 'The Small Kindnesses', v: 7, t: 'Meccan' },
+  { num: 108, ar: 'الكوثر', name: 'Al-Kawthar', meaning: 'The Abundance', v: 3, t: 'Meccan' },
+  { num: 109, ar: 'الكافرون', name: 'Al-Kafirun', meaning: 'The Disbelievers', v: 6, t: 'Meccan' },
+  { num: 110, ar: 'النصر', name: 'An-Nasr', meaning: 'The Divine Support', v: 3, t: 'Medinan' },
+  { num: 111, ar: 'المسد', name: 'Al-Masad', meaning: 'The Palm Fiber', v: 5, t: 'Meccan' },
+  { num: 112, ar: 'الإخلاص', name: 'Al-Ikhlas', meaning: 'The Sincerity', v: 4, t: 'Meccan' },
+  { num: 113, ar: 'الفلق', name: 'Al-Falaq', meaning: 'The Daybreak', v: 5, t: 'Meccan' },
+  { num: 114, ar: 'الناس', name: 'An-Nas', meaning: 'The Mankind', v: 6, t: 'Meccan' },
+];
 
-const SOLUTION_TABS = [
-  { id: 'tajweed', label: 'Tajweed', desc: 'Master the art of recitation with real-time AI feedback', icon: '📖' },
-  { id: 'hifz', label: 'Hifz', desc: 'Smart memorization tracks tailored to your pace', icon: '🧠' },
-  { id: 'tafsir', label: 'Tafsir', desc: 'Deepen your understanding with multi-dimensional insights', icon: '✨' },
-  { id: 'arabic', label: 'Arabic', desc: 'Learn the language of the Quran from basics to advanced', icon: '🗣️' },
-  { id: 'community', label: 'Community', desc: 'Connect with a global network of Quranic students', icon: '🌍' },
-  { id: 'radio', label: 'Quran Radio', desc: 'Listen to 24/7 world-class Quranic recitations', icon: '📻' }
+const FEATURES = [
+  { icon: 'menu_book', label: 'Read Quran', sub: '114 Surahs', href: '/read-quran/1', color: '#11d442' },
+  { icon: 'grid_view', label: 'Browse by Juz', sub: '30 Juz', href: '/juz/1', color: '#3b82f6' },
+  { icon: 'ads_click', label: 'Memorize', sub: 'Hifz Program', href: '/memorize-quran', color: '#a855f7' },
+  { icon: 'music_note', label: 'Audio Quran', sub: 'Listen & Learn', href: '/audio-quran', color: '#f59e0b' },
+  { icon: 'radio', label: 'Quran Radio', sub: '24/7 Recitation', href: '/radio', color: '#ef4444' },
+  { icon: 'translate', label: 'Word by Word', sub: 'Arabic Learning', href: '/read-quran/1', color: '#06b6d4' },
+];
+
+const STATS = [
+  { num: '114', label: 'Surahs' },
+  { num: '6,236', label: 'Ayahs' },
+  { num: '30', label: 'Juz' },
+  { num: '77,797', label: 'Words' },
 ];
 
 export default function HomePage() {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
-  const [activeTab, setActiveTab] = useState('tajweed');
-  const [showDemoVideo, setShowDemoVideo] = useState(false); // STATE FOR VIDEO MODAL
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const [scrollY, setScrollY] = useState(0);
-
-  // Refs for scroll animations
-  const logosRef = useRef<HTMLElement>(null);
-  const solutionsRef = useRef<HTMLElement>(null);
-  const aiTowerRef = useRef<HTMLElement>(null);
-  const testimonialsRef = useRef<HTMLElement>(null);
-  const statsRef = useRef<HTMLElement>(null);
-  const insightsRef = useRef<HTMLElement>(null);
-  const workRef = useRef<HTMLElement>(null);
-
-  // --- Carousel Data ---
-  const slides = [
-    {
-      title: "Put Quranic knowledge to work",
-      subtitle: "for your Iman",
-      desc: "The first intelligent platform that connects Quranic sciences with modern adaptive learning technology.",
-      primaryBtn: "Start Learning",
-      secondaryBtn: "Watch Demo",
-      bg: "bg-[#0f0d0a]"
-    },
-    {
-      title: "Master Tajweed",
-      subtitle: "with precision",
-      desc: "Learn the art of beautiful Quran recitation with interactive audio lessons, expert guidance, and real-time feedback.",
-      primaryBtn: "Explore Tajweed",
-      secondaryBtn: "Listen to Samples",
-      bg: "bg-[#1a1410]"
-    },
-    {
-      title: "Memorize with confidence",
-      subtitle: "verse by verse",
-      desc: "Smart repetition techniques, progress tracking, and personalized memorization plans to help you achieve your Hifz goals.",
-      primaryBtn: "Start Memorizing",
-      secondaryBtn: "See Methods",
-      bg: "bg-[#12100c]"
-    }
-  ];
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [query, setQuery] = useState('');
+  const [typeFilter, setTypeFilter] = useState<'All' | 'Meccan' | 'Medinan'>('All');
+  const [showAll, setShowAll] = useState(false);
+  const [recent, setRecent] = useState<typeof SURAHS>([]);
+  const [dark, setDark] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
-    };
+    document.body.style.overflow = 'hidden';
+    const saved = localStorage.getItem('recentSurahs');
+    if (saved) setRecent(JSON.parse(saved));
+    const isDark = document.documentElement.classList.contains('dark');
+    setDark(isDark);
+    return () => { document.body.style.overflow = ''; };
+  }, []);
 
-    const handleMouseMove = (e: MouseEvent) => {
-      // Global parallax
-      setMousePos({
-        x: (e.clientX / window.innerWidth) - 0.5,
-        y: (e.clientY / window.innerHeight) - 0.5
-      });
+  const toggleDark = () => {
+    const html = document.documentElement;
+    if (dark) { html.classList.remove('dark'); setDark(false); }
+    else { html.classList.add('dark'); setDark(true); }
+  };
 
-      // Card Glow & 3D Tilt Effect - ONLY when hovering
-      const cards = document.querySelectorAll('.hero-card-item');
-      cards.forEach(card => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
+  const trackVisit = (s: typeof SURAHS[0]) => {
+    const updated = [s, ...recent.filter(r => r.num !== s.num)].slice(0, 5);
+    setRecent(updated);
+    localStorage.setItem('recentSurahs', JSON.stringify(updated));
+  };
 
-        // Check if mouse is actually over the card
-        const isHovering = x >= 0 && x <= rect.width && y >= 0 && y <= rect.height;
+  const filtered = SURAHS.filter(s => {
+    const q = query.toLowerCase();
+    const matchQ = s.name.toLowerCase().includes(q) || s.ar.includes(q) || s.meaning.toLowerCase().includes(q) || String(s.num) === q;
+    const matchT = typeFilter === 'All' || s.t === typeFilter;
+    return matchQ && matchT;
+  });
+  const displayed = showAll ? filtered : filtered.slice(0, 12);
 
-        if (isHovering) {
-          // Calculate percentage position
-          const centerX = rect.width / 2;
-          const centerY = rect.height / 2;
-          const rotateX = ((y - centerY) / centerY) * -10; // Max 10deg rotation
-          const rotateY = ((x - centerX) / centerX) * 10;
+  const S = {
+    shell: { position: 'fixed' as const, inset: 0, zIndex: 9999, display: 'flex', overflow: 'hidden', background: dark ? '#0d1b12' : '#f6f8f6', fontFamily: "'Lexend','Figtree',sans-serif" },
+    sidebar: { width: 240, flexShrink: 0, background: dark ? '#111f16' : 'white', borderRight: `1px solid ${dark ? '#1e3a2a' : '#e2e8f0'}`, display: 'flex', flexDirection: 'column' as const, justifyContent: 'space-between', padding: '20px 0', overflowY: 'auto' as const },
+    card: { background: dark ? '#111f16' : 'white', border: `1px solid ${dark ? '#1e3a2a' : '#f1f5f9'}`, borderRadius: 16, boxShadow: '0 1px 4px rgba(0,0,0,0.06)' },
+    text: { color: dark ? '#e2e8e5' : '#0f172a' },
+    muted: { color: '#94a3b8' },
+    tag: (t: string) => ({ fontSize: 9, fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: '0.12em', color: t === 'Meccan' ? '#11d442' : '#94a3b8' }),
+  };
 
-          const cardEl = card as HTMLElement;
-          cardEl.style.setProperty('--mx', `${x}px`);
-          cardEl.style.setProperty('--my', `${y}px`);
-          cardEl.style.setProperty('--rx', `${rotateX}deg`);
-          cardEl.style.setProperty('--ry', `${rotateY}deg`);
-        } else {
-          // Reset to straight when not hovering
-          const cardEl = card as HTMLElement;
-          cardEl.style.setProperty('--rx', `0deg`);
-          cardEl.style.setProperty('--ry', `0deg`);
-        }
-      });
-
-      // Magnetic Buttons
-      const magnets = document.querySelectorAll('.magnetic-btn');
-      magnets.forEach(btn => {
-        const rect = btn.getBoundingClientRect();
-        const x = e.clientX - (rect.left + rect.width / 2);
-        const y = e.clientY - (rect.top + rect.height / 2);
-
-        // Only activate if close
-        if (Math.abs(x) < 100 && Math.abs(y) < 100) {
-          const btnEl = btn as HTMLElement;
-          btnEl.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
-        } else {
-          (btn as HTMLElement).style.transform = `translate(0px, 0px)`;
-        }
-      });
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    window.addEventListener('mousemove', handleMouseMove);
-
-    // Intersection Observer for scroll animations
-    const observerOptions = { threshold: 0.15, rootMargin: '0px 0px -50px 0px' };
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          const children = entry.target.querySelectorAll('.animate-child');
-          children.forEach((child, i) => {
-            setTimeout(() => child.classList.add('visible'), i * 100);
-          });
-        }
-      });
-    }, observerOptions);
-
-    const refs = [logosRef, solutionsRef, aiTowerRef, testimonialsRef, statsRef, insightsRef, workRef];
-    refs.forEach(ref => ref.current && observer.observe(ref.current));
-
-    // Carousel Timer
-    let timer: NodeJS.Timeout | null = null;
-    if (!isPaused) {
-      timer = setInterval(() => {
-        setCurrentSlide(prev => (prev + 1) % slides.length);
-      }, 6000);
-    }
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('mousemove', handleMouseMove);
-      if (timer) clearInterval(timer);
-      observer.disconnect();
-    };
-  }, [isPaused, slides.length]);
+  const NavLink = ({ icon, label, href, active }: { icon: string; label: string; href: string; active?: boolean }) => (
+    <Link href={href} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 12px', borderRadius: 10, textDecoration: 'none', fontWeight: active ? 600 : 500, fontSize: 13.5, background: active ? 'rgba(17,212,66,0.12)' : 'transparent', color: active ? '#11d442' : dark ? '#94a3b8' : '#64748b', transition: 'background 0.15s', margin: '1px 0' }}>
+      <span className="material-symbols-outlined" style={{ fontSize: 20 }}>{icon}</span>
+      {label}
+    </Link>
+  );
 
   return (
-    <main className="demo-page">
-      <div className="particles-bg">
-        {[...Array(30)].map((_, i) => (
-          <div key={i} className={`particle p${i % 5}`} style={{
-            left: `${Math.random() * 100}%`,
-            top: `${Math.random() * 100}%`,
-            animationDelay: `${Math.random() * 5}s`,
-            animationDuration: `${15 + Math.random() * 20}s`
-          }} />
-        ))}
-      </div>
+    <>
+      <style>{`
+        .hp-scroll::-webkit-scrollbar{width:5px}.hp-scroll::-webkit-scrollbar-track{background:transparent}.hp-scroll::-webkit-scrollbar-thumb{background:rgba(17,212,66,0.25);border-radius:3px}
+        .surah-card{transition:transform 0.18s ease,box-shadow 0.18s ease}.surah-card:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(17,212,66,0.12)}
+        .feat-card{transition:transform 0.18s ease,box-shadow 0.18s ease}.feat-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.10)}
+        .hp-dot{background-image:radial-gradient(circle at 2px 2px,rgba(17,212,66,0.06) 1px,transparent 0);background-size:24px 24px}
+        .font-arabic{font-family:'Noto Sans Arabic','KFGQPC Uthmanic Script HAFS',serif}
+        .filter-btn{padding:6px 14px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:500;transition:all 0.15s}
+      `}</style>
 
-      {/* VIDEO MODAL */}
-      {showDemoVideo && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4" onClick={() => setShowDemoVideo(false)}>
-          <div className="relative w-full max-w-5xl aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl border border-white/10" onClick={e => e.stopPropagation()}>
-            <button
-              className="absolute top-4 right-4 text-white hover:text-green-400 z-10 bg-black/50 rounded-full p-2 transition-colors"
-              onClick={() => setShowDemoVideo(false)}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-            </button>
-            <video
-              width="100%"
-              height="100%"
-              src="/COMING SOON.mp4"
-              title="Quran Demo"
-              autoPlay
-              controls
-              playsInline
-              className="w-full h-full object-cover"
-            >
-              Your browser does not support the video tag.
-            </video>
+      <div style={S.shell}>
+        {/* SIDEBAR */}
+        <aside style={S.sidebar} className="hp-scroll">
+          <div style={{ padding: '0 12px', display: 'flex', flexDirection: 'column', gap: 24 }}>
+            {/* Logo + dark toggle */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 4px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{ background: 'rgba(17,212,66,0.15)', borderRadius: 10, padding: 7 }}>
+                  <span className="material-symbols-outlined" style={{ color: '#11d442', fontSize: 24 }}>auto_stories</span>
+                </div>
+                <div>
+                  <p style={{ margin: 0, fontWeight: 700, fontSize: 15, lineHeight: 1, ...S.text }}>Learn Quran</p>
+                  <p style={{ margin: 0, color: '#11d442', fontSize: 9, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.12em' }}>Learning Hub</p>
+                </div>
+              </div>
+              <button onClick={toggleDark} style={{ background: dark ? '#1e3a2a' : '#f1f5f9', border: 'none', borderRadius: 8, padding: 6, cursor: 'pointer', display: 'flex', alignItems: 'center', color: dark ? '#11d442' : '#64748b' }}>
+                <span className="material-symbols-outlined" style={{ fontSize: 18 }}>{dark ? 'light_mode' : 'dark_mode'}</span>
+              </button>
+            </div>
+
+            {/* Nav */}
+            <nav style={{ display: 'flex', flexDirection: 'column' }}>
+              <NavLink icon="home" label="Home" href="/" active />
+              <NavLink icon="menu_book" label="Read Quran" href="/read-quran/1" />
+              <NavLink icon="grid_view" label="By Juz" href="/juz/1" />
+              <NavLink icon="ads_click" label="Memorize" href="/memorize-quran" />
+              <NavLink icon="radio" label="Quran Radio" href="/radio" />
+              <NavLink icon="music_note" label="Audio Quran" href="/audio-quran" />
+              <div style={{ margin: '8px 0', borderTop: `1px solid ${dark ? '#1e3a2a' : '#f1f5f9'}` }} />
+              <NavLink icon="calculate" label="Prayer Times" href="/prayer-times" />
+              <NavLink icon="star" label="Duas" href="/duas" />
+              <NavLink icon="science" label="Quran & Science" href="/quran-science" />
+              <div style={{ margin: '8px 0', borderTop: `1px solid ${dark ? '#1e3a2a' : '#f1f5f9'}` }} />
+              <NavLink icon="login" label="Login" href="/login" />
+            </nav>
+
+            {/* Recently Visited */}
+            {recent.length > 0 && (
+              <div>
+                <p style={{ margin: '0 0 8px', fontSize: 10, fontWeight: 700, color: '#11d442', textTransform: 'uppercase', letterSpacing: '0.12em', padding: '0 4px' }}>Recently Visited</p>
+                {recent.map(s => (
+                  <Link key={s.num} href={`/read-quran/${s.num}`} onClick={() => trackVisit(s)} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '7px 8px', borderRadius: 8, textDecoration: 'none', transition: 'background 0.15s' }}
+                    onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = dark ? '#1e3a2a' : '#f8fafc'}
+                    onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'transparent'}
+                  >
+                    <span style={{ width: 26, height: 26, background: 'rgba(17,212,66,0.12)', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, color: '#11d442', flexShrink: 0 }}>{s.num}</span>
+                    <span style={{ fontSize: 12, fontWeight: 500, ...S.text, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{s.name}</span>
+                  </Link>
+                ))}
+              </div>
+            )}
           </div>
-        </div>
-      )}
 
-      {/* ===== FLOATING CTA ===== */}
-      <div className="floating-btns">
-        <button className="floating-btn contact magnetic-btn">
-          <MessageSquare size={20} />
-          <span>Contact Support</span>
-        </button>
-        <button className="floating-btn demo-btn magnetic-btn">
-          <Monitor size={20} />
-          <span>Quick Tour</span>
-        </button>
-      </div>
+          {/* Profile */}
+          <div style={{ padding: '12px 12px 0' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: 10, borderRadius: 12, background: dark ? '#1e3a2a' : '#f8fafc', border: `1px solid ${dark ? '#2d4f38' : '#e2e8f0'}` }}>
+              <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'linear-gradient(135deg,#11d442,#059669)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 700, fontSize: 14, flexShrink: 0 }}>A</div>
+              <div style={{ minWidth: 0 }}>
+                <p style={{ margin: 0, fontWeight: 700, fontSize: 12, ...S.text, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Ahmed Khalid</p>
+                <p style={{ margin: 0, fontSize: 10, ...S.muted }}>Premium Member</p>
+              </div>
+            </div>
+          </div>
+        </aside>
 
-      {/* ===== HERO SECTION - OFFICIAL SPLIT LAYOUT ===== */}
-      <section className="hero-section split-layout">
-        {/* Background Carousel */}
-        <div className="hero-bg-carousel">
-          {slides.map((slide, idx) => (
-            <div
-              key={idx}
-              className={`hero-bg-slide ${currentSlide === idx ? 'active ken-burns' : ''} ${slide.bg}`}
-            />
-          ))}
-          <div className="hero-overlay" />
-        </div>
+        {/* MAIN */}
+        <main className="hp-scroll hp-dot" style={{ flex: 1, overflowY: 'auto', minHeight: 0, background: dark ? '#0d1b12' : '#f6f8f6' }}>
+          {/* Header */}
+          <header style={{ position: 'sticky', top: 0, zIndex: 10, background: dark ? 'rgba(13,27,18,0.9)' : 'rgba(246,248,246,0.88)', backdropFilter: 'blur(12px)', padding: '12px 28px', borderBottom: `1px solid ${dark ? 'rgba(30,58,42,0.6)' : 'rgba(226,232,240,0.6)'}` }}>
+            <div style={{ maxWidth: 860, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 16 }}>
+              <div style={{ flex: 1, position: 'relative' }}>
+                <span className="material-symbols-outlined" style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', fontSize: 20, pointerEvents: 'none' }}>search</span>
+                <input type="text" value={query} onChange={e => { setQuery(e.target.value); setShowAll(true); }} placeholder="Search Surah name, number, or meaning…" style={{ width: '100%', background: dark ? '#111f16' : 'white', border: 'none', borderRadius: 12, padding: '10px 14px 10px 40px', fontSize: 13.5, color: dark ? '#e2e8e5' : '#334155', boxShadow: '0 1px 4px rgba(0,0,0,0.07)', outline: 'none' }}
+                  onFocus={e => (e.target.style.boxShadow = '0 0 0 2px rgba(17,212,66,0.4)')}
+                  onBlur={e => (e.target.style.boxShadow = '0 1px 4px rgba(0,0,0,0.07)')}
+                />
+              </div>
+              <Link href="/read-quran/1" style={{ background: '#11d442', color: 'white', borderRadius: 12, padding: '9px 18px', fontWeight: 600, fontSize: 13.5, display: 'flex', alignItems: 'center', gap: 6, boxShadow: '0 4px 14px rgba(17,212,66,0.3)', textDecoration: 'none' }}>
+                <span className="material-symbols-outlined" style={{ fontSize: 18 }}>play_circle</span>Quick Start
+              </Link>
+            </div>
+          </header>
 
-        <div className="hero-container container-wide">
-          {/* Hero Parallax Orbs */}
-          <div className="hero-orb orb-1" style={{ transform: `translate(${mousePos.x * 20}px, ${mousePos.y * 20}px)` }} />
-          <div className="hero-orb orb-2" style={{ transform: `translate(${mousePos.x * -15}px, ${mousePos.y * -15}px)` }} />
+          <div style={{ maxWidth: 860, margin: '0 auto', padding: '24px 28px 60px' }}>
 
-          <div className="hero-top-row">
-            {/* LEFT: Heading & Dots */}
-            <div className="hero-left">
-              <h1 className="hero-title-main">
-                <span className="green-text">{slides[currentSlide].title}</span>
-                <span className="white-text">{slides[currentSlide].subtitle}</span>
-              </h1>
+            {/* ── STATS BAR ── */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 12, marginBottom: 24 }}>
+              {STATS.map(s => (
+                <div key={s.label} style={{ ...S.card, padding: '14px 16px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+                  <span style={{ fontSize: 22, fontWeight: 700, color: '#11d442' }}>{s.num}</span>
+                  <span style={{ fontSize: 11, ...S.muted, fontWeight: 500 }}>{s.label}</span>
+                </div>
+              ))}
+            </div>
 
-              {/* Horizontal Carousel Indicators */}
-              <div className="hero-controls-horizontal">
-                <div className="indicator-group">
-                  {slides.map((_, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setCurrentSlide(idx)}
-                      className={`indicator-pills ${currentSlide === idx ? 'active' : ''}`}
-                    >
-                      <div className="pill-fill" style={{
-                        animationPlayState: isPaused ? 'paused' : 'running'
-                      }} />
-                    </button>
+            {/* ── QUICK ACCESS CARDS ── */}
+            <section style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16, marginBottom: 24 }}>
+              {/* Continue Reading */}
+              <div style={{ ...S.card, padding: 18, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: 140 }}>
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+                    <span style={{ fontSize: 9, fontWeight: 700, color: '#11d442', textTransform: 'uppercase', letterSpacing: '0.14em' }}>Continue Reading</span>
+                    <span className="material-symbols-outlined" style={{ color: '#cbd5e1', fontSize: 18 }}>bookmark</span>
+                  </div>
+                  <h3 style={{ margin: '0 0 3px', fontWeight: 700, fontSize: 15, ...S.text }}>Al-Baqarah</h3>
+                  <p style={{ margin: '0 0 14px', fontSize: 12, ...S.muted }}>Ayah 152 · Juz 2</p>
+                </div>
+                <Link href="/read-quran/2" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, background: dark ? '#1e3a2a' : '#f1f5f9', borderRadius: 8, padding: '7px 10px', fontWeight: 600, fontSize: 12, color: dark ? '#11d442' : '#475569', textDecoration: 'none' }}>
+                  <span className="material-symbols-outlined" style={{ fontSize: 14 }}>resume</span>Resume
+                </Link>
+              </div>
+              {/* Hifz Progress */}
+              <div style={{ ...S.card, padding: 18, minHeight: 140 }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+                  <span style={{ fontSize: 9, fontWeight: 700, color: '#11d442', textTransform: 'uppercase', letterSpacing: '0.14em' }}>Hifz Progress</span>
+                  <span className="material-symbols-outlined" style={{ color: '#cbd5e1', fontSize: 18 }}>analytics</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8, marginBottom: 6 }}>
+                  <span style={{ fontSize: 26, fontWeight: 700, color: '#11d442', lineHeight: 1 }}>45%</span>
+                  <span style={{ fontSize: 12, ...S.muted, paddingBottom: 2 }}>3 / 30 Juz</span>
+                </div>
+                <div style={{ width: '100%', height: 7, background: dark ? '#1e3a2a' : '#f1f5f9', borderRadius: 999, overflow: 'hidden', marginBottom: 10 }}>
+                  <div style={{ width: '45%', height: '100%', background: 'linear-gradient(90deg,#11d442,#059669)', borderRadius: 999 }} />
+                </div>
+                <p style={{ margin: 0, fontSize: 11, ...S.muted }}>Next: Complete Juz 4 by Friday</p>
+              </div>
+              {/* Ayah of the Day */}
+              <div style={{ background: 'linear-gradient(135deg,#11d442,#059669)', borderRadius: 16, padding: 18, boxShadow: '0 8px 24px rgba(17,212,66,0.25)', position: 'relative', overflow: 'hidden', minHeight: 140 }}>
+                <span className="material-symbols-outlined" style={{ position: 'absolute', top: -8, right: -14, fontSize: 90, color: 'white', opacity: 0.08, lineHeight: 1 }}>star_half</span>
+                <div style={{ position: 'relative', zIndex: 1 }}>
+                  <span style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.18em', color: 'rgba(255,255,255,0.8)' }}>Ayah of the Day</span>
+                  <p className="font-arabic" dir="rtl" style={{ margin: '8px 0 6px', fontSize: 16, lineHeight: 1.9, textAlign: 'right', color: 'white', fontWeight: 700 }}>فَاذْكُرُونِي أَذْكُرْكُمْ وَاشْكُرُوا لِي وَلَا تَكْفُرُونِ</p>
+                  <p style={{ margin: '0 0 4px', fontSize: 11, fontStyle: 'italic', color: 'rgba(255,255,255,0.88)', lineHeight: 1.5 }}>"So remember Me; I will remember you…"</p>
+                  <p style={{ margin: 0, fontSize: 10, fontWeight: 700, color: 'white' }}>Al-Baqarah 2:152</p>
+                </div>
+              </div>
+            </section>
+
+            {/* ── FEATURE SHORTCUTS ── */}
+            <section style={{ marginBottom: 32 }}>
+              <h2 style={{ margin: '0 0 14px', fontWeight: 700, fontSize: 17, ...S.text }}>Quick Access</h2>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6,1fr)', gap: 10 }}>
+                {FEATURES.map(f => (
+                  <Link key={f.label} href={f.href} style={{ textDecoration: 'none' }}>
+                    <div className="feat-card" style={{ ...S.card, padding: '14px 10px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, cursor: 'pointer', textAlign: 'center' }}>
+                      <div style={{ width: 40, height: 40, borderRadius: 12, background: `${f.color}18`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <span className="material-symbols-outlined" style={{ fontSize: 22, color: f.color }}>{f.icon}</span>
+                      </div>
+                      <div>
+                        <p style={{ margin: '0 0 1px', fontWeight: 600, fontSize: 11.5, ...S.text }}>{f.label}</p>
+                        <p style={{ margin: 0, fontSize: 10, ...S.muted }}>{f.sub}</p>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </section>
+
+            {/* ── EXPLORE SURAHS ── */}
+            <section>
+              {/* Header row */}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16, flexWrap: 'wrap', gap: 10 }}>
+                <div>
+                  <h2 style={{ margin: '0 0 2px', fontWeight: 700, fontSize: 19, ...S.text }}>Explore Surahs</h2>
+                  <p style={{ margin: 0, fontSize: 13, ...S.muted }}>{filtered.length} of 114 surahs</p>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  {/* Type filter */}
+                  <div style={{ display: 'flex', background: dark ? '#111f16' : 'white', border: `1px solid ${dark ? '#1e3a2a' : '#f1f5f9'}`, borderRadius: 10, padding: 3, gap: 2 }}>
+                    {(['All', 'Meccan', 'Medinan'] as const).map(t => (
+                      <button key={t} className="filter-btn" onClick={() => setTypeFilter(t)} style={{ background: typeFilter === t ? '#11d442' : 'transparent', color: typeFilter === t ? 'white' : '#94a3b8' }}>{t}</button>
+                    ))}
+                  </div>
+                  {/* View toggle */}
+                  <div style={{ display: 'flex', background: dark ? '#111f16' : 'white', border: `1px solid ${dark ? '#1e3a2a' : '#f1f5f9'}`, borderRadius: 10, padding: 3, gap: 2 }}>
+                    {(['grid', 'list'] as const).map(m => (
+                      <button key={m} className="filter-btn" onClick={() => setViewMode(m)} style={{ background: viewMode === m ? '#11d442' : 'transparent', color: viewMode === m ? 'white' : '#94a3b8' }}>
+                        <span className="material-symbols-outlined" style={{ fontSize: 16 }}>{m === 'grid' ? 'grid_view' : 'view_list'}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Grid */}
+              {viewMode === 'grid' ? (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 14 }}>
+                  {displayed.map(s => (
+                    <Link key={s.num} href={`/read-quran/${s.num}`} onClick={() => trackVisit(s)} style={{ textDecoration: 'none' }}>
+                      <div className="surah-card" style={{ ...S.card, padding: 18, cursor: 'pointer' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+                          <div style={{ width: 36, height: 36, background: 'rgba(17,212,66,0.10)', borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: '#11d442', fontSize: 13 }}>{s.num}</div>
+                          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                            <span className="font-arabic" style={{ fontSize: 20, fontWeight: 700, ...S.text }}>{s.ar}</span>
+                            <span style={{ ...S.tag(s.t), marginTop: 2 }}>{s.t}</span>
+                          </div>
+                        </div>
+                        <h3 style={{ margin: '0 0 2px', fontWeight: 700, fontSize: 14, ...S.text }}>{s.name}</h3>
+                        <p style={{ margin: 0, fontSize: 12, ...S.muted }}>{s.meaning} · {s.v} Verses</p>
+                      </div>
+                    </Link>
                   ))}
                 </div>
-                <button className="pause-btn" onClick={() => setIsPaused(!isPaused)}>
-                  {isPaused ? <Play size={16} fill="white" /> : <Pause size={16} fill="white" />}
-                </button>
-              </div>
-            </div>
-
-            {/* RIGHT: Description & Buttons */}
-            <div className="hero-right">
-              <p className="hero-description">
-                {slides[currentSlide].desc}
-              </p>
-              <div className="hero-actions">
-                <Link href={
-                  currentSlide === 0 ? '/read-quran' :
-                    currentSlide === 1 ? '/learn-quran' :
-                      '/memorize-quran'
-                }>
-                  <button className="btn-explore-platform magnetic-btn">
-                    {slides[currentSlide].primaryBtn}
-                  </button>
-                </Link>
-
-                <button
-                  className="btn-watch-video magnetic-btn"
-                  onClick={() => setShowDemoVideo(true)}
-                >
-                  <div className="play-icon-circle">
-                    <Play size={12} fill="white" />
-                  </div>
-                  {slides[currentSlide].secondaryBtn}
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* BOTTOM: Horizontal Feature Cards */}
-          <div className="hero-bottom-cards">
-            {[
-              { title: "Interactive Quran Reading", label: "READING", img: "/images/quran_reading.png", link: "/read-quran" },
-              { title: "Advanced Memorization", label: "HIFZ", img: "/images/memorization.png", link: "/memorize-quran" },
-              { title: "Noorani Qaida Lessons", label: "LEARN", img: "/images/qaida.png", link: "/learn-quran" }
-            ].map((card, idx) => (
-              <Link href={card.link} key={idx} className="hero-card-item group">
-                <div className="card-image-wrapper">
-                  <img src={card.img} alt={card.title} className="card-img" />
-                  <div className="card-overlay" />
-                  <div className="card-content">
-                    <span className="card-label">{card.label}</span>
-                    <h3 className="card-title">{card.title}</h3>
-                  </div>
-                  <div className="card-arrow">
-                    <ArrowRight size={24} />
-                  </div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  {displayed.map(s => (
+                    <Link key={s.num} href={`/read-quran/${s.num}`} onClick={() => trackVisit(s)} style={{ textDecoration: 'none' }}>
+                      <div className="surah-card" style={{ ...S.card, padding: '12px 16px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 14 }}>
+                        <div style={{ width: 36, height: 36, background: 'rgba(17,212,66,0.10)', borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: '#11d442', fontSize: 13, flexShrink: 0 }}>{s.num}</div>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <h3 style={{ margin: '0 0 2px', fontWeight: 700, fontSize: 13.5, ...S.text }}>{s.name}</h3>
+                          <p style={{ margin: 0, fontSize: 11.5, ...S.muted }}>{s.meaning} · {s.v} Verses</p>
+                        </div>
+                        <span style={{ ...S.tag(s.t), flexShrink: 0 }}>{s.t}</span>
+                        <span className="font-arabic" style={{ fontSize: 18, fontWeight: 700, ...S.text, flexShrink: 0 }}>{s.ar}</span>
+                        <span className="material-symbols-outlined" style={{ fontSize: 16, color: '#cbd5e1', flexShrink: 0 }}>chevron_right</span>
+                      </div>
+                    </Link>
+                  ))}
                 </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
+              )}
 
-      {/* ===== CELESTIAL IMAN - SOLAR SYSTEM INTERFACE ===== */}
-      <CelestialIman />
-
-      {/* ===== SOLUTION TABS with animations ===== */}
-      <section className="solutions-section reveal-section" ref={solutionsRef}>
-        <h2 className="solutions-title animate-child">
-          Learning the Qur’an <span className="green gradient-text"> nurturing the soul</span>
-        </h2>
-        <div className="solution-tabs animate-child">
-          {SOLUTION_TABS.map((tab, i) => (
-            <button
-              key={tab.id}
-              className={`solution-tab ${activeTab === tab.id ? 'active' : ''}`}
-              onClick={() => setActiveTab(tab.id)}
-              style={{ animationDelay: `${i * 0.05}s` }}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-        <div className="solution-content">
-          {SOLUTION_TABS.filter(t => t.id === activeTab).map((tab) => (
-            <div key={tab.id} className="solution-panel slide-in-panel">
-              <div className="panel-visual tilt-card">
-                <div className="panel-icon bounce-in">{tab.icon}</div>
-                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=400&fit=crop" alt="Dashboard" className="panel-image" />
+              {/* Show more / less */}
+              <div style={{ marginTop: 24, textAlign: 'center' }}>
+                <button onClick={() => setShowAll(v => !v)} style={{ background: dark ? '#111f16' : 'white', border: `1px solid ${dark ? '#1e3a2a' : '#e2e8f0'}`, padding: '10px 28px', borderRadius: 12, fontWeight: 600, fontSize: 13.5, boxShadow: '0 1px 4px rgba(0,0,0,0.06)', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6, color: dark ? '#e2e8e5' : '#334155' }}>
+                  {showAll ? `Show Top 12` : `Show All ${filtered.length} Surahs`}
+                  <span className="material-symbols-outlined" style={{ fontSize: 18, transform: showAll ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}>expand_more</span>
+                </button>
               </div>
-              <div className="panel-info">
-                <h3 className="text-reveal">{tab.label}</h3>
-                <p>{tab.desc}</p>
-                <button className="btn-outline hover-arrow">Learn More <span>→</span></button>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-
-
-      {/* ===== TESTIMONIALS with parallax cards ===== */}
-      <section className="testimonials-section reveal-section" ref={testimonialsRef}>
-        <h2 className="section-title animate-child">
-          When hearts connect with the Quran, <span className="green">souls find peace</span>
-        </h2>
-        <div className="testimonial-cards">
-          <div className="testimonial-card hover-lift-3d animate-child">
-            <div className="testimonial-image">
-              <img src="https://images.unsplash.com/photo-1609599006353-e629aaabfeae?w=600&h=400&fit=crop" alt="Quran Study" />
-              <div className="image-overlay"></div>
-            </div>
-            <div className="testimonial-stat glass-stat">
-              <span className="stat-value counter-animate">100%</span>
-              <span className="stat-label">Authentic Quranic resources</span>
-            </div>
+            </section>
           </div>
-          <div className="testimonial-card hover-lift-3d animate-child">
-            <div className="testimonial-image">
-              <img src="https://images.unsplash.com/photo-1564769625905-50e93615e769?w=600&h=400&fit=crop" alt="Islamic Learning" />
-              <div className="image-overlay"></div>
-            </div>
-            <div className="testimonial-stat glass-stat">
-              <span className="stat-value counter-animate">24/7</span>
-              <span className="stat-label">Access to learning modules</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-
-      {/* ===== STATS with counter animation ===== */}
-      <section className="stats-section reveal-section" ref={statsRef}>
-        <h3 className="animate-child">The Holy Quran in numbers</h3>
-        <div className="stats-grid">
-          {[
-            { num: '114', text: 'Surahs (Chapters)' },
-            { num: '6,236', text: 'Ayahs (Verses)' },
-            { num: '30', text: 'Juz (Parts)' },
-            { num: '77,797', text: 'Words' }
-          ].map((stat, i) => (
-            <div key={stat.num} className="stat-item animate-child scale-in" style={{ animationDelay: `${i * 0.1}s` }}>
-              <span className="stat-num counter-up">{stat.num}</span>
-              <span className="stat-text">{stat.text}</span>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ===== INSIGHTS with card animations ===== */}
-      <section className="insights-section reveal-section" ref={insightsRef}>
-        <div className="insights-header">
-          <h2 className="insights-title animate-child">
-            <span className="green">Latest insights</span><br />
-            from our experts
-          </h2>
-          <div className="insights-buttons animate-child">
-            <button className="btn-outline hover-fill">View Blogs</button>
-            <button className="btn-outline hover-fill">View Research</button>
-          </div>
-        </div>
-
-        <div className="insights-grid">
-          <div className="insight-featured animate-child gradient-shift">
-            <div className="featured-shapes">
-              <div className="shape-ring spin-slow"></div>
-              <div className="shape-donut bounce-slow"></div>
-              <div className="shape-cube rock-slow">📦</div>
-              <div className="shape-sphere float-slow"></div>
-            </div>
-            <div className="featured-content">
-              <span className="insight-label">GUIDE</span>
-              <h3>Ramadan<br />Recitation<br />Tracker<br /><span className="year glow-text">2026</span></h3>
-              <a href="#" className="insight-link hover-arrow">Read Forecast <span>→</span></a>
-            </div>
-          </div>
-
-          {[
-            { badge: 'Tajweed', sub: 'Mastery', title: 'The Art of Perfect Recitation 2026', style: 'gartner' },
-            { badge: 'Hifz', sub: 'Techniques', title: 'Modern Memorization Methods for Adults', style: 'ai-itsm' },
-            { badge: 'Quran', sub: 'Insights', title: 'Deep Dive into Surah Multi-Dimensionality', style: 'maturity' }
-          ].map((card, i) => (
-            <div key={card.title} className="insight-card animate-child hover-lift-3d" style={{ animationDelay: `${i * 0.1}s` }}>
-              <div className={`insight-image ${card.style}`}>
-                <span>{card.badge}</span>
-                <span className="sub">{card.sub}</span>
-              </div>
-              <div className="insight-content">
-                <span className="insight-label">REPORT</span>
-                <h4>{card.title}</h4>
-                <a href="#" className="insight-link hover-arrow">Read Report <span>→</span></a>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ===== WORK SECTION with stagger ===== */}
-      <section className="work-section reveal-section" ref={workRef}>
-        <div className="work-left">
-          <h2 className="animate-child"><span className="green">Our Vision</span> for Quranic Excellence</h2>
-          <p className="animate-child">Empowering Muslims worldwide to connect deeply with the Quran through innovative learning, authentic knowledge, and spiritual growth.</p>
-        </div>
-        <div className="work-cards">
-          {[
-            { icon: <BookOpen size={28} />, title: 'Master Quranic Recitation', desc: 'Perfect your Tajweed and recite with beauty and precision through guided lessons.' },
-            { icon: <Heart size={28} />, title: 'Deepen Spiritual Connection', desc: 'Transform your relationship with Allah through understanding and reflection on His words.' },
-            { icon: <GraduationCap size={28} />, title: 'Comprehensive Learning', desc: 'From Noorani Qaida to advanced Tafsir, journey through all levels of Quranic knowledge.' },
-            { icon: <Users size={28} />, title: 'Global Muslim Community', desc: 'Connect with learners worldwide, share insights, and grow together in faith.' }
-          ].map((card, i) => (
-            <div key={card.title} className="work-card animate-child slide-in-right" style={{ animationDelay: `${i * 0.1}s` }}>
-              <div className="work-icon bounce-hover">{card.icon}</div>
-              <div className="work-info">
-                <h4>{card.title}</h4>
-                <p>{card.desc}</p>
-              </div>
-              <div className="work-icon bounce-hover" style={{ opacity: 0.6 }}><Sparkles size={20} /></div>
-            </div>
-          ))}
-        </div>
-      </section>
-    </main>
+        </main>
+      </div>
+    </>
   );
 }
