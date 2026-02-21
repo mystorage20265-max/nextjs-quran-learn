@@ -71,10 +71,22 @@ export default function MemorizeQuranPage() {
     const [revealedWords, setRevealedWords] = useState<Record<string, Set<number>>>({});
     const [mistakes, setMistakes] = useState(0);
 
-    // Refs
+    // Refs - used inside the async playback loop to always read the latest value
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const playbackTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const isPlayingRef = useRef(false);
+    // Mirror mutable settings as refs so the running loop picks up changes instantly
+    const loopEnabledRef = useRef(loopEnabled);
+    const repeatCountRef = useRef(repeatCount);
+    const pauseBetweenVersesRef = useRef(pauseBetweenVerses);
+    const playbackRateRef = useRef(playbackRate);
+    const versesRef = useRef(verses);
+    // Always keep refs in sync with state
+    useEffect(() => { loopEnabledRef.current = loopEnabled; }, [loopEnabled]);
+    useEffect(() => { repeatCountRef.current = repeatCount; }, [repeatCount]);
+    useEffect(() => { pauseBetweenVersesRef.current = pauseBetweenVerses; }, [pauseBetweenVerses]);
+    useEffect(() => { playbackRateRef.current = playbackRate; }, [playbackRate]);
+    useEffect(() => { versesRef.current = verses; }, [verses]);
 
     // Fetch chapters and reciters on mount
     useEffect(() => {
@@ -224,7 +236,7 @@ export default function MemorizeQuranPage() {
         chapter.id.toString().includes(searchQuery)
     );
 
-    // Audio playback functions
+    // Play a single verse audio – returns a promise that resolves when audio ends
     const playVerseAudio = useCallback(async (verse: Verse): Promise<void> => {
         return new Promise(async (resolve, reject) => {
             try {
@@ -233,43 +245,45 @@ export default function MemorizeQuranPage() {
                 );
                 const data = await res.json();
 
-                if (!data.audioUrl) {
-                    reject(new Error('Audio URL not found'));
-                    return;
-                }
+                if (!data.audioUrl) { reject(new Error('No audio URL')); return; }
 
                 if (audioRef.current) {
                     audioRef.current.pause();
-                    audioRef.current.currentTime = 0;
+                    audioRef.current.src = '';
                 }
 
-                audioRef.current = new Audio(data.audioUrl);
-                audioRef.current.playbackRate = playbackRate; // Apply rate
-                audioRef.current.onended = () => resolve();
-                audioRef.current.onerror = () => reject(new Error('Audio playback failed'));
-                await audioRef.current.play();
+                const audio = new Audio(data.audioUrl);
+                audio.playbackRate = playbackRateRef.current;
+                audioRef.current = audio;
+                audio.onended = () => resolve();
+                audio.onerror = () => reject(new Error('Audio failed'));
+                await audio.play();
             } catch (error) {
                 reject(error);
             }
         });
-    }, [selectedReciter, playbackRate]); // Add playbackRate dependency
+    }, [selectedReciter]);
 
-    const playSequence = useCallback(async () => {
+    // Core async playback loop – uses refs so it always reads the latest settings
+    const playSequence = useCallback(async (startIndex: number, startRepeat: number) => {
+        const verses = versesRef.current;
         if (verses.length === 0) return;
 
-        isPlayingRef.current = true;
-        let verseIndex = currentVerseIndex >= 0 ? currentVerseIndex : 0;
-        let repeatNum = (verseIndex === currentVerseIndex) ? currentRepeat : 0;
+        let verseIndex = startIndex;
+        let repeatNum = startRepeat;
 
         const playNext = async () => {
             if (!isPlayingRef.current) return;
 
             if (verseIndex >= verses.length) {
-                if (loopEnabled) {
+                if (loopEnabledRef.current) {
                     verseIndex = 0;
                     repeatNum = 0;
                 } else {
-                    stopPlayback();
+                    setIsPlaying(false);
+                    isPlayingRef.current = false;
+                    setCurrentVerseIndex(-1);
+                    setCurrentRepeat(0);
                     return;
                 }
             }
@@ -280,8 +294,9 @@ export default function MemorizeQuranPage() {
 
             try {
                 await playVerseAudio(verse);
+                if (!isPlayingRef.current) return;
 
-                if (repeatNum < repeatCount - 1) {
+                if (repeatNum < repeatCountRef.current - 1) {
                     repeatNum++;
                     playbackTimeoutRef.current = setTimeout(() => {
                         if (isPlayingRef.current) playNext();
@@ -291,7 +306,7 @@ export default function MemorizeQuranPage() {
                     repeatNum = 0;
                     playbackTimeoutRef.current = setTimeout(() => {
                         if (isPlayingRef.current) playNext();
-                    }, pauseBetweenVerses * 1000);
+                    }, pauseBetweenVersesRef.current * 1000);
                 }
             } catch (error) {
                 console.error('Playback error:', error);
@@ -302,21 +317,19 @@ export default function MemorizeQuranPage() {
         };
 
         playNext();
-    }, [verses, loopEnabled, repeatCount, pauseBetweenVerses, playVerseAudio, currentVerseIndex, currentRepeat]);
+    }, [playVerseAudio]);
 
-    const startPlayback = () => {
+    const startPlayback = (fromIndex?: number) => {
+        const idx = fromIndex !== undefined ? fromIndex : (currentVerseIndex >= 0 ? currentVerseIndex : 0);
         setIsPlaying(true);
         isPlayingRef.current = true;
-        if (currentVerseIndex === -1) {
-            setCurrentVerseIndex(0);
-            setCurrentRepeat(0);
-        }
-        playSequence();
+        setCurrentRepeat(0);
+        playSequence(idx, 0);
     };
 
     const stopPlayback = () => {
-        setIsPlaying(false);
         isPlayingRef.current = false;
+        setIsPlaying(false);
         setCurrentVerseIndex(-1);
         setCurrentRepeat(0);
 
@@ -327,26 +340,23 @@ export default function MemorizeQuranPage() {
 
         if (audioRef.current) {
             audioRef.current.pause();
-            audioRef.current.currentTime = 0;
+            audioRef.current.src = '';
         }
     };
 
     const pausePlayback = () => {
-        setIsPlaying(false);
         isPlayingRef.current = false;
+        setIsPlaying(false);
         if (playbackTimeoutRef.current) clearTimeout(playbackTimeoutRef.current);
         if (audioRef.current) audioRef.current.pause();
     };
 
     const resumePlayback = () => {
+        // Resume from the current verse – start a fresh sequence from current index
+        const idx = currentVerseIndex >= 0 ? currentVerseIndex : 0;
         setIsPlaying(true);
         isPlayingRef.current = true;
-        if (audioRef.current && !audioRef.current.ended) {
-            audioRef.current.play();
-            playSequence();
-        } else {
-            startPlayback();
-        }
+        playSequence(idx, 0);
     };
 
     const handlePlayPause = () => {
@@ -360,35 +370,45 @@ export default function MemorizeQuranPage() {
     };
 
     const handlePrevVerse = () => {
-        if (currentVerseIndex > 0) {
-            pausePlayback();
-            setCurrentVerseIndex(currentVerseIndex - 1);
-            setCurrentRepeat(0);
+        const newIndex = currentVerseIndex > 0 ? currentVerseIndex - 1 : 0;
+        // Stop the current loop, then restart from new index
+        isPlayingRef.current = false;
+        if (playbackTimeoutRef.current) clearTimeout(playbackTimeoutRef.current);
+        if (audioRef.current) { audioRef.current.pause(); audioRef.current.src = ''; }
+        setCurrentVerseIndex(newIndex);
+        setCurrentRepeat(0);
+        if (isPlaying) {
+            // Brief wait then start from new index
+            setTimeout(() => {
+                isPlayingRef.current = true;
+                playSequence(newIndex, 0);
+            }, 100);
         }
     };
 
     const handleNextVerse = () => {
-        if (currentVerseIndex < verses.length - 1) {
-            pausePlayback();
-            setCurrentVerseIndex(currentVerseIndex + 1);
-            setCurrentRepeat(0);
+        const newIndex = currentVerseIndex < verses.length - 1 ? currentVerseIndex + 1 : currentVerseIndex;
+        isPlayingRef.current = false;
+        if (playbackTimeoutRef.current) clearTimeout(playbackTimeoutRef.current);
+        if (audioRef.current) { audioRef.current.pause(); audioRef.current.src = ''; }
+        setCurrentVerseIndex(newIndex);
+        setCurrentRepeat(0);
+        if (isPlaying) {
+            setTimeout(() => {
+                isPlayingRef.current = true;
+                playSequence(newIndex, 0);
+            }, 100);
         }
     };
 
-    const playSingleVerse = async (verse: Verse, index: number) => {
+    const playSingleVerse = (verse: Verse, index: number) => {
+        // If same verse is playing, just toggle pause
+        // Otherwise stop current and play clicked verse once
         stopPlayback();
         setCurrentVerseIndex(index);
         setIsPlaying(true);
         isPlayingRef.current = true;
-
-        try {
-            await playVerseAudio(verse);
-        } catch (error) {
-            console.error('Single verse playback error:', error);
-        } finally {
-            setIsPlaying(false);
-            isPlayingRef.current = false;
-        }
+        playSequence(index, 0);
     };
 
     const handleRevealVerse = (index: number) => {

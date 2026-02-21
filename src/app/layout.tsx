@@ -1,7 +1,8 @@
 // app/layout.tsx
 import type { Metadata } from 'next';
-import Navbar from '@/components/Navbar/Navbar';
+import NavbarConditional from '@/components/NavbarConditional';
 import Footer from '@/components/Footer';
+import GlobalSidebar from '@/components/GlobalSidebar';
 import { getOrganizationSchema, getWebsiteSchema } from '@/lib/seoSchemas';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import './globals.css';
@@ -137,12 +138,15 @@ export default function RootLayout({
       <body>
         <ThemeProvider>
           <a href="#main-content" className="skip-link">Skip to main content</a>
-          <Navbar />
-          <ClientWrapper>
-            <main id="main-content">
-              {children}
-            </main>
-          </ClientWrapper>
+          <NavbarConditional />
+          <div className="app-shell">
+            <GlobalSidebar />
+            <ClientWrapper>
+              <main id="main-content" style={{ flex: 1, minWidth: 0 }}>
+                {children}
+              </main>
+            </ClientWrapper>
+          </div>
           <Footer />
         </ThemeProvider>
       </body>

@@ -919,3 +919,33 @@ textarea::placeholder {
   background: none;
   padding: 0;
 }
+
+/* ============ GLOBAL SIDEBAR ============ */
+/* Hidden by default (mobile-first). Shown on wide screens. */
+.gsb-root {
+  display: none !important;
+}
+
+@media (min-width: 1024px) {
+  .gsb-root {
+    display: flex !important;
+  }
+}
+
+/* App shell wrapper: sidebar + main side-by-side */
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+  background: #f6f8f6;
+  transition: background 0.2s;
+}
+
+.dark .app-shell {
+  background: #0d1b12;
+}
+
+.app-shell>main,
+.app-shell>div {
+  flex: 1;
+  min-width: 0;
+}

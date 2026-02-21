@@ -1,19 +1,13 @@
 'use client';
 
-/**
- * Advanced Quran Radio Platform
- * Premium UI with glassmorphism, real-time visualizations, and professional design
- */
-
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Link from 'next/link';
 import { fetchReciters, fetchStations, fetchAudio } from './lib/api';
 import { liveRadioAPI, LiveStation } from './lib/api/live-radio-api';
 import { Station, Reciter } from './lib/types';
 import EqualizerPanel, { EqualizerSettings } from './components/EqualizerPanel';
-import './styles/radio.css';
 
-// Type for playing source
 type PlayingSource = {
   type: 'live' | 'reciter' | 'station';
   id: string | number;
@@ -22,37 +16,11 @@ type PlayingSource = {
   style?: string;
 } | null;
 
-// Animation variants
-const fadeInUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.4, 0, 0.2, 1] as [number, number, number, number] } }
-};
-
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.08, delayChildren: 0.1 }
-  }
-};
-
-const cardVariant = {
-  hidden: { opacity: 0, y: 30, scale: 0.95 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: { duration: 0.4, ease: [0.4, 0, 0.2, 1] as [number, number, number, number] }
-  }
-};
-
 export default function AdvancedRadioPage() {
   // Audio refs
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const animationRef = useRef<number | null>(null);
   const playPromiseRef = useRef<Promise<void> | null>(null);
 
   // Data state
@@ -78,6 +46,7 @@ export default function AdvancedRadioPage() {
   });
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState<'live' | 'reciters' | 'curated'>('live');
+  const [isDark, setIsDark] = useState(false);
 
   // Load data
   useEffect(() => {
@@ -89,7 +58,6 @@ export default function AdvancedRadioPage() {
           fetchStations(),
           liveRadioAPI.fetchLiveStations(),
         ]);
-
         setReciters(recitersData || []);
         setCuratedStations((stationsData.curatedStations as Station[]) || []);
         setLiveStations(liveStationsData.slice(0, 18));
@@ -101,23 +69,28 @@ export default function AdvancedRadioPage() {
         setLoading(false);
       }
     };
-
     loadData();
+  }, []);
+
+  // Dark mode sync
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      setIsDark(document.documentElement.classList.contains('dark'));
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    setIsDark(document.documentElement.classList.contains('dark'));
+    return () => observer.disconnect();
   }, []);
 
   // Initialize Web Audio API
   const initializeAudioContext = useCallback(() => {
     if (audioContextRef.current || !audioRef.current) return;
-
     try {
       const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
       audioContextRef.current = new AudioContext();
-
       const source = audioContextRef.current.createMediaElementSource(audioRef.current);
       const analyser = audioContextRef.current.createAnalyser();
       analyser.fftSize = 256;
-
-      // Create 10-band equalizer
       const frequencies = [31, 62, 125, 250, 500, 1000, 2000, 4000, 8000, 16000];
       const nodes = frequencies.map(freq => {
         const filter = audioContextRef.current!.createBiquadFilter();
@@ -127,15 +100,10 @@ export default function AdvancedRadioPage() {
         filter.gain.value = 0;
         return filter;
       });
-
-      // Connect nodes in chain
       source.connect(nodes[0]);
-      for (let i = 0; i < nodes.length - 1; i++) {
-        nodes[i].connect(nodes[i + 1]);
-      }
+      for (let i = 0; i < nodes.length - 1; i++) nodes[i].connect(nodes[i + 1]);
       nodes[nodes.length - 1].connect(analyser);
       analyser.connect(audioContextRef.current.destination);
-
       analyserRef.current = analyser;
       setEqualizerNodes(nodes);
     } catch (err) {
@@ -143,82 +111,21 @@ export default function AdvancedRadioPage() {
     }
   }, []);
 
-  // Visualizer animation
-  const drawVisualizer = useCallback(() => {
-    if (!canvasRef.current || !analyserRef.current || !isPlaying) return;
-
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    const analyser = analyserRef.current;
-    const bufferLength = analyser.frequencyBinCount;
-    const dataArray = new Uint8Array(bufferLength);
-
-    const draw = () => {
-      if (!isPlaying) return;
-      animationRef.current = requestAnimationFrame(draw);
-
-      analyser.getByteFrequencyData(dataArray);
-
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      const barWidth = (canvas.width / bufferLength) * 2.5;
-      let x = 0;
-
-      for (let i = 0; i < bufferLength; i++) {
-        const barHeight = (dataArray[i] / 255) * canvas.height;
-
-        // Gradient color
-        const gradient = ctx.createLinearGradient(0, canvas.height, 0, canvas.height - barHeight);
-        gradient.addColorStop(0, 'rgba(59, 130, 246, 0.8)');
-        gradient.addColorStop(1, 'rgba(139, 92, 246, 0.8)');
-        ctx.fillStyle = gradient;
-
-        ctx.beginPath();
-        ctx.roundRect(x, canvas.height - barHeight, barWidth - 2, barHeight, [4, 4, 0, 0]);
-        ctx.fill();
-
-        x += barWidth;
-      }
-    };
-
-    draw();
-  }, [isPlaying]);
-
+  // Volume
   useEffect(() => {
-    if (isPlaying) {
-      drawVisualizer();
-    } else if (animationRef.current) {
-      cancelAnimationFrame(animationRef.current);
-    }
-
-    return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
-    };
-  }, [isPlaying, drawVisualizer]);
-
-  // Volume change handler
-  useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.volume = volume;
-    }
+    if (audioRef.current) audioRef.current.volume = volume;
   }, [volume]);
 
-  // Apply equalizer settings
+  // Equalizer
   useEffect(() => {
     if (equalizerNodes.length > 0) {
       equalizerSettings.bands.forEach((value, index) => {
-        if (equalizerNodes[index]) {
-          equalizerNodes[index].gain.value = value;
-        }
+        if (equalizerNodes[index]) equalizerNodes[index].gain.value = value;
       });
     }
   }, [equalizerSettings, equalizerNodes]);
 
-  // Safe play helper that handles the AbortError race condition
+  // Safe play/pause
   const safePlay = async () => {
     if (!audioRef.current) return;
     try {
@@ -227,24 +134,15 @@ export default function AdvancedRadioPage() {
       playPromiseRef.current = null;
     } catch (err: unknown) {
       playPromiseRef.current = null;
-      // AbortError is expected when pause() is called during play() - ignore it
-      if (err instanceof Error && err.name === 'AbortError') {
-        return;
-      }
+      if (err instanceof Error && err.name === 'AbortError') return;
       throw err;
     }
   };
 
-  // Safe pause helper that waits for pending play to complete
   const safePause = async () => {
     if (!audioRef.current) return;
-    // Wait for any pending play promise to resolve before pausing
     if (playPromiseRef.current) {
-      try {
-        await playPromiseRef.current;
-      } catch {
-        // Ignore errors from the pending play
-      }
+      try { await playPromiseRef.current; } catch { }
       playPromiseRef.current = null;
     }
     audioRef.current.pause();
@@ -253,36 +151,18 @@ export default function AdvancedRadioPage() {
   // Play handlers
   const handleLiveStationPlay = async (station: LiveStation) => {
     if (!audioRef.current) return;
-
     try {
       setError(null);
-
       if (playingSource?.id === station.id && isPlaying) {
-        await safePause();
-        setIsPaused(true);
-        setIsPlaying(false);
-        return;
+        await safePause(); setIsPaused(true); setIsPlaying(false); return;
       }
-
       if (playingSource?.id === station.id && isPaused) {
-        await safePlay();
-        setIsPaused(false);
-        setIsPlaying(true);
-        return;
+        await safePlay(); setIsPaused(false); setIsPlaying(true); return;
       }
-
       audioRef.current.src = station.streamUrl;
-      setPlayingSource({
-        type: 'live',
-        id: station.id,
-        name: station.reciterName || station.name,
-        image: station.imageUrl,
-        style: station.style,
-      });
-
+      setPlayingSource({ type: 'live', id: station.id, name: station.reciterName || station.name, image: station.imageUrl, style: station.style });
       await safePlay();
-      setIsPlaying(true);
-      setIsPaused(false);
+      setIsPlaying(true); setIsPaused(false);
     } catch (err) {
       console.error('Error playing live station:', err);
       setError('Failed to play live station. Please try another.');
@@ -292,42 +172,22 @@ export default function AdvancedRadioPage() {
 
   const handleReciterPlay = async (reciter: Reciter) => {
     if (!audioRef.current) return;
-
     try {
       setError(null);
-
       if (playingSource?.id === reciter.id && isPlaying) {
-        await safePause();
-        setIsPaused(true);
-        setIsPlaying(false);
-        return;
+        await safePause(); setIsPaused(true); setIsPlaying(false); return;
       }
-
       if (playingSource?.id === reciter.id && isPaused) {
-        await safePlay();
-        setIsPaused(false);
-        setIsPlaying(true);
-        return;
+        await safePlay(); setIsPaused(false); setIsPlaying(true); return;
       }
-
       const reciterId = reciter.originalReciterId || reciter.id;
-      // Random surah from 1-114 (all 114 surahs of the Quran)
       const randomSurah = Math.floor(Math.random() * 114) + 1;
       const audioData = await fetchAudio(reciterId, randomSurah);
-
       if (audioData.audioUrls && audioData.audioUrls[0]) {
         audioRef.current.src = audioData.audioUrls[0];
-        setPlayingSource({
-          type: 'reciter',
-          id: reciter.id,
-          name: reciter.name,
-          image: reciter.imageUrl,
-          style: reciter.style,
-        });
-
+        setPlayingSource({ type: 'reciter', id: reciter.id, name: reciter.name, image: reciter.imageUrl, style: reciter.style });
         await safePlay();
-        setIsPlaying(true);
-        setIsPaused(false);
+        setIsPlaying(true); setIsPaused(false);
       }
     } catch (err) {
       console.error('Error playing reciter:', err);
@@ -338,40 +198,21 @@ export default function AdvancedRadioPage() {
 
   const handleStationPlay = async (station: Station) => {
     if (!audioRef.current) return;
-
     try {
       setError(null);
-
       if (playingSource?.id === station.id && isPlaying) {
-        await safePause();
-        setIsPaused(true);
-        setIsPlaying(false);
-        return;
+        await safePause(); setIsPaused(true); setIsPlaying(false); return;
       }
-
       if (playingSource?.id === station.id && isPaused) {
-        await safePlay();
-        setIsPaused(false);
-        setIsPlaying(true);
-        return;
+        await safePlay(); setIsPaused(false); setIsPlaying(true); return;
       }
-
-      // Random surah from 1-114 for curated stations
       const randomSurah = Math.floor(Math.random() * 114) + 1;
-      const audioData = await fetchAudio(7, randomSurah); // Default to Mishary for curated
+      const audioData = await fetchAudio(7, randomSurah);
       if (audioData.audioUrls && audioData.audioUrls[0]) {
         audioRef.current.src = audioData.audioUrls[0];
-        setPlayingSource({
-          type: 'station',
-          id: station.id,
-          name: station.title,
-          image: station.image,
-          style: station.description,
-        });
-
+        setPlayingSource({ type: 'station', id: station.id, name: station.title, image: station.image, style: station.description });
         await safePlay();
-        setIsPlaying(true);
-        setIsPaused(false);
+        setIsPlaying(true); setIsPaused(false);
       }
     } catch (err) {
       console.error('Error playing station:', err);
@@ -382,42 +223,37 @@ export default function AdvancedRadioPage() {
 
   const handleStop = async () => {
     await safePause();
-    if (audioRef.current) {
-      audioRef.current.currentTime = 0;
-    }
-    setPlayingSource(null);
-    setIsPlaying(false);
-    setIsPaused(false);
+    if (audioRef.current) audioRef.current.currentTime = 0;
+    setPlayingSource(null); setIsPlaying(false); setIsPaused(false);
   };
 
-  const handleAudioPlay = () => {
-    initializeAudioContext();
-    setIsPlaying(true);
-    setIsPaused(false);
-  };
+  const handleAudioPlay = () => { initializeAudioContext(); setIsPlaying(true); setIsPaused(false); };
+  const handleAudioPause = () => { setIsPlaying(false); setIsPaused(true); };
 
-  const handleAudioPause = () => {
-    setIsPlaying(false);
-    setIsPaused(true);
-  };
-
-  // Filter by search
-  const filteredReciters = reciters.filter(r =>
-    r.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
+  // Filtered data
+  const filteredReciters = reciters.filter(r => r.name.toLowerCase().includes(searchQuery.toLowerCase()));
   const filteredLiveStations = liveStations.filter(s =>
     s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     s.reciterName?.toLowerCase().includes(searchQuery.toLowerCase())
   );
+  const filteredCurated = curatedStations.filter(s => s.title.toLowerCase().includes(searchQuery.toLowerCase()));
 
-  const filteredCurated = curatedStations.filter(s =>
-    s.title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Helper: is this card playing?
+  const isCardPlaying = (id: string | number) => playingSource?.id === id && isPlaying;
+  const isCardActive = (id: string | number) => playingSource?.id === id;
 
   return (
-    <div className="radio-page">
-      {/* Hidden Audio Element */}
+    <div
+      style={{
+        minHeight: '100vh',
+        background: isDark ? '#020617' : '#f8fafc',
+        color: isDark ? '#f1f5f9' : '#0f172a',
+        fontFamily: "'Inter', sans-serif",
+        backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l15 30-15 30-15-30z' fill='%23065f46' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E\")",
+        transition: 'background 0.3s, color 0.3s',
+      }}
+    >
+      {/* Hidden Audio */}
       <audio
         ref={audioRef}
         crossOrigin="anonymous"
@@ -440,433 +276,574 @@ export default function AdvancedRadioPage() {
         equalizerNodes={equalizerNodes}
       />
 
-      {/* Premium Header */}
-      <header className="radio-header">
-        <div className="radio-header-inner">
-          {/* Logo */}
-          <div className="radio-logo">
-            <div className="radio-logo-icon">
-              <span>📻</span>
+      {/* NAV */}
+      <nav style={{
+        position: 'sticky', top: 0, zIndex: 50,
+        background: isDark ? 'rgba(15,23,42,0.85)' : 'rgba(255,255,255,0.85)',
+        backdropFilter: 'blur(12px)',
+        borderBottom: isDark ? '1px solid #1e293b' : '1px solid #e2e8f0',
+      }}>
+        <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: 72 }}>
+          {/* Logo + Nav Links */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div style={{ width: 40, height: 40, background: '#065f46', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <span className="material-icons-round" style={{ color: 'white', fontSize: 24 }}>radio</span>
+              </div>
+              <span style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 700, fontSize: 20, color: isDark ? '#34d399' : '#065f46', letterSpacing: '-0.02em' }}>Quran Radio</span>
             </div>
-            <div className="radio-logo-text">
-              <h1>Quran Radio</h1>
-              <p>Live Streaming Platform</p>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
+              {[
+                { href: '/', icon: 'home', label: 'Home' },
+                { href: '/read-quran/1', icon: 'auto_stories', label: 'Read Quran' },
+                { href: '/learn-quran', icon: 'school', label: 'Learn' },
+                { href: '/memorize-quran', icon: 'psychology', label: 'Memorize' },
+              ].map(link => (
+                <Link key={link.href} href={link.href} style={{ display: 'flex', alignItems: 'center', gap: 6, color: isDark ? '#94a3b8' : '#64748b', textDecoration: 'none', fontSize: 14, fontWeight: 500 }}>
+                  <span className="material-icons-round" style={{ fontSize: 20 }}>{link.icon}</span>
+                  <span style={{ display: 'none' }} className="nav-label-show">{link.label}</span>
+                  <span>{link.label}</span>
+                </Link>
+              ))}
             </div>
           </div>
-
-          {/* Search */}
-          <div className="radio-search">
+          {/* Right Controls */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            {/* Search */}
             <div style={{ position: 'relative' }}>
-              <svg
-                style={{
-                  position: 'absolute',
-                  left: '16px',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  width: '20px',
-                  height: '20px',
-                  color: '#9ca3af',
-                  pointerEvents: 'none'
-                }}
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
+              <span className="material-icons-round" style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', fontSize: 18, color: '#94a3b8' }}>search</span>
               <input
                 type="text"
-                placeholder="Search reciters, stations..."
+                placeholder="Search..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="radio-search-input"
-                style={{ paddingLeft: '3rem' }}
+                onChange={e => setSearchQuery(e.target.value)}
+                style={{
+                  paddingLeft: 36, paddingRight: 16, paddingTop: 8, paddingBottom: 8,
+                  background: isDark ? '#1e293b' : '#f1f5f9',
+                  border: '1px solid transparent', borderRadius: 999,
+                  color: isDark ? '#e2e8f0' : '#0f172a',
+                  fontSize: 13, outline: 'none', width: 180,
+                }}
               />
             </div>
-          </div>
-
-          {/* Controls */}
-          <div className="flex items-center gap-3">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+            {/* Equalizer */}
+            <button
               onClick={() => setShowEqualizer(true)}
-              className="control-btn"
               title="Equalizer"
+              style={{ padding: 8, borderRadius: '50%', background: isDark ? '#1e293b' : '#f1f5f9', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
-              </svg>
-            </motion.button>
+              <span className="material-icons-round" style={{ color: isDark ? '#94a3b8' : '#64748b', fontSize: 22 }}>equalizer</span>
+            </button>
+            {/* Dark mode toggle */}
+            <button
+              onClick={() => document.documentElement.classList.toggle('dark')}
+              style={{ padding: 8, borderRadius: '50%', background: isDark ? '#1e293b' : '#f1f5f9', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+            >
+              <span className="material-icons-round" style={{ color: isDark ? '#94a3b8' : '#64748b', fontSize: 22 }}>
+                {isDark ? 'light_mode' : 'dark_mode'}
+              </span>
+            </button>
           </div>
         </div>
-      </header>
+      </nav>
 
-      {/* Error Banner */}
-      <AnimatePresence>
-        {error && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="mx-4 mt-4 p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 flex items-center gap-3"
-          >
-            <svg className="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-            </svg>
-            <span className="text-sm">{error}</span>
-            <button onClick={() => setError(null)} className="ml-auto text-red-400 hover:text-red-300">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Main Content */}
-      <main className="relative z-10 pb-32">
-        {/* Tab Navigation */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex justify-center py-6"
-        >
-          <div className="radio-tabs">
-            {[
-              { id: 'live', label: '🔴 Live Radio', count: filteredLiveStations.length },
-              { id: 'reciters', label: '🎙️ Reciters', count: filteredReciters.length },
-              { id: 'curated', label: '⭐ Curated', count: filteredCurated.length },
-            ].map((tab) => (
-              <motion.button
-                key={tab.id}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => setActiveTab(tab.id as typeof activeTab)}
-                className={`radio-tab ${activeTab === tab.id ? 'active' : ''}`}
-              >
-                {tab.label}
-                <span className="radio-tab-count">{tab.count}</span>
-              </motion.button>
-            ))}
+      {/* MAIN */}
+      <main style={{ maxWidth: 1280, margin: '0 auto', padding: '40px 24px', paddingBottom: 160 }}>
+        {/* Hero Header */}
+        <div style={{ marginBottom: 40 }}>
+          <div style={{ marginBottom: 8 }}>
+            <span style={{
+              display: 'inline-block', padding: '4px 12px',
+              background: isDark ? 'rgba(6,95,70,0.3)' : '#dcfce7',
+              color: isDark ? '#34d399' : '#065f46',
+              fontSize: 11, fontWeight: 700, borderRadius: 999,
+              textTransform: 'uppercase', letterSpacing: '0.08em'
+            }}>
+              🔴 Live Streaming
+            </span>
           </div>
-        </motion.div>
+          <h1 style={{ fontFamily: "'Outfit', sans-serif", fontSize: 'clamp(28px,5vw,48px)', fontWeight: 700, margin: '8px 0', color: isDark ? 'white' : '#0f172a' }}>
+            World Renowned Reciters
+          </h1>
+          <p style={{ color: isDark ? '#94a3b8' : '#64748b', fontSize: 17, maxWidth: 560, margin: 0 }}>
+            Experience high-fidelity 24/7 Quranic broadcasts from the world's most beautiful voices.
+          </p>
+        </div>
 
-        {/* Loading State */}
-        {loading ? (
-          <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+        {/* Tab Navigation */}
+        <div style={{ display: 'flex', gap: 8, marginBottom: 32 }}>
+          {([
+            { id: 'live', label: '🔴 Live Radio', count: filteredLiveStations.length },
+            { id: 'reciters', label: '🎙️ Reciters', count: filteredReciters.length },
+            { id: 'curated', label: '⭐ Curated', count: filteredCurated.length },
+          ] as const).map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              style={{
+                padding: '8px 18px', borderRadius: 999,
+                border: activeTab === tab.id
+                  ? '2px solid #065f46'
+                  : `2px solid ${isDark ? '#1e293b' : '#e2e8f0'}`,
+                background: activeTab === tab.id
+                  ? '#065f46'
+                  : isDark ? '#0f172a' : 'white',
+                color: activeTab === tab.id ? 'white' : isDark ? '#94a3b8' : '#64748b',
+                fontWeight: 600, fontSize: 13, cursor: 'pointer',
+                display: 'flex', alignItems: 'center', gap: 6,
+                transition: 'all 0.2s',
+              }}
+            >
+              {tab.label}
+              <span style={{
+                background: activeTab === tab.id ? 'rgba(255,255,255,0.25)' : isDark ? '#1e293b' : '#f1f5f9',
+                color: activeTab === tab.id ? 'white' : isDark ? '#64748b' : '#94a3b8',
+                fontSize: 11, fontWeight: 700, padding: '1px 7px', borderRadius: 999,
+              }}>{tab.count}</span>
+            </button>
+          ))}
+        </div>
+
+        {/* Error Banner */}
+        <AnimatePresence>
+          {error && (
             <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-              className="w-16 h-16 border-4 border-blue-500/20 border-t-blue-500 rounded-full"
-            />
-            <p className="text-gray-400">Loading stations...</p>
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              style={{ marginBottom: 24, padding: '12px 16px', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: 12, color: '#f87171', display: 'flex', alignItems: 'center', gap: 10 }}
+            >
+              <span className="material-icons-round" style={{ fontSize: 20 }}>error_outline</span>
+              <span style={{ fontSize: 14, flex: 1 }}>{error}</span>
+              <button onClick={() => setError(null)} style={{ background: 'none', border: 'none', color: '#f87171', cursor: 'pointer', display: 'flex' }}>
+                <span className="material-icons-round" style={{ fontSize: 18 }}>close</span>
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Content */}
+        {loading ? (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '50vh', gap: 16 }}>
+            <div style={{ width: 48, height: 48, border: '4px solid rgba(6,95,70,0.15)', borderTopColor: '#065f46', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+            <p style={{ color: isDark ? '#94a3b8' : '#64748b' }}>Loading stations...</p>
           </div>
         ) : (
           <AnimatePresence mode="wait">
-            {/* Live Stations Tab */}
+            {/* LIVE TAB */}
             {activeTab === 'live' && (
-              <motion.div
-                key="live"
-                initial="hidden"
-                animate="visible"
-                exit="hidden"
-                variants={fadeInUp}
-              >
-                <div className="section-header">
-                  <div>
-                    <h2 className="section-title">Live Radio Stations</h2>
-                    <p className="section-subtitle">24/7 continuous Quran recitation from around the world</p>
-                  </div>
-                  <div className="section-badge">
-                    <div className="status-dot" />
-                    <span>{filteredLiveStations.length} Live Now</span>
-                  </div>
-                </div>
-
-                <motion.div
-                  className="station-grid"
-                  variants={staggerContainer}
-                  initial="hidden"
-                  animate="visible"
-                >
-                  {filteredLiveStations.map((station) => (
+              <motion.div key="live" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
+                  gap: 24,
+                }}>
+                  {filteredLiveStations.map((station, i) => (
                     <motion.div
                       key={station.id}
-                      variants={cardVariant}
+                      initial={{ opacity: 0, y: 24 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.05, duration: 0.4 }}
                       onClick={() => handleLiveStationPlay(station)}
-                      className={`station-card ${playingSource?.id === station.id && isPlaying ? 'playing' : ''}`}
+                      className="reciter-portrait-card"
+                      style={{
+                        position: 'relative',
+                        borderRadius: 28,
+                        overflow: 'hidden',
+                        aspectRatio: '3/4',
+                        cursor: 'pointer',
+                        background: '#0f172a',
+                        boxShadow: isCardActive(station.id)
+                          ? '0 0 0 3px #065f46, 0 24px 48px rgba(6,95,70,0.35)'
+                          : '0 8px 32px rgba(0,0,0,0.15)',
+                        transform: 'translateY(0)',
+                        transition: 'box-shadow 0.3s, transform 0.3s',
+                      }}
                     >
-                      <div className="station-card-image">
-                        {station.imageUrl && (
-                          <img
-                            src={station.imageUrl}
-                            alt={station.name}
-                            onError={(e) => {
-                              (e.target as HTMLImageElement).style.display = 'none';
-                            }}
-                          />
-                        )}
-                        <div className="live-badge">
-                          <div className="live-badge-dot" />
-                          LIVE
+                      {/* Background Image */}
+                      {station.imageUrl ? (
+                        <img
+                          src={station.imageUrl}
+                          alt={station.name}
+                          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.8, transition: 'transform 0.6s' }}
+                          className="card-img"
+                          onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                        />
+                      ) : (
+                        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, #064e3b, #065f46)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <span className="material-icons-round" style={{ fontSize: 64, color: 'rgba(255,255,255,0.2)' }}>radio</span>
                         </div>
-                        {station.style && (
-                          <div className="style-badge">{station.style}</div>
-                        )}
-                        <div className="station-card-overlay">
-                          <div className="play-button">
-                            {playingSource?.id === station.id && isBuffering ? (
-                              <div className="buffering-spinner" />
-                            ) : playingSource?.id === station.id && isPlaying ? (
-                              <div className="music-bars">
-                                <div className="music-bar" />
-                                <div className="music-bar" />
-                                <div className="music-bar" />
-                              </div>
-                            ) : (
-                              <svg viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M8 5v14l11-7z" />
-                              </svg>
-                            )}
-                          </div>
+                      )}
+                      {/* Gradient overlay */}
+                      <div style={{
+                        position: 'absolute', inset: 0,
+                        background: isCardActive(station.id)
+                          ? 'linear-gradient(to top, #065f46 0%, rgba(6,95,70,0.6) 50%, transparent 100%)'
+                          : 'linear-gradient(to top, #022c22 0%, rgba(2,44,34,0.65) 50%, transparent 100%)',
+                      }} />
+                      {/* Now Playing badge */}
+                      {isCardActive(station.id) && (
+                        <div style={{ position: 'absolute', top: 16, right: 16, background: '#065f46', color: 'white', fontSize: 10, fontWeight: 700, padding: '4px 10px', borderRadius: 999, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                          Now Playing
+                        </div>
+                      )}
+                      {/* Play Overlay */}
+                      <div className="play-overlay-btn" style={{
+                        position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        opacity: isCardActive(station.id) ? 1 : 0,
+                        transition: 'opacity 0.25s',
+                      }}>
+                        <div style={{
+                          width: 72, height: 72, borderRadius: '50%',
+                          background: isCardActive(station.id) ? 'white' : 'rgba(255,255,255,0.2)',
+                          backdropFilter: 'blur(8px)',
+                          border: '1px solid rgba(255,255,255,0.3)',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+                        }}>
+                          {isBuffering && isCardActive(station.id) ? (
+                            <div style={{ width: 28, height: 28, border: '3px solid rgba(6,95,70,0.2)', borderTopColor: '#065f46', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+                          ) : isCardPlaying(station.id) ? (
+                            <span className="material-icons-round" style={{ fontSize: 40, color: '#065f46' }}>pause</span>
+                          ) : (
+                            <span className="material-icons-round" style={{ fontSize: 44, color: isCardActive(station.id) ? '#065f46' : 'white', marginLeft: 4 }}>play_arrow</span>
+                          )}
                         </div>
                       </div>
-                      <div className="station-card-content">
-                        <h3 className="station-card-title">{station.reciterName || station.name}</h3>
-                        <p className="station-card-subtitle">{station.description}</p>
-                        <div className="station-card-meta">
-                          <span>{station.bitrate}kbps • MP3</span>
-                          <div className="station-card-status">
-                            <div className="status-dot" />
-                            Active
-                          </div>
+                      {/* Card Bottom Info */}
+                      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '24px 20px 20px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+                          <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#34d399', display: 'inline-block', animation: isCardPlaying(station.id) ? 'ping 1.5s ease-in-out infinite' : 'pulse 2s ease-in-out infinite' }} />
+                          <span style={{ color: '#34d399', fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                            {isCardPlaying(station.id) ? 'Broadcasting' : 'Active Now'}
+                          </span>
+                        </div>
+                        <h3 style={{ fontFamily: "'Outfit', sans-serif", fontSize: 18, fontWeight: 700, color: 'white', margin: '0 0 4px', lineHeight: 1.3 }}>
+                          {station.reciterName || station.name}
+                        </h3>
+                        <p style={{ color: 'rgba(209,250,229,0.65)', fontSize: 12, margin: '0 0 10px', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
+                          {station.description}
+                        </p>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 12, color: 'rgba(167,243,208,0.5)', fontSize: 11, fontWeight: 500 }}>
+                          <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                            <span className="material-icons-round" style={{ fontSize: 14 }}>settings_input_antenna</span>
+                            {station.bitrate || 128}kbps
+                          </span>
+                          <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                            <span className="material-icons-round" style={{ fontSize: 14 }}>audiotrack</span>
+                            MP3
+                          </span>
                         </div>
                       </div>
                     </motion.div>
                   ))}
-                </motion.div>
+                </div>
               </motion.div>
             )}
 
-            {/* Reciters Tab */}
+            {/* RECITERS TAB */}
             {activeTab === 'reciters' && (
-              <motion.div
-                key="reciters"
-                initial="hidden"
-                animate="visible"
-                exit="hidden"
-                variants={fadeInUp}
-              >
-                <div className="section-header">
-                  <div>
-                    <h2 className="section-title">Quran Reciters</h2>
-                    <p className="section-subtitle">Listen to the world's most renowned reciters</p>
-                  </div>
-                </div>
-
-                <motion.div
-                  className="reciter-grid"
-                  variants={staggerContainer}
-                  initial="hidden"
-                  animate="visible"
-                >
-                  {filteredReciters.map((reciter) => (
+              <motion.div key="reciters" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+                  gap: 24,
+                }}>
+                  {filteredReciters.map((reciter, i) => (
                     <motion.div
                       key={reciter.id}
-                      variants={cardVariant}
+                      initial={{ opacity: 0, y: 24 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.04, duration: 0.4 }}
                       onClick={() => handleReciterPlay(reciter)}
-                      className={`reciter-card ${playingSource?.id === reciter.id && isPlaying ? 'playing' : ''}`}
+                      className="reciter-portrait-card"
+                      style={{
+                        position: 'relative',
+                        borderRadius: 28,
+                        overflow: 'hidden',
+                        aspectRatio: '3/4',
+                        cursor: 'pointer',
+                        background: '#0f172a',
+                        boxShadow: isCardActive(reciter.id)
+                          ? '0 0 0 3px #065f46, 0 24px 48px rgba(6,95,70,0.35)'
+                          : '0 8px 32px rgba(0,0,0,0.15)',
+                        transition: 'box-shadow 0.3s, transform 0.3s',
+                      }}
                     >
-                      <div className="reciter-avatar">
-                        <img
-                          src={reciter.imageUrl}
-                          alt={reciter.name}
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect fill="%23374151"/><text x="50" y="55" text-anchor="middle" fill="%239ca3af" font-size="30">🎙️</text></svg>';
-                          }}
-                        />
-                        <div className="reciter-avatar-overlay">
-                          <div className="reciter-play-btn">
-                            {playingSource?.id === reciter.id && isBuffering ? (
-                              <div className="buffering-spinner" style={{ width: '20px', height: '20px', borderWidth: '2px' }} />
-                            ) : playingSource?.id === reciter.id && isPlaying ? (
-                              <div className="music-bars" style={{ transform: 'scale(0.6)' }}>
-                                <div className="music-bar" />
-                                <div className="music-bar" />
-                                <div className="music-bar" />
-                              </div>
-                            ) : (
-                              <svg className="w-5 h-5 ml-0.5" viewBox="0 0 24 24" fill="#1e293b">
-                                <path d="M8 5v14l11-7z" />
-                              </svg>
-                            )}
-                          </div>
+                      {/* Image */}
+                      <img
+                        src={reciter.imageUrl}
+                        alt={reciter.name}
+                        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.85, transition: 'transform 0.6s' }}
+                        className="card-img"
+                        onError={e => {
+                          (e.target as HTMLImageElement).src = `data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect fill="%23064e3b"/><text x="50" y="60" text-anchor="middle" fill="%2334d399" font-size="40">🎙</text></svg>`;
+                        }}
+                      />
+                      <div style={{
+                        position: 'absolute', inset: 0,
+                        background: isCardActive(reciter.id)
+                          ? 'linear-gradient(to top, #065f46 0%, rgba(6,95,70,0.6) 50%, transparent 100%)'
+                          : 'linear-gradient(to top, #022c22 0%, rgba(2,44,34,0.65) 50%, transparent 100%)',
+                      }} />
+                      {isCardActive(reciter.id) && (
+                        <div style={{ position: 'absolute', top: 16, right: 16, background: '#065f46', color: 'white', fontSize: 10, fontWeight: 700, padding: '4px 10px', borderRadius: 999, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                          Now Playing
+                        </div>
+                      )}
+                      <div className="play-overlay-btn" style={{
+                        position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        opacity: isCardActive(reciter.id) ? 1 : 0, transition: 'opacity 0.25s',
+                      }}>
+                        <div style={{
+                          width: 68, height: 68, borderRadius: '50%',
+                          background: isCardActive(reciter.id) ? 'white' : 'rgba(255,255,255,0.2)',
+                          backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.3)',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+                        }}>
+                          {isBuffering && isCardActive(reciter.id) ? (
+                            <div style={{ width: 26, height: 26, border: '3px solid rgba(6,95,70,0.2)', borderTopColor: '#065f46', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+                          ) : isCardPlaying(reciter.id) ? (
+                            <span className="material-icons-round" style={{ fontSize: 38, color: '#065f46' }}>pause</span>
+                          ) : (
+                            <span className="material-icons-round" style={{ fontSize: 42, color: isCardActive(reciter.id) ? '#065f46' : 'white', marginLeft: 4 }}>play_arrow</span>
+                          )}
                         </div>
                       </div>
-                      <h3 className="reciter-name">{reciter.name}</h3>
-                      <p className="reciter-style">{reciter.style}</p>
+                      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '20px 18px 18px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
+                          <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#34d399', display: 'inline-block', animation: 'pulse 2s ease-in-out infinite' }} />
+                          <span style={{ color: '#34d399', fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                            {isCardPlaying(reciter.id) ? 'Playing' : 'Available'}
+                          </span>
+                        </div>
+                        <h3 style={{ fontFamily: "'Outfit', sans-serif", fontSize: 17, fontWeight: 700, color: 'white', margin: '0 0 4px', lineHeight: 1.3 }}>
+                          {reciter.name}
+                        </h3>
+                        <p style={{ color: 'rgba(209,250,229,0.6)', fontSize: 12, margin: 0 }}>
+                          {reciter.style || 'Classical Recitation'}
+                        </p>
+                      </div>
                     </motion.div>
                   ))}
-                </motion.div>
+                </div>
               </motion.div>
             )}
 
-            {/* Curated Tab */}
+            {/* CURATED TAB */}
             {activeTab === 'curated' && (
-              <motion.div
-                key="curated"
-                initial="hidden"
-                animate="visible"
-                exit="hidden"
-                variants={fadeInUp}
-              >
-                <div className="section-header">
-                  <div>
-                    <h2 className="section-title">Curated Stations</h2>
-                    <p className="section-subtitle">Hand-picked collections for the best experience</p>
-                  </div>
-                </div>
-
-                <motion.div
-                  className="station-grid"
-                  variants={staggerContainer}
-                  initial="hidden"
-                  animate="visible"
-                >
-                  {filteredCurated.map((station) => (
+              <motion.div key="curated" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
+                  gap: 24,
+                }}>
+                  {filteredCurated.map((station, i) => (
                     <motion.div
                       key={station.id}
-                      variants={cardVariant}
+                      initial={{ opacity: 0, y: 24 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.05, duration: 0.4 }}
                       onClick={() => handleStationPlay(station)}
-                      className={`station-card ${playingSource?.id === station.id && isPlaying ? 'playing' : ''}`}
+                      className="reciter-portrait-card"
+                      style={{
+                        borderRadius: 20, overflow: 'hidden', cursor: 'pointer',
+                        background: isDark ? '#0f172a' : 'white',
+                        border: isCardActive(station.id) ? '2px solid #065f46' : `2px solid ${isDark ? '#1e293b' : '#e2e8f0'}`,
+                        boxShadow: isCardActive(station.id) ? '0 8px 32px rgba(6,95,70,0.25)' : '0 2px 12px rgba(0,0,0,0.06)',
+                        transition: 'all 0.3s',
+                      }}
                     >
-                      <div className="station-card-image" style={{ aspectRatio: '16/9' }}>
+                      <div style={{ position: 'relative', aspectRatio: '16/9', overflow: 'hidden' }}>
                         {station.image && (
-                          <img src={station.image} alt={station.title} />
+                          <img src={station.image} alt={station.title} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s' }} className="card-img" />
                         )}
-                        <div className="station-card-overlay">
-                          <div className="play-button">
-                            {playingSource?.id === station.id && isBuffering ? (
-                              <div className="buffering-spinner" />
-                            ) : playingSource?.id === station.id && isPlaying ? (
-                              <div className="music-bars">
-                                <div className="music-bar" />
-                                <div className="music-bar" />
-                                <div className="music-bar" />
-                              </div>
+                        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.6), transparent)' }} />
+                        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0, transition: 'opacity 0.25s' }} className="play-overlay-btn">
+                          <div style={{ width: 52, height: 52, borderRadius: '50%', background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            {isCardPlaying(station.id) ? (
+                              <span className="material-icons-round" style={{ color: 'white', fontSize: 30 }}>pause</span>
                             ) : (
-                              <svg viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M8 5v14l11-7z" />
-                              </svg>
+                              <span className="material-icons-round" style={{ color: 'white', fontSize: 32, marginLeft: 3 }}>play_arrow</span>
                             )}
                           </div>
                         </div>
                       </div>
-                      <div className="station-card-content">
-                        <h3 className="station-card-title">{station.title}</h3>
-                        <p className="station-card-subtitle">{station.description}</p>
+                      <div style={{ padding: '16px 18px' }}>
+                        <h3 style={{ fontWeight: 700, fontSize: 15, color: isDark ? 'white' : '#0f172a', margin: '0 0 4px' }}>{station.title}</h3>
+                        <p style={{ color: isDark ? '#94a3b8' : '#64748b', fontSize: 13, margin: 0 }}>{station.description}</p>
                       </div>
                     </motion.div>
                   ))}
-                </motion.div>
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
         )}
       </main>
 
-      {/* Now Playing Bar */}
+      {/* FOOTER PLAYER BAR */}
       <AnimatePresence>
         {playingSource && (
-          <motion.div
-            initial={{ y: 100, opacity: 0 }}
+          <motion.footer
+            initial={{ y: 120, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            exit={{ y: 100, opacity: 0 }}
+            exit={{ y: 120, opacity: 0 }}
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            className="now-playing-bar"
+            style={{
+              position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 60,
+              padding: '12px 16px',
+              pointerEvents: 'none',
+            }}
           >
-            {/* Visualizer Canvas */}
-            <canvas
-              ref={canvasRef}
-              width={1200}
-              height={80}
-              className="now-playing-visualizer"
-            />
-
-            <div className="now-playing-content">
-              {/* Album Art */}
-              <div className={`now-playing-album ${isPlaying ? 'playing' : ''}`}>
-                {playingSource.image ? (
-                  <img src={playingSource.image} alt="" />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-2xl">📻</div>
-                )}
-              </div>
-
-              {/* Track Info */}
-              <div className="now-playing-info">
-                <h4 className="now-playing-title">{playingSource.name}</h4>
-                <p className="now-playing-subtitle">{playingSource.style || 'Quran Radio'}</p>
-              </div>
-
-              {/* Controls */}
-              <div className="now-playing-controls">
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  onClick={async () => {
-                    if (isPlaying) {
-                      await safePause();
-                    } else {
-                      await safePlay();
-                    }
-                  }}
-                  className="control-btn primary"
-                >
-                  {isPlaying ? (
-                    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
-                    </svg>
+            <div style={{
+              maxWidth: 1280, margin: '0 auto',
+              background: isDark ? 'rgba(15,23,42,0.95)' : 'rgba(255,255,255,0.95)',
+              backdropFilter: 'blur(16px)',
+              border: isDark ? '1px solid #1e293b' : '1px solid rgba(255,255,255,0.6)',
+              borderRadius: 24,
+              boxShadow: '0 -4px 48px rgba(0,0,0,0.12)',
+              padding: '14px 24px',
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 24,
+              pointerEvents: 'auto', flexWrap: 'wrap',
+            }}>
+              {/* Left: Now Playing Info */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 14, minWidth: 0, flex: '0 0 auto' }}>
+                <div style={{ position: 'relative', width: 52, height: 52, borderRadius: 14, overflow: 'hidden', flexShrink: 0, boxShadow: '0 4px 12px rgba(0,0,0,0.15)' }}>
+                  {playingSource?.image ? (
+                    <img src={playingSource.image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   ) : (
-                    <svg className="w-6 h-6 ml-0.5" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M8 5v14l11-7z" />
-                    </svg>
+                    <div style={{ width: '100%', height: '100%', background: '#065f46', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <span className="material-icons-round" style={{ color: 'white', fontSize: 28 }}>radio</span>
+                    </div>
                   )}
-                </motion.button>
-
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  onClick={handleStop}
-                  className="control-btn"
-                  title="Stop"
-                >
-                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M6 6h12v12H6z" />
-                  </svg>
-                </motion.button>
+                  {/* Sound wave animation overlay */}
+                  {isPlaying && (
+                    <div style={{ position: 'absolute', inset: 0, background: 'rgba(6,95,70,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2 }}>
+                      {[3, 4, 2, 4].map((h, i) => (
+                        <div key={i} style={{
+                          width: 3, background: 'white', borderRadius: 2,
+                          height: h * 4,
+                          animation: `playerBar${i} ${0.8 + i * 0.2}s ease-in-out infinite alternate`,
+                        }} />
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <div style={{ minWidth: 0 }}>
+                  <div style={{ fontSize: 10, fontWeight: 700, color: isDark ? '#34d399' : '#065f46', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 2 }}>
+                    Now Playing
+                  </div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: isDark ? 'white' : '#0f172a', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 200, fontFamily: "'Outfit', sans-serif" }}>
+                    {playingSource.name}
+                  </div>
+                  <div style={{ fontSize: 12, color: isDark ? '#94a3b8' : '#64748b', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 200 }}>
+                    {playingSource.style || 'Quran Radio'}
+                  </div>
+                </div>
               </div>
 
-              {/* Volume */}
-              <div className="volume-control">
-                <svg className="w-5 h-5 text-gray-400" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" />
-                </svg>
-                <input
-                  type="range"
-                  min="0"
-                  max="1"
-                  step="0.01"
-                  value={volume}
-                  onChange={(e) => setVolume(parseFloat(e.target.value))}
-                  className="volume-slider"
-                />
+              {/* Center: Controls */}
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, flex: '1 1 auto', maxWidth: 440 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
+                  {/* Prev */}
+                  <button style={{ background: 'none', border: 'none', cursor: 'pointer', color: isDark ? '#64748b' : '#94a3b8', display: 'flex' }}>
+                    <span className="material-icons-round">skip_previous</span>
+                  </button>
+                  {/* Play / Pause */}
+                  <button
+                    onClick={async () => { if (isPlaying) { await safePause(); } else { await safePlay(); } }}
+                    style={{
+                      width: 48, height: 48, borderRadius: '50%',
+                      background: '#065f46',
+                      border: 'none', cursor: 'pointer',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      boxShadow: '0 4px 20px rgba(6,95,70,0.4)',
+                      transition: 'transform 0.15s',
+                      color: 'white',
+                    }}
+                  >
+                    {isBuffering ? (
+                      <div style={{ width: 22, height: 22, border: '3px solid rgba(255,255,255,0.3)', borderTopColor: 'white', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+                    ) : isPlaying ? (
+                      <span className="material-icons-round" style={{ fontSize: 28 }}>pause</span>
+                    ) : (
+                      <span className="material-icons-round" style={{ fontSize: 28 }}>play_arrow</span>
+                    )}
+                  </button>
+                  {/* Next */}
+                  <button style={{ background: 'none', border: 'none', cursor: 'pointer', color: isDark ? '#64748b' : '#94a3b8', display: 'flex' }}>
+                    <span className="material-icons-round">skip_next</span>
+                  </button>
+                  {/* Stop */}
+                  <button
+                    onClick={handleStop}
+                    title="Stop"
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: isDark ? '#64748b' : '#94a3b8', display: 'flex' }}
+                  >
+                    <span className="material-icons-round">stop_circle</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Right: Volume + EQ */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 16, flex: '0 0 auto' }}>
+                {/* Volume */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span className="material-icons-round" style={{ color: isDark ? '#64748b' : '#94a3b8', fontSize: 20 }}>
+                    {volume === 0 ? 'volume_off' : volume < 0.4 ? 'volume_down' : 'volume_up'}
+                  </span>
+                  <input
+                    type="range" min="0" max="1" step="0.01" value={volume}
+                    onChange={e => setVolume(parseFloat(e.target.value))}
+                    style={{ width: 80, accentColor: '#065f46', cursor: 'pointer' }}
+                  />
+                </div>
+                {/* EQ button */}
+                <div style={{ width: 1, height: 24, background: isDark ? '#1e293b' : '#e2e8f0' }} />
+                <button
+                  onClick={() => setShowEqualizer(true)}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: isDark ? '#64748b' : '#94a3b8', display: 'flex', alignItems: 'center', gap: 4, fontSize: 12, fontWeight: 600 }}
+                  title="Equalizer"
+                >
+                  <span className="material-icons-round" style={{ fontSize: 20 }}>equalizer</span>
+                </button>
               </div>
             </div>
-          </motion.div>
+          </motion.footer>
         )}
       </AnimatePresence>
+
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/icon?family=Material+Icons+Round');
+
+        .reciter-portrait-card:hover .play-overlay-btn { opacity: 1 !important; }
+        .reciter-portrait-card:hover .card-img { transform: scale(1.08); }
+        .reciter-portrait-card:hover { transform: translateY(-6px) !important; }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes pulse {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.5; transform: scale(0.8); }
+        }
+        @keyframes ping {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.3; transform: scale(1.5); }
+        }
+        @keyframes playerBar0 { from { height: 6px; } to { height: 14px; } }
+        @keyframes playerBar1 { from { height: 10px; } to { height: 18px; } }
+        @keyframes playerBar2 { from { height: 4px; } to { height: 10px; } }
+        @keyframes playerBar3 { from { height: 12px; } to { height: 18px; } }
+
+        input[type=range] { height: 4px; border-radius: 999px; }
+        input[type=range]::-webkit-slider-thumb { width: 14px; height: 14px; }
+        
+        @media (max-width: 768px) {
+          .reciter-portrait-card:hover { transform: none !important; }
+        }
+      `}</style>
     </div>
   );
 }

@@ -27,7 +27,8 @@
     color: var(--mq-text);
     font-family: 'Lexend', 'Inter', sans-serif;
     padding-top: 80px;
-    padding-bottom: 140px;
+    padding-bottom: 180px;
+    /* extra space so last verse isn't hidden under player */
     position: relative;
     overflow-x: hidden;
 }
@@ -433,6 +434,8 @@
     transition: all 0.25s ease;
     box-shadow: var(--mq-shadow);
     position: relative;
+    z-index: 1;
+    /* keep below sticky header (z-index: 100) */
 }
 
 .verse-card:hover {
@@ -650,6 +653,7 @@
 .bottom-player {
     position: fixed;
     bottom: 24px;
+    /* On mobile: centred. On desktop offset is handled via @media below */
     left: 50%;
     transform: translateX(-50%);
     background: rgba(255, 255, 255, 0.96);
@@ -661,12 +665,21 @@
     display: flex;
     align-items: center;
     gap: 18px;
-    z-index: 1000;
+    z-index: 200;
+    /* below sidebar (z-index 300) but above page content */
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
     animation: slideUp 0.4s ease;
     width: auto;
     min-width: 320px;
     justify-content: space-between;
+}
+
+/* On desktop, the global sidebar is 260px wide — offset player to stay centred in the content area */
+@media (min-width: 1024px) {
+    .bottom-player {
+        left: calc(50% + 130px);
+        /* 260px sidebar / 2 = 130px offset */
+    }
 }
 
 .bottom-player-btn {
@@ -733,7 +746,8 @@
 /* FAB */
 .fab-focus {
     position: fixed;
-    bottom: 140px;
+    bottom: 96px;
+    /* sits just above the bottom player (player is ~72px tall + 24px gap) */
     right: 24px;
     background: var(--mq-text);
     color: white;
@@ -745,7 +759,8 @@
     font-size: 0.9rem;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
     cursor: pointer;
-    z-index: 90;
+    z-index: 190;
+    /* below player (200) but above content */
     display: flex;
     align-items: center;
     gap: 8px;

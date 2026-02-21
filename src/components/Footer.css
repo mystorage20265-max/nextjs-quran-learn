@@ -20,11 +20,9 @@
   transform: translateX(-50%);
   width: 800px;
   height: 400px;
-  background: radial-gradient(
-    ellipse,
-    var(--brand-primary-glow) 0%,
-    transparent 60%
-  );
+  background: radial-gradient(ellipse,
+      var(--brand-primary-glow) 0%,
+      transparent 60%);
   pointer-events: none;
   opacity: 0.4;
 }
@@ -229,13 +227,11 @@
 
 .footer-divider {
   height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    var(--border-default) 20%,
-    var(--border-default) 80%,
-    transparent
-  );
+  background: linear-gradient(90deg,
+      transparent,
+      var(--border-default) 20%,
+      var(--border-default) 80%,
+      transparent);
 }
 
 /* Bottom Section */
@@ -359,4 +355,90 @@
     padding: var(--space-2) var(--space-3);
     font-size: 10px;
   }
+}
+
+/* ============ DARK MODE ============ */
+.dark .footer-advanced {
+  background: #0d1b12;
+  border-top-color: #1e3a2a;
+  color: #e2e8e5;
+}
+
+.dark .footer-glow {
+  opacity: 0.15;
+}
+
+.dark .logo-text {
+  color: #e2e8e5;
+}
+
+.dark .footer-tagline {
+  color: #94a3b8;
+}
+
+.dark .social-strip-item {
+  background: #111f16;
+  border-color: #1e3a2a;
+  color: #94a3b8;
+}
+
+.dark .social-strip-item:hover {
+  background: #1e3a2a;
+  border-color: #11d442;
+  color: #11d442;
+}
+
+.dark .footer-newsletter {
+  background: #111f16;
+  border-color: #1e3a2a;
+}
+
+.dark .footer-newsletter h4 {
+  color: #e2e8e5;
+}
+
+.dark .footer-newsletter p {
+  color: #94a3b8;
+}
+
+.dark .footer-divider {
+  background: linear-gradient(90deg, transparent, #1e3a2a 20%, #1e3a2a 80%, transparent);
+}
+
+.dark .footer-col h5 {
+  color: #11d442;
+}
+
+.dark .footer-col ul li a {
+  color: #64748b;
+}
+
+.dark .footer-col ul li a:hover {
+  color: #e2e8e5;
+}
+
+.dark .footer-legal p {
+  color: #64748b;
+}
+
+.dark .footer-legal strong {
+  color: #e2e8e5;
+}
+
+.dark .legal-links a {
+  color: #64748b;
+}
+
+.dark .legal-links a:hover {
+  color: #11d442;
+}
+
+.dark .trust-badge {
+  background: rgba(17, 212, 66, 0.1);
+  color: #11d442;
+}
+
+.dark .trust-badge:hover {
+  background: #11d442;
+  color: #0d1b12;
 }

@@ -695,6 +695,11 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                 {expandedTafsir === verse.verse_number && <div className="verse-tafsir-panel"><div className="verse-tafsir-title">Brief Tafsir</div><div className="verse-tafsir-content">Tafsir for verse {verse.verse_number}. Integrate a Tafsir API for detailed explanations.</div></div>}
                                             </div>
                                         ))}
+                                        {/* Surah navigation */}
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 32 }}>
+                                            {surahNumber > 1 ? <Link href={`/read-quran/${surahNumber - 1}?mode=word-by-word`} className="reader-nav-btn"><ChevronLeft size={18} /><span>Previous Surah</span></Link> : <div />}
+                                            {surahNumber < 114 && <Link href={`/read-quran/${surahNumber + 1}?mode=word-by-word`} className="reader-nav-btn primary"><span>Next Surah</span><ChevronRight size={18} /></Link>}
+                                        </div>
                                     </div>
                                 ) : (
                                     // Translation mode — new card design

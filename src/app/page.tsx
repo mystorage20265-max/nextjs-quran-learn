@@ -125,7 +125,7 @@ const FEATURES = [
   { icon: 'ads_click', label: 'Memorize', sub: 'Hifz Program', href: '/memorize-quran', color: '#a855f7' },
   { icon: 'music_note', label: 'Audio Quran', sub: 'Listen & Learn', href: '/audio-quran', color: '#f59e0b' },
   { icon: 'radio', label: 'Quran Radio', sub: '24/7 Recitation', href: '/radio', color: '#ef4444' },
-  { icon: 'translate', label: 'Word by Word', sub: 'Arabic Learning', href: '/read-quran/1', color: '#06b6d4' },
+  { icon: 'translate', label: 'Word by Word', sub: 'Arabic Learning', href: '/read-quran/1?mode=word-by-word', color: '#06b6d4' },
 ];
 
 const STATS = [
@@ -142,21 +142,45 @@ export default function HomePage() {
   const [showAll, setShowAll] = useState(false);
   const [recent, setRecent] = useState<typeof SURAHS>([]);
   const [dark, setDark] = useState(false);
+  const [sessionTime, setSessionTime] = useState(0); // seconds this session
+  const [totalTime, setTotalTime] = useState(0);     // cumulative seconds all sessions
 
   useEffect(() => {
-    document.body.style.overflow = 'hidden';
     const saved = localStorage.getItem('recentSurahs');
     if (saved) setRecent(JSON.parse(saved));
     const isDark = document.documentElement.classList.contains('dark');
     setDark(isDark);
-    return () => { document.body.style.overflow = ''; };
+    // Load cumulative time
+    const savedTotal = parseInt(localStorage.getItem('quranTotalTime') || '0', 10);
+    setTotalTime(savedTotal);
+    // Sync dark state with external toggles
+    const obs = new MutationObserver(() => setDark(document.documentElement.classList.contains('dark')));
+    obs.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    return () => obs.disconnect();
   }, []);
 
-  const toggleDark = () => {
-    const html = document.documentElement;
-    if (dark) { html.classList.remove('dark'); setDark(false); }
-    else { html.classList.add('dark'); setDark(true); }
+  // Session timer — ticks every second
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setSessionTime(s => s + 1);
+      setTotalTime(t => {
+        const next = t + 1;
+        localStorage.setItem('quranTotalTime', String(next));
+        return next;
+      });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const fmtTime = (secs: number) => {
+    const h = Math.floor(secs / 3600);
+    const m = Math.floor((secs % 3600) / 60);
+    const s = secs % 60;
+    if (h > 0) return `${h}h ${String(m).padStart(2, '0')}m`;
+    if (m > 0) return `${m}m ${String(s).padStart(2, '0')}s`;
+    return `${s}s`;
   };
+
 
   const trackVisit = (s: typeof SURAHS[0]) => {
     const updated = [s, ...recent.filter(r => r.num !== s.num)].slice(0, 5);
@@ -172,21 +196,14 @@ export default function HomePage() {
   });
   const displayed = showAll ? filtered : filtered.slice(0, 12);
 
+
   const S = {
-    shell: { position: 'fixed' as const, inset: 0, zIndex: 9999, display: 'flex', overflow: 'hidden', background: dark ? '#0d1b12' : '#f6f8f6', fontFamily: "'Lexend','Figtree',sans-serif" },
-    sidebar: { width: 240, flexShrink: 0, background: dark ? '#111f16' : 'white', borderRight: `1px solid ${dark ? '#1e3a2a' : '#e2e8f0'}`, display: 'flex', flexDirection: 'column' as const, justifyContent: 'space-between', padding: '20px 0', overflowY: 'auto' as const },
+    shell: { display: 'flex', flexDirection: 'column' as const, flex: 1, minHeight: '100vh', background: dark ? '#0d1b12' : '#f6f8f6', fontFamily: "'Figtree','Lexend',sans-serif" },
     card: { background: dark ? '#111f16' : 'white', border: `1px solid ${dark ? '#1e3a2a' : '#f1f5f9'}`, borderRadius: 16, boxShadow: '0 1px 4px rgba(0,0,0,0.06)' },
     text: { color: dark ? '#e2e8e5' : '#0f172a' },
     muted: { color: '#94a3b8' },
     tag: (t: string) => ({ fontSize: 9, fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: '0.12em', color: t === 'Meccan' ? '#11d442' : '#94a3b8' }),
   };
-
-  const NavLink = ({ icon, label, href, active }: { icon: string; label: string; href: string; active?: boolean }) => (
-    <Link href={href} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 12px', borderRadius: 10, textDecoration: 'none', fontWeight: active ? 600 : 500, fontSize: 13.5, background: active ? 'rgba(17,212,66,0.12)' : 'transparent', color: active ? '#11d442' : dark ? '#94a3b8' : '#64748b', transition: 'background 0.15s', margin: '1px 0' }}>
-      <span className="material-symbols-outlined" style={{ fontSize: 20 }}>{icon}</span>
-      {label}
-    </Link>
-  );
 
   return (
     <>
@@ -197,78 +214,37 @@ export default function HomePage() {
         .hp-dot{background-image:radial-gradient(circle at 2px 2px,rgba(17,212,66,0.06) 1px,transparent 0);background-size:24px 24px}
         .font-arabic{font-family:'Noto Sans Arabic','KFGQPC Uthmanic Script HAFS',serif}
         .filter-btn{padding:6px 14px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:500;transition:all 0.15s}
+        /* ── Responsive ── */
+        .hp-header-inner{padding:10px 16px !important}
+        .hp-content{padding:16px 16px 60px !important}
+        .hp-stats{grid-template-columns:repeat(2,1fr) !important}
+        .hp-quick{grid-template-columns:1fr !important}
+        .hp-features{grid-template-columns:repeat(3,1fr) !important}
+        .hp-surah-grid{grid-template-columns:repeat(2,1fr) !important}
+        .hp-qs-hide{display:none !important}
+        @media(min-width:640px){
+          .hp-header-inner{padding:12px 24px !important}
+          .hp-content{padding:20px 24px 60px !important}
+          .hp-quick{grid-template-columns:repeat(2,1fr) !important}
+          .hp-surah-grid{grid-template-columns:repeat(2,1fr) !important}
+          .hp-qs-hide{display:flex !important}
+        }
+        @media(min-width:860px){
+          .hp-header-inner{padding:12px 28px !important}
+          .hp-content{padding:24px 28px 60px !important}
+          .hp-stats{grid-template-columns:repeat(4,1fr) !important}
+          .hp-quick{grid-template-columns:repeat(3,1fr) !important}
+          .hp-features{grid-template-columns:repeat(6,1fr) !important}
+          .hp-surah-grid{grid-template-columns:repeat(3,1fr) !important}
+        }
       `}</style>
 
       <div style={S.shell}>
-        {/* SIDEBAR */}
-        <aside style={S.sidebar} className="hp-scroll">
-          <div style={{ padding: '0 12px', display: 'flex', flexDirection: 'column', gap: 24 }}>
-            {/* Logo + dark toggle */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 4px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <div style={{ background: 'rgba(17,212,66,0.15)', borderRadius: 10, padding: 7 }}>
-                  <span className="material-symbols-outlined" style={{ color: '#11d442', fontSize: 24 }}>auto_stories</span>
-                </div>
-                <div>
-                  <p style={{ margin: 0, fontWeight: 700, fontSize: 15, lineHeight: 1, ...S.text }}>Learn Quran</p>
-                  <p style={{ margin: 0, color: '#11d442', fontSize: 9, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.12em' }}>Learning Hub</p>
-                </div>
-              </div>
-              <button onClick={toggleDark} style={{ background: dark ? '#1e3a2a' : '#f1f5f9', border: 'none', borderRadius: 8, padding: 6, cursor: 'pointer', display: 'flex', alignItems: 'center', color: dark ? '#11d442' : '#64748b' }}>
-                <span className="material-symbols-outlined" style={{ fontSize: 18 }}>{dark ? 'light_mode' : 'dark_mode'}</span>
-              </button>
-            </div>
-
-            {/* Nav */}
-            <nav style={{ display: 'flex', flexDirection: 'column' }}>
-              <NavLink icon="home" label="Home" href="/" active />
-              <NavLink icon="menu_book" label="Read Quran" href="/read-quran/1" />
-              <NavLink icon="grid_view" label="By Juz" href="/juz/1" />
-              <NavLink icon="ads_click" label="Memorize" href="/memorize-quran" />
-              <NavLink icon="radio" label="Quran Radio" href="/radio" />
-              <NavLink icon="music_note" label="Audio Quran" href="/audio-quran" />
-              <div style={{ margin: '8px 0', borderTop: `1px solid ${dark ? '#1e3a2a' : '#f1f5f9'}` }} />
-              <NavLink icon="calculate" label="Prayer Times" href="/prayer-times" />
-              <NavLink icon="star" label="Duas" href="/duas" />
-              <NavLink icon="science" label="Quran & Science" href="/quran-science" />
-              <div style={{ margin: '8px 0', borderTop: `1px solid ${dark ? '#1e3a2a' : '#f1f5f9'}` }} />
-              <NavLink icon="login" label="Login" href="/login" />
-            </nav>
-
-            {/* Recently Visited */}
-            {recent.length > 0 && (
-              <div>
-                <p style={{ margin: '0 0 8px', fontSize: 10, fontWeight: 700, color: '#11d442', textTransform: 'uppercase', letterSpacing: '0.12em', padding: '0 4px' }}>Recently Visited</p>
-                {recent.map(s => (
-                  <Link key={s.num} href={`/read-quran/${s.num}`} onClick={() => trackVisit(s)} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '7px 8px', borderRadius: 8, textDecoration: 'none', transition: 'background 0.15s' }}
-                    onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = dark ? '#1e3a2a' : '#f8fafc'}
-                    onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'transparent'}
-                  >
-                    <span style={{ width: 26, height: 26, background: 'rgba(17,212,66,0.12)', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, color: '#11d442', flexShrink: 0 }}>{s.num}</span>
-                    <span style={{ fontSize: 12, fontWeight: 500, ...S.text, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{s.name}</span>
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Profile */}
-          <div style={{ padding: '12px 12px 0' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: 10, borderRadius: 12, background: dark ? '#1e3a2a' : '#f8fafc', border: `1px solid ${dark ? '#2d4f38' : '#e2e8f0'}` }}>
-              <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'linear-gradient(135deg,#11d442,#059669)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 700, fontSize: 14, flexShrink: 0 }}>A</div>
-              <div style={{ minWidth: 0 }}>
-                <p style={{ margin: 0, fontWeight: 700, fontSize: 12, ...S.text, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Ahmed Khalid</p>
-                <p style={{ margin: 0, fontSize: 10, ...S.muted }}>Premium Member</p>
-              </div>
-            </div>
-          </div>
-        </aside>
-
         {/* MAIN */}
         <main className="hp-scroll hp-dot" style={{ flex: 1, overflowY: 'auto', minHeight: 0, background: dark ? '#0d1b12' : '#f6f8f6' }}>
           {/* Header */}
-          <header style={{ position: 'sticky', top: 0, zIndex: 10, background: dark ? 'rgba(13,27,18,0.9)' : 'rgba(246,248,246,0.88)', backdropFilter: 'blur(12px)', padding: '12px 28px', borderBottom: `1px solid ${dark ? 'rgba(30,58,42,0.6)' : 'rgba(226,232,240,0.6)'}` }}>
-            <div style={{ maxWidth: 860, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 16 }}>
+          <header style={{ position: 'sticky', top: 0, zIndex: 10, background: dark ? 'rgba(13,27,18,0.9)' : 'rgba(246,248,246,0.88)', backdropFilter: 'blur(12px)', borderBottom: `1px solid ${dark ? 'rgba(30,58,42,0.6)' : 'rgba(226,232,240,0.6)'}` }}>
+            <div className="hp-header-inner" style={{ maxWidth: 860, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 12 }}>
               <div style={{ flex: 1, position: 'relative' }}>
                 <span className="material-symbols-outlined" style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', fontSize: 20, pointerEvents: 'none' }}>search</span>
                 <input type="text" value={query} onChange={e => { setQuery(e.target.value); setShowAll(true); }} placeholder="Search Surah name, number, or meaning…" style={{ width: '100%', background: dark ? '#111f16' : 'white', border: 'none', borderRadius: 12, padding: '10px 14px 10px 40px', fontSize: 13.5, color: dark ? '#e2e8e5' : '#334155', boxShadow: '0 1px 4px rgba(0,0,0,0.07)', outline: 'none' }}
@@ -276,16 +252,17 @@ export default function HomePage() {
                   onBlur={e => (e.target.style.boxShadow = '0 1px 4px rgba(0,0,0,0.07)')}
                 />
               </div>
-              <Link href="/read-quran/1" style={{ background: '#11d442', color: 'white', borderRadius: 12, padding: '9px 18px', fontWeight: 600, fontSize: 13.5, display: 'flex', alignItems: 'center', gap: 6, boxShadow: '0 4px 14px rgba(17,212,66,0.3)', textDecoration: 'none' }}>
-                <span className="material-symbols-outlined" style={{ fontSize: 18 }}>play_circle</span>Quick Start
+              <Link href="/read-quran/1" style={{ background: '#11d442', color: 'white', borderRadius: 12, padding: '9px 14px', fontWeight: 600, fontSize: 13.5, display: 'flex', alignItems: 'center', gap: 6, boxShadow: '0 4px 14px rgba(17,212,66,0.3)', textDecoration: 'none', flexShrink: 0 }}>
+                <span className="material-symbols-outlined" style={{ fontSize: 18 }}>play_circle</span>
+                <span className="hp-qs-hide">Quick Start</span>
               </Link>
             </div>
           </header>
 
-          <div style={{ maxWidth: 860, margin: '0 auto', padding: '24px 28px 60px' }}>
+          <div className="hp-content" style={{ maxWidth: 860, margin: '0 auto' }}>
 
             {/* ── STATS BAR ── */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 12, marginBottom: 24 }}>
+            <div className="hp-stats" style={{ display: 'grid', gap: 12, marginBottom: 24 }}>
               {STATS.map(s => (
                 <div key={s.label} style={{ ...S.card, padding: '14px 16px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
                   <span style={{ fontSize: 22, fontWeight: 700, color: '#11d442' }}>{s.num}</span>
@@ -295,7 +272,7 @@ export default function HomePage() {
             </div>
 
             {/* ── QUICK ACCESS CARDS ── */}
-            <section style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16, marginBottom: 24 }}>
+            <section className="hp-quick" style={{ display: 'grid', gap: 16, marginBottom: 24 }}>
               {/* Continue Reading */}
               <div style={{ ...S.card, padding: 18, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: 140 }}>
                 <div>
@@ -310,20 +287,31 @@ export default function HomePage() {
                   <span className="material-symbols-outlined" style={{ fontSize: 14 }}>resume</span>Resume
                 </Link>
               </div>
-              {/* Hifz Progress */}
-              <div style={{ ...S.card, padding: 18, minHeight: 140 }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-                  <span style={{ fontSize: 9, fontWeight: 700, color: '#11d442', textTransform: 'uppercase', letterSpacing: '0.14em' }}>Hifz Progress</span>
-                  <span className="material-symbols-outlined" style={{ color: '#cbd5e1', fontSize: 18 }}>analytics</span>
+              {/* Session Timer Card */}
+              <div style={{ ...S.card, padding: 18, minHeight: 140, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+                    <span style={{ fontSize: 9, fontWeight: 700, color: '#11d442', textTransform: 'uppercase', letterSpacing: '0.14em' }}>Session Timer</span>
+                    <span className="material-symbols-outlined" style={{ color: '#cbd5e1', fontSize: 18 }}>timer</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8, marginBottom: 6 }}>
+                    <span style={{ fontSize: 30, fontWeight: 700, color: '#11d442', lineHeight: 1, fontVariantNumeric: 'tabular-nums' }}>{fmtTime(sessionTime)}</span>
+                  </div>
+                  <p style={{ margin: '0 0 10px', fontSize: 11, ...S.muted }}>This session on the app</p>
+                  <div style={{ width: '100%', height: 4, background: dark ? '#1e3a2a' : '#f1f5f9', borderRadius: 999, overflow: 'hidden', marginBottom: 8 }}>
+                    <div style={{ width: `${Math.min((sessionTime % 3600) / 36, 100)}%`, height: '100%', background: 'linear-gradient(90deg,#11d442,#059669)', borderRadius: 999, transition: 'width 1s linear' }} />
+                  </div>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8, marginBottom: 6 }}>
-                  <span style={{ fontSize: 26, fontWeight: 700, color: '#11d442', lineHeight: 1 }}>45%</span>
-                  <span style={{ fontSize: 12, ...S.muted, paddingBottom: 2 }}>3 / 30 Juz</span>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ fontSize: 11, ...S.muted }}>All time: <strong style={{ color: '#11d442' }}>{fmtTime(totalTime)}</strong></span>
+                  <button
+                    title="Reset all-time counter"
+                    onClick={() => { setTotalTime(0); localStorage.setItem('quranTotalTime', '0'); }}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 2, display: 'flex', alignItems: 'center', color: '#94a3b8' }}
+                  >
+                    <span className="material-symbols-outlined" style={{ fontSize: 15 }}>restart_alt</span>
+                  </button>
                 </div>
-                <div style={{ width: '100%', height: 7, background: dark ? '#1e3a2a' : '#f1f5f9', borderRadius: 999, overflow: 'hidden', marginBottom: 10 }}>
-                  <div style={{ width: '45%', height: '100%', background: 'linear-gradient(90deg,#11d442,#059669)', borderRadius: 999 }} />
-                </div>
-                <p style={{ margin: 0, fontSize: 11, ...S.muted }}>Next: Complete Juz 4 by Friday</p>
               </div>
               {/* Ayah of the Day */}
               <div style={{ background: 'linear-gradient(135deg,#11d442,#059669)', borderRadius: 16, padding: 18, boxShadow: '0 8px 24px rgba(17,212,66,0.25)', position: 'relative', overflow: 'hidden', minHeight: 140 }}>
@@ -340,7 +328,7 @@ export default function HomePage() {
             {/* ── FEATURE SHORTCUTS ── */}
             <section style={{ marginBottom: 32 }}>
               <h2 style={{ margin: '0 0 14px', fontWeight: 700, fontSize: 17, ...S.text }}>Quick Access</h2>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6,1fr)', gap: 10 }}>
+              <div className="hp-features" style={{ display: 'grid', gap: 10 }}>
                 {FEATURES.map(f => (
                   <Link key={f.label} href={f.href} style={{ textDecoration: 'none' }}>
                     <div className="feat-card" style={{ ...S.card, padding: '14px 10px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, cursor: 'pointer', textAlign: 'center' }}>
@@ -385,7 +373,7 @@ export default function HomePage() {
 
               {/* Grid */}
               {viewMode === 'grid' ? (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 14 }}>
+                <div className="hp-surah-grid" style={{ display: 'grid', gap: 14 }}>
                   {displayed.map(s => (
                     <Link key={s.num} href={`/read-quran/${s.num}`} onClick={() => trackVisit(s)} style={{ textDecoration: 'none' }}>
                       <div className="surah-card" style={{ ...S.card, padding: 18, cursor: 'pointer' }}>
