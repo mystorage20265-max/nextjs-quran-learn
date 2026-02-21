@@ -656,27 +656,16 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                             </div>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                            {/* Verse nav */}
-                            <div style={{ position: 'relative' }}>
-                                <button onClick={() => setShowVerseNav(!showVerseNav)}
-                                    className="nq-hdr-btn" style={{ gap: 6, display: 'flex', alignItems: 'center', padding: '6px 12px' }}>
-                                    <span style={{ fontSize: 13, fontWeight: 500 }}>Ayah {currentVerse || '—'}</span>
-                                    <ChevronDown size={14} />
-                                </button>
-                                {showVerseNav && (
-                                    <div className="verse-nav-panel" style={{ top: 44 }}>
-                                        <div className="verse-nav-grid">
-                                            {verses.map(v => (
-                                                <button key={v.verse_number}
-                                                    className={`verse-nav-item ${currentVerse === v.verse_number ? 'current' : ''}`}
-                                                    onClick={() => jumpToVerse(v.verse_number)}>
-                                                    {v.verse_number}
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
+                            {/* Surah picker button */}
+                            <button
+                                onClick={() => setShowSurahPicker(!showSurahPicker)}
+                                className="nq-hdr-btn"
+                                style={{ gap: 6, display: 'flex', alignItems: 'center', padding: '6px 12px' }}
+                            >
+                                <span className="material-symbols-outlined" style={{ fontSize: 16 }}>menu_book</span>
+                                <span style={{ fontSize: 13, fontWeight: 500 }}>Surah</span>
+                                <ChevronDown size={14} />
+                            </button>
                             {/* Translation / Transliteration toggle */}
                             <div className="nq-hdr-toggle-group">
                                 <span className="material-symbols-outlined" style={{ fontSize: 20, color: '#64748b', marginRight: 2 }}>format_size</span>
