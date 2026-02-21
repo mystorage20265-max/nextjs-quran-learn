@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback, use } from 'react';
 import Link from 'next/link';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import {
     ChevronLeft,
     ChevronRight,
@@ -229,7 +229,6 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
 
     const [showVerseNav, setShowVerseNav] = useState(false);
     const [showSurahPicker, setShowSurahPicker] = useState(false);
-    const router = useRouter();
     const [bookmarks, setBookmarks] = useState<string[]>([]);
     const [expandedTafsir, setExpandedTafsir] = useState<number | null>(null);
     const [toast, setToast] = useState<{ message: string; type: 'success' | 'warning' } | null>(null);
@@ -992,23 +991,26 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
             {/* Surah Picker — rendered outside the header to escape backdrop-filter stacking context */}
             {showSurahPicker && (
                 <>
+                    {/* Backdrop: dismisses picker on outside click */}
                     <div style={{ position: 'fixed', inset: 0, zIndex: 150 }} onClick={() => setShowSurahPicker(false)} />
+                    {/* Dropdown: higher z-index, use Link for reliable navigation */}
                     <div style={{
-                        position: 'fixed', top: 72, left: 72, zIndex: 300,
+                        position: 'fixed', top: 72, left: 72, zIndex: 9999,
                         background: 'white', border: '1px solid #e2e8f0', borderRadius: 14,
                         boxShadow: '0 8px 32px rgba(0,0,0,0.15)', width: 280,
-                        maxHeight: 400, overflowY: 'auto',
+                        maxHeight: 420, overflowY: 'auto',
                     }}>
                         <div style={{ padding: '12px 14px 8px', borderBottom: '1px solid #f1f5f9', fontWeight: 700, fontSize: 12, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.08em', fontFamily: 'Lexend, sans-serif' }}>
                             Select Surah
                         </div>
                         {ALL_SURAHS.map(s => (
-                            <button
+                            <Link
                                 key={s.number}
-                                onClick={() => { router.push(`/read-quran/${s.number}`); setShowSurahPicker(false); }}
+                                href={`/read-quran/${s.number}`}
+                                onClick={() => setShowSurahPicker(false)}
                                 style={{
                                     display: 'flex', alignItems: 'center', gap: 10,
-                                    width: '100%', padding: '10px 14px', border: 'none',
+                                    width: '100%', padding: '10px 14px', textDecoration: 'none',
                                     background: s.number === surahNumber ? 'rgba(17,212,66,0.08)' : 'transparent',
                                     cursor: 'pointer', textAlign: 'left', borderBottom: '1px solid #f8fafc',
                                     color: s.number === surahNumber ? '#11d442' : '#1e293b',
@@ -1026,7 +1028,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                     <span style={{ display: 'block', fontSize: 11, color: '#94a3b8' }}>{s.translation}</span>
                                 </span>
                                 <span style={{ fontSize: 15, fontFamily: 'var(--rq-font-arabic)', color: '#475569', direction: 'rtl' }}>{s.arabic}</span>
-                            </button>
+                            </Link>
                         ))}
                     </div>
                 </>
