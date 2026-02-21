@@ -653,41 +653,6 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                     </h2>
                                     <ChevronDown size={16} style={{ color: '#94a3b8', flexShrink: 0, marginTop: 1 }} />
                                 </button>
-                                {showSurahPicker && (
-                                    <div style={{
-                                        position: 'absolute', top: '100%', left: 0, zIndex: 200,
-                                        background: 'white', border: '1px solid #e2e8f0', borderRadius: 14,
-                                        boxShadow: '0 8px 32px rgba(0,0,0,0.12)', width: 260,
-                                        maxHeight: 360, overflowY: 'auto', marginTop: 8,
-                                    }}>
-                                        {ALL_SURAHS.map(s => (
-                                            <button
-                                                key={s.number}
-                                                onClick={() => { router.push(`/read-quran/${s.number}`); setShowSurahPicker(false); }}
-                                                style={{
-                                                    display: 'flex', alignItems: 'center', gap: 10,
-                                                    width: '100%', padding: '10px 14px', border: 'none',
-                                                    background: s.number === surahNumber ? 'rgba(17,212,66,0.08)' : 'transparent',
-                                                    cursor: 'pointer', textAlign: 'left', borderBottom: '1px solid #f1f5f9',
-                                                    color: s.number === surahNumber ? '#11d442' : '#1e293b',
-                                                }}
-                                            >
-                                                <span style={{
-                                                    width: 28, height: 28, borderRadius: '50%',
-                                                    background: s.number === surahNumber ? 'rgba(17,212,66,0.15)' : '#f1f5f9',
-                                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                                    fontSize: 11, fontWeight: 700, flexShrink: 0,
-                                                    color: s.number === surahNumber ? '#11d442' : '#64748b',
-                                                }}>{s.number}</span>
-                                                <span style={{ flex: 1, minWidth: 0 }}>
-                                                    <span style={{ display: 'block', fontSize: 13, fontWeight: 600 }}>{s.name}</span>
-                                                    <span style={{ display: 'block', fontSize: 11, color: '#94a3b8' }}>{s.translation}</span>
-                                                </span>
-                                                <span style={{ fontSize: 15, fontFamily: 'var(--rq-font-arabic)', color: '#475569', direction: 'rtl' }}>{s.arabic}</span>
-                                            </button>
-                                        ))}
-                                    </div>
-                                )}
                             </div>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
@@ -1034,7 +999,49 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
 
             {/* Close dropdowns on outside click */}
             {showVerseNav && <div style={{ position: 'fixed', inset: 0, zIndex: 50 }} onClick={() => setShowVerseNav(false)} />}
-            {showSurahPicker && <div style={{ position: 'fixed', inset: 0, zIndex: 150 }} onClick={() => setShowSurahPicker(false)} />}
+
+            {/* Surah Picker — rendered outside the header to escape backdrop-filter stacking context */}
+            {showSurahPicker && (
+                <>
+                    <div style={{ position: 'fixed', inset: 0, zIndex: 150 }} onClick={() => setShowSurahPicker(false)} />
+                    <div style={{
+                        position: 'fixed', top: 72, left: 72, zIndex: 300,
+                        background: 'white', border: '1px solid #e2e8f0', borderRadius: 14,
+                        boxShadow: '0 8px 32px rgba(0,0,0,0.15)', width: 280,
+                        maxHeight: 400, overflowY: 'auto',
+                    }}>
+                        <div style={{ padding: '12px 14px 8px', borderBottom: '1px solid #f1f5f9', fontWeight: 700, fontSize: 12, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.08em', fontFamily: 'Lexend, sans-serif' }}>
+                            Select Surah
+                        </div>
+                        {ALL_SURAHS.map(s => (
+                            <button
+                                key={s.number}
+                                onClick={() => { router.push(`/read-quran/${s.number}`); setShowSurahPicker(false); }}
+                                style={{
+                                    display: 'flex', alignItems: 'center', gap: 10,
+                                    width: '100%', padding: '10px 14px', border: 'none',
+                                    background: s.number === surahNumber ? 'rgba(17,212,66,0.08)' : 'transparent',
+                                    cursor: 'pointer', textAlign: 'left', borderBottom: '1px solid #f8fafc',
+                                    color: s.number === surahNumber ? '#11d442' : '#1e293b',
+                                }}
+                            >
+                                <span style={{
+                                    width: 28, height: 28, borderRadius: '50%',
+                                    background: s.number === surahNumber ? 'rgba(17,212,66,0.15)' : '#f1f5f9',
+                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                    fontSize: 11, fontWeight: 700, flexShrink: 0,
+                                    color: s.number === surahNumber ? '#11d442' : '#64748b',
+                                }}>{s.number}</span>
+                                <span style={{ flex: 1, minWidth: 0 }}>
+                                    <span style={{ display: 'block', fontSize: 13, fontWeight: 600 }}>{s.name}</span>
+                                    <span style={{ display: 'block', fontSize: 11, color: '#94a3b8' }}>{s.translation}</span>
+                                </span>
+                                <span style={{ fontSize: 15, fontFamily: 'var(--rq-font-arabic)', color: '#475569', direction: 'rtl' }}>{s.arabic}</span>
+                            </button>
+                        ))}
+                    </div>
+                </>
+            )}
         </>
     );
 }
