@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback, use } from 'react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import {
     ChevronLeft,
     ChevronRight,
@@ -79,6 +79,123 @@ interface SurahPageProps {
 
 type ReadingMode = 'translation' | 'reading' | 'word-by-word';
 
+const ALL_SURAHS = [
+    { number: 1, name: 'Al-Fatiha', translation: 'The Opening', arabic: 'الفاتحة' },
+    { number: 2, name: 'Al-Baqarah', translation: 'The Cow', arabic: 'البقرة' },
+    { number: 3, name: 'Ali \u2018Imran', translation: 'Family of Imran', arabic: 'آل عمران' },
+    { number: 4, name: 'An-Nisa', translation: 'The Women', arabic: 'النساء' },
+    { number: 5, name: 'Al-Ma\u2019idah', translation: 'The Table Spread', arabic: 'المائدة' },
+    { number: 6, name: 'Al-An\u2018am', translation: 'The Cattle', arabic: 'الأنعام' },
+    { number: 7, name: 'Al-A\u2018raf', translation: 'The Heights', arabic: 'الأعراف' },
+    { number: 8, name: 'Al-Anfal', translation: 'The Spoils of War', arabic: 'الأنفال' },
+    { number: 9, name: 'At-Tawbah', translation: 'The Repentance', arabic: 'التوبة' },
+    { number: 10, name: 'Yunus', translation: 'Jonah', arabic: 'يونس' },
+    { number: 11, name: 'Hud', translation: 'Hud', arabic: 'هود' },
+    { number: 12, name: 'Yusuf', translation: 'Joseph', arabic: 'يوسف' },
+    { number: 13, name: 'Ar-Ra\u2018d', translation: 'The Thunder', arabic: 'الرعد' },
+    { number: 14, name: 'Ibrahim', translation: 'Abraham', arabic: 'إبراهيم' },
+    { number: 15, name: 'Al-Hijr', translation: 'The Rocky Tract', arabic: 'الحجر' },
+    { number: 16, name: 'An-Nahl', translation: 'The Bee', arabic: 'النحل' },
+    { number: 17, name: 'Al-Isra', translation: 'The Night Journey', arabic: 'الإسراء' },
+    { number: 18, name: 'Al-Kahf', translation: 'The Cave', arabic: 'الكهف' },
+    { number: 19, name: 'Maryam', translation: 'Mary', arabic: 'مريم' },
+    { number: 20, name: 'Ta-Ha', translation: 'Ta-Ha', arabic: 'طه' },
+    { number: 21, name: 'Al-Anbya', translation: 'The Prophets', arabic: 'الأنبياء' },
+    { number: 22, name: 'Al-Hajj', translation: 'The Pilgrimage', arabic: 'الحج' },
+    { number: 23, name: 'Al-Mu\u2019minun', translation: 'The Believers', arabic: 'المؤمنون' },
+    { number: 24, name: 'An-Nur', translation: 'The Light', arabic: 'النور' },
+    { number: 25, name: 'Al-Furqan', translation: 'The Criterion', arabic: 'الفرقان' },
+    { number: 26, name: 'Ash-Shu\u2018ara', translation: 'The Poets', arabic: 'الشعراء' },
+    { number: 27, name: 'An-Naml', translation: 'The Ant', arabic: 'النمل' },
+    { number: 28, name: 'Al-Qasas', translation: 'The Stories', arabic: 'القصص' },
+    { number: 29, name: 'Al-\u2018Ankabut', translation: 'The Spider', arabic: 'العنكبوت' },
+    { number: 30, name: 'Ar-Rum', translation: 'The Romans', arabic: 'الروم' },
+    { number: 31, name: 'Luqman', translation: 'Luqman', arabic: 'لقمان' },
+    { number: 32, name: 'As-Sajdah', translation: 'The Prostration', arabic: 'السجدة' },
+    { number: 33, name: 'Al-Ahzab', translation: 'The Combined Forces', arabic: 'الأحزاب' },
+    { number: 34, name: 'Saba', translation: 'Sheba', arabic: 'سبأ' },
+    { number: 35, name: 'Fatir', translation: 'Originator', arabic: 'فاطر' },
+    { number: 36, name: 'Ya-Sin', translation: 'Ya Sin', arabic: 'يس' },
+    { number: 37, name: 'As-Saffat', translation: 'Those Ranged in Ranks', arabic: 'الصافات' },
+    { number: 38, name: 'Sad', translation: 'The Letter Sad', arabic: 'ص' },
+    { number: 39, name: 'Az-Zumar', translation: 'The Groups', arabic: 'الزمر' },
+    { number: 40, name: 'Ghafir', translation: 'The Forgiver', arabic: 'غافر' },
+    { number: 41, name: 'Fussilat', translation: 'Explained in Detail', arabic: 'فصلت' },
+    { number: 42, name: 'Ash-Shuraa', translation: 'The Consultation', arabic: 'الشورى' },
+    { number: 43, name: 'Az-Zukhruf', translation: 'The Gold Adornments', arabic: 'الزخرف' },
+    { number: 44, name: 'Ad-Dukhan', translation: 'The Smoke', arabic: 'الدخان' },
+    { number: 45, name: 'Al-Jathiyah', translation: 'The Kneeling', arabic: 'الجاثية' },
+    { number: 46, name: 'Al-Ahqaf', translation: 'The Wind-Curved Sandhills', arabic: 'الأحقاف' },
+    { number: 47, name: 'Muhammad', translation: 'Muhammad', arabic: 'محمد' },
+    { number: 48, name: 'Al-Fath', translation: 'The Victory', arabic: 'الفتح' },
+    { number: 49, name: 'Al-Hujurat', translation: 'The Rooms', arabic: 'الحجرات' },
+    { number: 50, name: 'Qaf', translation: 'The Letter Qaf', arabic: 'ق' },
+    { number: 51, name: 'Adh-Dhariyat', translation: 'The Winnowing Winds', arabic: 'الذاريات' },
+    { number: 52, name: 'At-Tur', translation: 'The Mount', arabic: 'الطور' },
+    { number: 53, name: 'An-Najm', translation: 'The Star', arabic: 'النجم' },
+    { number: 54, name: 'Al-Qamar', translation: 'The Moon', arabic: 'القمر' },
+    { number: 55, name: 'Ar-Rahman', translation: 'The Beneficent', arabic: 'الرحمن' },
+    { number: 56, name: 'Al-Waqi\u2018ah', translation: 'The Inevitable', arabic: 'الواقعة' },
+    { number: 57, name: 'Al-Hadid', translation: 'The Iron', arabic: 'الحديد' },
+    { number: 58, name: 'Al-Mujadila', translation: 'The Pleading Woman', arabic: 'المجادلة' },
+    { number: 59, name: 'Al-Hashr', translation: 'The Exile', arabic: 'الحشر' },
+    { number: 60, name: 'Al-Mumtahanah', translation: 'She That is to be Examined', arabic: 'الممتحنة' },
+    { number: 61, name: 'As-Saf', translation: 'The Ranks', arabic: 'الصف' },
+    { number: 62, name: 'Al-Jumu\u2018ah', translation: 'The Congregation', arabic: 'الجمعة' },
+    { number: 63, name: 'Al-Munafiqun', translation: 'The Hypocrites', arabic: 'المنافقون' },
+    { number: 64, name: 'At-Taghabun', translation: 'The Mutual Disillusion', arabic: 'التغابن' },
+    { number: 65, name: 'At-Talaq', translation: 'The Divorce', arabic: 'الطلاق' },
+    { number: 66, name: 'At-Tahrim', translation: 'The Prohibition', arabic: 'التحريم' },
+    { number: 67, name: 'Al-Mulk', translation: 'The Sovereignty', arabic: 'الملك' },
+    { number: 68, name: 'Al-Qalam', translation: 'The Pen', arabic: 'القلم' },
+    { number: 69, name: 'Al-Haqqah', translation: 'The Reality', arabic: 'الحاقة' },
+    { number: 70, name: 'Al-Ma\u2018arij', translation: 'The Ascending Stairways', arabic: 'المعارج' },
+    { number: 71, name: 'Nuh', translation: 'Noah', arabic: 'نوح' },
+    { number: 72, name: 'Al-Jinn', translation: 'The Jinn', arabic: 'الجن' },
+    { number: 73, name: 'Al-Muzzammil', translation: 'The Enshrouded One', arabic: 'المزمل' },
+    { number: 74, name: 'Al-Muddaththir', translation: 'The Cloaked One', arabic: 'المدثر' },
+    { number: 75, name: 'Al-Qiyamah', translation: 'The Resurrection', arabic: 'القيامة' },
+    { number: 76, name: 'Al-Insan', translation: 'The Human', arabic: 'الإنسان' },
+    { number: 77, name: 'Al-Mursalat', translation: 'The Emissaries', arabic: 'المرسلات' },
+    { number: 78, name: 'An-Naba', translation: 'The Tidings', arabic: 'النبأ' },
+    { number: 79, name: 'An-Nazi\u2018at', translation: 'Those Who Drag Forth', arabic: 'النازعات' },
+    { number: 80, name: '\u2018Abasa', translation: 'He Frowned', arabic: 'عبس' },
+    { number: 81, name: 'At-Takwir', translation: 'The Overthrowing', arabic: 'التكوير' },
+    { number: 82, name: 'Al-Infitar', translation: 'The Cleaving', arabic: 'الانفطار' },
+    { number: 83, name: 'Al-Mutaffifin', translation: 'The Defrauding', arabic: 'المطففين' },
+    { number: 84, name: 'Al-Inshiqaq', translation: 'The Sundering', arabic: 'الانشقاق' },
+    { number: 85, name: 'Al-Buruj', translation: 'The Mansions of the Stars', arabic: 'البروج' },
+    { number: 86, name: 'At-Tariq', translation: 'The Morning Star', arabic: 'الطارق' },
+    { number: 87, name: 'Al-A\u2018la', translation: 'The Most High', arabic: 'الأعلى' },
+    { number: 88, name: 'Al-Ghashiyah', translation: 'The Overwhelming', arabic: 'الغاشية' },
+    { number: 89, name: 'Al-Fajr', translation: 'The Dawn', arabic: 'الفجر' },
+    { number: 90, name: 'Al-Balad', translation: 'The City', arabic: 'البلد' },
+    { number: 91, name: 'Ash-Shams', translation: 'The Sun', arabic: 'الشمس' },
+    { number: 92, name: 'Al-Layl', translation: 'The Night', arabic: 'الليل' },
+    { number: 93, name: 'Ad-Duhaa', translation: 'The Morning Hours', arabic: 'الضحى' },
+    { number: 94, name: 'Ash-Sharh', translation: 'The Relief', arabic: 'الشرح' },
+    { number: 95, name: 'At-Tin', translation: 'The Fig', arabic: 'التين' },
+    { number: 96, name: 'Al-\u2018Alaq', translation: 'The Clot', arabic: 'العلق' },
+    { number: 97, name: 'Al-Qadr', translation: 'The Power', arabic: 'القدر' },
+    { number: 98, name: 'Al-Bayyinah', translation: 'The Clear Proof', arabic: 'البينة' },
+    { number: 99, name: 'Az-Zalzalah', translation: 'The Earthquake', arabic: 'الزلزلة' },
+    { number: 100, name: 'Al-\u2018Adiyat', translation: 'The Chargers', arabic: 'العاديات' },
+    { number: 101, name: 'Al-Qari\u2018ah', translation: 'The Calamity', arabic: 'القارعة' },
+    { number: 102, name: 'At-Takathur', translation: 'The Rivalry in World Increase', arabic: 'التكاثر' },
+    { number: 103, name: 'Al-\u2018Asr', translation: 'The Declining Day', arabic: 'العصر' },
+    { number: 104, name: 'Al-Humazah', translation: 'The Traducer', arabic: 'الهمزة' },
+    { number: 105, name: 'Al-Fil', translation: 'The Elephant', arabic: 'الفيل' },
+    { number: 106, name: 'Quraysh', translation: 'Quraysh', arabic: 'قريش' },
+    { number: 107, name: 'Al-Ma\u2018un', translation: 'The Small Kindnesses', arabic: 'الماعون' },
+    { number: 108, name: 'Al-Kawthar', translation: 'The Abundance', arabic: 'الكوثر' },
+    { number: 109, name: 'Al-Kafirun', translation: 'The Disbelievers', arabic: 'الكافرون' },
+    { number: 110, name: 'An-Nasr', translation: 'The Divine Support', arabic: 'النصر' },
+    { number: 111, name: 'Al-Masad', translation: 'The Palm Fiber', arabic: 'المسد' },
+    { number: 112, name: 'Al-Ikhlas', translation: 'The Sincerity', arabic: 'الإخلاص' },
+    { number: 113, name: 'Al-Falaq', translation: 'The Daybreak', arabic: 'الفلق' },
+    { number: 114, name: 'An-Nas', translation: 'The Mankind', arabic: 'الناس' },
+];
+
 export default function SurahReadingPage({ params }: SurahPageProps) {
     const { surahNumber: surahNumberStr } = use(params);
     const surahNumber = parseInt(surahNumberStr);
@@ -111,6 +228,8 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
     const isMountedRef = useRef(true);
 
     const [showVerseNav, setShowVerseNav] = useState(false);
+    const [showSurahPicker, setShowSurahPicker] = useState(false);
+    const router = useRouter();
     const [bookmarks, setBookmarks] = useState<string[]>([]);
     const [expandedTafsir, setExpandedTafsir] = useState<number | null>(null);
     const [toast, setToast] = useState<{ message: string; type: 'success' | 'warning' } | null>(null);
@@ -521,13 +640,54 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                 onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = '#94a3b8'}>
                                 <span className="material-symbols-outlined">arrow_back</span>
                             </Link>
-                            <div>
-                                <h2 className="nq-header-title">
-                                    {chapter.name_simple}
-                                    <span className="nq-header-subtitle">
-                                        {chapter.translated_name.name} • {chapter.verses_count} Verses
-                                    </span>
-                                </h2>
+                            <div style={{ position: 'relative' }}>
+                                <button
+                                    onClick={() => setShowSurahPicker(!showSurahPicker)}
+                                    style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, padding: 0 }}
+                                >
+                                    <h2 className="nq-header-title">
+                                        {chapter.name_simple}
+                                        <span className="nq-header-subtitle">
+                                            {chapter.translated_name.name} • {chapter.verses_count} Verses
+                                        </span>
+                                    </h2>
+                                    <ChevronDown size={16} style={{ color: '#94a3b8', flexShrink: 0, marginTop: 1 }} />
+                                </button>
+                                {showSurahPicker && (
+                                    <div style={{
+                                        position: 'absolute', top: '100%', left: 0, zIndex: 200,
+                                        background: 'white', border: '1px solid #e2e8f0', borderRadius: 14,
+                                        boxShadow: '0 8px 32px rgba(0,0,0,0.12)', width: 260,
+                                        maxHeight: 360, overflowY: 'auto', marginTop: 8,
+                                    }}>
+                                        {ALL_SURAHS.map(s => (
+                                            <button
+                                                key={s.number}
+                                                onClick={() => { router.push(`/read-quran/${s.number}`); setShowSurahPicker(false); }}
+                                                style={{
+                                                    display: 'flex', alignItems: 'center', gap: 10,
+                                                    width: '100%', padding: '10px 14px', border: 'none',
+                                                    background: s.number === surahNumber ? 'rgba(17,212,66,0.08)' : 'transparent',
+                                                    cursor: 'pointer', textAlign: 'left', borderBottom: '1px solid #f1f5f9',
+                                                    color: s.number === surahNumber ? '#11d442' : '#1e293b',
+                                                }}
+                                            >
+                                                <span style={{
+                                                    width: 28, height: 28, borderRadius: '50%',
+                                                    background: s.number === surahNumber ? 'rgba(17,212,66,0.15)' : '#f1f5f9',
+                                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                    fontSize: 11, fontWeight: 700, flexShrink: 0,
+                                                    color: s.number === surahNumber ? '#11d442' : '#64748b',
+                                                }}>{s.number}</span>
+                                                <span style={{ flex: 1, minWidth: 0 }}>
+                                                    <span style={{ display: 'block', fontSize: 13, fontWeight: 600 }}>{s.name}</span>
+                                                    <span style={{ display: 'block', fontSize: 11, color: '#94a3b8' }}>{s.translation}</span>
+                                                </span>
+                                                <span style={{ fontSize: 15, fontFamily: 'var(--rq-font-arabic)', color: '#475569', direction: 'rtl' }}>{s.arabic}</span>
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
@@ -778,50 +938,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                             </div>
                         </div>
 
-                        {/* RIGHT PANEL — Tajweed + Notes */}
-                        <aside className="nq-right nq-scroll">
-                            <div className="nq-panel-section">
-                                <h3 className="nq-panel-title">
-                                    <span className="material-symbols-outlined" style={{ color: '#11d442', fontSize: 20 }}>auto_fix_high</span>
-                                    Tajweed Rules
-                                </h3>
-                                <div className="nq-tajweed-card" style={{ background: 'rgba(249,115,22,0.08)', border: '1px solid rgba(249,115,22,0.15)' }}>
-                                    <div className="nq-tajweed-header">
-                                        <span className="nq-tajweed-label" style={{ color: '#ea580c' }}>Ghunnah</span>
-                                        <span className="nq-tajweed-dot" style={{ background: '#f97316' }} />
-                                    </div>
-                                    <p className="nq-tajweed-desc">Nasal sound produced for 2 counts on Noon or Meem Mushaddad.</p>
-                                </div>
-                                <div className="nq-tajweed-card" style={{ background: 'rgba(59,130,246,0.08)', border: '1px solid rgba(59,130,246,0.15)' }}>
-                                    <div className="nq-tajweed-header">
-                                        <span className="nq-tajweed-label" style={{ color: '#2563eb' }}>Qalqalah</span>
-                                        <span className="nq-tajweed-dot" style={{ background: '#3b82f6' }} />
-                                    </div>
-                                    <p className="nq-tajweed-desc">Echoing sound on letters: Qaf, Ta, Ba, Jeem, Dal.</p>
-                                </div>
-                                <div className="nq-tajweed-card" style={{ background: 'rgba(168,85,247,0.08)', border: '1px solid rgba(168,85,247,0.15)' }}>
-                                    <div className="nq-tajweed-header">
-                                        <span className="nq-tajweed-label" style={{ color: '#9333ea' }}>Madd</span>
-                                        <span className="nq-tajweed-dot" style={{ background: '#a855f7' }} />
-                                    </div>
-                                    <p className="nq-tajweed-desc">Lengthening of vowel sounds for specific counts.</p>
-                                </div>
-                            </div>
-                            <div className="nq-panel-section">
-                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-                                    <h3 className="nq-panel-title" style={{ margin: 0 }}>Personal Notes</h3>
-                                    <button style={{ color: '#11d442', fontSize: 13, fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer' }}>+ Add</button>
-                                </div>
-                                {currentVerse ? (
-                                    <div style={{ background: '#f8fafc', border: '1px solid #f1f5f9', borderRadius: 12, padding: 16, fontSize: 13 }}>
-                                        <p style={{ color: '#94a3b8', fontStyle: 'italic', margin: '0 0 6px' }}>Ayah {currentVerse}</p>
-                                        <p style={{ color: '#475569', margin: 0 }}>Tap "+ Add" to add a note for this ayah.</p>
-                                    </div>
-                                ) : (
-                                    <p style={{ color: '#94a3b8', fontSize: 13 }}>Select a verse to add notes.</p>
-                                )}
-                            </div>
-                        </aside>
+
                     </div>
 
                     {/* AUDIO BAR */}
@@ -915,8 +1032,9 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
             {/* Toast */}
             {toast && <div className={`reader-toast ${toast.type}`}>{toast.message}</div>}
 
-            {/* Close verse nav on outside click */}
+            {/* Close dropdowns on outside click */}
             {showVerseNav && <div style={{ position: 'fixed', inset: 0, zIndex: 50 }} onClick={() => setShowVerseNav(false)} />}
+            {showSurahPicker && <div style={{ position: 'fixed', inset: 0, zIndex: 150 }} onClick={() => setShowSurahPicker(false)} />}
         </>
     );
 }
