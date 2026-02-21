@@ -313,16 +313,20 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
             <style>{`
                 .nq-shell{position:fixed;inset:0;z-index:9999;display:flex;overflow:hidden;background:#f6f8f6;font-family:'Lexend','Figtree',sans-serif}
                 .dark .nq-shell{background:#102215}
-                .nq-sidebar{width:80px;flex-shrink:0;background:white;border-right:1px solid #e2e8f0;display:flex;flex-direction:column;justify-content:space-between;padding:24px 0;transition:width 0.2s}
+                .nq-sidebar{width:0;flex-shrink:0;background:white;border-right:1px solid #e2e8f0;display:flex;flex-direction:column;justify-content:space-between;padding:24px 0;transition:width 0.2s;overflow:hidden}
+                @media(min-width:640px){.nq-sidebar{width:56px}}
                 @media(min-width:1024px){.nq-sidebar{width:256px}}
                 .dark .nq-sidebar{background:#0f172a;border-color:#1e293b}
                 .nq-main{flex:1;display:flex;flex-direction:column;min-width:0;position:relative}
-                .nq-header{height:80px;background:rgba(255,255,255,0.8);backdrop-filter:blur(12px);border-bottom:1px solid #e2e8f0;padding:0 32px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;z-index:10}
+                .nq-header{height:56px;background:rgba(255,255,255,0.8);backdrop-filter:blur(12px);border-bottom:1px solid #e2e8f0;padding:0 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;z-index:10;gap:8px}
+                @media(min-width:640px){.nq-header{height:64px;padding:0 24px}}
+                @media(min-width:1024px){.nq-header{height:80px;padding:0 32px}}
                 .dark .nq-header{background:rgba(15,23,42,0.8);border-color:#1e293b}
                 .nq-content{flex:1;display:flex;flex-direction:column;overflow:hidden}
                 @media(min-width:1280px){.nq-content{display:grid;grid-template-columns:1fr 256px}}
-                .nq-scroll{flex:1;overflow-y:auto;padding:32px 48px 140px}
-                @media(max-width:1280px){.nq-scroll{padding:32px 40px 140px}}
+                .nq-scroll{flex:1;overflow-y:auto;padding:16px 16px 160px}
+                @media(min-width:640px){.nq-scroll{padding:24px 24px 160px}}
+                @media(min-width:1024px){.nq-scroll{padding:32px 48px 140px}}
                 .nq-right{flex-shrink:0;border-left:1px solid #e2e8f0;background:white;display:none;flex-direction:column;overflow:hidden}
                 @media(min-width:1280px){.nq-right{display:flex;width:256px}}
                 .dark .nq-right{background:#0f172a;border-color:#1e293b}
@@ -333,25 +337,32 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 .dark .nq-bismillah-text{color:#e2e8f0}
                 .nq-bismillah-hr{width:128px;height:4px;background:linear-gradient(90deg,transparent,rgba(17,212,66,0.3),transparent);border:none;margin:0}
                 /* Verse cards */
-                .nq-ayah-card{position:relative;padding:24px;border-radius:16px;border:1px solid transparent;transition:all 0.3s;margin-bottom:48px}
+                .nq-ayah-card{position:relative;padding:16px;border-radius:16px;border:1px solid transparent;transition:all 0.3s;margin-bottom:32px}
+                @media(min-width:640px){.nq-ayah-card{padding:24px;margin-bottom:48px}}
                 .nq-ayah-card:hover{background:rgba(17,212,66,0.05);border-color:rgba(17,212,66,0.1)}
                 .nq-ayah-card.nq-playing{background:rgba(17,212,66,0.05);border-color:rgba(17,212,66,0.25);box-shadow:0 2px 12px rgba(17,212,66,0.08)}
                 .nq-active-accent{position:absolute;left:-3px;top:32px;width:6px;height:48px;background:#11d442;border-radius:3px}
-                .nq-arabic-row{display:flex;flex-direction:row-reverse;align-items:flex-start;gap:24px;margin-bottom:0}
-                .nq-arabic-text{font-family:var(--rq-font-arabic);font-size:var(--nq-fs,36px);line-height:2;text-align:right;flex:1;color:#1e293b;direction:rtl}
+                .nq-arabic-row{display:flex;flex-direction:row-reverse;align-items:flex-start;gap:12px;margin-bottom:0}
+                @media(min-width:640px){.nq-arabic-row{gap:24px}}
+                .nq-arabic-text{font-family:var(--rq-font-arabic);font-size:var(--nq-fs,26px);line-height:2;text-align:right;flex:1;color:#1e293b;direction:rtl}
+                @media(min-width:640px){.nq-arabic-text{font-size:var(--nq-fs,36px)}}
                 .dark .nq-arabic-text{color:#e2e8f0}
-                .nq-verse-badge{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;border:1px solid rgba(17,212,66,0.4);font-size:14px;font-weight:700;color:#11d442;margin-right:8px;font-family:'Lexend',sans-serif;cursor:pointer;vertical-align:middle;transition:background 0.15s}
+                .nq-verse-badge{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;border:1px solid rgba(17,212,66,0.4);font-size:12px;font-weight:700;color:#11d442;margin-right:6px;font-family:'Lexend',sans-serif;cursor:pointer;vertical-align:middle;transition:background 0.15s}
+                @media(min-width:640px){.nq-verse-badge{width:40px;height:40px;font-size:14px;margin-right:8px}}
                 .nq-verse-badge:hover{background:rgba(17,212,66,0.1)}
                 .nq-playing .nq-verse-badge{border-color:#11d442;background:rgba(17,212,66,0.12)}
-                .nq-translation-row{margin-top:24px;padding-left:16px;border-left:2px solid #e2e8f0;transition:border-color 0.2s}
+                .nq-translation-row{margin-top:14px;padding-left:12px;border-left:2px solid #e2e8f0;transition:border-color 0.2s}
+                @media(min-width:640px){.nq-translation-row{margin-top:24px;padding-left:16px}}
                 .nq-ayah-card:hover .nq-translation-row{border-color:rgba(17,212,66,0.3)}
                 .nq-ayah-card.nq-playing .nq-translation-row{border-color:rgba(17,212,66,0.5)}
-                .nq-translation-text{color:#475569;font-size:18px;line-height:1.8}
+                .nq-translation-text{color:#475569;font-size:15px;line-height:1.8}
+                @media(min-width:640px){.nq-translation-text{font-size:18px}}
                 .dark .nq-translation-text{color:#94a3b8}
                 .nq-ayah-card.nq-playing .nq-translation-text{color:#1e293b;font-weight:500}
                 .dark .nq-ayah-card.nq-playing .nq-translation-text{color:#e2e8f0}
                 /* Hover actions */
-                .nq-actions{position:absolute;top:16px;right:16px;display:flex;gap:8px;opacity:0;transition:opacity 0.2s}
+                .nq-actions{position:absolute;top:10px;right:10px;display:flex;gap:6px;opacity:0;transition:opacity 0.2s}
+                @media(min-width:640px){.nq-actions{top:16px;right:16px;gap:8px}}
                 .nq-ayah-card:hover .nq-actions{opacity:1}
                 .nq-action-btn{padding:8px;background:white;border:none;border-radius:8px;box-shadow:0 1px 4px rgba(0,0,0,0.08);color:#94a3b8;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:color 0.15s}
                 .dark .nq-action-btn{background:#1e293b}
@@ -365,38 +376,53 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 .nq-nav-link.active{background:rgba(17,212,66,0.1);color:#11d442;font-weight:600}
                 @media(max-width:1023px){.nq-nav-label{display:none}}
                 /* Header buttons */
-                .nq-hdr-btn{padding:8px;border:none;border-radius:8px;background:#f1f5f9;color:#64748b;cursor:pointer;display:flex;align-items:center;transition:all 0.15s}
+                .nq-hdr-btn{padding:6px 8px;border:none;border-radius:8px;background:#f1f5f9;color:#64748b;cursor:pointer;display:flex;align-items:center;transition:all 0.15s;font-size:12px}
+                @media(min-width:640px){.nq-hdr-btn{padding:8px 12px;font-size:13px}}
                 .dark .nq-hdr-btn{background:#1e293b;color:#94a3b8}
                 .nq-hdr-btn:hover{color:#11d442}
-                .nq-hdr-toggle-group{display:flex;align-items:center;background:#f1f5f9;border-radius:8px;padding:4px;gap:2px}
+                .nq-hdr-toggle-group{display:none;align-items:center;background:#f1f5f9;border-radius:8px;padding:4px;gap:2px}
+                @media(min-width:600px){.nq-hdr-toggle-group{display:flex}}
                 .dark .nq-hdr-toggle-group{background:#1e293b}
-                .nq-hdr-toggle{padding:4px 12px;border-radius:6px;border:none;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s;background:transparent;color:#64748b}
+                .nq-hdr-toggle{padding:4px 10px;border-radius:6px;border:none;font-size:11px;font-weight:600;cursor:pointer;transition:all 0.15s;background:transparent;color:#64748b}
+                @media(min-width:768px){.nq-hdr-toggle{padding:4px 12px;font-size:12px}}
                 .nq-hdr-toggle.active{background:white;color:#0f172a;box-shadow:0 1px 3px rgba(0,0,0,0.1)}
                 .dark .nq-hdr-toggle.active{background:#0f172a;color:white}
-                .nq-bkmk-btn{width:40px;height:40px;background:#11d442;border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;cursor:pointer;box-shadow:0 4px 14px rgba(17,212,66,0.3)}
+                .nq-bkmk-btn{width:34px;height:34px;background:#11d442;border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;cursor:pointer;box-shadow:0 4px 14px rgba(17,212,66,0.3);flex-shrink:0}
+                @media(min-width:640px){.nq-bkmk-btn{width:40px;height:40px}}
                 /* Audio bar */
-                .nq-audio-bar{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);width:min(800px,90%);background:rgba(255,255,255,0.95);backdrop-filter:blur(16px);border:1px solid #e2e8f0;border-radius:24px;box-shadow:0 8px 32px rgba(0,0,0,0.12);z-index:20;padding:16px}
-                .dark .nq-audio-bar{background:rgba(15,23,42,0.95);border-color:#1e293b}
+                .nq-audio-bar{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);width:calc(100% - 20px);background:rgba(255,255,255,0.97);backdrop-filter:blur(16px);border:1px solid #e2e8f0;border-radius:18px;box-shadow:0 8px 32px rgba(0,0,0,0.12);z-index:20;padding:10px 14px}
+                @media(min-width:640px){.nq-audio-bar{bottom:20px;padding:13px 18px;border-radius:22px;width:calc(100% - 32px)}}
+                @media(min-width:1024px){.nq-audio-bar{bottom:24px;padding:16px;border-radius:24px;width:min(800px,90%)}}
+                .dark .nq-audio-bar{background:rgba(15,23,42,0.97);border-color:#1e293b}
                 .nq-audio-progress-row{margin-bottom:8px}
                 .nq-audio-progress-track{width:100%;height:4px;background:#f1f5f9;border-radius:999px;overflow:hidden;cursor:pointer;position:relative}
                 .dark .nq-audio-progress-track{background:#1e293b}
                 .nq-audio-progress-fill{height:100%;background:#11d442;border-radius:999px;transition:width 0.3s}
-                .nq-audio-bar-inner{display:flex;align-items:center;justify-content:space-between;gap:24px}
-                .nq-reciter-info{display:flex;align-items:center;gap:12px;flex:1;min-width:0}
+                .nq-audio-bar-inner{display:flex;align-items:center;justify-content:space-between;gap:8px}
+                @media(min-width:640px){.nq-audio-bar-inner{gap:16px}}
+                @media(min-width:1024px){.nq-audio-bar-inner{gap:24px}}
+                .nq-reciter-info{display:none;align-items:center;gap:12px;flex:1;min-width:0}
+                @media(min-width:768px){.nq-reciter-info{display:flex}}
                 .nq-reciter-avatar{position:relative;width:40px;height:40px;border-radius:50%;background:#f1f5f9;display:flex;align-items:center;justify-content:center;flex-shrink:0}
                 .dark .nq-reciter-avatar{background:#1e293b}
                 .nq-reciter-badge{position:absolute;bottom:-4px;right:-4px;background:#11d442;color:white;font-size:8px;font-weight:700;padding:1px 4px;border-radius:999px;border:2px solid white;font-family:'Lexend',sans-serif}
                 .nq-reciter-name{margin:0;font-size:12px;font-weight:700;color:#0f172a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
                 .dark .nq-reciter-name{color:#e2e8f0}
                 .nq-reciter-sub{margin:0;font-size:10px;color:#94a3b8}
-                .nq-audio-controls{display:flex;align-items:center;gap:24px}
+                .nq-audio-controls{display:flex;align-items:center;gap:10px}
+                @media(min-width:480px){.nq-audio-controls{gap:16px}}
+                @media(min-width:1024px){.nq-audio-controls{gap:24px}}
                 .nq-ctrl-btn{background:none;border:none;color:#64748b;cursor:pointer;display:flex;align-items:center;padding:0;transition:color 0.15s}
                 .nq-ctrl-btn:hover{color:#11d442}
                 .nq-ctrl-btn.lg{color:#334155}
+                .nq-ctrl-btn.hide-xs{display:none}
+                @media(min-width:480px){.nq-ctrl-btn.hide-xs{display:flex}}
                 .dark .nq-ctrl-btn.lg{color:#e2e8f0}
-                .nq-play-btn{width:48px;height:48px;background:#11d442;border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;cursor:pointer;box-shadow:0 4px 20px rgba(17,212,66,0.35);transition:transform 0.15s}
+                .nq-play-btn{width:42px;height:42px;background:#11d442;border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;cursor:pointer;box-shadow:0 4px 20px rgba(17,212,66,0.35);transition:transform 0.15s;flex-shrink:0}
+                @media(min-width:640px){.nq-play-btn{width:48px;height:48px}}
                 .nq-play-btn:hover{transform:scale(1.05)}
-                .nq-audio-right{display:flex;align-items:center;gap:12px;flex:1;justify-content:flex-end;min-width:0}
+                .nq-audio-right{display:none;align-items:center;gap:12px;flex:1;justify-content:flex-end;min-width:0}
+                @media(min-width:768px){.nq-audio-right{display:flex}}
                 .nq-volume-track{width:80px;height:4px;background:#f1f5f9;border-radius:999px;overflow:hidden}
                 .dark .nq-volume-track{background:#1e293b}
                 .nq-volume-fill{height:100%;background:#94a3b8;border-radius:999px}
@@ -418,11 +444,21 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 .nq-right::-webkit-scrollbar{width:4px}
                 .nq-right::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.08);border-radius:2px}
                 /* Mode tabs */
-                .nq-mode-tabs{display:flex;gap:4px;padding:0 32px;background:rgba(255,255,255,0.8);border-bottom:1px solid #e2e8f0;height:48px;align-items:center;flex-shrink:0}
-                .dark .nq-mode-tabs{background:rgba(15,23,42,0.8);border-color:#1e293b}
-                .nq-mode-tab{padding:6px 16px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:500;transition:all 0.15s;background:transparent;color:#64748b;font-family:'Lexend',sans-serif}
-                .nq-mode-tab.active{background:#11d442;color:white}
-            `}</style>
+                .nq-mode-tabs{display:flex;gap:4px;padding:0 16px;background:rgba(255,255,255,0.8);border-bottom:1px solid #e2e8f0;height:44px;align-items:center;flex-shrink:0;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+                .nq-mode-tabs::-webkit-scrollbar{display:none}
+                @media(min-width:640px){.nq-mode-tabs{padding:0 24px;height:48px}}
+                    @media(min-width:1024px){.nq-mode-tabs{padding:0 32px}}
+                    .dark .nq-mode-tabs{background:rgba(15,23,42,0.8);border-color:#1e293b}
+                    .nq-mode-tab{padding:5px 12px;border-radius:8px;border:none;cursor:pointer;font-size:12px;font-weight:500;transition:all 0.15s;background:transparent;color:#64748b;font-family:'Lexend',sans-serif;white-space:nowrap;flex-shrink:0}
+                    @media(min-width:640px){.nq-mode-tab{padding:6px 16px;font-size:13px}}
+                    .nq-mode-tab.active{background:#11d442;color:white}
+                    .nq-header-title{margin:0;font-size:14px;font-weight:700;color:#0f172a;display:flex;align-items:baseline;gap:5px;white-space:nowrap;overflow:hidden;min-width:0}
+                    @media(min-width:640px){.nq-header-title{font-size:17px;gap:7px}}
+                    @media(min-width:1024px){.nq-header-title{font-size:20px;gap:8px}}
+                    .nq-header-subtitle{font-size:11px;font-weight:400;color:#94a3b8;flex-shrink:0}
+                    @media(min-width:480px){.nq-header-subtitle{font-size:13px}}
+                    .dark .nq-header-title{color:#e2e8f0}
+                `}</style>
 
             <div className="nq-shell">
                 {/* SIDEBAR */}
@@ -486,9 +522,9 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                 <span className="material-symbols-outlined">arrow_back</span>
                             </Link>
                             <div>
-                                <h2 style={{ margin: 0, fontSize: 20, fontWeight: 700, color: '#0f172a', display: 'flex', alignItems: 'center', gap: 8 }}>
+                                <h2 className="nq-header-title">
                                     {chapter.name_simple}
-                                    <span style={{ fontSize: 14, fontWeight: 400, color: '#94a3b8' }}>
+                                    <span className="nq-header-subtitle">
                                         {chapter.translated_name.name} • {chapter.verses_count} Verses
                                     </span>
                                 </h2>
@@ -807,13 +843,13 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                 </div>
                             </div>
                             <div className="nq-audio-controls">
-                                <button className="nq-ctrl-btn" title="Repeat"><span className="material-symbols-outlined" style={{ fontSize: 22 }}>repeat_one</span></button>
+                                <button className="nq-ctrl-btn hide-xs" title="Repeat"><span className="material-symbols-outlined" style={{ fontSize: 22 }}>repeat_one</span></button>
                                 <button className="nq-ctrl-btn lg" onClick={playPrev} title="Previous (←)"><SkipBack size={26} /></button>
                                 <button className="nq-play-btn" onClick={() => isPlaying ? stopAudio() : playVerse(currentVerse || 1)} title={isPlaying ? 'Pause (Space)' : 'Play (Space)'}>
                                     {isPlaying ? <Pause size={24} /> : <Play size={24} />}
                                 </button>
                                 <button className="nq-ctrl-btn lg" onClick={playNext} title="Next (→)"><SkipForward size={26} /></button>
-                                <button className="nq-ctrl-btn" title="Shuffle"><span className="material-symbols-outlined" style={{ fontSize: 22 }}>shuffle</span></button>
+                                <button className="nq-ctrl-btn hide-xs" title="Shuffle"><span className="material-symbols-outlined" style={{ fontSize: 22 }}>shuffle</span></button>
                             </div>
                             <div className="nq-audio-right">
                                 <Volume2 size={18} style={{ color: '#94a3b8', flexShrink: 0 }} />
