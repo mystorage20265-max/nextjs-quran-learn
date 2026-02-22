@@ -469,7 +469,9 @@
 
 /* Arabic Text - Optimized for KFGQPC Uthmanic Script */
 .reader-verse-arabic {
-  font-family: var(--font-arabic);
+  /* 'Scheherazade New' and 'Traditional Arabic' are full Unicode Quran fonts and act
+     as fallback for any waqf/annotation glyph the primary font doesn't support. */
+  font-family: var(--font-arabic), 'Scheherazade New', 'Traditional Arabic', serif;
   font-size: var(--arabic-font-size, 32px);
   line-height: 2.2;
   text-align: right;
@@ -479,7 +481,6 @@
   word-spacing: 0.05em;
   letter-spacing: 0;
   font-feature-settings: "liga" 1, "calt" 1;
-  /* Enable ligatures for proper Arabic rendering */
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -530,7 +531,7 @@
 }
 
 .word-arabic {
-  font-family: var(--font-arabic);
+  font-family: var(--font-arabic), 'Scheherazade New', 'Traditional Arabic', serif;
   font-size: 28px;
   color: var(--reader-text-arabic);
   margin-bottom: 8px;

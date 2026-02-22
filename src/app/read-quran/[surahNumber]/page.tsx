@@ -31,19 +31,24 @@ import { saveLastRead, markVerseRead } from '../lib/progress';
 import { parseTranslationWithFootnotes } from '../lib/translationUtils';
 import '../styles/reader.css';
 
-// Clean Indo-Pak text — strips annotation/pause glyphs (U+06D6–U+06FF) that render as boxes
-// Core Arabic letters and standard tashkeel (U+0600–U+06D5) are preserved.
+// Clean Indo-Pak text — strips all annotation/mark characters that render as boxes.
+// Three ranges are stripped:
+//   U+0610–U+061A: Arabic phonetic annotation marks (sallallaahu, alayhe, etc.)
+//   U+06D6–U+06FF: Indo-Pak waqf / pause / sajda annotation glyphs
+//   U+FBB2–U+FBC2: Arabic Presentation Forms used in some Quran editions
+// Core Arabic letters and standard tashkeel (U+0621–U+06D5) are preserved.
 const cleanIndopakText = (text: string): string => {
     if (!text) return '';
     return text
-        .replace(/[\u06D6-\u06FF]/g, '') // remove all Indo-Pak annotation glyphs
+        .replace(/[\u0610-\u061A]/g, '') // Arabic Quran-specific phonetic marks
+        .replace(/[\u06D6-\u06FF]/g, '') // waqf marks, annotation glyphs, Indo-Pak marks
+        .replace(/[\uFBB2-\uFBC2]/g, '') // Arabic Presentation Forms (Quran edition marks)
         .replace(/\s{2,}/g, ' ')
         .trim();
 };
 
-// Alias used in translation mode (same cleaning logic)
+// Aliases — same comprehensive cleaning used for all modes
 const cleanArabicText = cleanIndopakText;
-// Alias used in reading mode (same cleaning logic)
 const cleanUthmaniText = cleanIndopakText;
 
 const removeBismillah = (text: string): string => {
@@ -486,7 +491,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 .nq-islamic{background-image:radial-gradient(circle at 2px 2px,rgba(17,212,66,0.05) 1px,transparent 0);background-size:24px 24px}
                 /* Bismillah */
                 .nq-bismillah{display:flex;flex-direction:column;align-items:center;margin-bottom:48px}
-                .nq-bismillah-text{font-family:var(--rq-font-arabic);font-size:36px;color:#1e293b;padding:32px 0;opacity:0.9}
+                .nq-bismillah-text{font-family:var(--rq-font-arabic),'Scheherazade New','Traditional Arabic',serif;font-size:36px;color:#1e293b;padding:32px 0;opacity:0.9}
                 .dark .nq-bismillah-text{color:#e2e8f0}
                 .nq-bismillah-hr{width:128px;height:4px;background:linear-gradient(90deg,transparent,rgba(17,212,66,0.3),transparent);border:none;margin:0}
                 /* Verse cards */
@@ -497,7 +502,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 .nq-active-accent{position:absolute;left:-3px;top:32px;width:6px;height:48px;background:#11d442;border-radius:3px}
                 .nq-arabic-row{display:flex;flex-direction:row-reverse;align-items:flex-start;gap:12px;margin-bottom:0}
                 @media(min-width:640px){.nq-arabic-row{gap:24px}}
-                .nq-arabic-text{font-family:var(--rq-font-arabic);font-size:var(--nq-fs,26px);line-height:2;text-align:right;flex:1;color:#1e293b;direction:rtl}
+                .nq-arabic-text{font-family:var(--rq-font-arabic),'Scheherazade New','Traditional Arabic',serif;font-size:var(--nq-fs,26px);line-height:2;text-align:right;flex:1;color:#1e293b;direction:rtl}
                 @media(min-width:640px){.nq-arabic-text{font-size:var(--nq-fs,36px)}}
                 .dark .nq-arabic-text{color:#e2e8f0}
                 .nq-verse-badge{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;border:1px solid rgba(17,212,66,0.4);font-size:12px;font-weight:700;color:#11d442;margin-right:6px;font-family:'Lexend',sans-serif;cursor:pointer;vertical-align:middle;transition:background 0.15s}
@@ -825,7 +830,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                         ? removeBismillah(verseIndopak)
                                                         : verseIndopak
                                                 ).split(/\s+/).filter(Boolean);
-                                                if (indopakTokens.length > 0 && indopakTokens.length >= wordList.length) {
+                                                if (indopakTokens.length > 0 && indopakTokens.length === wordList.length) {
                                                     words = wordList.map((w: any, i: number) => ({ text: indopakTokens[i] ?? w.text_indopak ?? w.text_uthmani, key: w.id || w.position }));
                                                 } else {
                                                     words = wordList.map((w: any) => ({ text: w.text_indopak ?? w.text_uthmani, key: w.id || w.position }));

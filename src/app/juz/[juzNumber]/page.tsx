@@ -42,13 +42,17 @@ type Ayah = {
   translation?: string;
 };
 
-// Strip ALL Indopak annotation characters (U+06D6–U+06FF) that render as boxes:
-// Includes: waqf marks, end-of-ayah ۝, rub el hizb ۞, sajda mark ۩, etc.
-// Core Arabic letters and standard tashkeel (U+0600–U+06D5) are preserved.
+// Strip ALL annotation/mark characters that render as boxes when font lacks support:
+//   U+0610–U+061A: Arabic phonetic annotation marks (sallallaahu, alayhe, etc.)
+//   U+06D6–U+06FF: Indopak waqf marks, end-of-ayah ۝, rub el hizb ۞, sajda mark ۩
+//   U+FBB2–U+FBC2: Arabic Presentation Forms used in some Quran editions
+// Core Arabic letters and standard tashkeel (U+0621–U+06D5) are preserved.
 function cleanIndopakText(text: string): string {
   return text
-    .replace(/[\u06D6-\u06FF]/g, '') // remove all Indopak annotation glyphs
-    .replace(/\s{2,}/g, ' ')          // collapse any double spaces left behind
+    .replace(/[\u0610-\u061A]/g, '') // Arabic Quran-specific phonetic marks
+    .replace(/[\u06D6-\u06FF]/g, '') // waqf marks, annotation glyphs, Indo-Pak marks
+    .replace(/[\uFBB2-\uFBC2]/g, '') // Arabic Presentation Forms (Quran edition marks)
+    .replace(/\s{2,}/g, ' ')         // collapse double spaces left behind
     .trim();
 }
 
