@@ -7,46 +7,11 @@ import { getChapters, getTafsirs, Chapter, Tafsir } from './lib/api';
 import { getLastRead, getProgressPercentage, getProgress, LastReadPosition } from './lib/progress';
 import './styles/reader.css';
 
-type TabType = 'surah' | 'juz';
 
-// Juz data with start/end info
-const JUZ_DATA = [
-    { num: 1, name: "Alif Lam Mim", startSurah: 1, startAyah: 1 },
-    { num: 2, name: "Sayaqool", startSurah: 2, startAyah: 142 },
-    { num: 3, name: "Tilkal Rusul", startSurah: 2, startAyah: 253 },
-    { num: 4, name: "Lan Tana Loo", startSurah: 3, startAyah: 93 },
-    { num: 5, name: "Wal Mohsanat", startSurah: 4, startAyah: 24 },
-    { num: 6, name: "La Yuhibbullah", startSurah: 4, startAyah: 148 },
-    { num: 7, name: "Wa Iza Samiu", startSurah: 5, startAyah: 83 },
-    { num: 8, name: "Wa Lau Annana", startSurah: 6, startAyah: 111 },
-    { num: 9, name: "Qalal Malao", startSurah: 7, startAyah: 88 },
-    { num: 10, name: "Wa Alamu", startSurah: 8, startAyah: 41 },
-    { num: 11, name: "Yatazeroon", startSurah: 9, startAyah: 94 },
-    { num: 12, name: "Wa Mamin Dabbah", startSurah: 11, startAyah: 6 },
-    { num: 13, name: "Wa Ma Ubarrio", startSurah: 12, startAyah: 53 },
-    { num: 14, name: "Rubama", startSurah: 15, startAyah: 1 },
-    { num: 15, name: "Subhanallazi", startSurah: 17, startAyah: 1 },
-    { num: 16, name: "Qal Alam", startSurah: 18, startAyah: 75 },
-    { num: 17, name: "Iqtarabo", startSurah: 21, startAyah: 1 },
-    { num: 18, name: "Qadd Aflaha", startSurah: 23, startAyah: 1 },
-    { num: 19, name: "Wa Qalallazina", startSurah: 25, startAyah: 21 },
-    { num: 20, name: "Amman Khalaq", startSurah: 27, startAyah: 56 },
-    { num: 21, name: "Otlu Ma Oohi", startSurah: 29, startAyah: 46 },
-    { num: 22, name: "Wa Manyaqnut", startSurah: 33, startAyah: 31 },
-    { num: 23, name: "Wa Mali", startSurah: 36, startAyah: 22 },
-    { num: 24, name: "Faman Azlam", startSurah: 39, startAyah: 32 },
-    { num: 25, name: "Elahe Yuruddo", startSurah: 41, startAyah: 47 },
-    { num: 26, name: "Ha Meem", startSurah: 46, startAyah: 1 },
-    { num: 27, name: "Qala Fama Khatbukum", startSurah: 51, startAyah: 31 },
-    { num: 28, name: "Qadd Sami Allah", startSurah: 58, startAyah: 1 },
-    { num: 29, name: "Tabarakallazi", startSurah: 67, startAyah: 1 },
-    { num: 30, name: "Amma Yatasa'aloon", startSurah: 78, startAyah: 1 },
-];
 
 export default function ReadQuranPage() {
     const [chapters, setChapters] = useState<Chapter[]>([]);
     const [loading, setLoading] = useState(true);
-    const [activeTab, setActiveTab] = useState<TabType>('surah');
     const [searchTerm, setSearchTerm] = useState('');
     const [lastRead, setLastRead] = useState<LastReadPosition | null>(null);
     const [progress, setProgress] = useState(0);
@@ -242,93 +207,20 @@ export default function ReadQuranPage() {
                     />
                 </div>
 
-                {/* Tabs */}
-                <div className="reading-mode-tabs" style={{ marginBottom: 32 }}>
-                    <button
-                        className={`reading-mode-tab ${activeTab === 'surah' ? 'active' : ''}`}
-                        onClick={() => setActiveTab('surah')}
-                    >
-                        📜 Surah
-                    </button>
-                    <button
-                        className={`reading-mode-tab ${activeTab === 'juz' ? 'active' : ''}`}
-                        onClick={() => setActiveTab('juz')}
-                    >
-                        📚 Juz
-                    </button>
-                </div>
+
 
                 {/* Surah Grid */}
-                {activeTab === 'surah' && (
-                    <div style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-                        gap: 12
-                    }}>
-                        {filteredChapters.map((chapter) => (
-                            <SurahCard key={chapter.id} chapter={chapter} />
-                        ))}
-                    </div>
-                )}
+                <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+                    gap: 12
+                }}>
+                    {filteredChapters.map((chapter) => (
+                        <SurahCard key={chapter.id} chapter={chapter} />
+                    ))}
+                </div>
 
-                {/* Juz List */}
-                {activeTab === 'juz' && (
-                    <div style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-                        gap: 12
-                    }}>
-                        {JUZ_DATA.map((juz) => (
-                            <Link
-                                key={juz.num}
-                                href={`/juz/${juz.num}`}
-                                style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: 16,
-                                    padding: '18px 20px',
-                                    background: 'var(--reader-bg-card)',
-                                    border: '1px solid var(--reader-border)',
-                                    borderRadius: 12,
-                                    textDecoration: 'none',
-                                    transition: 'all 0.2s ease'
-                                }}
-                                className="hover-card"
-                            >
-                                <div style={{
-                                    width: 44,
-                                    height: 44,
-                                    background: 'var(--reader-primary-soft)',
-                                    borderRadius: 10,
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    fontWeight: 700,
-                                    fontSize: 15,
-                                    color: 'var(--reader-primary)'
-                                }}>
-                                    {juz.num}
-                                </div>
-                                <div style={{ flex: 1 }}>
-                                    <div style={{
-                                        fontSize: 15,
-                                        fontWeight: 600,
-                                        color: 'var(--reader-text)',
-                                        marginBottom: 4
-                                    }}>
-                                        Juz {juz.num}
-                                    </div>
-                                    <div style={{ fontSize: 13, color: 'var(--reader-text-muted)' }}>
-                                        {juz.name}
-                                    </div>
-                                </div>
-                                <ChevronRight size={18} color="var(--reader-text-muted)" />
-                            </Link>
-                        ))}
-                    </div>
-                )}
-
-                {filteredChapters.length === 0 && activeTab === 'surah' && (
+                {filteredChapters.length === 0 && (
                     <div style={{
                         textAlign: 'center',
                         padding: '60px 20px',

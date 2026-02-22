@@ -121,7 +121,6 @@ const SURAHS = [
 
 const FEATURES = [
   { icon: 'menu_book', label: 'Read Quran', sub: '114 Surahs', href: '/read-quran/1', color: '#11d442' },
-  { icon: 'grid_view', label: 'Browse by Juz', sub: '30 Juz', href: '/juz/1', color: '#3b82f6' },
   { icon: 'ads_click', label: 'Memorize', sub: 'Hifz Program', href: '/memorize-quran', color: '#a855f7' },
   { icon: 'music_note', label: 'Audio Quran', sub: 'Listen & Learn', href: '/audio-quran', color: '#f59e0b' },
   { icon: 'radio', label: 'Quran Radio', sub: '24/7 Recitation', href: '/radio', color: '#ef4444' },
