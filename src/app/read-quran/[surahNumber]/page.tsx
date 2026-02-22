@@ -41,6 +41,7 @@ const cleanIndopakText = (text: string): string => {
     if (!text) return '';
     return text
         .replace(/[\u0610-\u061A]/g, '') // Arabic Quran-specific phonetic marks
+        .replace(/\u06E1/g, '\u0652')     // IndoPak sukun (ۡ U+06E1) → standard sukun (ْ U+0652), BEFORE range strip
         .replace(/[\u06D6-\u06FF]/g, '') // waqf marks, annotation glyphs, Indo-Pak marks
         .replace(/[\uFBB2-\uFBC2]/g, '') // Arabic Presentation Forms (Quran edition marks)
         .replace(/\s{2,}/g, ' ')
@@ -811,9 +812,21 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
 
                                         const renderVerseWords = (verse: typeof versesToRender[0]) => {
                                             let words: { text: string; key: string | number }[] = [];
-                                            // Prefer Indo-Pak text; split verse text into word tokens
-                                            const verseIndopak = verse.text_indopak ?? verse.text_uthmani;
+                                            // Use verse-level text_indopak (from QuranCDN via getVersesWithWords).
+                                            // It has proper kasra/fatha/damma on all words (e.g. اِهدِنَا with kasra).
+                                            // cleanIndopakText strips Quran-specific chars (ۡ U+06E1) but preserves
+                                            // standard diacritics, giving exactly the voweled text we want.
+                                            const verseText = verse.text_indopak || verse.text_uthmani || '';
                                             const hasWordData = verse.words && verse.words.length > 0;
+
+                                            // Clean and split verse-level text into word tokens
+                                            const cleanedVerse = cleanIndopakText(
+                                                verse.verse_number === 1 && chapter.bismillah_pre
+                                                    ? removeBismillah(verseText)
+                                                    : verseText
+                                            );
+                                            const verseTokens = cleanedVerse.split(/\s+/).filter(Boolean);
+
                                             if (hasWordData) {
                                                 let wordList = verse.words!.filter((w: any) => w.char_type_name !== 'end');
                                                 if (verse.verse_number === 1 && chapter.bismillah_pre) {
@@ -824,31 +837,19 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                     }
                                                     wordList = wordList.slice(skip);
                                                 }
-                                                // Use Indo-Pak verse text split to align with word positions
-                                                const indopakTokens = cleanIndopakText(
-                                                    verse.verse_number === 1 && chapter.bismillah_pre
-                                                        ? removeBismillah(verseIndopak)
-                                                        : verseIndopak
-                                                ).split(/\s+/).filter(Boolean);
-                                                if (indopakTokens.length > 0 && indopakTokens.length === wordList.length) {
-                                                    words = wordList.map((w: any, i: number) => ({ text: indopakTokens[i] ?? w.text_indopak ?? w.text_uthmani, key: w.id || w.position }));
+                                                if (verseTokens.length > 0 && verseTokens.length === wordList.length) {
+                                                    // Perfect match — use verse-level tokens (proper kasra/fatha from IndoPak)
+                                                    words = wordList.map((w: any, i: number) => ({ text: verseTokens[i], key: w.id || w.position }));
+                                                } else if (verseTokens.length > 0) {
+                                                    // Token count mismatch — still use verse tokens (better diacritics than per-word fields)
+                                                    words = verseTokens.map((tok, i) => ({ text: tok, key: i }));
                                                 } else {
-                                                    words = wordList.map((w: any) => ({ text: w.text_indopak ?? w.text_uthmani, key: w.id || w.position }));
+                                                    // No verse text — last resort: per-word imlaei
+                                                    words = wordList.map((w: any) => ({ text: w.text_imlaei || w.text_uthmani, key: w.id || w.position }));
                                                 }
                                             } else {
-                                                const verseText = verse.verse_number === 1 && chapter.bismillah_pre
-                                                    ? cleanIndopakText(removeBismillah(verseIndopak))
-                                                    : cleanIndopakText(verseIndopak);
-                                                let splitWords = verseText.split(/\s+/).filter(Boolean);
-                                                if (verse.verse_number === 1 && chapter.bismillah_pre) {
-                                                    let skip = 0;
-                                                    for (const w of splitWords) {
-                                                        if (isBismillahWord(w) && skip < 4) skip++;
-                                                        else break;
-                                                    }
-                                                    splitWords = splitWords.slice(skip);
-                                                }
-                                                words = splitWords.map((w, idx) => ({ text: w, key: idx }));
+                                                // No word data at all — use the verse-level tokens directly
+                                                words = verseTokens.map((w, idx) => ({ text: w, key: idx }));
                                             }
                                             return words;
                                         };
