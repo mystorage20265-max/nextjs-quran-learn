@@ -210,9 +210,12 @@
 /* ============ TYPOGRAPHY SCALE ============ */
 :root {
   /* Font families */
-  --font-sans: 'Figtree', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-arabic: 'KFGQPC Uthmanic Script HAFS', 'Uthmanic', 'Scheherazade New', 'Amiri Quran', 'Traditional Arabic', serif;
-  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --font-sans:
+    "Figtree", "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-arabic:
+    "Amiri Quran", "Scheherazade New", "Noto Naskh Arabic",
+    "KFGQPC Uthmanic Script HAFS", "Uthmanic", "Traditional Arabic", serif;
+  --font-mono: "JetBrains Mono", "Fira Code", monospace;
 
   /* Font sizes - Slightly larger for readability */
   --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.8rem);
@@ -366,7 +369,8 @@
   --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
   /* Common transitions */
-  --transition-colors: color var(--duration-150) var(--ease-out),
+  --transition-colors:
+    color var(--duration-150) var(--ease-out),
     background-color var(--duration-150) var(--ease-out),
     border-color var(--duration-150) var(--ease-out);
   --transition-opacity: opacity var(--duration-200) var(--ease-out);
@@ -424,7 +428,8 @@
 .theme-transition *,
 .theme-transition *::before,
 .theme-transition *::after {
-  transition: background-color var(--duration-500) var(--ease-out),
+  transition:
+    background-color var(--duration-500) var(--ease-out),
     border-color var(--duration-500) var(--ease-out),
     color var(--duration-500) var(--ease-out),
     box-shadow var(--duration-500) var(--ease-out) !important;
@@ -451,7 +456,9 @@
   direction: rtl;
   text-align: right;
   line-height: var(--leading-arabic);
-  font-feature-settings: "liga" 1, "calt" 1;
+  font-feature-settings:
+    "liga" 1,
+    "calt" 1;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   color: var(--text-arabic);
@@ -478,7 +485,11 @@
 
 /* Gradient text */
 .gradient-text {
-  background: linear-gradient(135deg, var(--brand-primary) 0%, var(--accent-gold) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--brand-primary) 0%,
+    var(--accent-gold) 100%
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -486,7 +497,8 @@
 
 /* Warm glow effect */
 .warm-glow {
-  box-shadow: 0 0 40px var(--brand-primary-glow),
+  box-shadow:
+    0 0 40px var(--brand-primary-glow),
     0 0 80px rgba(245, 158, 11, 0.1);
 }
 
@@ -515,10 +527,15 @@
 
 .ornamental-divider::before,
 .ornamental-divider::after {
-  content: '';
+  content: "";
   flex: 1;
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--border-default), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--border-default),
+    transparent
+  );
 }
 
 /* Islamic pattern overlay */
@@ -527,7 +544,7 @@
 }
 
 .pattern-overlay::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0L60 30L30 60L0 30L30 0z' fill='none' stroke='%23f59e0b' stroke-opacity='0.03' stroke-width='1'/%3E%3C/svg%3E");

@@ -39,6 +39,7 @@ export interface Verse {
 export interface Word {
     id: number;
     position: number;
+    char_type_name?: string;
     text_uthmani: string;
     text_imlaei: string;
     translation: {
@@ -266,6 +267,7 @@ export async function getVersesWithWords(
             words: verse.words?.map((word: any) => ({
                 id: word.id,
                 position: word.position,
+                char_type_name: word.char_type_name,
                 text_uthmani: word.text_uthmani,
                 text_imlaei: word.text_imlaei || word.text_uthmani,
                 translation: word.translation || { text: '', language_name: 'english' },
