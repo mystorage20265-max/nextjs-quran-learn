@@ -131,13 +131,14 @@ async function getVerses(params: URLSearchParams): Promise<NextResponse> {
 
     const data = await response.json();
 
-    // Process verses with Uthmanic text
+    // Process verses with Indo-Pak text as primary
     const verses = data.verses.map((v: Verse & { translations?: { text: string }[] }) => ({
         id: v.id,
         verseKey: v.verse_key,
         verseNumber: v.verse_number,
-        textUthmani: v.text_uthmani,
-        textIndopak: v.text_indopak,
+        textIndopak: v.text_indopak || v.text_uthmani,   // Indo-Pak as primary display text
+        textUthmani: v.text_uthmani,                     // Uthmani kept for reference
+        arabicText: v.text_indopak || v.text_uthmani,   // convenient alias
         translation: v.translations?.[0]?.text || '',
         words: v.words?.map(w => ({
             arabic: w.text_uthmani,

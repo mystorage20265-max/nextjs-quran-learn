@@ -1,8 +1,8 @@
 import { Metadata } from 'next';
-import Footer from '../../components/Footer';
+
 import JuzViewerClient from './JuzViewer.client';
 import Navbar from '../../../components/Navbar/Navbar';
-import { getJuzData } from '../../../utils/quranSectionApi';
+
 import { toNumber } from '../../../types/app';
 import './JuzViewer.css';
 
@@ -18,7 +18,7 @@ interface PageProps {
 // Generate metadata for the page
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const juzNumber = toNumber(params.juzNumber);
-  
+
   try {
     return {
       title: `Juz ${juzNumber} - Quran`,
@@ -42,27 +42,46 @@ type Ayah = {
   translation?: string;
 };
 
+// Strip ALL Indopak annotation characters (U+06D6–U+06FF) that render as boxes:
+// Includes: waqf marks, end-of-ayah ۝, rub el hizb ۞, sajda mark ۩, etc.
+// Core Arabic letters and standard tashkeel (U+0600–U+06D5) are preserved.
+function cleanIndopakText(text: string): string {
+  return text
+    .replace(/[\u06D6-\u06FF]/g, '') // remove all Indopak annotation glyphs
+    .replace(/\s{2,}/g, ' ')          // collapse any double spaces left behind
+    .trim();
+}
+
+
 async function fetchJuzMerged(juzNum: number) {
-  const arabicEdition = "quran-uthmani";
+
   const translationEdition = "en.asad";
-  const [arabicRes, translationRes] = await Promise.all([
-    fetch(`https://api.alquran.cloud/v1/juz/${juzNum}/${arabicEdition}`),
+
+  // Fetch Indopak script from Quran Foundation + English translation from alquran.cloud in parallel
+  const [indopakRes, translationRes] = await Promise.all([
+    fetch(`https://api.qurancdn.com/api/v4/quran/verses/indopak?juz_number=${juzNum}&per_page=300`),
     fetch(`https://api.alquran.cloud/v1/juz/${juzNum}/${translationEdition}`),
   ]);
-  const [arabicJson, translationJson] = await Promise.all([
-    arabicRes.json(),
+  const [indopakJson, translationJson] = await Promise.all([
+    indopakRes.json(),
     translationRes.json(),
   ]);
-  const translationMap = new Map<number, any>();
-  (translationJson?.data?.ayahs || []).forEach((a: any) => translationMap.set(a.number, a));
-  const ayahs: Ayah[] = (arabicJson?.data?.ayahs || []).map((a: any) => {
-    const t = translationMap.get(a.number);
+
+  // Build a map: verse_key (e.g. "2:1") -> indopak text
+  const indopakMap = new Map<string, string>();
+  (indopakJson?.verses || []).forEach((v: any) => {
+    indopakMap.set(v.verse_key, v.text_indopak);
+  });
+
+  // Use translation ayahs as the source of truth for metadata; augment with Indopak text
+  const ayahs: Ayah[] = (translationJson?.data?.ayahs || []).map((a: any) => {
+    const verseKey = `${a.surah?.number}:${a.numberInSurah}`;
     return {
       number: a.number,
       numberInSurah: a.numberInSurah,
       surah: a.surah,
-      text: a.text,
-      translation: t ? (t.text || t.translation || "") : "",
+      text: cleanIndopakText(indopakMap.get(verseKey) || ""),
+      translation: a.text || a.translation || "",
     };
   });
   return ayahs;

@@ -23,6 +23,8 @@ interface Verse {
     verseKey: string;
     verseNumber: number;
     textUthmani: string;
+    textIndopak?: string;    // Indo-Pak Nastaliq script
+    arabicText?: string;     // convenient alias populated by API route
     translation: string;
 }
 
@@ -195,9 +197,12 @@ export default function MemorizeQuranPage() {
 
     // Helper to render verse with masked words
     const renderChallengeVerse = (verse: Verse) => {
-        if (challengeLevel === 0) return <div className="verse-arabic">{verse.textUthmani}</div>;
+        const displayText = verse.textIndopak ?? verse.arabicText ?? verse.textUthmani;
+        // Strip Indo-Pak annotation glyphs before splitting into words
+        const cleaned = displayText.replace(/[\u06D6-\u06FF]/g, '').replace(/\s{2,}/g, ' ').trim();
+        if (challengeLevel === 0) return <div className="verse-arabic">{cleaned}</div>;
 
-        const words = verse.textUthmani.split(' ');
+        const words = cleaned.split(' ');
         return (
             <div className="verse-arabic challenge-mode">
                 {words.map((word, idx) => {
@@ -473,7 +478,7 @@ export default function MemorizeQuranPage() {
     if (focusModeActive && currentVerseIndex >= 0 && verses[currentVerseIndex]) {
         return (
             <FocusMode
-                verseText={verses[currentVerseIndex].textUthmani}
+                verseText={verses[currentVerseIndex].textIndopak ?? verses[currentVerseIndex].arabicText ?? verses[currentVerseIndex].textUthmani}
                 verseTranslation={verses[currentVerseIndex].translation}
                 verseNumber={verses[currentVerseIndex].verseNumber}
                 isPlaying={isPlaying}

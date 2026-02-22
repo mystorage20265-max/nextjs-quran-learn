@@ -31,31 +31,20 @@ import { saveLastRead, markVerseRead } from '../lib/progress';
 import { parseTranslationWithFootnotes } from '../lib/translationUtils';
 import '../styles/reader.css';
 
-// Clean Arabic text - removes verse markers and annotation signs (for translation mode)
-const cleanArabicText = (text: string): string => {
+// Clean Indo-Pak text — strips annotation/pause glyphs (U+06D6–U+06FF) that render as boxes
+// Core Arabic letters and standard tashkeel (U+0600–U+06D5) are preserved.
+const cleanIndopakText = (text: string): string => {
     if (!text) return '';
     return text
-        .replace(/۝/g, '')
-        .replace(/۩/g, '')
-        .replace(/\u06DD/g, '')
-        .replace(/[\u0610-\u061A]/g, '')
-        .replace(/[\u06D6-\u06ED]/g, '')
-        .replace(/[\u06EE\u06EF]/g, '')
-        .replace(/[\uFBB2-\uFBC2]/g, '')
+        .replace(/[\u06D6-\u06FF]/g, '') // remove all Indo-Pak annotation glyphs
         .replace(/\s{2,}/g, ' ')
         .trim();
 };
 
-// Clean for reading mode - strip annotation/pause marks but keep essential diacritics & Uthmani text marks
-const cleanUthmaniText = (text: string): string => {
-    if (!text) return '';
-    return text
-        .replace(/[\u06D6-\u06DB]/g, '')
-        .replace(/[\u06DD-\u06E0]/g, '')
-        .replace(/[\u06E9-\u06ED]/g, '')
-        .replace(/\s{2,}/g, ' ')
-        .trim();
-};
+// Alias used in translation mode (same cleaning logic)
+const cleanArabicText = cleanIndopakText;
+// Alias used in reading mode (same cleaning logic)
+const cleanUthmaniText = cleanIndopakText;
 
 const removeBismillah = (text: string): string => {
     if (!text) return '';
@@ -389,13 +378,15 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
     }, [bookmarks]);
 
     const copyVerse = useCallback((verse: VerseWithTranslation) => {
-        const text = `${verse.text_uthmani}\n\n${verse.translations?.[0]?.text || ''}\n\n— Quran ${verse.verse_key}`;
+        const arabicText = verse.text_indopak ?? verse.text_uthmani;
+        const text = `${arabicText}\n\n${verse.translations?.[0]?.text || ''}\n\n— Quran ${verse.verse_key}`;
         navigator.clipboard.writeText(text);
         showToast('Copied to clipboard!');
     }, []);
 
     const shareVerse = useCallback(async (verse: VerseWithTranslation) => {
-        const text = `${verse.text_uthmani}\n\n${verse.translations?.[0]?.text || ''}\n\n— Quran ${verse.verse_key}`;
+        const arabicText = verse.text_indopak ?? verse.text_uthmani;
+        const text = `${arabicText}\n\n${verse.translations?.[0]?.text || ''}\n\n— Quran ${verse.verse_key}`;
         const url = `${window.location.origin}/read-quran/${surahNumber}#verse-${verse.verse_number}`;
         if (navigator.share) {
             try { await navigator.share({ title: `Quran ${verse.verse_key}`, text, url }); } catch { }
@@ -815,6 +806,8 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
 
                                         const renderVerseWords = (verse: typeof versesToRender[0]) => {
                                             let words: { text: string; key: string | number }[] = [];
+                                            // Prefer Indo-Pak text; split verse text into word tokens
+                                            const verseIndopak = verse.text_indopak ?? verse.text_uthmani;
                                             const hasWordData = verse.words && verse.words.length > 0;
                                             if (hasWordData) {
                                                 let wordList = verse.words!.filter((w: any) => w.char_type_name !== 'end');
@@ -826,11 +819,21 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                     }
                                                     wordList = wordList.slice(skip);
                                                 }
-                                                words = wordList.map((w: any) => ({ text: w.text_uthmani, key: w.id || w.position }));
+                                                // Use Indo-Pak verse text split to align with word positions
+                                                const indopakTokens = cleanIndopakText(
+                                                    verse.verse_number === 1 && chapter.bismillah_pre
+                                                        ? removeBismillah(verseIndopak)
+                                                        : verseIndopak
+                                                ).split(/\s+/).filter(Boolean);
+                                                if (indopakTokens.length > 0 && indopakTokens.length >= wordList.length) {
+                                                    words = wordList.map((w: any, i: number) => ({ text: indopakTokens[i] ?? w.text_indopak ?? w.text_uthmani, key: w.id || w.position }));
+                                                } else {
+                                                    words = wordList.map((w: any) => ({ text: w.text_indopak ?? w.text_uthmani, key: w.id || w.position }));
+                                                }
                                             } else {
                                                 const verseText = verse.verse_number === 1 && chapter.bismillah_pre
-                                                    ? cleanUthmaniText(removeBismillah(verse.text_uthmani))
-                                                    : cleanUthmaniText(verse.text_uthmani);
+                                                    ? cleanIndopakText(removeBismillah(verseIndopak))
+                                                    : cleanIndopakText(verseIndopak);
                                                 let splitWords = verseText.split(/\s+/).filter(Boolean);
                                                 if (verse.verse_number === 1 && chapter.bismillah_pre) {
                                                     let skip = 0;
@@ -955,13 +958,13 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                     {verse.words && verse.words.length > 0 ? (
                                                         verse.words.filter((w: any) => w.char_type_name !== 'end').map((word: any, idx: number) => (
                                                             <div key={word.id || idx} className="word-item">
-                                                                <span className="word-arabic">{cleanArabicText(word.text_uthmani)}</span>
+                                                                <span className="word-arabic">{cleanIndopakText(word.text_indopak ?? word.text_uthmani)}</span>
                                                                 {word.transliteration?.text && <span className="word-transliteration">{word.transliteration.text}</span>}
                                                                 {word.translation?.text && <span className="word-translation">{word.translation.text}</span>}
                                                             </div>
                                                         ))
                                                     ) : (
-                                                        <div className="reader-verse-arabic">{verse.verse_number === 1 && chapter.bismillah_pre ? cleanArabicText(removeBismillah(verse.text_uthmani)) : cleanArabicText(verse.text_uthmani)}</div>
+                                                        <div className="reader-verse-arabic">{verse.verse_number === 1 && chapter.bismillah_pre ? cleanIndopakText(removeBismillah(verse.text_indopak ?? verse.text_uthmani)) : cleanIndopakText(verse.text_indopak ?? verse.text_uthmani)}</div>
                                                     )}
                                                 </div>
                                                 {showTranslation && <div className="reader-verse-translation">{parseTranslationWithFootnotes(verse.translations?.[0]?.text || '')}</div>}
@@ -988,7 +991,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                 {currentVerse === verse.verse_number && <div className="nq-active-accent" />}
                                                 <div className="nq-arabic-row">
                                                     <span className="nq-arabic-text">
-                                                        {verse.verse_number === 1 && chapter.bismillah_pre ? cleanArabicText(removeBismillah(verse.text_uthmani)) : cleanArabicText(verse.text_uthmani)}
+                                                        {verse.verse_number === 1 && chapter.bismillah_pre ? cleanIndopakText(removeBismillah(verse.text_indopak ?? verse.text_uthmani)) : cleanIndopakText(verse.text_indopak ?? verse.text_uthmani)}
                                                         {' '}
                                                         <span className="nq-verse-badge" onClick={() => playVerse(verse.verse_number)} title={`Play verse ${verse.verse_number}`}>
                                                             {toArabicNumeral(verse.verse_number)}

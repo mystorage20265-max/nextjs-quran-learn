@@ -32,6 +32,7 @@ export interface Verse {
     page_number: number;
     juz_number: number;
     text_uthmani: string;
+    text_indopak?: string;   // Indo-Pak Nastaliq script
     text_imlaei?: string;
     words?: Word[];
 }
@@ -41,6 +42,7 @@ export interface Word {
     position: number;
     char_type_name?: string;
     text_uthmani: string;
+    text_indopak?: string;   // Indo-Pak Nastaliq script per word
     text_imlaei: string;
     translation: {
         text: string;
@@ -157,7 +159,7 @@ export async function getChapter(chapterId: number): Promise<Chapter> {
 
 /**
  * Get verses for a chapter with translations
- * Uses alquran.cloud API with quran-simple-enhanced for full tashkeel (harakat)
+ * Uses alquran.cloud API with quran-indopak for Indo-Pak Nastaliq script
  */
 export async function getVerses(
     chapterId: number,
@@ -169,9 +171,8 @@ export async function getVerses(
         // Use alquran.cloud API which returns translations inline
         const ALQURAN_API = 'https://api.alquran.cloud/v1';
 
-        // Use quran-simple-enhanced for Arabic with full tashkeel (harakat/diacritics)
-        // This edition includes: fatha, kasra, damma, sukun, shadda, tanween
-        const url = `${ALQURAN_API}/surah/${chapterId}/editions/quran-simple-enhanced,${translationId}`;
+        // Use quran-indopak for Indo-Pak Nastaliq script used across South Asia
+        const url = `${ALQURAN_API}/surah/${chapterId}/editions/quran-indopak,${translationId}`;
         const response = await fetchWithRetry(url);
         const data = await response.json();
 
@@ -182,7 +183,7 @@ export async function getVerses(
         const arabicData = data.data[0];
         const translationData = data.data[1];
 
-        // Merge Arabic and translations
+        // Merge Arabic (Indo-Pak) and translations
         const verses: VerseWithTranslation[] = arabicData.ayahs.map((ayah: any, index: number) => ({
             id: ayah.number,
             verse_key: `${chapterId}:${ayah.numberInSurah}`,
@@ -194,7 +195,8 @@ export async function getVerses(
             sajdah_number: ayah.sajda ? ayah.number : null,
             page_number: ayah.page || 1,
             juz_number: ayah.juz || 1,
-            text_uthmani: ayah.text,
+            text_uthmani: ayah.text,   // contains Indo-Pak text from quran-indopak edition
+            text_indopak: ayah.text,   // explicit alias for clarity
             translations: [{
                 resource_id: 20,
                 text: translationData?.ayahs?.[index]?.text || 'Translation not available'
@@ -238,9 +240,8 @@ export async function getVersesWithWords(
     wordLanguage: string = 'en' // Default to English for word translations/transliterations
 ): Promise<VerseWithTranslation[]> {
     try {
-        // Quran.com API endpoint for verses with words
-        // language parameter ensures word translations and transliterations are in English
-        const url = `${API_BASE}/verses/by_chapter/${chapterId}?language=${wordLanguage}&words=true&translations=${translationId}&word_fields=text_uthmani,text_imlaei,translation,transliteration&translation_fields=text,resource_name&per_page=300`;
+        // Quran.com API endpoint for verses with words + Indo-Pak text field
+        const url = `${API_BASE}/verses/by_chapter/${chapterId}?language=${wordLanguage}&words=true&translations=${translationId}&fields=text_uthmani,text_indopak&word_fields=text_uthmani,text_imlaei,translation,transliteration&translation_fields=text,resource_name&per_page=300`;
 
         const response = await fetchWithRetry(url);
         const data = await response.json();
@@ -262,6 +263,7 @@ export async function getVersesWithWords(
             page_number: verse.page_number || 1,
             juz_number: verse.juz_number || 1,
             text_uthmani: verse.text_uthmani,
+            text_indopak: verse.text_indopak || verse.text_uthmani,  // Indo-Pak text
             text_imlaei: verse.text_imlaei,
             translations: verse.translations || [],
             words: verse.words?.map((word: any) => ({
@@ -269,6 +271,7 @@ export async function getVersesWithWords(
                 position: word.position,
                 char_type_name: word.char_type_name,
                 text_uthmani: word.text_uthmani,
+                text_indopak: word.text_indopak || word.text_uthmani,
                 text_imlaei: word.text_imlaei || word.text_uthmani,
                 translation: word.translation || { text: '', language_name: 'english' },
                 transliteration: word.transliteration || { text: '', language_name: 'english' },

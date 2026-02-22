@@ -5,6 +5,8 @@ interface Verse {
     verseKey: string;
     verseNumber: number;
     textUthmani: string;
+    textIndopak?: string;   // Indo-Pak Nastaliq script
+    arabicText?: string;    // convenient alias from API route
     translation: string;
 }
 
@@ -46,8 +48,9 @@ export default function VerseCard({
             </div>
 
             <p className="verse-arabic">
-                {verse.textUthmani}
-                <span className="verse-end"> ۝ </span>
+                {(verse.textIndopak ?? verse.arabicText ?? verse.textUthmani)
+                    .replace(/[\u06D6-\u06FF]/g, '') // strip Indo-Pak annotation glyphs
+                    .trim()}
             </p>
 
             {isHideMode && !isRevealed && (
