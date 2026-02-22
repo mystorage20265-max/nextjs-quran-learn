@@ -2,7 +2,8 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import Navbar from '../../../components/Navbar/Navbar';
-import "../../juz/[juzNumber]/juz-header.css";
+
+
 
 type Ayah = {
   number: number;
@@ -191,8 +192,8 @@ export default function HizbViewerClient({ ayahs, hizb }: { ayahs: Ayah[]; hizb:
           <a href="/quran" style={{ background: '#2563eb', color: '#fff', fontWeight: 600, fontSize: 18, borderRadius: 24, padding: '10px 28px', textDecoration: 'none', display: 'inline-block', minWidth: 180 }}>← Back to Quran</a>
         </div>
         <div style={{ background: '#fff', borderRadius: 10, padding: 16, margin: '0 auto 1.5rem auto', maxWidth: 520, boxShadow: '0 1px 4px #0001' }}>
-          <div style={{ fontSize: 17, color: '#222', marginBottom: 4 }}>From Surah {surahGroups[0]?.surah?.englishName} ({surahGroups[0]?.surah?.number}) to Surah {surahGroups[surahGroups.length-1]?.surah?.englishName} ({surahGroups[surahGroups.length-1]?.surah?.number})</div>
-          <div style={{ fontSize: 16, color: '#64748b', fontStyle: 'italic' }}>{surahGroups[0]?.surah?.name} to {surahGroups[surahGroups.length-1]?.surah?.name}</div>
+          <div style={{ fontSize: 17, color: '#222', marginBottom: 4 }}>From Surah {surahGroups[0]?.surah?.englishName} ({surahGroups[0]?.surah?.number}) to Surah {surahGroups[surahGroups.length - 1]?.surah?.englishName} ({surahGroups[surahGroups.length - 1]?.surah?.number})</div>
+          <div style={{ fontSize: 16, color: '#64748b', fontStyle: 'italic' }}>{surahGroups[0]?.surah?.name} to {surahGroups[surahGroups.length - 1]?.surah?.name}</div>
         </div>
         {userGestureHint && (
           <div style={{ color: '#e67e22', fontSize: 15, marginTop: 8 }}>
@@ -220,9 +221,9 @@ export default function HizbViewerClient({ ayahs, hizb }: { ayahs: Ayah[]; hizb:
                 aria-label={playing && currentIndex === (page - 1) * pageSize + idx ? 'Pause' : 'Play'}
               >
                 {playing && currentIndex === (page - 1) * pageSize + idx ? (
-                  <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="4" width="4" height="14" rx="1.5" fill="white"/><rect x="13" y="4" width="4" height="14" rx="1.5" fill="white"/></svg>
+                  <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="4" width="4" height="14" rx="1.5" fill="white" /><rect x="13" y="4" width="4" height="14" rx="1.5" fill="white" /></svg>
                 ) : (
-                  <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 4L18 11L6 18V4Z" fill="white"/></svg>
+                  <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 4L18 11L6 18V4Z" fill="white" /></svg>
                 )}
               </button>
             </div>
@@ -235,7 +236,7 @@ export default function HizbViewerClient({ ayahs, hizb }: { ayahs: Ayah[]; hizb:
       </div>
       <div style={{ background: '#fff', borderRadius: 12, boxShadow: '0 1px 4px #0001', padding: '1.5rem', margin: '2rem auto 0 auto', maxWidth: 600, textAlign: 'center' }}>
         <div style={{ fontSize: 16, color: '#64748b', marginBottom: 8 }}>
-          Showing verses {(page-1)*pageSize+1} - {Math.min(page*pageSize, totalAyahs)} of {totalAyahs}<br />
+          Showing verses {(page - 1) * pageSize + 1} - {Math.min(page * pageSize, totalAyahs)} of {totalAyahs}<br />
           Page {page}/{totalPages}
         </div>
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 18, marginTop: 12 }}>
