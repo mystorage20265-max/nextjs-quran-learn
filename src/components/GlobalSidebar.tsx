@@ -7,7 +7,6 @@ import { usePathname } from 'next/navigation';
 const NAV_LINKS = [
     { icon: 'home', label: 'Home', href: '/' },
     { icon: 'menu_book', label: 'Read Quran', href: '/read-quran/1' },
-    { icon: 'grid_view', label: 'By Juz', href: '/juz/1' },
     { icon: 'ads_click', label: 'Memorize', href: '/memorize-quran' },
     { icon: 'radio', label: 'Quran Radio', href: '/radio' },
     { icon: 'music_note', label: 'Audio Quran', href: '/audio-quran' },

@@ -265,6 +265,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const playbackIdRef = useRef(0);
     const isMountedRef = useRef(true);
+    const surahBtnRef = useRef<HTMLButtonElement | null>(null);
 
     const [showVerseNav, setShowVerseNav] = useState(false);
     const [showSurahPicker, setShowSurahPicker] = useState(false);
@@ -698,6 +699,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
                             {/* Surah picker button */}
                             <button
+                                ref={surahBtnRef}
                                 onClick={() => setShowSurahPicker(!showSurahPicker)}
                                 className="nq-hdr-btn"
                                 style={{ gap: 6, display: 'flex', alignItems: 'center', padding: '6px 12px' }}
@@ -1128,50 +1130,58 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
             {showVerseNav && <div style={{ position: 'fixed', inset: 0, zIndex: 50 }} onClick={() => setShowVerseNav(false)} />}
 
             {/* Surah Picker — rendered outside the header to escape backdrop-filter stacking context */}
-            {showSurahPicker && (
-                <>
-                    {/* Backdrop: dismisses picker on outside click */}
-                    <div style={{ position: 'fixed', inset: 0, zIndex: 150 }} onClick={() => setShowSurahPicker(false)} />
-                    {/* Dropdown: higher z-index, use Link for reliable navigation */}
-                    <div style={{
-                        position: 'fixed', top: 72, left: 72, zIndex: 9999,
-                        background: 'white', border: '1px solid #e2e8f0', borderRadius: 14,
-                        boxShadow: '0 8px 32px rgba(0,0,0,0.15)', width: 280,
-                        maxHeight: 420, overflowY: 'auto',
-                    }}>
-                        <div style={{ padding: '12px 14px 8px', borderBottom: '1px solid #f1f5f9', fontWeight: 700, fontSize: 12, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.08em', fontFamily: 'Lexend, sans-serif' }}>
-                            Select Surah
+            {showSurahPicker && (() => {
+                const btnRect = surahBtnRef.current?.getBoundingClientRect();
+                const dropdownWidth = 280;
+                // Anchor right-edge of dropdown to right-edge of button so it doesn't overflow right
+                const rightEdge = btnRect ? btnRect.right : 320;
+                const leftPos = Math.max(8, rightEdge - dropdownWidth);
+                const topPos = btnRect ? btnRect.bottom + 8 : 80;
+                return (
+                    <>
+                        {/* Backdrop: dismisses picker on outside click */}
+                        <div style={{ position: 'fixed', inset: 0, zIndex: 150 }} onClick={() => setShowSurahPicker(false)} />
+                        {/* Dropdown: higher z-index, use Link for reliable navigation */}
+                        <div style={{
+                            position: 'fixed', top: topPos, left: leftPos, zIndex: 9999,
+                            background: 'white', border: '1px solid #e2e8f0', borderRadius: 14,
+                            boxShadow: '0 8px 32px rgba(0,0,0,0.15)', width: dropdownWidth,
+                            maxHeight: 420, overflowY: 'auto',
+                        }}>
+                            <div style={{ padding: '12px 14px 8px', borderBottom: '1px solid #f1f5f9', fontWeight: 700, fontSize: 12, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.08em', fontFamily: 'Lexend, sans-serif' }}>
+                                Select Surah
+                            </div>
+                            {ALL_SURAHS.map(s => (
+                                <Link
+                                    key={s.number}
+                                    href={`/read-quran/${s.number}`}
+                                    onClick={() => setShowSurahPicker(false)}
+                                    style={{
+                                        display: 'flex', alignItems: 'center', gap: 10,
+                                        width: '100%', padding: '10px 14px', textDecoration: 'none',
+                                        background: s.number === surahNumber ? 'rgba(17,212,66,0.08)' : 'transparent',
+                                        cursor: 'pointer', textAlign: 'left', borderBottom: '1px solid #f8fafc',
+                                        color: s.number === surahNumber ? '#11d442' : '#1e293b',
+                                    }}
+                                >
+                                    <span style={{
+                                        width: 28, height: 28, borderRadius: '50%',
+                                        background: s.number === surahNumber ? 'rgba(17,212,66,0.15)' : '#f1f5f9',
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                        fontSize: 11, fontWeight: 700, flexShrink: 0,
+                                        color: s.number === surahNumber ? '#11d442' : '#64748b',
+                                    }}>{s.number}</span>
+                                    <span style={{ flex: 1, minWidth: 0 }}>
+                                        <span style={{ display: 'block', fontSize: 13, fontWeight: 600 }}>{s.name}</span>
+                                        <span style={{ display: 'block', fontSize: 11, color: '#94a3b8' }}>{s.translation}</span>
+                                    </span>
+                                    <span style={{ fontSize: 15, fontFamily: 'var(--rq-font-arabic)', color: '#475569', direction: 'rtl' }}>{s.arabic}</span>
+                                </Link>
+                            ))}
                         </div>
-                        {ALL_SURAHS.map(s => (
-                            <Link
-                                key={s.number}
-                                href={`/read-quran/${s.number}`}
-                                onClick={() => setShowSurahPicker(false)}
-                                style={{
-                                    display: 'flex', alignItems: 'center', gap: 10,
-                                    width: '100%', padding: '10px 14px', textDecoration: 'none',
-                                    background: s.number === surahNumber ? 'rgba(17,212,66,0.08)' : 'transparent',
-                                    cursor: 'pointer', textAlign: 'left', borderBottom: '1px solid #f8fafc',
-                                    color: s.number === surahNumber ? '#11d442' : '#1e293b',
-                                }}
-                            >
-                                <span style={{
-                                    width: 28, height: 28, borderRadius: '50%',
-                                    background: s.number === surahNumber ? 'rgba(17,212,66,0.15)' : '#f1f5f9',
-                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                    fontSize: 11, fontWeight: 700, flexShrink: 0,
-                                    color: s.number === surahNumber ? '#11d442' : '#64748b',
-                                }}>{s.number}</span>
-                                <span style={{ flex: 1, minWidth: 0 }}>
-                                    <span style={{ display: 'block', fontSize: 13, fontWeight: 600 }}>{s.name}</span>
-                                    <span style={{ display: 'block', fontSize: 11, color: '#94a3b8' }}>{s.translation}</span>
-                                </span>
-                                <span style={{ fontSize: 15, fontFamily: 'var(--rq-font-arabic)', color: '#475569', direction: 'rtl' }}>{s.arabic}</span>
-                            </Link>
-                        ))}
-                    </div>
-                </>
-            )}
+                    </>
+                );
+            })()}
         </>
     );
 }

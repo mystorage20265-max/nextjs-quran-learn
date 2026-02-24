@@ -104,11 +104,13 @@
 
 .mq-search-icon {
     position: absolute;
-    left: 18px;
+    left: 16px;
     top: 50%;
     transform: translateY(-50%);
     color: var(--mq-text-dim);
-    font-size: 0.9rem;
+    font-size: 20px;
+    pointer-events: none;
+    user-select: none;
 }
 
 /* ===== GRID ===== */
@@ -161,18 +163,25 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 4px;
+    gap: 8px;
+    min-width: 0;
 }
 
 .mq-surah-name-en {
     font-weight: 600;
     font-size: 0.95rem;
     color: var(--mq-text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
 }
 
 .mq-surah-name-ar {
     font-family: 'Amiri Quran', serif;
     font-size: 1.3rem;
     color: var(--mq-primary);
+    flex-shrink: 0;
 }
 
 .mq-surah-meta {

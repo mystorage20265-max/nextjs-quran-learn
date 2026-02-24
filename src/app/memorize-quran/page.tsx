@@ -511,7 +511,7 @@ export default function MemorizeQuranPage() {
 
                         <section className="memorize-selection">
                             <div className="mq-search-container">
-                                <i className="fas fa-search mq-search-icon"></i>
+                                <span className="material-symbols-outlined mq-search-icon">search</span>
                                 <input
                                     type="text"
                                     className="mq-search-input"
