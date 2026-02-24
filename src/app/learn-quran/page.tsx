@@ -28,30 +28,69 @@ export default function LearnQuranPage() {
             });
     }, []);
 
+    const totalItems = lessons.reduce((acc, l) => acc + l.items.length, 0);
+
     return (
         <div className="learn-quran-page">
+            {/* ── Hero ── */}
             <div className="lq-hero">
                 <div className="lq-container">
-                    <h1>Learn Noorani Qaida</h1>
-                    <p>Master the Arabic alphabet and Quran reading rules with our interactive audio lessons. Start your journey from the basics to advanced tajweed.</p>
+                    <div className="lq-hero-label">
+                        <span className="material-symbols-outlined" style={{ fontSize: 14 }}>menu_book</span>
+                        Noorani Qaida Course
+                    </div>
+                    <h1>Learn to Read the Quran</h1>
+                    <p>
+                        Master the Arabic alphabet and Quran reading rules with interactive audio lessons.
+                        Start from the basics and progress to advanced Tajweed.
+                    </p>
+
+                    {!loading && (
+                        <div className="lq-stats">
+                            <div className="lq-stat">
+                                <span className="lq-stat-value">{lessons.length}</span>
+                                <span className="lq-stat-label">Lessons</span>
+                            </div>
+                            <div className="lq-stat-divider" />
+                            <div className="lq-stat">
+                                <span className="lq-stat-value">{totalItems}</span>
+                                <span className="lq-stat-label">Practice Items</span>
+                            </div>
+                            <div className="lq-stat-divider" />
+                            <div className="lq-stat">
+                                <span className="lq-stat-value">Free</span>
+                                <span className="lq-stat-label">Always</span>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
 
+            {/* ── Lesson Grid ── */}
             <div className="lq-container">
                 {loading ? (
-                    <div style={{ textAlign: 'center', padding: '40px' }}>Loading Curriculum...</div>
+                    <div className="lq-loading">
+                        <div className="lq-spinner" />
+                        Loading Curriculum…
+                    </div>
                 ) : (
                     <div className="lq-lesson-grid">
                         {lessons.map((lesson) => (
-                            <Link href={`/learn-quran/lesson/${lesson.id}`} key={lesson.id} className="lq-card">
+                            <Link
+                                href={`/learn-quran/lesson/${lesson.id}`}
+                                key={lesson.id}
+                                className="lq-card"
+                            >
                                 <div className="lq-card-number">{lesson.id}</div>
                                 <div className="lq-card-content">
                                     <span className="lq-card-badge">Lesson {lesson.id}</span>
                                     <h3>{lesson.title}</h3>
                                     <p>{lesson.description}</p>
                                     <div className="lq-card-meta">
-                                        <span style={{ fontSize: '0.8rem', color: 'var(--lq-text-secondary)' }}>
-                                            {lesson.items.length > 0 ? `${lesson.items.length} Items` : 'Practice'}
+                                        <span style={{ fontSize: '0.8rem', color: 'var(--lq-text-muted)' }}>
+                                            {lesson.items.length > 0
+                                                ? `${lesson.items.length} Items`
+                                                : 'Practice'}
                                         </span>
                                         <span className="lq-btn-start">Start Lesson</span>
                                     </div>

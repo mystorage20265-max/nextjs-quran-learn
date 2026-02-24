@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import './ComingSoon.css';
 
 interface ComingSoonProps {
@@ -12,117 +11,120 @@ interface ComingSoonProps {
     primaryLinkText?: string;
 }
 
+const FEATURES = [
+    {
+        icon: 'auto_stories',
+        title: 'Interactive Tafsir',
+        desc: 'Traverse centuries of scholarship with a modern interface. Deep, contextual, and profoundly intuitive.',
+    },
+    {
+        icon: 'record_voice_over',
+        title: 'AI Tajweed Coach',
+        desc: "Perfect your recitation with an AI coach that understands both phonetic precision and the heart's devotion.",
+    },
+    {
+        icon: 'school',
+        title: 'Guided Hifz Plan',
+        desc: 'Smart spaced-repetition memorisation system tailored to your pace and learning style.',
+    },
+];
+
 export default function ComingSoon({
-    title = "Coming Soon",
-    subtitle = "We're preparing something amazing for you",
-    primaryLink = "/",
-    primaryLinkText = "Back to Home"
+    title = 'Coming Soon',
+    subtitle = "We're building something extraordinary",
+    primaryLink = '/',
+    primaryLinkText = 'Back to Home',
 }: ComingSoonProps) {
     const [progress, setProgress] = useState(0);
 
     useEffect(() => {
-        // Animate progress bar from 0 to 65%
-        const timer = setTimeout(() => {
-            setProgress(65);
-        }, 500);
-        return () => clearTimeout(timer);
+        const t = setTimeout(() => setProgress(68), 600);
+        return () => clearTimeout(t);
     }, []);
 
     return (
-        <div className="eclipse-coming-soon">
-            {/* Starfield Background */}
-            <div className="starfield">
-                {[...Array(100)].map((_, i) => (
-                    <div
-                        key={i}
-                        className="star"
-                        style={{
-                            left: `${Math.random() * 100}%`,
-                            top: `${Math.random() * 100}%`,
-                            width: `${Math.random() * 2 + 1}px`,
-                            height: `${Math.random() * 2 + 1}px`,
-                            animationDelay: `${Math.random() * 3}s`,
-                            animationDuration: `${Math.random() * 2 + 2}s`
-                        }}
-                    />
-                ))}
+        <div className="cs-root">
+            {/* Ambient background */}
+            <div className="cs-bg">
+                <div className="cs-orb cs-orb-1" />
+                <div className="cs-orb cs-orb-2" />
+                <div className="cs-orb cs-orb-3" />
+                <div className="cs-grid" />
             </div>
 
-            {/* Main Content */}
-            <div className="eclipse-content">
-                {/* Eclipse Circle */}
-                <motion.div
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ duration: 1.5, ease: "easeOut" }}
-                    className="eclipse-container"
-                >
-                    {/* Rotating Corona Glow */}
-                    <div className="corona-glow" />
-                    <div className="corona-glow corona-glow-2" />
+            {/* Top accent bar */}
+            <div className="cs-top-bar" />
 
-                    {/* Eclipse Core */}
-                    <div className="eclipse-core" />
-
-                    {/* Light Flares */}
-                    <div className="light-flare flare-1" />
-                    <div className="light-flare flare-2" />
-                </motion.div>
-
-                {/* Coming Soon Text */}
-                <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.8, duration: 1 }}
-                    className="coming-soon-text"
-                >
-                    <h1>COMING SOON</h1>
-
-                    {/* Progress Bar */}
-                    <div className="progress-container">
-                        <motion.div
-                            className="progress-bar"
-                            initial={{ width: 0 }}
-                            animate={{ width: `${progress}%` }}
-                            transition={{ delay: 1.2, duration: 2, ease: "easeInOut" }}
-                        />
+            {/* ── Header ── */}
+            <header className="cs-header">
+                <Link href="/" className="cs-logo">
+                    <div className="cs-logo-icon">
+                        <span className="material-symbols-outlined">auto_stories</span>
                     </div>
-                </motion.div>
+                    <div className="cs-logo-text">
+                        <span className="cs-logo-name">Nur Quran</span>
+                        <span className="cs-logo-sub">Learning Hub</span>
+                    </div>
+                </Link>
 
-                {/* Title */}
-                {title && (
-                    <motion.h2
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 1.3, duration: 1 }}
-                        className="eclipse-title"
-                    >
-                        {title}
-                    </motion.h2>
-                )}
+                <div className="cs-live-badge">
+                    <div className="cs-live-dot" />
+                    In Development
+                </div>
+            </header>
 
-                {/* Subtitle */}
-                <motion.p
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 1.5, duration: 1 }}
-                    className="eclipse-subtitle"
-                >
-                    {subtitle}
-                </motion.p>
+            {/* ── Main ── */}
+            <main className="cs-main">
+                {/* Eyebrow */}
+                <div className="cs-label">
+                    <span className="material-symbols-outlined" style={{ fontSize: 14 }}>mosque</span>
+                    Something sacred is unfolding
+                </div>
 
-                {/* Back Link */}
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 2, duration: 1 }}
-                    className="eclipse-footer"
-                >
-                    <Link href={primaryLink} className="back-link">
-                        ← {primaryLinkText}
-                    </Link>
-                </motion.div>
-            </div>
+                {/* Hero text */}
+                <h1 className="cs-hero-title">{title}</h1>
+                <p className="cs-hero-sub">Stay tuned</p>
+
+                <div className="cs-divider" />
+
+                <p className="cs-tagline">{subtitle}</p>
+
+
+
+                {/* Feature cards */}
+                <div className="cs-cards">
+                    {FEATURES.map(f => (
+                        <div key={f.title} className="cs-card">
+                            <div className="cs-card-icon-wrap">
+                                <span className="material-symbols-outlined">{f.icon}</span>
+                            </div>
+                            <h3>{f.title}</h3>
+                            <p>{f.desc}</p>
+                        </div>
+                    ))}
+                </div>
+
+                {/* Progress bar */}
+                <div className="cs-progress-wrap">
+                    <div className="cs-progress-label">
+                        <span>Development Progress</span>
+                        <span style={{ color: '#11d442' }}>{progress}%</span>
+                    </div>
+                    <div className="cs-progress-track">
+                        <div className="cs-progress-fill" style={{ width: `${progress}%` }} />
+                    </div>
+                </div>
+            </main>
+
+            {/* ── Footer ── */}
+            <footer className="cs-footer">
+                <span className="cs-footer-copy">© 2025 Nur Quran — The Art of Learning</span>
+                <div className="cs-footer-links">
+                    <Link href={primaryLink}>{primaryLinkText}</Link>
+                    <a href="#">Privacy</a>
+                    <a href="#">Contact</a>
+                </div>
+            </footer>
         </div>
     );
 }
