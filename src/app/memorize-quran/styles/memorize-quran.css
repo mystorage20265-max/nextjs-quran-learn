@@ -2,7 +2,9 @@
 /* Clean, Light, Focus-Driven */
 
 /* ===== FONT IMPORTS ===== */
-@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&family=Amiri+Quran&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap');
+
+/* Note: KFGQPC Uthmanic Script HAFS is declared in globals.css */
 
 /* ===== VARIABLES ===== */
 :root {
@@ -59,7 +61,7 @@
 }
 
 .memorize-title-arabic {
-    font-family: 'Amiri Quran', serif;
+    font-family: "KFGQPC Uthmanic Script HAFS", "Uthmanic", "Scheherazade New", "Amiri Quran", "Traditional Arabic", serif;
     font-size: 2rem;
     color: var(--mq-primary);
     font-weight: 400;
@@ -272,7 +274,7 @@
 }
 
 .mq-surah-name-ar {
-    font-family: 'Amiri Quran', serif;
+    font-family: "KFGQPC Uthmanic Script HAFS", "Uthmanic", "Scheherazade New", "Amiri Quran", "Traditional Arabic", serif;
     font-size: 1.3rem;
     color: var(--mq-primary);
     flex-shrink: 0;

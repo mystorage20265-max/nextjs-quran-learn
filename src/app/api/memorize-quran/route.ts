@@ -131,17 +131,35 @@ async function getVerses(params: URLSearchParams): Promise<NextResponse> {
 
     const data = await response.json();
 
-    // Process verses with Indo-Pak text as primary
+    // Helper to clean Indo-Pak text — strips all annotation/mark characters that render as boxes.
+    // Matching the same cleaning logic from /read-quran to ensure consistent rendering
+    // Three ranges are stripped:
+    //   U+0610–U+061A: Arabic phonetic annotation marks (sallallaahu, alayhe, etc.)
+    //   U+06D6–U+06FF: Indo-Pak waqf / pause / sajda annotation glyphs
+    //   U+FBB2–U+FBC2: Arabic Presentation Forms used in some Quran editions
+    // Core Arabic letters and standard tashkeel (U+0621–U+06D5) are preserved.
+    const cleanIndopakText = (text: string): string => {
+        if (!text) return '';
+        return text
+            .replace(/[\u0610-\u061A]/g, '') // Arabic Quran-specific phonetic marks
+            .replace(/\u06E1/g, '\u0652')     // IndoPak sukun (ۡ U+06E1) → standard sukun (ْ U+0652)
+            .replace(/[\u06D6-\u06FF]/g, '') // waqf marks, annotation glyphs, Indo-Pak marks
+            .replace(/[\uFBB2-\uFBC2]/g, '') // Arabic Presentation Forms (Quran edition marks)
+            .replace(/\s{2,}/g, ' ')
+            .trim();
+    };
+
+    // Process verses with Uthmani text as primary (matching /read-quran)
     const verses = data.verses.map((v: Verse & { translations?: { text: string }[] }) => ({
         id: v.id,
         verseKey: v.verse_key,
         verseNumber: v.verse_number,
-        textIndopak: v.text_indopak || v.text_uthmani,   // Indo-Pak as primary display text
-        textUthmani: v.text_uthmani,                     // Uthmani kept for reference
-        arabicText: v.text_indopak || v.text_uthmani,   // convenient alias
+        textUthmani: cleanIndopakText(v.text_uthmani),                     // Uthmani as primary display text
+        textIndopak: cleanIndopakText(v.text_indopak || v.text_uthmani),  // Indo-Pak kept for reference
+        arabicText: cleanIndopakText(v.text_uthmani),                      // convenient alias - Uthmani
         translation: v.translations?.[0]?.text || '',
         words: v.words?.map(w => ({
-            arabic: w.text_uthmani,
+            arabic: cleanIndopakText(w.text_uthmani),
             translation: w.translation?.text || ''
         }))
     }));

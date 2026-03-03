@@ -199,9 +199,9 @@ export default function MemorizeQuranPage() {
 
     // Helper to render verse with masked words
     const renderChallengeVerse = (verse: Verse) => {
-        const displayText = verse.textIndopak ?? verse.arabicText ?? verse.textUthmani;
-        // Strip Indo-Pak annotation glyphs before splitting into words
-        const cleaned = displayText.replace(/[\u06D6-\u06FF]/g, '').replace(/\s{2,}/g, ' ').trim();
+        const displayText = verse.textUthmani ?? verse.arabicText;
+        // Clean up any extra whitespace
+        const cleaned = displayText.replace(/\s{2,}/g, ' ').trim();
         if (challengeLevel === 0) return <div className="verse-arabic">{cleaned}</div>;
 
         const words = cleaned.split(' ');
@@ -488,7 +488,7 @@ export default function MemorizeQuranPage() {
     if (focusModeActive && currentVerseIndex >= 0 && verses[currentVerseIndex]) {
         return (
             <FocusMode
-                verseText={verses[currentVerseIndex].textIndopak ?? verses[currentVerseIndex].arabicText ?? verses[currentVerseIndex].textUthmani}
+                verseText={verses[currentVerseIndex].textUthmani ?? verses[currentVerseIndex].arabicText}
                 verseTranslation={verses[currentVerseIndex].translation}
                 verseNumber={verses[currentVerseIndex].verseNumber}
                 isPlaying={isPlaying}
