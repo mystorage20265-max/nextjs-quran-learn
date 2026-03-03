@@ -22,18 +22,17 @@
   border-right-color: #1e3a2a;
 }
 
-/* ── Scrollbar ── */
+/* ── Hide Scrollbar ── */
+.gsb-root {
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE/Edge */
+}
+
 .gsb-root::-webkit-scrollbar {
-  width: 4px;
-}
-
-.gsb-root::-webkit-scrollbar-thumb {
-  background: rgba(17, 212, 66, 0.2);
-  border-radius: 2px;
-}
-
-.gsb-root::-webkit-scrollbar-track {
-  background: transparent;
+  display: none;
+  /* Chrome/Safari */
 }
 
 /* ── Inner wrapper ── */

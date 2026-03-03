@@ -195,12 +195,28 @@ export default function GlobalSidebar() {
 
                 {/* Profile */}
                 <div className="gsb-profile-wrap">
-                    <div className="gsb-profile-card">
-                        <div className="gsb-profile-avatar">A</div>
-                        <div style={{ minWidth: 0 }}>
-                            <p className="gsb-profile-name">Ahmed Khalid</p>
-                            <p className="gsb-profile-role">Premium Member</p>
+                    <div className="gsb-profile-card" style={{ flexDirection: 'column', gap: 10, alignItems: 'flex-start' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                            <div className="gsb-profile-avatar" style={{ background: 'linear-gradient(135deg,#475569,#334155)', fontSize: 16 }}>
+                                <span className="material-symbols-outlined" style={{ fontSize: 18, color: 'white' }}>person</span>
+                            </div>
+                            <div style={{ minWidth: 0 }}>
+                                <p className="gsb-profile-name">Browsing Anonymously</p>
+                                <p className="gsb-profile-role">Guest User</p>
+                            </div>
                         </div>
+                        <Link
+                            href="/signup"
+                            style={{
+                                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5,
+                                width: '100%', padding: '7px 0', borderRadius: 8, textDecoration: 'none',
+                                background: 'linear-gradient(135deg,#11d442,#059669)',
+                                color: 'white', fontSize: 11.5, fontWeight: 700, letterSpacing: '0.03em',
+                            }}
+                        >
+                            <span className="material-symbols-outlined" style={{ fontSize: 14 }}>star</span>
+                            Subscribe Now
+                        </Link>
                     </div>
                 </div>
             </aside>

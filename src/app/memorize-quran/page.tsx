@@ -5,7 +5,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import './styles/memorize-quran.css';
 import SurahCard from './components/SurahCard';
-import VerseCard from './components/VerseCard';
+
 import BottomPlayer from './components/BottomPlayer';
 import FocusMode from './components/FocusMode';
 
@@ -40,6 +40,8 @@ export default function MemorizeQuranPage() {
     // UI State
     const [viewMode, setViewMode] = useState<ViewMode>('selection');
     const [searchQuery, setSearchQuery] = useState('');
+    const [typeFilter, setTypeFilter] = useState<'All' | 'Meccan' | 'Medinan'>('All');
+    const [viewStyle, setViewStyle] = useState<'grid' | 'list'>('grid');
     const [focusModeActive, setFocusModeActive] = useState(false);
     const [hideModeActive, setHideModeActive] = useState(false);
     const [revealedVerses, setRevealedVerses] = useState<Set<number>>(new Set());
@@ -234,12 +236,17 @@ export default function MemorizeQuranPage() {
         }));
     };
 
-    const filteredChapters = chapters.filter(chapter =>
-        chapter.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        chapter.nameTranslation.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        chapter.nameArabic.includes(searchQuery) ||
-        chapter.id.toString().includes(searchQuery)
-    );
+    const filteredChapters = chapters.filter(chapter => {
+        const matchesSearch =
+            chapter.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            chapter.nameTranslation.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            chapter.nameArabic.includes(searchQuery) ||
+            chapter.id.toString().includes(searchQuery);
+        const matchesType =
+            typeFilter === 'All' ||
+            chapter.revelationPlace.toLowerCase() === typeFilter.toLowerCase();
+        return matchesSearch && matchesType;
+    });
 
     // Play a single verse audio – returns a promise that resolves when audio ends
     const playVerseAudio = useCallback(async (verse: Verse): Promise<void> => {
@@ -406,7 +413,7 @@ export default function MemorizeQuranPage() {
         }
     };
 
-    const playSingleVerse = (verse: Verse, index: number) => {
+    const playSingleVerse = (_verse: Verse, index: number) => {
         // If same verse is playing, just toggle pause
         // Otherwise stop current and play clicked verse once
         stopPlayback();
@@ -460,6 +467,7 @@ export default function MemorizeQuranPage() {
     const progress = verses.length > 0 && currentVerseIndex >= 0
         ? ((currentVerseIndex + 1) / verses.length) * 100
         : 0;
+    void progress; // consumed by progress bar rendered in JSX below
 
     if (loading) {
         return (
@@ -510,6 +518,43 @@ export default function MemorizeQuranPage() {
                         </header>
 
                         <section className="memorize-selection">
+                            {/* Filter bar */}
+                            <div className="mq-filter-bar">
+                                <div className="mq-filter-left">
+                                    <h2 className="mq-filter-title">Select Surah</h2>
+                                    <p className="mq-filter-count">{filteredChapters.length} of 114 surahs</p>
+                                </div>
+                                <div className="mq-filter-right">
+                                    {/* Type filter */}
+                                    <div className="mq-type-filter">
+                                        {(['All', 'Meccan', 'Medinan'] as const).map(t => (
+                                            <button
+                                                key={t}
+                                                className={`mq-filter-btn${typeFilter === t ? ' active' : ''}`}
+                                                onClick={() => setTypeFilter(t)}
+                                            >{t}</button>
+                                        ))}
+                                    </div>
+                                    {/* View toggle */}
+                                    <div className="mq-view-toggle">
+                                        <button
+                                            className={`mq-view-btn${viewStyle === 'grid' ? ' active' : ''}`}
+                                            onClick={() => setViewStyle('grid')}
+                                            title="Grid view"
+                                        >
+                                            <span className="material-symbols-outlined" style={{ fontSize: 18 }}>grid_view</span>
+                                        </button>
+                                        <button
+                                            className={`mq-view-btn${viewStyle === 'list' ? ' active' : ''}`}
+                                            onClick={() => setViewStyle('list')}
+                                            title="List view"
+                                        >
+                                            <span className="material-symbols-outlined" style={{ fontSize: 18 }}>view_list</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            {/* Search */}
                             <div className="mq-search-container">
                                 <span className="material-symbols-outlined mq-search-icon">search</span>
                                 <input
@@ -521,7 +566,7 @@ export default function MemorizeQuranPage() {
                                 />
                             </div>
 
-                            <div className="mq-surah-grid">
+                            <div className={`mq-surah-grid${viewStyle === 'list' ? ' mq-surah-list' : ''}`}>
                                 {filteredChapters.map((chapter) => (
                                     <SurahCard
                                         key={chapter.id}
@@ -572,6 +617,14 @@ export default function MemorizeQuranPage() {
                                     <i className={`fas fa-eye${hideModeActive ? '-slash' : ''}`}></i>
                                 </button>
                                 <button
+                                    className="action-btn"
+                                    onClick={revealAllVerses}
+                                    title="Reveal All Verses [Hide Mode]"
+                                    style={{ display: hideModeActive ? undefined : 'none' }}
+                                >
+                                    <i className="fas fa-eye"></i>
+                                </button>
+                                <button
                                     className={`action-btn ${showSettings ? 'active' : ''}`}
                                     onClick={() => setShowSettings(!showSettings)}
                                     title="Settings"
@@ -613,6 +666,14 @@ export default function MemorizeQuranPage() {
                                             <button onClick={() => setPlaybackRate(Math.max(0.5, playbackRate - 0.25))}>-</button>
                                             <span>{playbackRate}x</span>
                                             <button onClick={() => setPlaybackRate(Math.min(2.0, playbackRate + 0.25))}>+</button>
+                                        </div>
+                                    </div>
+                                    <div className="setting-group">
+                                        <label>Pause (s)</label>
+                                        <div className="stepper">
+                                            <button onClick={() => setPauseBetweenVerses(Math.max(0, pauseBetweenVerses - 1))}>-</button>
+                                            <span>{pauseBetweenVerses}s</span>
+                                            <button onClick={() => setPauseBetweenVerses(Math.min(10, pauseBetweenVerses + 1))}>+</button>
                                         </div>
                                     </div>
                                 </div>
@@ -672,6 +733,16 @@ export default function MemorizeQuranPage() {
                                                 {renderChallengeVerse(verse)}
 
                                                 <p className="verse-translation">{verse.translation}</p>
+
+                                                {/* Reveal button for hide mode */}
+                                                {hideModeActive && !revealedVerses.has(index) && (
+                                                    <button
+                                                        className="verse-reveal-btn"
+                                                        onClick={() => handleRevealVerse(index)}
+                                                    >
+                                                        <i className="fas fa-eye"></i> Reveal
+                                                    </button>
+                                                )}
                                             </div>
 
                                             <div className="verse-feedback">

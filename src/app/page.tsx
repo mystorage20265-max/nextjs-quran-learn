@@ -144,6 +144,18 @@ export default function HomePage() {
   const [sessionTime, setSessionTime] = useState(0); // seconds this session
   const [totalTime, setTotalTime] = useState(0);     // cumulative seconds all sessions
 
+  // ── Tasbeeh counter ──
+  const TASBEEH_PRESETS = [
+    { label: 'SubhanAllah', ar: 'سُبْحَانَ ٱللَّٰهِ', color: '#11d442' },
+    { label: 'Alhamdulillah', ar: 'ٱلْحَمْدُ لِلَّٰهِ', color: '#a855f7' },
+    { label: 'Allahu Akbar', ar: 'ٱللَّٰهُ أَكْبَرُ', color: '#f59e0b' },
+  ];
+  const TARGET = 33;
+  const [tasbeehIdx, setTasbeehIdx] = useState(0);
+  const [tasbeehCount, setTasbeehCount] = useState(0);
+  const [tasbeehTotal, setTasbeehTotal] = useState(0);
+  const [tasbeehFlash, setTasbeehFlash] = useState(false);
+
   useEffect(() => {
     const saved = localStorage.getItem('recentSurahs');
     if (saved) setRecent(JSON.parse(saved));
@@ -152,6 +164,9 @@ export default function HomePage() {
     // Load cumulative time
     const savedTotal = parseInt(localStorage.getItem('quranTotalTime') || '0', 10);
     setTotalTime(savedTotal);
+    // Load tasbeeh total
+    const savedTasbeehTotal = parseInt(localStorage.getItem('tasbeehTotal') || '0', 10);
+    setTasbeehTotal(savedTasbeehTotal);
     // Sync dark state with external toggles
     const obs = new MutationObserver(() => setDark(document.documentElement.classList.contains('dark')));
     obs.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
@@ -213,6 +228,10 @@ export default function HomePage() {
         .hp-dot{background-image:radial-gradient(circle at 2px 2px,rgba(17,212,66,0.06) 1px,transparent 0);background-size:24px 24px}
         .font-arabic{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif}
         .filter-btn{padding:6px 14px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:500;transition:all 0.15s}
+        .tc-btn{cursor:pointer;border:none;outline:none;background:none;-webkit-tap-highlight-color:transparent;transition:transform 0.08s ease;user-select:none}
+        .tc-btn:active{transform:scale(0.93)}
+        .tc-flash{animation:tc-pop 0.22s ease}
+        @keyframes tc-pop{0%{transform:scale(1)}50%{transform:scale(1.13)}100%{transform:scale(1)}}
         /* ── Responsive ── */
         .hp-header-inner{padding:10px 16px !important}
         .hp-content{padding:16px 16px 60px !important}
@@ -341,6 +360,103 @@ export default function HomePage() {
                     </div>
                   </Link>
                 ))}
+              </div>
+            </section>
+
+            {/* ── TASBEEH COUNTER ── */}
+            <section style={{ marginBottom: 32 }}>
+              <h2 style={{ margin: '0 0 14px', fontWeight: 700, fontSize: 17, ...S.text }}>Tasbeeh Counter</h2>
+              <div style={{ ...S.card, padding: 20 }}>
+                {/* Preset tabs */}
+                <div style={{ display: 'flex', gap: 6, marginBottom: 20, flexWrap: 'wrap' }}>
+                  {TASBEEH_PRESETS.map((p, i) => (
+                    <button
+                      key={p.label}
+                      onClick={() => { setTasbeehIdx(i); setTasbeehCount(0); }}
+                      style={{
+                        padding: '6px 14px', borderRadius: 20, border: 'none', cursor: 'pointer',
+                        fontSize: 12, fontWeight: 600,
+                        background: tasbeehIdx === i ? p.color : dark ? '#1e3a2a' : '#f1f5f9',
+                        color: tasbeehIdx === i ? 'white' : '#64748b',
+                        transition: 'all 0.15s',
+                      }}
+                    >{p.label}</button>
+                  ))}
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: 24, flexWrap: 'wrap' }}>
+                  {/* Ring + tap button */}
+                  <div style={{ position: 'relative', flexShrink: 0 }}>
+                    <svg width={140} height={140} style={{ transform: 'rotate(-90deg)' }}>
+                      {/* Track */}
+                      <circle cx={70} cy={70} r={58} fill="none" stroke={dark ? '#1e3a2a' : '#f1f5f9'} strokeWidth={10} />
+                      {/* Progress */}
+                      <circle
+                        cx={70} cy={70} r={58} fill="none"
+                        stroke={TASBEEH_PRESETS[tasbeehIdx].color}
+                        strokeWidth={10}
+                        strokeLinecap="round"
+                        strokeDasharray={`${2 * Math.PI * 58}`}
+                        strokeDashoffset={`${2 * Math.PI * 58 * (1 - Math.min(tasbeehCount, TARGET) / TARGET)}`}
+                        style={{ transition: 'stroke-dashoffset 0.25s ease' }}
+                      />
+                    </svg>
+                    {/* Count display + tap area */}
+                    <button
+                      className={`tc-btn${tasbeehFlash ? ' tc-flash' : ''}`}
+                      style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2 }}
+                      onClick={() => {
+                        const next = tasbeehCount + 1;
+                        setTasbeehCount(next);
+                        setTasbeehFlash(true);
+                        setTimeout(() => setTasbeehFlash(false), 220);
+                        const newTotal = tasbeehTotal + 1;
+                        setTasbeehTotal(newTotal);
+                        localStorage.setItem('tasbeehTotal', String(newTotal));
+                        if (navigator.vibrate) navigator.vibrate(18);
+                        if (next === TARGET) setTimeout(() => setTasbeehCount(0), 600);
+                      }}
+                      aria-label={`Count ${TASBEEH_PRESETS[tasbeehIdx].label}`}
+                    >
+                      <span style={{ fontSize: 36, fontWeight: 800, color: TASBEEH_PRESETS[tasbeehIdx].color, lineHeight: 1 }}>
+                        {tasbeehCount}
+                      </span>
+                      <span style={{ fontSize: 10, ...S.muted }}>/ {TARGET}</span>
+                      <span style={{ fontSize: 9, color: TASBEEH_PRESETS[tasbeehIdx].color, fontWeight: 600, marginTop: 2 }}>TAP</span>
+                    </button>
+                  </div>
+
+                  {/* Info panel */}
+                  <div style={{ flex: 1, minWidth: 180 }}>
+                    <p className="font-arabic" dir="rtl" style={{ margin: '0 0 6px', fontSize: 22, fontWeight: 700, color: TASBEEH_PRESETS[tasbeehIdx].color, textAlign: 'right' }}>
+                      {TASBEEH_PRESETS[tasbeehIdx].ar}
+                    </p>
+                    <p style={{ margin: '0 0 16px', fontSize: 13, fontStyle: 'italic', ...S.muted }}>
+                      &ldquo;{TASBEEH_PRESETS[tasbeehIdx].label}&rdquo;
+                    </p>
+                    {/* Stats row */}
+                    <div style={{ display: 'flex', gap: 16, marginBottom: 16, flexWrap: 'wrap' }}>
+                      <div style={{ ...S.card, padding: '10px 16px', textAlign: 'center', borderRadius: 12 }}>
+                        <p style={{ margin: 0, fontSize: 18, fontWeight: 700, color: TASBEEH_PRESETS[tasbeehIdx].color }}>
+                          {Math.floor(tasbeehTotal / TARGET)}
+                        </p>
+                        <p style={{ margin: 0, fontSize: 10, ...S.muted }}>Rounds done</p>
+                      </div>
+                      <div style={{ ...S.card, padding: '10px 16px', textAlign: 'center', borderRadius: 12 }}>
+                        <p style={{ margin: 0, fontSize: 18, fontWeight: 700, ...S.text }}>{tasbeehTotal}</p>
+                        <p style={{ margin: 0, fontSize: 10, ...S.muted }}>Total count</p>
+                      </div>
+                    </div>
+                    {/* Reset */}
+                    <button
+                      onClick={() => { setTasbeehCount(0); setTasbeehTotal(0); localStorage.setItem('tasbeehTotal', '0'); }}
+                      style={{ background: 'none', border: `1px solid ${dark ? '#1e3a2a' : '#e2e8f0'}`, borderRadius: 8, padding: '6px 14px', fontSize: 12, color: '#94a3b8', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5 }}
+                    >
+                      <span className="material-symbols-outlined" style={{ fontSize: 14 }}>restart_alt</span>
+                      Reset all
+                    </button>
+                  </div>
+                </div>
               </div>
             </section>
 
