@@ -278,77 +278,76 @@ export default function HomePage() {
       `}</style>
 
       <div style={S.shell}>
-        {/* MAIN */}
-        <main className="hp-scroll hp-dot" style={{ flex: 1, overflowY: 'auto', minHeight: 0, background: dark ? '#0d1b12' : '#f6f8f6' }}>
-          {/* Header */}
-          <header style={{ position: 'sticky', top: 0, zIndex: 10, background: dark ? 'rgba(13,27,18,0.9)' : 'rgba(246,248,246,0.88)', backdropFilter: 'blur(12px)', borderBottom: `1px solid ${dark ? 'rgba(30,58,42,0.6)' : 'rgba(226,232,240,0.6)'}` }}>
-            <div className="hp-header-inner" style={{ maxWidth: 860, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div ref={searchRef} style={{ flex: 1, position: 'relative' }}>
-                <span className="material-symbols-outlined" style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', fontSize: 20, pointerEvents: 'none', zIndex: 1 }}>search</span>
-                <input
-                  type="text"
-                  value={query}
-                  onChange={e => { setQuery(e.target.value); setShowAll(true); setShowDropdown(true); }}
-                  onFocus={e => { if (query.trim()) setShowDropdown(true); e.target.style.boxShadow = '0 0 0 2px rgba(17,212,66,0.4)'; }}
-                  onKeyDown={e => { if (e.key === 'Escape') { setShowDropdown(false); } }}
-                  placeholder="Search Surah name, number, or meaning…"
-                  style={{ width: '100%', background: dark ? '#111f16' : 'white', border: 'none', borderRadius: 12, padding: '10px 14px 10px 40px', fontSize: 13.5, color: dark ? '#e2e8e5' : '#334155', boxShadow: '0 1px 4px rgba(0,0,0,0.07)', outline: 'none' }}
-                  onBlur={e => (e.target.style.boxShadow = '0 1px 4px rgba(0,0,0,0.07)')}
-                />
-                {/* Search Dropdown */}
-                {showDropdown && dropdownResults.length > 0 && (
-                  <div style={{
-                    position: 'absolute', top: 'calc(100% + 8px)', left: 0, right: 0,
-                    background: dark ? '#111f16' : 'white',
-                    border: `1px solid ${dark ? '#1e3a2a' : '#e2e8f0'}`,
-                    borderRadius: 14, boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
-                    zIndex: 999, overflow: 'hidden',
-                  }}>
-                    {dropdownResults.map((s, i) => (
-                      <Link
-                        key={s.num}
-                        href={`/read-quran/${s.num}`}
-                        onClick={() => { trackVisit(s); setShowDropdown(false); setQuery(''); }}
-                        style={{ textDecoration: 'none', display: 'block' }}
+        {/* Header — outside scroll container so dropdown isn't clipped */}
+        <header style={{ position: 'relative', zIndex: 200, background: dark ? 'rgba(13,27,18,0.97)' : 'rgba(246,248,246,0.97)', backdropFilter: 'blur(12px)', borderBottom: `1px solid ${dark ? 'rgba(30,58,42,0.6)' : 'rgba(226,232,240,0.6)'}`, flexShrink: 0 }}>
+          <div className="hp-header-inner" style={{ maxWidth: 860, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div ref={searchRef} style={{ flex: 1, position: 'relative' }}>
+              <span className="material-symbols-outlined" style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', fontSize: 20, pointerEvents: 'none', zIndex: 1 }}>search</span>
+              <input
+                type="text"
+                value={query}
+                onChange={e => { setQuery(e.target.value); setShowAll(true); setShowDropdown(true); }}
+                onFocus={e => { if (query.trim()) setShowDropdown(true); e.target.style.boxShadow = '0 0 0 2px rgba(17,212,66,0.4)'; }}
+                onKeyDown={e => { if (e.key === 'Escape') { setShowDropdown(false); } }}
+                placeholder="Search Surah name, number, or meaning…"
+                style={{ width: '100%', background: dark ? '#111f16' : 'white', border: 'none', borderRadius: 12, padding: '10px 14px 10px 40px', fontSize: 13.5, color: dark ? '#e2e8e5' : '#334155', boxShadow: '0 1px 4px rgba(0,0,0,0.07)', outline: 'none' }}
+                onBlur={e => (e.target.style.boxShadow = '0 1px 4px rgba(0,0,0,0.07)')}
+              />
+              {/* Search Dropdown */}
+              {showDropdown && dropdownResults.length > 0 && (
+                <div style={{
+                  position: 'absolute', top: 'calc(100% + 8px)', left: 0, right: 0,
+                  background: dark ? '#111f16' : 'white',
+                  border: `1px solid ${dark ? '#1e3a2a' : '#e2e8f0'}`,
+                  borderRadius: 14, boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
+                  zIndex: 999, overflow: 'hidden',
+                }}>
+                  {dropdownResults.map((s, i) => (
+                    <Link
+                      key={s.num}
+                      href={`/read-quran/${s.num}`}
+                      onClick={() => { trackVisit(s); setShowDropdown(false); setQuery(''); }}
+                      style={{ textDecoration: 'none', display: 'block' }}
+                    >
+                      <div style={{
+                        display: 'flex', alignItems: 'center', gap: 12,
+                        padding: '10px 16px',
+                        borderTop: i > 0 ? `1px solid ${dark ? '#1e3a2a' : '#f1f5f9'}` : 'none',
+                        cursor: 'pointer', transition: 'background 0.12s',
+                      }}
+                        onMouseEnter={e => (e.currentTarget.style.background = dark ? '#1a2f1f' : '#f8fffe')}
+                        onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
                       >
-                        <div style={{
-                          display: 'flex', alignItems: 'center', gap: 12,
-                          padding: '10px 16px',
-                          borderTop: i > 0 ? `1px solid ${dark ? '#1e3a2a' : '#f1f5f9'}` : 'none',
-                          cursor: 'pointer', transition: 'background 0.12s',
-                        }}
-                          onMouseEnter={e => (e.currentTarget.style.background = dark ? '#1a2f1f' : '#f8fffe')}
-                          onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
-                        >
-                          <div style={{ width: 32, height: 32, borderRadius: 8, background: 'rgba(17,212,66,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: '#11d442', fontSize: 12, flexShrink: 0 }}>
-                            {s.num}
-                          </div>
-                          <div style={{ flex: 1, minWidth: 0 }}>
-                            <p style={{ margin: 0, fontWeight: 600, fontSize: 13.5, color: dark ? '#e2e8e5' : '#0f172a', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{s.name}</p>
-                            <p style={{ margin: 0, fontSize: 11, color: '#94a3b8' }}>{s.meaning} · {s.v} verses</p>
-                          </div>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
-                            <span style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: s.t === 'Meccan' ? '#11d442' : '#94a3b8' }}>{s.t}</span>
-                            <span style={{ fontFamily: "'Amiri','Scheherazade New',serif", fontSize: 17, color: dark ? '#e2e8e5' : '#1e293b' }}>{s.ar}</span>
-                          </div>
+                        <div style={{ width: 32, height: 32, borderRadius: 8, background: 'rgba(17,212,66,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: '#11d442', fontSize: 12, flexShrink: 0 }}>
+                          {s.num}
                         </div>
-                      </Link>
-                    ))}
-                    {/* Footer hint */}
-                    <div style={{ padding: '8px 16px', borderTop: `1px solid ${dark ? '#1e3a2a' : '#f1f5f9'}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ fontSize: 11, color: '#94a3b8' }}>{SURAHS.filter(s => { const q = query.toLowerCase(); return s.name.toLowerCase().includes(q) || s.ar.includes(q) || s.meaning.toLowerCase().includes(q) || String(s.num) === q; }).length} results · scroll down for all</span>
-                      <span style={{ fontSize: 11, color: '#94a3b8' }}>ESC to close</span>
-                    </div>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <p style={{ margin: 0, fontWeight: 600, fontSize: 13.5, color: dark ? '#e2e8e5' : '#0f172a', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{s.name}</p>
+                          <p style={{ margin: 0, fontSize: 11, color: '#94a3b8' }}>{s.meaning} · {s.v} verses</p>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+                          <span style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: s.t === 'Meccan' ? '#11d442' : '#94a3b8' }}>{s.t}</span>
+                          <span style={{ fontFamily: "'Amiri','Scheherazade New',serif", fontSize: 17, color: dark ? '#e2e8e5' : '#1e293b' }}>{s.ar}</span>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                  {/* Footer hint */}
+                  <div style={{ padding: '8px 16px', borderTop: `1px solid ${dark ? '#1e3a2a' : '#f1f5f9'}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: 11, color: '#94a3b8' }}>{SURAHS.filter(s => { const q = query.toLowerCase(); return s.name.toLowerCase().includes(q) || s.ar.includes(q) || s.meaning.toLowerCase().includes(q) || String(s.num) === q; }).length} results · scroll down for all</span>
+                    <span style={{ fontSize: 11, color: '#94a3b8' }}>ESC to close</span>
                   </div>
-                )}
-              </div>
-              <Link href="/read-quran/1" style={{ background: '#11d442', color: 'white', borderRadius: 12, padding: '9px 14px', fontWeight: 600, fontSize: 13.5, display: 'flex', alignItems: 'center', gap: 6, boxShadow: '0 4px 14px rgba(17,212,66,0.3)', textDecoration: 'none', flexShrink: 0 }}>
-                <span className="material-symbols-outlined" style={{ fontSize: 18 }}>play_circle</span>
-                <span className="hp-qs-hide">Quick Start</span>
-              </Link>
+                </div>
+              )}
             </div>
-          </header>
-
+            <Link href="/read-quran/1" style={{ background: '#11d442', color: 'white', borderRadius: 12, padding: '9px 14px', fontWeight: 600, fontSize: 13.5, display: 'flex', alignItems: 'center', gap: 6, boxShadow: '0 4px 14px rgba(17,212,66,0.3)', textDecoration: 'none', flexShrink: 0 }}>
+              <span className="material-symbols-outlined" style={{ fontSize: 18 }}>play_circle</span>
+              <span className="hp-qs-hide">Quick Start</span>
+            </Link>
+          </div>
+        </header>
+        {/* MAIN — scrollable content only */}
+        <main className="hp-scroll hp-dot" style={{ flex: 1, overflowY: 'auto', minHeight: 0, background: dark ? '#0d1b12' : '#f6f8f6' }}>
           <div className="hp-content" style={{ maxWidth: 860, margin: '0 auto' }}>
 
             {/* ── STATS BAR ── */}

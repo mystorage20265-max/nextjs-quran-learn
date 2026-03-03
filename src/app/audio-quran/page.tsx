@@ -50,6 +50,7 @@ export default function AudioQuranPage() {
   const [isMuted, setIsMuted] = useState(false);
   const [isShuffle, setIsShuffle] = useState(false);
   const [isRepeat, setIsRepeat] = useState(false);
+  const [loadingSurah, setLoadingSurah] = useState<number | null>(null);
 
   // ── Refs ──
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -204,8 +205,14 @@ export default function AudioQuranPage() {
       } catch { }
       return;
     }
-    const urls = await getAyahUrls(surahNum);
-    if (urls.length > 0) playAyahIndex(surahNum, 0);
+    setLoadingSurah(surahNum);
+    try {
+      const urls = await getAyahUrls(surahNum);
+      if (urls.length > 0) playAyahIndex(surahNum, 0);
+      else setPerSurahError((prev: any) => ({ ...prev, [surahNum]: 'Audio unavailable for this reciter.' }));
+    } finally {
+      setLoadingSurah(null);
+    }
   };
 
   const handlePause = () => { audioRef.current?.pause(); setIsPlaying(false); };
@@ -516,14 +523,23 @@ export default function AudioQuranPage() {
 
                             {/* Play button */}
                             <td style={{ padding: "16px 24px", textAlign: "right" }}>
-                              <button
-                                onClick={e => { e.stopPropagation(); handlePlaySurah(s.number); }}
-                                style={{ background: "none", border: "none", cursor: "pointer", color: isNow ? "#f48c25" : "var(--aq-muted)", display: "inline-flex", transition: "color 0.15s" }}
-                              >
-                                <span className="material-symbols-outlined" style={{ fontSize: 32 }}>
-                                  {isNow && isPlaying ? "pause_circle" : "play_circle"}
-                                </span>
-                              </button>
+                              {loadingSurah === s.number ? (
+                                <div style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 32, height: 32 }}>
+                                  <div style={{ width: 20, height: 20, border: "2.5px solid rgba(244,140,37,0.2)", borderTopColor: "#f48c25", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
+                                </div>
+                              ) : (
+                                <button
+                                  onClick={e => { e.stopPropagation(); handlePlaySurah(s.number); }}
+                                  style={{ background: "none", border: "none", cursor: "pointer", color: isNow ? "#f48c25" : "var(--aq-muted)", display: "inline-flex", transition: "color 0.15s" }}
+                                >
+                                  <span className="material-symbols-outlined" style={{ fontSize: 32 }}>
+                                    {isNow && isPlaying ? "pause_circle" : "play_circle"}
+                                  </span>
+                                </button>
+                              )}
+                              {perSurahError[s.number] && (
+                                <div style={{ fontSize: 10, color: "#ef4444", marginTop: 2 }}>{perSurahError[s.number]}</div>
+                              )}
                             </td>
                           </tr>
                         );
