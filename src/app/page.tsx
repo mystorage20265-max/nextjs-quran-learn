@@ -175,6 +175,13 @@ export default function HomePage() {
     return () => obs.disconnect();
   }, []);
 
+  const toggleDark = () => {
+    const html = document.documentElement;
+    const next = !dark;
+    next ? html.classList.add('dark') : html.classList.remove('dark');
+    setDark(next);
+  };
+
   // Close dropdown on outside click
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -340,6 +347,22 @@ export default function HomePage() {
                 </div>
               )}
             </div>
+            {/* Dark mode toggle */}
+            <button
+              onClick={toggleDark}
+              aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
+              style={{
+                width: 36, height: 36, borderRadius: 10, border: 'none', cursor: 'pointer',
+                background: dark ? '#1e3a2a' : '#f1f5f9',
+                color: dark ? '#11d442' : '#64748b',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                flexShrink: 0, transition: 'background 0.18s, color 0.18s',
+              }}
+            >
+              <span className="material-symbols-outlined" style={{ fontSize: 20 }}>
+                {dark ? 'light_mode' : 'dark_mode'}
+              </span>
+            </button>
             <Link href="/read-quran/1" style={{ background: '#11d442', color: 'white', borderRadius: 12, padding: '9px 14px', fontWeight: 600, fontSize: 13.5, display: 'flex', alignItems: 'center', gap: 6, boxShadow: '0 4px 14px rgba(17,212,66,0.3)', textDecoration: 'none', flexShrink: 0 }}>
               <span className="material-symbols-outlined" style={{ fontSize: 18 }}>play_circle</span>
               <span className="hp-qs-hide">Quick Start</span>

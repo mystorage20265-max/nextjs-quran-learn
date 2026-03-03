@@ -7,8 +7,6 @@ import './ComingSoon.css';
 interface ComingSoonProps {
     title?: string;
     subtitle?: string;
-    primaryLink?: string;
-    primaryLinkText?: string;
 }
 
 const FEATURES = [
@@ -32,8 +30,6 @@ const FEATURES = [
 export default function ComingSoon({
     title = 'Coming Soon',
     subtitle = "We're building something extraordinary",
-    primaryLink = '/',
-    primaryLinkText = 'Back to Home',
 }: ComingSoonProps) {
     const [progress, setProgress] = useState(0);
 
@@ -116,15 +112,6 @@ export default function ComingSoon({
                 </div>
             </main>
 
-            {/* ── Footer ── */}
-            <footer className="cs-footer">
-                <span className="cs-footer-copy">© 2025 Nur Quran — The Art of Learning</span>
-                <div className="cs-footer-links">
-                    <Link href={primaryLink}>{primaryLinkText}</Link>
-                    <a href="#">Privacy</a>
-                    <a href="#">Contact</a>
-                </div>
-            </footer>
         </div>
     );
 }
