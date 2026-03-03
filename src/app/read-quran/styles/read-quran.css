@@ -16,7 +16,7 @@
 
 /* ============ VARIABLES ============ */
 :root {
-  /* Colors - Vercel Inspired Deep Teal Theme */
+  /* Colors - Light Theme */
   --rq-primary: #10b981;
   /* Emerald 500 */
   --rq-primary-hover: #059669;
@@ -24,18 +24,17 @@
   --rq-secondary: #0ea5e9;
   --rq-accent: #f59e0b;
 
-  --rq-bg: #001f2b;
-  /* Deep Dark Teal */
-  --rq-bg-subtle: rgba(0, 31, 43, 0.8);
-  --rq-bg-card: rgba(0, 48, 63, 0.3);
+  --rq-bg: #ffffff;
+  /* White */
+  --rq-bg-subtle: rgba(255, 255, 255, 0.9);
+  --rq-bg-card: rgba(255, 255, 255, 0.95);
 
-  --rq-text: #f8fafc;
-  --rq-text-secondary: #94a3b8;
-  --rq-text-muted: #64748b;
+  --rq-text: #0f172a;
+  --rq-text-secondary: #475569;
+  --rq-text-muted: #94a3b8;
 
-  --rq-border: rgba(255, 255, 255, 0.08);
-  /* Vercel 0.8px solid */
-  --rq-glass-border: rgba(255, 255, 255, 0.1);
+  --rq-border: rgba(0, 0, 0, 0.08);
+  --rq-glass-border: rgba(0, 0, 0, 0.1);
 
   /* Gradients */
   --rq-gradient-primary: linear-gradient(
@@ -45,8 +44,8 @@
   );
   --rq-gradient-card: linear-gradient(
     145deg,
-    rgba(255, 255, 255, 0.05) 0%,
-    rgba(255, 255, 255, 0.02) 100%
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(255, 255, 255, 0.9) 100%
   );
 
   /* Typography */
