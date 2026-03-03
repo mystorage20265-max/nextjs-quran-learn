@@ -237,7 +237,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
     const { surahNumber: surahNumberStr } = use(params);
     const surahNumber = parseInt(surahNumberStr);
     const searchParams = useSearchParams();
-    const initialMode = searchParams?.get('mode') ?? 'translation';
+    const initialMode = searchParams?.get('mode') ?? 'reading';
 
     const [chapter, setChapter] = useState<Chapter | null>(null);
     const [verses, setVerses] = useState<VerseWithTranslation[]>([]);
@@ -270,6 +270,10 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
     const [bookmarks, setBookmarks] = useState<string[]>([]);
     const [expandedTafsir, setExpandedTafsir] = useState<number | null>(null);
     const [toast, setToast] = useState<{ message: string; type: 'success' | 'warning' } | null>(null);
+
+    // Tooltip state for word meanings
+    const [tooltip, setTooltip] = useState<{ meaning: string; x: number; y: number } | null>(null);
+    const tooltipRef = useRef<HTMLDivElement | null>(null);
 
     // Load chapter data
     useEffect(() => {
@@ -745,7 +749,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
 
                     {/* Mode tabs */}
                     <div className="nq-mode-tabs">
-                        {(['translation', 'word-by-word', 'reading'] as ReadingMode[]).map(m => (
+                        {(['reading', 'translation', 'word-by-word'] as ReadingMode[]).map(m => (
                             <button key={m} className={`nq-mode-tab ${readingMode === m ? 'active' : ''}`} onClick={() => setReadingMode(m)}>
                                 {m === 'word-by-word' ? 'Word by Word' : m.charAt(0).toUpperCase() + m.slice(1)}
                             </button>
@@ -830,7 +834,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                         }
 
                                         const renderVerseWords = (verse: typeof versesToRender[0]) => {
-                                            let words: { text: string; key: string | number }[] = [];
+                                            let words: { text: string; key: string | number; translation?: string; transliteration?: string }[] = [];
                                             // Use verse-level text_indopak (from QuranCDN via getVersesWithWords).
                                             // It has proper kasra/fatha/damma on all words (e.g. اِهدِنَا with kasra).
                                             // cleanIndopakText strips Quran-specific chars (ۡ U+06E1) but preserves
@@ -858,13 +862,28 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                 }
                                                 if (verseTokens.length > 0 && verseTokens.length === wordList.length) {
                                                     // Perfect match — use verse-level tokens (proper kasra/fatha from IndoPak)
-                                                    words = wordList.map((w: any, i: number) => ({ text: verseTokens[i], key: w.id || w.position }));
+                                                    words = wordList.map((w: any, i: number) => ({ 
+                                                        text: verseTokens[i], 
+                                                        key: w.id || w.position,
+                                                        translation: w.translation?.text || '',
+                                                        transliteration: w.transliteration?.text || ''
+                                                    }));
                                                 } else if (verseTokens.length > 0) {
                                                     // Token count mismatch — still use verse tokens (better diacritics than per-word fields)
-                                                    words = verseTokens.map((tok, i) => ({ text: tok, key: i }));
+                                                    words = verseTokens.map((tok, i) => ({ 
+                                                        text: tok, 
+                                                        key: i,
+                                                        translation: wordList[i]?.translation?.text || '',
+                                                        transliteration: wordList[i]?.transliteration?.text || ''
+                                                    }));
                                                 } else {
                                                     // No verse text — last resort: per-word imlaei
-                                                    words = wordList.map((w: any) => ({ text: w.text_imlaei || w.text_uthmani, key: w.id || w.position }));
+                                                    words = wordList.map((w: any) => ({ 
+                                                        text: w.text_imlaei || w.text_uthmani, 
+                                                        key: w.id || w.position,
+                                                        translation: w.translation?.text || '',
+                                                        transliteration: w.transliteration?.text || ''
+                                                    }));
                                                 }
                                             } else {
                                                 // No word data at all — use the verse-level tokens directly
@@ -936,10 +955,24 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                                                         borderRadius: 4,
                                                                                         transition: 'background 0.15s',
                                                                                         background: currentVerse === verse.verse_number ? 'rgba(66,133,244,0.08)' : 'transparent',
+                                                                                        position: 'relative'
                                                                                     }}
                                                                                     onClick={() => playVerse(verse.verse_number)}
-                                                                                    onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = 'rgba(66,133,244,0.1)'; }}
-                                                                                    onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = currentVerse === verse.verse_number ? 'rgba(66,133,244,0.08)' : 'transparent'; }}
+                                                                                    onMouseEnter={(e) => {
+                                                                                        (e.currentTarget as HTMLElement).style.background = 'rgba(66,133,244,0.1)';
+                                                                                        if (word.translation) {
+                                                                                            const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+                                                                                            setTooltip({
+                                                                                                meaning: word.translation,
+                                                                                                x: rect.left + rect.width / 2,
+                                                                                                y: rect.top - 8
+                                                                                            });
+                                                                                        }
+                                                                                    }}
+                                                                                    onMouseLeave={(e) => {
+                                                                                        (e.currentTarget as HTMLElement).style.background = currentVerse === verse.verse_number ? 'rgba(66,133,244,0.08)' : 'transparent';
+                                                                                        setTooltip(null);
+                                                                                    }}
                                                                                 >
                                                                                     {word.text}
                                                                                 </span>
@@ -1142,6 +1175,55 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
 
             {/* Toast */}
             {toast && <div className={`reader-toast ${toast.type}`}>{toast.message}</div>}
+
+            {/* Word Meaning Tooltip */}
+            {tooltip && (
+                <div
+                    ref={tooltipRef}
+                    style={{
+                        position: 'fixed',
+                        left: `${tooltip.x}px`,
+                        top: `${tooltip.y}px`,
+                        transform: 'translateX(-50%)',
+                        zIndex: 1000,
+                        pointerEvents: 'none',
+                        animation: 'fadeIn 0.15s ease-out'
+                    }}
+                >
+                    <div
+                        style={{
+                            background: '#1e293b',
+                            color: '#f1f5f9',
+                            padding: '8px 12px',
+                            borderRadius: '6px',
+                            fontSize: '13px',
+                            fontWeight: 500,
+                            whiteSpace: 'nowrap',
+                            maxWidth: '200px',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            boxShadow: '0 4px 12px rgba(0,0,0,0.25)',
+                            fontFamily: "'Lexend', sans-serif",
+                            letterSpacing: '0.3px'
+                        }}
+                    >
+                        {tooltip.meaning}
+                    </div>
+                    <div
+                        style={{
+                            position: 'absolute',
+                            bottom: '-4px',
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                            width: 0,
+                            height: 0,
+                            borderLeft: '5px solid transparent',
+                            borderRight: '5px solid transparent',
+                            borderTop: '5px solid #1e293b'
+                        }}
+                    />
+                </div>
+            )}
 
             {/* Close dropdowns on outside click */}
             {showVerseNav && <div style={{ position: 'fixed', inset: 0, zIndex: 50 }} onClick={() => setShowVerseNav(false)} />}

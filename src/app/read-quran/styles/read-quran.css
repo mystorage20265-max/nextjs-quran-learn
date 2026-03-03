@@ -16,6 +16,9 @@
 
 /* ============ VARIABLES ============ */
 :root {
+  /* Container width - centered layout */
+  --rq-container-width: 900px;
+
   /* Colors - Light Theme */
   --rq-primary: #10b981;
   /* Emerald 500 */
