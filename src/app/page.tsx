@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 
 const SURAHS = [
@@ -137,6 +137,8 @@ const STATS = [
 export default function HomePage() {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [query, setQuery] = useState('');
+  const [showDropdown, setShowDropdown] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
   const [typeFilter, setTypeFilter] = useState<'All' | 'Meccan' | 'Medinan'>('All');
   const [showAll, setShowAll] = useState(false);
   const [recent, setRecent] = useState<typeof SURAHS>([]);
@@ -172,6 +174,24 @@ export default function HomePage() {
     obs.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
     return () => obs.disconnect();
   }, []);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  const dropdownResults = query.trim()
+    ? SURAHS.filter(s => {
+      const q = query.toLowerCase();
+      return s.name.toLowerCase().includes(q) || s.ar.includes(q) || s.meaning.toLowerCase().includes(q) || String(s.num) === q;
+    }).slice(0, 6)
+    : [];
 
   // Session timer — ticks every second
   useEffect(() => {
@@ -263,12 +283,64 @@ export default function HomePage() {
           {/* Header */}
           <header style={{ position: 'sticky', top: 0, zIndex: 10, background: dark ? 'rgba(13,27,18,0.9)' : 'rgba(246,248,246,0.88)', backdropFilter: 'blur(12px)', borderBottom: `1px solid ${dark ? 'rgba(30,58,42,0.6)' : 'rgba(226,232,240,0.6)'}` }}>
             <div className="hp-header-inner" style={{ maxWidth: 860, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div style={{ flex: 1, position: 'relative' }}>
-                <span className="material-symbols-outlined" style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', fontSize: 20, pointerEvents: 'none' }}>search</span>
-                <input type="text" value={query} onChange={e => { setQuery(e.target.value); setShowAll(true); }} placeholder="Search Surah name, number, or meaning…" style={{ width: '100%', background: dark ? '#111f16' : 'white', border: 'none', borderRadius: 12, padding: '10px 14px 10px 40px', fontSize: 13.5, color: dark ? '#e2e8e5' : '#334155', boxShadow: '0 1px 4px rgba(0,0,0,0.07)', outline: 'none' }}
-                  onFocus={e => (e.target.style.boxShadow = '0 0 0 2px rgba(17,212,66,0.4)')}
+              <div ref={searchRef} style={{ flex: 1, position: 'relative' }}>
+                <span className="material-symbols-outlined" style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', fontSize: 20, pointerEvents: 'none', zIndex: 1 }}>search</span>
+                <input
+                  type="text"
+                  value={query}
+                  onChange={e => { setQuery(e.target.value); setShowAll(true); setShowDropdown(true); }}
+                  onFocus={e => { if (query.trim()) setShowDropdown(true); e.target.style.boxShadow = '0 0 0 2px rgba(17,212,66,0.4)'; }}
+                  onKeyDown={e => { if (e.key === 'Escape') { setShowDropdown(false); } }}
+                  placeholder="Search Surah name, number, or meaning…"
+                  style={{ width: '100%', background: dark ? '#111f16' : 'white', border: 'none', borderRadius: 12, padding: '10px 14px 10px 40px', fontSize: 13.5, color: dark ? '#e2e8e5' : '#334155', boxShadow: '0 1px 4px rgba(0,0,0,0.07)', outline: 'none' }}
                   onBlur={e => (e.target.style.boxShadow = '0 1px 4px rgba(0,0,0,0.07)')}
                 />
+                {/* Search Dropdown */}
+                {showDropdown && dropdownResults.length > 0 && (
+                  <div style={{
+                    position: 'absolute', top: 'calc(100% + 8px)', left: 0, right: 0,
+                    background: dark ? '#111f16' : 'white',
+                    border: `1px solid ${dark ? '#1e3a2a' : '#e2e8f0'}`,
+                    borderRadius: 14, boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
+                    zIndex: 999, overflow: 'hidden',
+                  }}>
+                    {dropdownResults.map((s, i) => (
+                      <Link
+                        key={s.num}
+                        href={`/read-quran/${s.num}`}
+                        onClick={() => { trackVisit(s); setShowDropdown(false); setQuery(''); }}
+                        style={{ textDecoration: 'none', display: 'block' }}
+                      >
+                        <div style={{
+                          display: 'flex', alignItems: 'center', gap: 12,
+                          padding: '10px 16px',
+                          borderTop: i > 0 ? `1px solid ${dark ? '#1e3a2a' : '#f1f5f9'}` : 'none',
+                          cursor: 'pointer', transition: 'background 0.12s',
+                        }}
+                          onMouseEnter={e => (e.currentTarget.style.background = dark ? '#1a2f1f' : '#f8fffe')}
+                          onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                        >
+                          <div style={{ width: 32, height: 32, borderRadius: 8, background: 'rgba(17,212,66,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: '#11d442', fontSize: 12, flexShrink: 0 }}>
+                            {s.num}
+                          </div>
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <p style={{ margin: 0, fontWeight: 600, fontSize: 13.5, color: dark ? '#e2e8e5' : '#0f172a', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{s.name}</p>
+                            <p style={{ margin: 0, fontSize: 11, color: '#94a3b8' }}>{s.meaning} · {s.v} verses</p>
+                          </div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+                            <span style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: s.t === 'Meccan' ? '#11d442' : '#94a3b8' }}>{s.t}</span>
+                            <span style={{ fontFamily: "'Amiri','Scheherazade New',serif", fontSize: 17, color: dark ? '#e2e8e5' : '#1e293b' }}>{s.ar}</span>
+                          </div>
+                        </div>
+                      </Link>
+                    ))}
+                    {/* Footer hint */}
+                    <div style={{ padding: '8px 16px', borderTop: `1px solid ${dark ? '#1e3a2a' : '#f1f5f9'}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontSize: 11, color: '#94a3b8' }}>{SURAHS.filter(s => { const q = query.toLowerCase(); return s.name.toLowerCase().includes(q) || s.ar.includes(q) || s.meaning.toLowerCase().includes(q) || String(s.num) === q; }).length} results · scroll down for all</span>
+                      <span style={{ fontSize: 11, color: '#94a3b8' }}>ESC to close</span>
+                    </div>
+                  </div>
+                )}
               </div>
               <Link href="/read-quran/1" style={{ background: '#11d442', color: 'white', borderRadius: 12, padding: '9px 14px', fontWeight: 600, fontSize: 13.5, display: 'flex', alignItems: 'center', gap: 6, boxShadow: '0 4px 14px rgba(17,212,66,0.3)', textDecoration: 'none', flexShrink: 0 }}>
                 <span className="material-symbols-outlined" style={{ fontSize: 18 }}>play_circle</span>
@@ -323,8 +395,8 @@ export default function HomePage() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ fontSize: 11, ...S.muted }}>All time: <strong style={{ color: '#11d442' }}>{fmtTime(totalTime)}</strong></span>
                   <button
-                    title="Reset all-time counter"
-                    onClick={() => { setTotalTime(0); localStorage.setItem('quranTotalTime', '0'); }}
+                    title="Reset session &amp; all-time counter"
+                    onClick={() => { setSessionTime(0); setTotalTime(0); localStorage.setItem('quranTotalTime', '0'); }}
                     style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 2, display: 'flex', alignItems: 'center', color: '#94a3b8' }}
                   >
                     <span className="material-symbols-outlined" style={{ fontSize: 15 }}>restart_alt</span>
@@ -332,15 +404,20 @@ export default function HomePage() {
                 </div>
               </div>
               {/* Ayah of the Day */}
-              <div style={{ background: 'linear-gradient(135deg,#11d442,#059669)', borderRadius: 16, padding: 18, boxShadow: '0 8px 24px rgba(17,212,66,0.25)', position: 'relative', overflow: 'hidden', minHeight: 140 }}>
-                <span className="material-symbols-outlined" style={{ position: 'absolute', top: -8, right: -14, fontSize: 90, color: 'white', opacity: 0.08, lineHeight: 1 }}>star_half</span>
-                <div style={{ position: 'relative', zIndex: 1 }}>
-                  <span style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.18em', color: 'rgba(255,255,255,0.8)' }}>Ayah of the Day</span>
-                  <p className="font-arabic" dir="rtl" style={{ margin: '8px 0 6px', fontSize: 16, lineHeight: 1.9, textAlign: 'right', color: 'white', fontWeight: 700 }}>فَاذْكُرُونِي أَذْكُرْكُمْ وَاشْكُرُوا لِي وَلَا تَكْفُرُونِ</p>
-                  <p style={{ margin: '0 0 4px', fontSize: 11, fontStyle: 'italic', color: 'rgba(255,255,255,0.88)', lineHeight: 1.5 }}>"So remember Me; I will remember you…"</p>
-                  <p style={{ margin: 0, fontSize: 10, fontWeight: 700, color: 'white' }}>Al-Baqarah 2:152</p>
+              <Link href="/read-quran/2" style={{ textDecoration: 'none', display: 'block' }}>
+                <div style={{ background: 'linear-gradient(135deg,#11d442,#059669)', borderRadius: 16, padding: 18, boxShadow: '0 8px 24px rgba(17,212,66,0.25)', position: 'relative', overflow: 'hidden', minHeight: 140, cursor: 'pointer', transition: 'transform 0.18s ease, box-shadow 0.18s ease' }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-3px)'; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 12px 32px rgba(17,212,66,0.35)'; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = ''; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 8px 24px rgba(17,212,66,0.25)'; }}
+                >
+                  <span className="material-symbols-outlined" style={{ position: 'absolute', top: -8, right: -14, fontSize: 90, color: 'white', opacity: 0.08, lineHeight: 1 }}>star_half</span>
+                  <div style={{ position: 'relative', zIndex: 1 }}>
+                    <span style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.18em', color: 'rgba(255,255,255,0.8)' }}>Ayah of the Day</span>
+                    <p className="font-arabic" dir="rtl" style={{ margin: '8px 0 6px', fontSize: 16, lineHeight: 1.9, textAlign: 'right', color: 'white', fontWeight: 700 }}>فَاذْكُرُونِي أَذْكُرْكُمْ وَاشْكُرُوا لِي وَلَا تَكْفُرُونِ</p>
+                    <p style={{ margin: '0 0 4px', fontSize: 11, fontStyle: 'italic', color: 'rgba(255,255,255,0.88)', lineHeight: 1.5 }}>&quot;So remember Me; I will remember you…&quot;</p>
+                    <p style={{ margin: 0, fontSize: 10, fontWeight: 700, color: 'white' }}>Al-Baqarah 2:152 →</p>
+                  </div>
                 </div>
-              </div>
+              </Link>
             </section>
 
             {/* ── FEATURE SHORTCUTS ── */}

@@ -242,10 +242,11 @@ export default function MemorizeQuranPage() {
             chapter.nameTranslation.toLowerCase().includes(searchQuery.toLowerCase()) ||
             chapter.nameArabic.includes(searchQuery) ||
             chapter.id.toString().includes(searchQuery);
+        const place = (chapter.revelationPlace ?? '').toLowerCase();
         const matchesType =
             typeFilter === 'All' ||
-            (typeFilter === 'Meccan' && chapter.revelationPlace.toLowerCase() === 'makkah') ||
-            (typeFilter === 'Medinan' && chapter.revelationPlace.toLowerCase() === 'madinah');
+            (typeFilter === 'Meccan' && (place === 'makkah' || place === 'mecca')) ||
+            (typeFilter === 'Medinan' && (place === 'madinah' || place === 'medina' || place === 'madinah'));
         return matchesSearch && matchesType;
     });
 
