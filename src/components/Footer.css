@@ -70,40 +70,7 @@
   position: relative;
 }
 
-/* ── Stats strip ── */
-.ftr-stats {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-  margin-bottom: 48px;
-}
 
-.ftr-stat {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  padding: 20px 12px;
-  background: white;
-  border: 1px solid #f1f5f9;
-  border-radius: 14px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
-}
-
-.ftr-stat-num {
-  font-size: 26px;
-  font-weight: 800;
-  color: #11d442;
-  line-height: 1;
-}
-
-.ftr-stat-label {
-  font-size: 11px;
-  font-weight: 600;
-  color: #94a3b8;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
 
 /* ── Main 5-column grid ── */
 .ftr-main {
@@ -363,10 +330,6 @@
 }
 
 @media (max-width: 768px) {
-  .ftr-stats {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
   .ftr-main {
     grid-template-columns: 1fr 1fr;
   }
@@ -384,10 +347,6 @@
   .ftr-main {
     grid-template-columns: 1fr;
     gap: 28px;
-  }
-
-  .ftr-stats {
-    grid-template-columns: repeat(2, 1fr);
   }
 
   .ftr-bottom {

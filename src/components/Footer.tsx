@@ -44,12 +44,7 @@ const Footer: React.FC = () => {
     { icon: <Youtube size={18} />, href: 'https://youtube.com', label: 'YouTube' },
   ];
 
-  const stats = [
-    { num: '114', label: 'Surahs' },
-    { num: '6,236', label: 'Ayahs' },
-    { num: '30', label: 'Juz' },
-    { num: '77,797', label: 'Words' },
-  ];
+
 
   return (
     <footer className="ftr">
@@ -64,15 +59,7 @@ const Footer: React.FC = () => {
 
       <div className="ftr-container">
 
-        {/* ── Stats strip ── */}
-        <div className="ftr-stats">
-          {stats.map(s => (
-            <div key={s.label} className="ftr-stat">
-              <span className="ftr-stat-num">{s.num}</span>
-              <span className="ftr-stat-label">{s.label}</span>
-            </div>
-          ))}
-        </div>
+
 
         {/* ── Main grid: brand + columns + CTA ── */}
         <div className="ftr-main">
