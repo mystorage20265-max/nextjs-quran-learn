@@ -29,6 +29,7 @@ import {
 } from '../lib/api';
 import { saveLastRead, markVerseRead } from '../lib/progress';
 import { parseTranslationWithFootnotes } from '../lib/translationUtils';
+import { trackSurahVisit } from '@/lib/recentSurahs';
 import '../styles/reader.css';
 
 // Clean Indo-Pak text — strips all annotation/mark characters that render as boxes.
@@ -48,9 +49,6 @@ const cleanIndopakText = (text: string): string => {
         .trim();
 };
 
-// Aliases — same comprehensive cleaning used for all modes
-const cleanArabicText = cleanIndopakText;
-const cleanUthmaniText = cleanIndopakText;
 
 const removeBismillah = (text: string): string => {
     if (!text) return '';
@@ -321,6 +319,17 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
         loadWordData();
         return () => { isCancelled = true; };
     }, [readingMode, surahNumber, chapter, verses, selectedTranslation]);
+
+    // Track recently visited surah
+    useEffect(() => {
+        if (!chapter) return;
+        const meta = ALL_SURAHS.find(s => s.number === surahNumber);
+        trackSurahVisit({
+            num: surahNumber,
+            name: chapter.name_simple,
+            ar: meta?.arabic ?? '',
+        });
+    }, [chapter, surahNumber]);
 
     // Load bookmarks
     useEffect(() => {

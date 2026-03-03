@@ -58,16 +58,12 @@ body::before {
   right: 0;
   bottom: 0;
   background-image:
-    radial-gradient(
-      ellipse at 20% 0%,
+    radial-gradient(ellipse at 20% 0%,
       var(--brand-primary-soft) 0%,
-      transparent 50%
-    ),
-    radial-gradient(
-      ellipse at 80% 100%,
+      transparent 50%),
+    radial-gradient(ellipse at 80% 100%,
       var(--accent-teal-soft) 0%,
-      transparent 50%
-    );
+      transparent 50%);
   pointer-events: none;
   z-index: -1;
   opacity: 0.6;
@@ -340,11 +336,9 @@ p {
 }
 
 .btn-primary {
-  background: linear-gradient(
-    135deg,
-    var(--brand-primary) 0%,
-    var(--brand-primary-hover) 100%
-  );
+  background: linear-gradient(135deg,
+      var(--brand-primary) 0%,
+      var(--brand-primary-hover) 100%);
   color: var(--text-inverse);
   border: none;
   box-shadow: 0 4px 14px var(--brand-primary-glow);
@@ -581,12 +575,10 @@ textarea::placeholder {
   content: "";
   flex: 1;
   height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    var(--border-default),
-    transparent
-  );
+  background: linear-gradient(90deg,
+      transparent,
+      var(--border-default),
+      transparent);
 }
 
 .divider-ornamental span {
@@ -698,6 +690,7 @@ textarea::placeholder {
 }
 
 @keyframes pulse {
+
   0%,
   100% {
     opacity: 1;
@@ -719,6 +712,7 @@ textarea::placeholder {
 }
 
 @keyframes float {
+
   0%,
   100% {
     transform: translateY(0);
@@ -730,6 +724,7 @@ textarea::placeholder {
 }
 
 @keyframes glow {
+
   0%,
   100% {
     box-shadow: 0 0 20px var(--brand-primary-glow);
@@ -776,51 +771,49 @@ textarea::placeholder {
 }
 
 /* Stagger children animations */
-.stagger-children > * {
+.stagger-children>* {
   opacity: 0;
   animation: fadeInUp var(--duration-500) var(--ease-out) forwards;
 }
 
-.stagger-children > *:nth-child(1) {
+.stagger-children>*:nth-child(1) {
   animation-delay: 0ms;
 }
 
-.stagger-children > *:nth-child(2) {
+.stagger-children>*:nth-child(2) {
   animation-delay: 100ms;
 }
 
-.stagger-children > *:nth-child(3) {
+.stagger-children>*:nth-child(3) {
   animation-delay: 200ms;
 }
 
-.stagger-children > *:nth-child(4) {
+.stagger-children>*:nth-child(4) {
   animation-delay: 300ms;
 }
 
-.stagger-children > *:nth-child(5) {
+.stagger-children>*:nth-child(5) {
   animation-delay: 400ms;
 }
 
-.stagger-children > *:nth-child(6) {
+.stagger-children>*:nth-child(6) {
   animation-delay: 500ms;
 }
 
-.stagger-children > *:nth-child(7) {
+.stagger-children>*:nth-child(7) {
   animation-delay: 600ms;
 }
 
-.stagger-children > *:nth-child(8) {
+.stagger-children>*:nth-child(8) {
   animation-delay: 700ms;
 }
 
 /* Skeleton loading */
 .skeleton {
-  background: linear-gradient(
-    90deg,
-    var(--bg-card) 25%,
-    var(--bg-card-hover) 50%,
-    var(--bg-card) 75%
-  );
+  background: linear-gradient(90deg,
+      var(--bg-card) 25%,
+      var(--bg-card-hover) 50%,
+      var(--bg-card) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
   border-radius: var(--radius-md);
@@ -941,14 +934,25 @@ textarea::placeholder {
 }
 
 /* ============ GLOBAL SIDEBAR ============ */
-/* Hidden by default (mobile-first). Shown on wide screens. */
+/* Hidden by default (mobile-first). Shown on tablet+. */
 .gsb-root {
   display: none !important;
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 768px) {
   .gsb-root {
     display: flex !important;
+  }
+}
+
+/* Mobile bottom nav: visible only below 768px */
+.gsb-mobile-nav {
+  display: flex !important;
+}
+
+@media (min-width: 768px) {
+  .gsb-mobile-nav {
+    display: none !important;
   }
 }
 
@@ -964,8 +968,8 @@ textarea::placeholder {
   background: #0d1b12;
 }
 
-.app-shell > main,
-.app-shell > div {
+.app-shell>main,
+.app-shell>div {
   flex: 1;
   min-width: 0;
 }

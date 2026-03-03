@@ -3,13 +3,16 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { getRecentSurahs, clearRecentSurahs, RecentSurah } from '@/lib/recentSurahs';
+import './GlobalSidebar.css';
 
+// ── Nav items shared between sidebar and mobile bottom nav ──
 const NAV_LINKS = [
     { icon: 'home', label: 'Home', href: '/' },
     { icon: 'menu_book', label: 'Read Quran', href: '/read-quran/1' },
     { icon: 'ads_click', label: 'Memorize', href: '/memorize-quran' },
-    { icon: 'radio', label: 'Quran Radio', href: '/radio' },
-    { icon: 'music_note', label: 'Audio Quran', href: '/audio-quran' },
+    { icon: 'radio', label: 'Radio', href: '/radio' },
+    { icon: 'music_note', label: 'Audio', href: '/audio-quran' },
     null, // divider
     { icon: 'calculate', label: 'Prayer Times', href: '/prayer-times' },
     { icon: 'star', label: 'Duas', href: '/dua' },
@@ -18,29 +21,28 @@ const NAV_LINKS = [
     { icon: 'login', label: 'Login', href: '/login' },
 ];
 
+// Primary tabs shown in the mobile bottom nav (max 5 for comfortably tappable targets)
+const MOBILE_TABS = [
+    { icon: 'home', label: 'Home', href: '/' },
+    { icon: 'menu_book', label: 'Quran', href: '/read-quran/1' },
+    { icon: 'ads_click', label: 'Memorize', href: '/memorize-quran' },
+    { icon: 'radio', label: 'Radio', href: '/radio' },
+    { icon: 'calculate', label: 'Prayer', href: '/prayer-times' },
+];
 
-export default function GlobalSidebar() {
-    const pathname = usePathname();
-    const [dark, setDark] = useState(false);
-    const [recent, setRecent] = useState<{ num: number; name: string }[]>([]);
+/** Human-readable relative time label */
+function relativeTime(ts: number): string {
+    const diff = Math.floor((Date.now() - ts) / 1000);
+    if (diff < 60) return 'Just now';
+    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+    return `${Math.floor(diff / 86400)}d ago`;
+}
 
-    useEffect(() => {
-        setDark(document.documentElement.classList.contains('dark'));
-        const saved = localStorage.getItem('recentSurahs');
-        if (saved) {
-            try { setRecent(JSON.parse(saved).slice(0, 5)); } catch { }
-        }
-        // Keep dark state in sync with external toggles
-        const obs = new MutationObserver(() =>
-            setDark(document.documentElement.classList.contains('dark'))
-        );
-        obs.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-        return () => obs.disconnect();
-    }, []);
-
+/** Pages where neither sidebar nor mobile nav should appear */
+function useIsExcluded(pathname: string): boolean {
     const p = pathname ?? '';
-    // Hide on full-screen pages
-    const isExcluded =
+    return (
         p.startsWith('/read-quran/') ||
         p.startsWith('/radio/') ||
         p.startsWith('/hizb/') ||
@@ -48,8 +50,40 @@ export default function GlobalSidebar() {
         p.startsWith('/juz/') ||
         p.startsWith('/surah/') ||
         p.startsWith('/ruku/') ||
-        p.startsWith('/page/');
+        p.startsWith('/page/')
+    );
+}
 
+export default function GlobalSidebar() {
+    const pathname = usePathname();
+    const [dark, setDark] = useState(false);
+    const [recent, setRecent] = useState<RecentSurah[]>([]);
+
+    const loadRecent = () => setRecent(getRecentSurahs());
+
+    useEffect(() => {
+        loadRecent();
+
+        // Sync dark mode state
+        setDark(document.documentElement.classList.contains('dark'));
+        const darkObs = new MutationObserver(() =>
+            setDark(document.documentElement.classList.contains('dark'))
+        );
+        darkObs.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+
+        // Same-tab recent updates
+        window.addEventListener('recentSurahsUpdated', loadRecent);
+        // Cross-tab recent updates
+        window.addEventListener('storage', loadRecent);
+
+        return () => {
+            darkObs.disconnect();
+            window.removeEventListener('recentSurahsUpdated', loadRecent);
+            window.removeEventListener('storage', loadRecent);
+        };
+    }, []);
+
+    const isExcluded = useIsExcluded(pathname ?? '');
     if (isExcluded) return null;
 
     const toggleDark = () => {
@@ -60,106 +94,99 @@ export default function GlobalSidebar() {
     };
 
     const isActive = (href: string) => {
+        const p = pathname ?? '';
         if (href === '/') return p === '/';
         return p.startsWith(href.split('?')[0]);
     };
 
     return (
         <>
-            <style>{`
-        .gsb-link {
-          display: flex; align-items: center; gap: 10px;
-          padding: 9px 12px; border-radius: 10px;
-          text-decoration: none; font-weight: 500; font-size: 13.5px;
-          color: #64748b; transition: background 0.15s, color 0.15s;
-          margin: 1px 0;
-        }
-        .gsb-link:hover { background: rgba(17,212,66,0.08); color: #11d442; }
-        .gsb-link.active { background: rgba(17,212,66,0.12); color: #11d442; font-weight: 600; }
-        .dark .gsb-link { color: #94a3b8; }
-        .dark .gsb-link:hover { background: rgba(17,212,66,0.08); color: #11d442; }
-        .dark .gsb-link.active { background: rgba(17,212,66,0.14); color: #11d442; }
-        .gsb-root::-webkit-scrollbar { width: 4px; }
-        .gsb-root::-webkit-scrollbar-thumb { background: rgba(17,212,66,0.2); border-radius: 2px; }
-        .gsb-root::-webkit-scrollbar-track { background: transparent; }
-      `}</style>
-
-            <aside
-                className="gsb-root"
-                style={{
-                    width: 240,
-                    flexShrink: 0,
-                    background: dark ? '#111f16' : 'white',
-                    borderRight: `1px solid ${dark ? '#1e3a2a' : '#e2e8f0'}`,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
-                    padding: '20px 0',
-                    overflowY: 'auto',
-                    position: 'sticky',
-                    top: 0,
-                    height: '100vh',
-                    zIndex: 40,
-                }}
-            >
-                <div style={{ padding: '0 12px', display: 'flex', flexDirection: 'column', gap: 24 }}>
+            {/* ════════════════════════════════════════
+                DESKTOP / TABLET SIDEBAR  (≥ 768px)
+                Visibility controlled by globals.css
+                .gsb-root { display: none }
+                @media (min-width: 768px) { display: flex }
+                ════════════════════════════════════════ */}
+            <aside className="gsb-root" aria-label="Main navigation sidebar">
+                <div className="gsb-inner">
                     {/* Logo + dark toggle */}
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 4px' }}>
-                        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
-                            <div style={{ background: 'rgba(17,212,66,0.15)', borderRadius: 10, padding: 7 }}>
-                                <span className="material-symbols-outlined" style={{ color: '#11d442', fontSize: 24, display: 'block' }}>auto_stories</span>
+                    <div className="gsb-logo-row">
+                        <Link href="/" className="gsb-logo-link" aria-label="Go to homepage">
+                            <div className="gsb-logo-icon">
+                                <span className="material-symbols-outlined" style={{ color: '#11d442', fontSize: 24, display: 'block' }}>
+                                    auto_stories
+                                </span>
                             </div>
                             <div>
-                                <p style={{ margin: 0, fontWeight: 700, fontSize: 15, lineHeight: 1, color: dark ? '#e2e8e5' : '#0f172a' }}>Learn Quran</p>
-                                <p style={{ margin: 0, color: '#11d442', fontSize: 9, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.12em' }}>Learning Hub</p>
+                                <p className="gsb-logo-name">Learn Quran</p>
+                                <p className="gsb-logo-sub">Learning Hub</p>
                             </div>
                         </Link>
                         <button
+                            className="gsb-theme-btn"
                             onClick={toggleDark}
-                            style={{ background: dark ? '#1e3a2a' : '#f1f5f9', border: 'none', borderRadius: 8, padding: 6, cursor: 'pointer', display: 'flex', alignItems: 'center', color: dark ? '#11d442' : '#64748b' }}
+                            aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
                         >
-                            <span className="material-symbols-outlined" style={{ fontSize: 18 }}>{dark ? 'light_mode' : 'dark_mode'}</span>
+                            <span className="material-symbols-outlined" style={{ fontSize: 18 }}>
+                                {dark ? 'light_mode' : 'dark_mode'}
+                            </span>
                         </button>
                     </div>
 
-                    {/* Nav */}
-                    <nav style={{ display: 'flex', flexDirection: 'column' }}>
+                    {/* Nav links */}
+                    <nav className="gsb-nav" aria-label="Sidebar navigation">
                         {NAV_LINKS.map((link, i) =>
                             link === null ? (
-                                <div key={`div-${i}`} style={{ margin: '8px 0', borderTop: `1px solid ${dark ? '#1e3a2a' : '#f1f5f9'}` }} />
+                                <hr key={`div-${i}`} className="gsb-divider" />
                             ) : (
                                 <Link
                                     key={link.href}
                                     href={link.href}
                                     className={`gsb-link${isActive(link.href) ? ' active' : ''}`}
+                                    aria-current={isActive(link.href) ? 'page' : undefined}
                                 >
-                                    <span className="material-symbols-outlined" style={{ fontSize: 20 }}>{link.icon}</span>
+                                    <span className="material-symbols-outlined" style={{ fontSize: 20 }}>
+                                        {link.icon}
+                                    </span>
                                     {link.label}
                                 </Link>
                             )
                         )}
                     </nav>
 
-                    {/* Recently Visited */}
+                    {/* Recently Visited — sidebar only */}
                     {recent.length > 0 && (
-                        <div>
-                            <p style={{ margin: '0 0 8px', fontSize: 10, fontWeight: 700, color: '#11d442', textTransform: 'uppercase', letterSpacing: '0.12em', padding: '0 4px' }}>
-                                Recently Visited
-                            </p>
+                        <div className="gsb-recent-section">
+                            <div className="gsb-recent-header">
+                                <p className="gsb-recent-label">
+                                    <span className="material-symbols-outlined" style={{ fontSize: 13, verticalAlign: 'middle', marginRight: 4 }}>
+                                        history
+                                    </span>
+                                    Recently Visited
+                                </p>
+                                <button
+                                    className="gsb-clear-btn"
+                                    onClick={clearRecentSurahs}
+                                    aria-label="Clear recently visited history"
+                                    title="Clear history"
+                                >
+                                    <span className="material-symbols-outlined" style={{ fontSize: 13 }}>delete_sweep</span>
+                                    Clear
+                                </button>
+                            </div>
                             {recent.map(s => (
                                 <Link
                                     key={s.num}
                                     href={`/read-quran/${s.num}`}
-                                    style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '7px 8px', borderRadius: 8, textDecoration: 'none', transition: 'background 0.15s' }}
-                                    onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = dark ? '#1e3a2a' : '#f8fafc'}
-                                    onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'transparent'}
+                                    className="gsb-recent-link"
+                                    title={`${s.name} — ${relativeTime(s.timestamp)}`}
                                 >
-                                    <span style={{ width: 26, height: 26, background: 'rgba(17,212,66,0.12)', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, color: '#11d442', flexShrink: 0 }}>
-                                        {s.num}
-                                    </span>
-                                    <span style={{ fontSize: 12, fontWeight: 500, color: dark ? '#e2e8e5' : '#0f172a', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                        {s.name}
-                                    </span>
+                                    <span className="gsb-recent-num">{s.num}</span>
+                                    <div className="gsb-recent-info">
+                                        <span className="gsb-recent-name">{s.name}</span>
+                                        {s.ar && <span className="gsb-recent-ar">{s.ar}</span>}
+                                    </div>
+                                    <span className="gsb-recent-time">{relativeTime(s.timestamp)}</span>
                                 </Link>
                             ))}
                         </div>
@@ -167,16 +194,44 @@ export default function GlobalSidebar() {
                 </div>
 
                 {/* Profile */}
-                <div style={{ padding: '12px 12px 0' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: 10, borderRadius: 12, background: dark ? '#1e3a2a' : '#f8fafc', border: `1px solid ${dark ? '#2d4f38' : '#e2e8f0'}` }}>
-                        <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'linear-gradient(135deg,#11d442,#059669)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 700, fontSize: 14, flexShrink: 0 }}>A</div>
+                <div className="gsb-profile-wrap">
+                    <div className="gsb-profile-card">
+                        <div className="gsb-profile-avatar">A</div>
                         <div style={{ minWidth: 0 }}>
-                            <p style={{ margin: 0, fontWeight: 700, fontSize: 12, color: dark ? '#e2e8e5' : '#0f172a', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Ahmed Khalid</p>
-                            <p style={{ margin: 0, fontSize: 10, color: '#94a3b8' }}>Premium Member</p>
+                            <p className="gsb-profile-name">Ahmed Khalid</p>
+                            <p className="gsb-profile-role">Premium Member</p>
                         </div>
                     </div>
                 </div>
             </aside>
+
+            {/* ════════════════════════════════════════
+                MOBILE BOTTOM NAV  (< 768px)
+                Visibility controlled by globals.css
+                .gsb-mobile-nav { display: flex }
+                @media (min-width: 768px) { display: none }
+                ════════════════════════════════════════ */}
+            <nav
+                className="gsb-mobile-nav"
+                aria-label="Mobile bottom navigation"
+            >
+                {MOBILE_TABS.map(tab => (
+                    <Link
+                        key={tab.href}
+                        href={tab.href}
+                        className={`gsb-mob-item${isActive(tab.href) ? ' active' : ''}`}
+                        aria-current={isActive(tab.href) ? 'page' : undefined}
+                        aria-label={tab.label}
+                    >
+                        <span className="gsb-mob-icon">
+                            <span className="material-symbols-outlined" style={{ fontSize: 22 }}>
+                                {tab.icon}
+                            </span>
+                        </span>
+                        <span>{tab.label}</span>
+                    </Link>
+                ))}
+            </nav>
         </>
     );
 }

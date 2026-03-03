@@ -86,7 +86,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
         <link
-          href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&family=Noto+Sans+Arabic:wght@400;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&family=Noto+Sans+Arabic:wght@400;700&family=Amiri:wght@400;700&display=swap"
           rel="stylesheet"
         />
         <link

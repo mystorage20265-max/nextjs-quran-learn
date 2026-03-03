@@ -1,0 +1,439 @@
+/* ── GlobalSidebar.css ── */
+
+/* ── Root aside ── */
+.gsb-root {
+  width: 240px;
+  flex-shrink: 0;
+  background: white;
+  border-right: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px 0;
+  overflow-y: auto;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  z-index: 40;
+}
+
+.dark .gsb-root {
+  background: #111f16;
+  border-right-color: #1e3a2a;
+}
+
+/* ── Scrollbar ── */
+.gsb-root::-webkit-scrollbar {
+  width: 4px;
+}
+
+.gsb-root::-webkit-scrollbar-thumb {
+  background: rgba(17, 212, 66, 0.2);
+  border-radius: 2px;
+}
+
+.gsb-root::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ── Inner wrapper ── */
+.gsb-inner {
+  padding: 0 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ── Logo row ── */
+.gsb-logo-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px;
+}
+
+.gsb-logo-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.gsb-logo-icon {
+  background: rgba(17, 212, 66, 0.15);
+  border-radius: 10px;
+  padding: 7px;
+}
+
+.gsb-logo-name {
+  margin: 0;
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 1;
+  color: #0f172a;
+}
+
+.dark .gsb-logo-name {
+  color: #e2e8e5;
+}
+
+.gsb-logo-sub {
+  margin: 0;
+  color: #11d442;
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+/* ── Dark toggle button ── */
+.gsb-theme-btn {
+  background: #f1f5f9;
+  border: none;
+  border-radius: 8px;
+  padding: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  color: #64748b;
+}
+
+.dark .gsb-theme-btn {
+  background: #1e3a2a;
+  color: #11d442;
+}
+
+/* ── Nav ── */
+.gsb-nav {
+  display: flex;
+  flex-direction: column;
+}
+
+.gsb-divider {
+  margin: 8px 0;
+  border: none;
+  border-top: 1px solid #f1f5f9;
+}
+
+.dark .gsb-divider {
+  border-top-color: #1e3a2a;
+}
+
+.gsb-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 13.5px;
+  color: #64748b;
+  transition: background 0.15s, color 0.15s;
+  margin: 1px 0;
+}
+
+.gsb-link:hover {
+  background: rgba(17, 212, 66, 0.08);
+  color: #11d442;
+}
+
+.gsb-link.active {
+  background: rgba(17, 212, 66, 0.12);
+  color: #11d442;
+  font-weight: 600;
+}
+
+.dark .gsb-link {
+  color: #94a3b8;
+}
+
+.dark .gsb-link:hover {
+  background: rgba(17, 212, 66, 0.08);
+  color: #11d442;
+}
+
+.dark .gsb-link.active {
+  background: rgba(17, 212, 66, 0.14);
+  color: #11d442;
+}
+
+/* ── Recently Visited ── */
+.gsb-recent-section {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.gsb-recent-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.gsb-recent-label {
+  margin: 0;
+  font-size: 10px;
+  font-weight: 700;
+  color: #11d442;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  padding: 0 4px;
+  display: flex;
+  align-items: center;
+}
+
+.gsb-clear-btn {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 600;
+  color: #94a3b8;
+  padding: 2px 6px;
+  border-radius: 6px;
+  transition: background 0.15s, color 0.15s;
+}
+
+.gsb-clear-btn:hover {
+  background: rgba(239, 68, 68, 0.08);
+  color: #ef4444;
+}
+
+.dark .gsb-clear-btn:hover {
+  background: rgba(239, 68, 68, 0.12);
+  color: #f87171;
+}
+
+.gsb-recent-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 8px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+
+.gsb-recent-link:hover {
+  background: #f8fafc;
+}
+
+.dark .gsb-recent-link:hover {
+  background: #1e3a2a;
+}
+
+.gsb-recent-num {
+  width: 26px;
+  height: 26px;
+  background: rgba(17, 212, 66, 0.12);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: #11d442;
+  flex-shrink: 0;
+}
+
+.gsb-recent-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.gsb-recent-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: #0f172a;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.3;
+}
+
+.dark .gsb-recent-name {
+  color: #e2e8e5;
+}
+
+.gsb-recent-ar {
+  font-size: 12px;
+  color: #64748b;
+  font-family: 'Amiri', 'Scheherazade New', serif;
+  direction: rtl;
+  text-align: right;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dark .gsb-recent-ar {
+  color: #94a3b8;
+}
+
+.gsb-recent-time {
+  font-size: 9.5px;
+  color: #94a3b8;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* ── Profile card ── */
+.gsb-profile-wrap {
+  padding: 12px 12px 0;
+}
+
+.gsb-profile-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.dark .gsb-profile-card {
+  background: #1e3a2a;
+  border-color: #2d4f38;
+}
+
+.gsb-profile-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #11d442, #059669);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.gsb-profile-name {
+  margin: 0;
+  font-weight: 700;
+  font-size: 12px;
+  color: #0f172a;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dark .gsb-profile-name {
+  color: #e2e8e5;
+}
+
+.gsb-profile-role {
+  margin: 0;
+  font-size: 10px;
+  color: #94a3b8;
+}
+
+/* ══════════════════════════════════════════
+   ── Mobile Bottom Navigation (< 768px) ──
+   Controlled by .gsb-mobile-nav in globals.css
+   ══════════════════════════════════════════ */
+.gsb-mobile-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 9000;
+  background: white;
+  border-top: 1px solid #e2e8f0;
+  padding: 6px 0 env(safe-area-inset-bottom, 6px);
+  display: flex !important;
+  align-items: stretch;
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.06);
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.dark .gsb-mobile-nav {
+  background: #111f16;
+  border-top-color: #1e3a2a;
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.25);
+}
+
+/* Each tab item */
+.gsb-mob-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 4px 2px;
+  text-decoration: none;
+  color: #94a3b8;
+  font-size: 10px;
+  font-weight: 500;
+  transition: color 0.15s;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.gsb-mob-item:hover {
+  color: #11d442;
+}
+
+.gsb-mob-item.active {
+  color: #11d442;
+}
+
+.dark .gsb-mob-item {
+  color: #64748b;
+}
+
+.dark .gsb-mob-item:hover,
+.dark .gsb-mob-item.active {
+  color: #11d442;
+}
+
+/* Active indicator dot above icon */
+.gsb-mob-item.active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 24px;
+  height: 2px;
+  background: #11d442;
+  border-radius: 0 0 2px 2px;
+}
+
+.gsb-mob-item {
+  position: relative;
+}
+
+/* Icon wrapper — subtle filled bg on active */
+.gsb-mob-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 28px;
+  border-radius: 8px;
+  transition: background 0.15s;
+}
+
+.gsb-mob-item.active .gsb-mob-icon {
+  background: rgba(17, 212, 66, 0.1);
+}
+
+/* Add padding to page content on mobile so it doesn't hide behind the nav */
+@media (max-width: 767px) {
+  body {
+    padding-bottom: 68px;
+  }
+}
