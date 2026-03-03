@@ -148,12 +148,13 @@ export default function AudioQuranPage() {
     }
   }, [volume, isMuted]);
 
-  // ── Fetch ayah URLs ──
-  const getAyahUrls = useCallback(async (surahNum: number) => {
-    if (!selectedReciter) return [];
-    if (ayahLists[surahNum]) return ayahLists[surahNum];
+  // ── Fetch ayah URLs (reciterOverride lets us fetch before state updates) ──
+  const getAyahUrls = useCallback(async (surahNum: number, reciterOverride?: string) => {
+    const reciter = reciterOverride ?? selectedReciter;
+    if (!reciter) return [];
+    if (!reciterOverride && ayahLists[surahNum]) return ayahLists[surahNum];
     try {
-      const res = await fetch(SURAH_AUDIO_API(surahNum, selectedReciter));
+      const res = await fetch(SURAH_AUDIO_API(surahNum, reciter));
       if (!res.ok) throw new Error("Failed to fetch audio");
       const json = await res.json();
       const urls = json.data?.ayahs?.map((a: any) => a.audio) || [];
@@ -164,6 +165,33 @@ export default function AudioQuranPage() {
       return [];
     }
   }, [selectedReciter, ayahLists]);
+
+  // ── Switch reciter (re-plays current surah with new voice if playing) ──
+  const handleReciterChange = async (reciterId: string) => {
+    setSelectedReciter(reciterId);
+    setAyahLists({});
+    setPerSurahError({});
+    if (nowPlayingSurah == null) return;
+    // Stop current audio immediately
+    audioRef.current?.pause();
+    setIsPlaying(false);
+    setLoadingSurah(nowPlayingSurah);
+    try {
+      const urls = await getAyahUrls(nowPlayingSurah, reciterId);
+      if (urls.length > 0) {
+        // Update cache so playAyahIndex uses new URLs
+        setAyahLists({ [nowPlayingSurah]: urls });
+        const audio = audioRef.current!;
+        audio.src = urls[0];
+        playPromiseRef.current = audio.play();
+        await playPromiseRef.current;
+        playPromiseRef.current = null;
+        setNowPlayingAyahIndex(0);
+        setIsPlaying(true);
+      }
+    } catch { }
+    finally { setLoadingSurah(null); }
+  };
 
   // ── Safe play ──
   const playAyahIndex = async (surahNum: number, index: number) => {
@@ -316,7 +344,7 @@ export default function AudioQuranPage() {
           {/* Reciter selector */}
           <select
             value={selectedReciter}
-            onChange={e => { setSelectedReciter(e.target.value); setAyahLists({}); setPerSurahError({}); }}
+            onChange={e => handleReciterChange(e.target.value)}
             style={{
               background: "var(--aq-input-bg)", border: "1px solid var(--aq-border)",
               borderRadius: 8, padding: "0 10px", height: 36, fontSize: 12,
@@ -574,7 +602,7 @@ export default function AudioQuranPage() {
                 {topReciters.map((r: any, i: number) => (
                   <div
                     key={r.identifier}
-                    onClick={() => { setSelectedReciter(r.identifier); setAyahLists({}); setPerSurahError({}); }}
+                    onClick={() => handleReciterChange(r.identifier)}
                     style={{
                       display: "flex", alignItems: "center", gap: 12,
                       padding: "10px 10px", borderRadius: 12, cursor: "pointer",

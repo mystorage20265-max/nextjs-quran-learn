@@ -232,7 +232,7 @@ export default function HomePage() {
 
 
   const S = {
-    shell: { display: 'flex', flexDirection: 'column' as const, flex: 1, minHeight: '100vh', background: dark ? '#0d1b12' : '#f6f8f6', fontFamily: "'Figtree','Lexend',sans-serif" },
+    shell: { display: 'flex', flexDirection: 'column' as const, flex: 1, minHeight: '100vh', background: dark ? '#0d1b12' : 'white', fontFamily: "'Figtree','Lexend',sans-serif" },
     card: { background: dark ? '#111f16' : 'white', border: `1px solid ${dark ? '#1e3a2a' : '#f1f5f9'}`, borderRadius: 16, boxShadow: '0 1px 4px rgba(0,0,0,0.06)' },
     text: { color: dark ? '#e2e8e5' : '#0f172a' },
     muted: { color: '#94a3b8' },
@@ -279,7 +279,7 @@ export default function HomePage() {
 
       <div style={S.shell}>
         {/* Header — outside scroll container so dropdown isn't clipped */}
-        <header style={{ position: 'relative', zIndex: 200, background: dark ? 'rgba(13,27,18,0.97)' : 'rgba(246,248,246,0.97)', backdropFilter: 'blur(12px)', borderBottom: `1px solid ${dark ? 'rgba(30,58,42,0.6)' : 'rgba(226,232,240,0.6)'}`, flexShrink: 0 }}>
+        <header style={{ position: 'relative', zIndex: 200, background: dark ? 'rgba(13,27,18,0.97)' : 'rgba(255,255,255,0.97)', backdropFilter: 'blur(12px)', borderBottom: `1px solid ${dark ? 'rgba(30,58,42,0.6)' : 'rgba(226,232,240,0.6)'}`, flexShrink: 0 }}>
           <div className="hp-header-inner" style={{ maxWidth: 860, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 12 }}>
             <div ref={searchRef} style={{ flex: 1, position: 'relative' }}>
               <span className="material-symbols-outlined" style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', fontSize: 20, pointerEvents: 'none', zIndex: 1 }}>search</span>
@@ -347,7 +347,7 @@ export default function HomePage() {
           </div>
         </header>
         {/* MAIN — scrollable content only */}
-        <main className="hp-scroll hp-dot" style={{ flex: 1, overflowY: 'auto', minHeight: 0, background: dark ? '#0d1b12' : '#f6f8f6' }}>
+        <main className="hp-scroll hp-dot" style={{ flex: 1, overflowY: 'auto', minHeight: 0, background: dark ? '#0d1b12' : 'white' }}>
           <div className="hp-content" style={{ maxWidth: 860, margin: '0 auto' }}>
 
             {/* ── STATS BAR ── */}
