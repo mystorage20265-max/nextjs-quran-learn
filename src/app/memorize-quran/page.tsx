@@ -244,7 +244,8 @@ export default function MemorizeQuranPage() {
             chapter.id.toString().includes(searchQuery);
         const matchesType =
             typeFilter === 'All' ||
-            chapter.revelationPlace.toLowerCase() === typeFilter.toLowerCase();
+            (typeFilter === 'Meccan' && chapter.revelationPlace.toLowerCase() === 'makkah') ||
+            (typeFilter === 'Medinan' && chapter.revelationPlace.toLowerCase() === 'madinah');
         return matchesSearch && matchesType;
     });
 

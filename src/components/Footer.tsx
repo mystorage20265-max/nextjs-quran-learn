@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import {
   Facebook,
-  Twitter,
+  X,
   Instagram,
   Youtube,
   Shield,
@@ -45,7 +45,7 @@ const Footer: React.FC = () => {
 
   const socials = [
     { icon: <Facebook size={20} />, href: 'https://facebook.com', label: 'Facebook', color: '#1877F2' },
-    { icon: <Twitter size={20} />, href: 'https://twitter.com', label: 'Twitter', color: '#1DA1F2' },
+    { icon: <X size={20} />, href: 'https://x.com', label: 'X (Twitter)', color: '#000000' },
     { icon: <Instagram size={20} />, href: 'https://instagram.com', label: 'Instagram', color: '#E4405F' },
     { icon: <Youtube size={20} />, href: 'https://youtube.com', label: 'Youtube', color: '#FF0000' },
   ];
