@@ -285,7 +285,7 @@ export default function AdvancedRadioPage() {
         backdropFilter: 'blur(12px)',
         borderBottom: isDark ? '1px solid rgba(16,185,129,0.1)' : '1px solid #e2e8f0',
       }}>
-        <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: 72 }}>
+        <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 clamp(12px, 4vw, 24px)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: 72 }}>
           {/* Logo + Nav Links */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -354,7 +354,7 @@ export default function AdvancedRadioPage() {
       </nav>
 
       {/* MAIN */}
-      <main style={{ maxWidth: 1280, margin: '0 auto', padding: '48px 24px', paddingBottom: 160 }}>
+      <main style={{ maxWidth: 1280, margin: '0 auto', padding: 'clamp(24px, 6vw, 48px) clamp(12px, 4vw, 24px)', paddingBottom: 160 }}>
         {/* Hero Header */}
         <div style={{ marginBottom: 48, position: 'relative' }}>
           <div style={{
@@ -882,6 +882,11 @@ export default function AdvancedRadioPage() {
         
         @media (max-width: 768px) {
           .reciter-portrait-card:hover { transform: none !important; }
+          nav { padding: 0 !important; }
+        }
+        
+        @media (max-width: 640px) {
+          main { padding-left: 12px !important; padding-right: 12px !important; }
         }
       `}</style>
     </div>
