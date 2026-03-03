@@ -70,12 +70,12 @@
 
 /* ============ GLOBAL RESET & BASE ============ */
 .read-quran-page {
-  background-color: var(--rq-bg);
   min-height: 100vh;
   color: var(--rq-text);
   font-family: var(--rq-font-sans);
   overflow-x: hidden;
   /* Prevent horizontal scroll */
+  background: transparent;
 }
 
 /* CRITICAL: Reset any unwanted list markers or pseudo-elements */
@@ -92,12 +92,13 @@
   /* Top padding for fixed header if any */
   position: relative;
   z-index: 1;
+  background-color: var(--rq-bg);
 }
 
 /* Background Particles (Pseudo-element for performance) */
 .read-quran-page::before {
   content: "";
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;

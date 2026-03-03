@@ -43,7 +43,6 @@ function relativeTime(ts: number): string {
 function useIsExcluded(pathname: string): boolean {
     const p = pathname ?? '';
     return (
-        p.startsWith('/read-quran/') ||
         p.startsWith('/radio/') ||
         p.startsWith('/hizb/') ||
         p.startsWith('/manzil/') ||
