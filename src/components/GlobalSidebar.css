@@ -357,6 +357,13 @@
   transition: background 0.2s, border-color 0.2s;
 }
 
+/* Hide on tablet and laptop */
+@media (min-width: 768px) {
+  .gsb-mobile-nav {
+    display: none !important;
+  }
+}
+
 .dark .gsb-mobile-nav {
   background: #111f16;
   border-top-color: #1e3a2a;

@@ -246,10 +246,12 @@ export default function AdvancedRadioPage() {
     <div
       style={{
         minHeight: '100vh',
-        background: isDark ? '#020617' : '#f8fafc',
+        background: isDark ? '#0d1b12' : '#f8faf7',
         color: isDark ? '#f1f5f9' : '#0f172a',
         fontFamily: "'Inter', sans-serif",
-        backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l15 30-15 30-15-30z' fill='%23065f46' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E\")",
+        backgroundImage: isDark 
+          ? "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l15 30-15 30-15-30z' fill='%2310b981' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E\")"
+          : "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l15 30-15 30-15-30z' fill='%2310b981' fill-opacity='0.02' fill-rule='evenodd'/%3E%3C/svg%3E\")",
         transition: 'background 0.3s, color 0.3s',
       }}
     >
@@ -279,29 +281,27 @@ export default function AdvancedRadioPage() {
       {/* NAV */}
       <nav style={{
         position: 'sticky', top: 0, zIndex: 50,
-        background: isDark ? 'rgba(15,23,42,0.85)' : 'rgba(255,255,255,0.85)',
+        background: isDark ? 'rgba(13,27,18,0.95)' : 'rgba(255,255,255,0.95)',
         backdropFilter: 'blur(12px)',
-        borderBottom: isDark ? '1px solid #1e293b' : '1px solid #e2e8f0',
+        borderBottom: isDark ? '1px solid rgba(16,185,129,0.1)' : '1px solid #e2e8f0',
       }}>
         <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: 72 }}>
           {/* Logo + Nav Links */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <div style={{ width: 40, height: 40, background: '#065f46', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div style={{ width: 40, height: 40, background: '#10b981', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(16,185,129,0.3)' }}>
                 <span className="material-icons-round" style={{ color: 'white', fontSize: 24 }}>radio</span>
               </div>
-              <span style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 700, fontSize: 20, color: isDark ? '#34d399' : '#065f46', letterSpacing: '-0.02em' }}>Quran Radio</span>
+              <span style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 700, fontSize: 20, color: '#10b981', letterSpacing: '-0.02em' }}>Quran Radio</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
               {[
                 { href: '/', icon: 'home', label: 'Home' },
                 { href: '/read-quran/1', icon: 'auto_stories', label: 'Read Quran' },
-                { href: '/learn-quran', icon: 'school', label: 'Learn' },
                 { href: '/memorize-quran', icon: 'psychology', label: 'Memorize' },
               ].map(link => (
-                <Link key={link.href} href={link.href} style={{ display: 'flex', alignItems: 'center', gap: 6, color: isDark ? '#94a3b8' : '#64748b', textDecoration: 'none', fontSize: 14, fontWeight: 500 }}>
+                <Link key={link.href} href={link.href} style={{ display: 'flex', alignItems: 'center', gap: 6, color: isDark ? '#94a3b8' : '#64748b', textDecoration: 'none', fontSize: 14, fontWeight: 500, transition: 'color 0.2s' }} onMouseEnter={e => e.currentTarget.style.color = '#10b981'} onMouseLeave={e => e.currentTarget.style.color = isDark ? '#94a3b8' : '#64748b'}>
                   <span className="material-icons-round" style={{ fontSize: 20 }}>{link.icon}</span>
-                  <span style={{ display: 'none' }} className="nav-label-show">{link.label}</span>
                   <span>{link.label}</span>
                 </Link>
               ))}
@@ -319,25 +319,31 @@ export default function AdvancedRadioPage() {
                 onChange={e => setSearchQuery(e.target.value)}
                 style={{
                   paddingLeft: 36, paddingRight: 16, paddingTop: 8, paddingBottom: 8,
-                  background: isDark ? '#1e293b' : '#f1f5f9',
-                  border: '1px solid transparent', borderRadius: 999,
+                  background: isDark ? '#1a2f1f' : 'white',
+                  border: `1px solid ${isDark ? 'rgba(16,185,129,0.1)' : '#e2e8f0'}`, borderRadius: 999,
                   color: isDark ? '#e2e8f0' : '#0f172a',
-                  fontSize: 13, outline: 'none', width: 180,
+                  fontSize: 13, outline: 'none', width: 180, transition: 'all 0.2s'
                 }}
+                onFocus={e => e.currentTarget.style.borderColor = '#10b981'}
+                onBlur={e => e.currentTarget.style.borderColor = isDark ? 'rgba(16,185,129,0.1)' : '#e2e8f0'}
               />
             </div>
             {/* Equalizer */}
             <button
               onClick={() => setShowEqualizer(true)}
               title="Equalizer"
-              style={{ padding: 8, borderRadius: '50%', background: isDark ? '#1e293b' : '#f1f5f9', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+              style={{ padding: 8, borderRadius: '50%', background: isDark ? '#1a2f1f' : '#f1f5f9', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', transition: 'all 0.2s' }}
+              onMouseEnter={e => { e.currentTarget.style.background = isDark ? '#2d4f38' : '#e2e8f0'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = isDark ? '#1a2f1f' : '#f1f5f9'; }}
             >
-              <span className="material-icons-round" style={{ color: isDark ? '#94a3b8' : '#64748b', fontSize: 22 }}>equalizer</span>
+              <span className="material-icons-round" style={{ color: '#10b981', fontSize: 22 }}>equalizer</span>
             </button>
             {/* Dark mode toggle */}
             <button
               onClick={() => document.documentElement.classList.toggle('dark')}
-              style={{ padding: 8, borderRadius: '50%', background: isDark ? '#1e293b' : '#f1f5f9', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+              style={{ padding: 8, borderRadius: '50%', background: isDark ? '#1a2f1f' : '#f1f5f9', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', transition: 'all 0.2s' }}
+              onMouseEnter={e => { e.currentTarget.style.background = isDark ? '#2d4f38' : '#e2e8f0'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = isDark ? '#1a2f1f' : '#f1f5f9'; }}
             >
               <span className="material-icons-round" style={{ color: isDark ? '#94a3b8' : '#64748b', fontSize: 22 }}>
                 {isDark ? 'light_mode' : 'dark_mode'}
@@ -348,30 +354,43 @@ export default function AdvancedRadioPage() {
       </nav>
 
       {/* MAIN */}
-      <main style={{ maxWidth: 1280, margin: '0 auto', padding: '40px 24px', paddingBottom: 160 }}>
+      <main style={{ maxWidth: 1280, margin: '0 auto', padding: '48px 24px', paddingBottom: 160 }}>
         {/* Hero Header */}
-        <div style={{ marginBottom: 40 }}>
-          <div style={{ marginBottom: 8 }}>
-            <span style={{
-              display: 'inline-block', padding: '4px 12px',
-              background: isDark ? 'rgba(6,95,70,0.3)' : '#dcfce7',
-              color: isDark ? '#34d399' : '#065f46',
-              fontSize: 11, fontWeight: 700, borderRadius: 999,
-              textTransform: 'uppercase', letterSpacing: '0.08em'
-            }}>
-              🔴 Live Streaming
-            </span>
+        <div style={{ marginBottom: 48, position: 'relative' }}>
+          <div style={{
+            background: isDark 
+              ? 'linear-gradient(135deg, rgba(16,185,129,0.15) 0%, rgba(16,185,129,0.08) 100%)'
+              : 'linear-gradient(135deg, rgba(16,185,129,0.1) 0%, rgba(16,185,129,0.05) 100%)',
+            borderRadius: 32,
+            padding: '40px 32px',
+            border: isDark ? '1px solid rgba(16,185,129,0.2)' : '1px solid rgba(16,185,129,0.15)',
+            position: 'relative', overflow: 'hidden'
+          }}>
+            <div style={{ position: 'absolute', top: -40, right: -40, width: 200, height: 200, background: 'radial-gradient(circle, rgba(16,185,129,0.1), transparent)', borderRadius: '50%', pointerEvents: 'none' }} />
+            <div style={{ position: 'relative', zIndex: 1 }}>
+              <div style={{ marginBottom: 12 }}>
+                <span style={{
+                  display: 'inline-block', padding: '6px 14px',
+                  background: isDark ? 'rgba(16,185,129,0.2)' : 'rgba(16,185,129,0.15)',
+                  color: isDark ? '#34d399' : '#059669',
+                  fontSize: 11, fontWeight: 700, borderRadius: 999,
+                  textTransform: 'uppercase', letterSpacing: '0.1em', border: isDark ? '1px solid rgba(16,185,129,0.3)' : '1px solid rgba(16,185,129,0.25)'
+                }}>
+                  🎙️ Live Streaming
+                </span>
+              </div>
+              <h1 style={{ fontFamily: "'Outfit', sans-serif", fontSize: 'clamp(32px,6vw,48px)', fontWeight: 800, margin: '16px 0 12px', color: isDark ? '#ecfdf5' : '#065f46', letterSpacing: '-0.02em' }}>
+                World Renowned Reciters
+              </h1>
+              <p style={{ color: isDark ? '#cbd5e1' : '#581c87', fontSize: 17, maxWidth: 600, margin: '0 0 2px', lineHeight: 1.6 }}>
+                Experience 24/7 Quranic broadcasts from the world's most beautiful and inspiring voices.
+              </p>
+            </div>
           </div>
-          <h1 style={{ fontFamily: "'Outfit', sans-serif", fontSize: 'clamp(28px,5vw,48px)', fontWeight: 700, margin: '8px 0', color: isDark ? 'white' : '#0f172a' }}>
-            World Renowned Reciters
-          </h1>
-          <p style={{ color: isDark ? '#94a3b8' : '#64748b', fontSize: 17, maxWidth: 560, margin: 0 }}>
-            Experience high-fidelity 24/7 Quranic broadcasts from the world's most beautiful voices.
-          </p>
         </div>
 
         {/* Tab Navigation */}
-        <div style={{ display: 'flex', gap: 8, marginBottom: 32 }}>
+        <div style={{ display: 'flex', gap: 8, marginBottom: 40, flexWrap: 'wrap' }}>
           {([
             { id: 'live', label: '🔴 Live Radio', count: filteredLiveStations.length },
             { id: 'reciters', label: '🎙️ Reciters', count: filteredReciters.length },
@@ -381,24 +400,33 @@ export default function AdvancedRadioPage() {
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               style={{
-                padding: '8px 18px', borderRadius: 999,
-                border: activeTab === tab.id
-                  ? '2px solid #065f46'
-                  : `2px solid ${isDark ? '#1e293b' : '#e2e8f0'}`,
+                padding: '10px 20px', borderRadius: 12,
+                border: 'none',
                 background: activeTab === tab.id
-                  ? '#065f46'
-                  : isDark ? '#0f172a' : 'white',
-                color: activeTab === tab.id ? 'white' : isDark ? '#94a3b8' : '#64748b',
-                fontWeight: 600, fontSize: 13, cursor: 'pointer',
-                display: 'flex', alignItems: 'center', gap: 6,
+                  ? '#10b981'
+                  : isDark ? '#1a2f1f' : '#f0fdf4',
+                color: activeTab === tab.id ? 'white' : isDark ? '#6b7280' : '#374151',
+                fontWeight: 600, fontSize: 14, cursor: 'pointer',
+                display: 'flex', alignItems: 'center', gap: 8,
                 transition: 'all 0.2s',
+                boxShadow: activeTab === tab.id ? '0 4px 12px rgba(16,185,129,0.3)' : 'none',
+              }}
+              onMouseEnter={e => {
+                if (activeTab !== tab.id) {
+                  e.currentTarget.style.background = isDark ? '#2d4f38' : '#ecfdf5';
+                }
+              }}
+              onMouseLeave={e => {
+                if (activeTab !== tab.id) {
+                  e.currentTarget.style.background = isDark ? '#1a2f1f' : '#f0fdf4';
+                }
               }}
             >
               {tab.label}
               <span style={{
-                background: activeTab === tab.id ? 'rgba(255,255,255,0.25)' : isDark ? '#1e293b' : '#f1f5f9',
-                color: activeTab === tab.id ? 'white' : isDark ? '#64748b' : '#94a3b8',
-                fontSize: 11, fontWeight: 700, padding: '1px 7px', borderRadius: 999,
+                background: activeTab === tab.id ? 'rgba(255,255,255,0.25)' : isDark ? '#374151' : '#d1fae5',
+                color: activeTab === tab.id ? 'white' : isDark ? '#9ca3af' : '#065f46',
+                fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 999,
               }}>{tab.count}</span>
             </button>
           ))}
@@ -411,7 +439,7 @@ export default function AdvancedRadioPage() {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              style={{ marginBottom: 24, padding: '12px 16px', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: 12, color: '#f87171', display: 'flex', alignItems: 'center', gap: 10 }}
+              style={{ marginBottom: 24, padding: '12px 16px', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.25)', borderRadius: 12, color: '#f87171', display: 'flex', alignItems: 'center', gap: 10 }}
             >
               <span className="material-icons-round" style={{ fontSize: 20 }}>error_outline</span>
               <span style={{ fontSize: 14, flex: 1 }}>{error}</span>
@@ -425,7 +453,7 @@ export default function AdvancedRadioPage() {
         {/* Content */}
         {loading ? (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '50vh', gap: 16 }}>
-            <div style={{ width: 48, height: 48, border: '4px solid rgba(6,95,70,0.15)', borderTopColor: '#065f46', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+            <div style={{ width: 48, height: 48, border: '4px solid rgba(16,185,129,0.15)', borderTopColor: '#10b981', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
             <p style={{ color: isDark ? '#94a3b8' : '#64748b' }}>Loading stations...</p>
           </div>
         ) : (
@@ -454,8 +482,8 @@ export default function AdvancedRadioPage() {
                         cursor: 'pointer',
                         background: '#0f172a',
                         boxShadow: isCardActive(station.id)
-                          ? '0 0 0 3px #065f46, 0 24px 48px rgba(6,95,70,0.35)'
-                          : '0 8px 32px rgba(0,0,0,0.15)',
+                          ? '0 0 0 3px #10b981, 0 24px 48px rgba(16,185,129,0.25)'
+                          : isDark ? '0 8px 24px rgba(0,0,0,0.4)' : '0 8px 32px rgba(0,0,0,0.08)',
                         transform: 'translateY(0)',
                         transition: 'box-shadow 0.3s, transform 0.3s',
                       }}
@@ -478,12 +506,12 @@ export default function AdvancedRadioPage() {
                       <div style={{
                         position: 'absolute', inset: 0,
                         background: isCardActive(station.id)
-                          ? 'linear-gradient(to top, #065f46 0%, rgba(6,95,70,0.6) 50%, transparent 100%)'
-                          : 'linear-gradient(to top, #022c22 0%, rgba(2,44,34,0.65) 50%, transparent 100%)',
+                          ? 'linear-gradient(to top, #10b981 0%, rgba(16,185,129,0.6) 50%, transparent 100%)'
+                          : 'linear-gradient(to top, #065f46 0%, rgba(6,95,70,0.6) 50%, transparent 100%)',
                       }} />
                       {/* Now Playing badge */}
                       {isCardActive(station.id) && (
-                        <div style={{ position: 'absolute', top: 16, right: 16, background: '#065f46', color: 'white', fontSize: 10, fontWeight: 700, padding: '4px 10px', borderRadius: 999, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                        <div style={{ position: 'absolute', top: 16, right: 16, background: '#10b981', color: 'white', fontSize: 10, fontWeight: 700, padding: '4px 10px', borderRadius: 999, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
                           Now Playing
                         </div>
                       )}
@@ -502,29 +530,29 @@ export default function AdvancedRadioPage() {
                           boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
                         }}>
                           {isBuffering && isCardActive(station.id) ? (
-                            <div style={{ width: 28, height: 28, border: '3px solid rgba(6,95,70,0.2)', borderTopColor: '#065f46', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+                            <div style={{ width: 28, height: 28, border: '3px solid rgba(16,185,129,0.2)', borderTopColor: '#10b981', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
                           ) : isCardPlaying(station.id) ? (
-                            <span className="material-icons-round" style={{ fontSize: 40, color: '#065f46' }}>pause</span>
+                            <span className="material-icons-round" style={{ fontSize: 40, color: '#10b981' }}>pause</span>
                           ) : (
-                            <span className="material-icons-round" style={{ fontSize: 44, color: isCardActive(station.id) ? '#065f46' : 'white', marginLeft: 4 }}>play_arrow</span>
+                            <span className="material-icons-round" style={{ fontSize: 44, color: isCardActive(station.id) ? '#10b981' : 'white', marginLeft: 4 }}>play_arrow</span>
                           )}
                         </div>
                       </div>
                       {/* Card Bottom Info */}
                       <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '24px 20px 20px' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
-                          <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#34d399', display: 'inline-block', animation: isCardPlaying(station.id) ? 'ping 1.5s ease-in-out infinite' : 'pulse 2s ease-in-out infinite' }} />
-                          <span style={{ color: '#34d399', fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                          <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#6ee7b7', display: 'inline-block', animation: isCardPlaying(station.id) ? 'ping 1.5s ease-in-out infinite' : 'pulse 2s ease-in-out infinite' }} />
+                          <span style={{ color: '#6ee7b7', fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
                             {isCardPlaying(station.id) ? 'Broadcasting' : 'Active Now'}
                           </span>
                         </div>
                         <h3 style={{ fontFamily: "'Outfit', sans-serif", fontSize: 18, fontWeight: 700, color: 'white', margin: '0 0 4px', lineHeight: 1.3 }}>
                           {station.reciterName || station.name}
                         </h3>
-                        <p style={{ color: 'rgba(209,250,229,0.65)', fontSize: 12, margin: '0 0 10px', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
+                        <p style={{ color: 'rgba(110,231,183,0.7)', fontSize: 12, margin: '0 0 10px', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
                           {station.description}
                         </p>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 12, color: 'rgba(167,243,208,0.5)', fontSize: 11, fontWeight: 500 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 12, color: 'rgba(110,231,183,0.6)', fontSize: 11, fontWeight: 500 }}>
                           <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                             <span className="material-icons-round" style={{ fontSize: 14 }}>settings_input_antenna</span>
                             {station.bitrate || 128}kbps
@@ -565,8 +593,8 @@ export default function AdvancedRadioPage() {
                         cursor: 'pointer',
                         background: '#0f172a',
                         boxShadow: isCardActive(reciter.id)
-                          ? '0 0 0 3px #065f46, 0 24px 48px rgba(6,95,70,0.35)'
-                          : '0 8px 32px rgba(0,0,0,0.15)',
+                          ? '0 0 0 3px #10b981, 0 24px 48px rgba(16,185,129,0.25)'
+                          : isDark ? '0 8px 24px rgba(0,0,0,0.4)' : '0 8px 32px rgba(0,0,0,0.08)',
                         transition: 'box-shadow 0.3s, transform 0.3s',
                       }}
                     >
@@ -583,11 +611,11 @@ export default function AdvancedRadioPage() {
                       <div style={{
                         position: 'absolute', inset: 0,
                         background: isCardActive(reciter.id)
-                          ? 'linear-gradient(to top, #065f46 0%, rgba(6,95,70,0.6) 50%, transparent 100%)'
-                          : 'linear-gradient(to top, #022c22 0%, rgba(2,44,34,0.65) 50%, transparent 100%)',
+                          ? 'linear-gradient(to top, #10b981 0%, rgba(16,185,129,0.6) 50%, transparent 100%)'
+                          : 'linear-gradient(to top, #065f46 0%, rgba(6,95,70,0.6) 50%, transparent 100%)',
                       }} />
                       {isCardActive(reciter.id) && (
-                        <div style={{ position: 'absolute', top: 16, right: 16, background: '#065f46', color: 'white', fontSize: 10, fontWeight: 700, padding: '4px 10px', borderRadius: 999, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                        <div style={{ position: 'absolute', top: 16, right: 16, background: '#10b981', color: 'white', fontSize: 10, fontWeight: 700, padding: '4px 10px', borderRadius: 999, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
                           Now Playing
                         </div>
                       )}
@@ -603,25 +631,25 @@ export default function AdvancedRadioPage() {
                           boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
                         }}>
                           {isBuffering && isCardActive(reciter.id) ? (
-                            <div style={{ width: 26, height: 26, border: '3px solid rgba(6,95,70,0.2)', borderTopColor: '#065f46', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+                            <div style={{ width: 26, height: 26, border: '3px solid rgba(16,185,129,0.2)', borderTopColor: '#10b981', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
                           ) : isCardPlaying(reciter.id) ? (
-                            <span className="material-icons-round" style={{ fontSize: 38, color: '#065f46' }}>pause</span>
+                            <span className="material-icons-round" style={{ fontSize: 38, color: '#10b981' }}>pause</span>
                           ) : (
-                            <span className="material-icons-round" style={{ fontSize: 42, color: isCardActive(reciter.id) ? '#065f46' : 'white', marginLeft: 4 }}>play_arrow</span>
+                            <span className="material-icons-round" style={{ fontSize: 42, color: isCardActive(reciter.id) ? '#10b981' : 'white', marginLeft: 4 }}>play_arrow</span>
                           )}
                         </div>
                       </div>
                       <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '20px 18px 18px' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
-                          <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#34d399', display: 'inline-block', animation: 'pulse 2s ease-in-out infinite' }} />
-                          <span style={{ color: '#34d399', fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                          <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#6ee7b7', display: 'inline-block', animation: 'pulse 2s ease-in-out infinite' }} />
+                          <span style={{ color: '#6ee7b7', fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
                             {isCardPlaying(reciter.id) ? 'Playing' : 'Available'}
                           </span>
                         </div>
                         <h3 style={{ fontFamily: "'Outfit', sans-serif", fontSize: 17, fontWeight: 700, color: 'white', margin: '0 0 4px', lineHeight: 1.3 }}>
                           {reciter.name}
                         </h3>
-                        <p style={{ color: 'rgba(209,250,229,0.6)', fontSize: 12, margin: 0 }}>
+                        <p style={{ color: 'rgba(110,231,183,0.7)', fontSize: 12, margin: 0 }}>
                           {reciter.style || 'Classical Recitation'}
                         </p>
                       </div>
@@ -650,8 +678,8 @@ export default function AdvancedRadioPage() {
                       style={{
                         borderRadius: 20, overflow: 'hidden', cursor: 'pointer',
                         background: isDark ? '#0f172a' : 'white',
-                        border: isCardActive(station.id) ? '2px solid #065f46' : `2px solid ${isDark ? '#1e293b' : '#e2e8f0'}`,
-                        boxShadow: isCardActive(station.id) ? '0 8px 32px rgba(6,95,70,0.25)' : '0 2px 12px rgba(0,0,0,0.06)',
+                        border: isCardActive(station.id) ? '2px solid #10b981' : `2px solid ${isDark ? '#1a2f1f' : '#e2e8f0'}`,
+                        boxShadow: isCardActive(station.id) ? '0 8px 32px rgba(16,185,129,0.25)' : isDark ? '0 4px 12px rgba(0,0,0,0.3)' : '0 2px 12px rgba(0,0,0,0.06)',
                         transition: 'all 0.3s',
                       }}
                     >
@@ -699,11 +727,11 @@ export default function AdvancedRadioPage() {
           >
             <div style={{
               maxWidth: 1280, margin: '0 auto',
-              background: isDark ? 'rgba(15,23,42,0.95)' : 'rgba(255,255,255,0.95)',
+              background: isDark ? 'rgba(13,27,18,0.95)' : 'rgba(248,250,247,0.95)',
               backdropFilter: 'blur(16px)',
-              border: isDark ? '1px solid #1e293b' : '1px solid rgba(255,255,255,0.6)',
+              border: isDark ? '1px solid rgba(16,185,129,0.15)' : '1px solid rgba(16,185,129,0.1)',
               borderRadius: 24,
-              boxShadow: '0 -4px 48px rgba(0,0,0,0.12)',
+              boxShadow: isDark ? '0 -4px 32px rgba(0,0,0,0.3)' : '0 -4px 20px rgba(0,0,0,0.06)',
               padding: '14px 24px',
               display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 24,
               pointerEvents: 'auto', flexWrap: 'wrap',
@@ -714,13 +742,13 @@ export default function AdvancedRadioPage() {
                   {playingSource?.image ? (
                     <img src={playingSource.image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   ) : (
-                    <div style={{ width: '100%', height: '100%', background: '#065f46', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <div style={{ width: '100%', height: '100%', background: '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       <span className="material-icons-round" style={{ color: 'white', fontSize: 28 }}>radio</span>
                     </div>
                   )}
                   {/* Sound wave animation overlay */}
                   {isPlaying && (
-                    <div style={{ position: 'absolute', inset: 0, background: 'rgba(6,95,70,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2 }}>
+                    <div style={{ position: 'absolute', inset: 0, background: 'rgba(16,185,129,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2 }}>
                       {[3, 4, 2, 4].map((h, i) => (
                         <div key={i} style={{
                           width: 3, background: 'white', borderRadius: 2,
@@ -732,7 +760,7 @@ export default function AdvancedRadioPage() {
                   )}
                 </div>
                 <div style={{ minWidth: 0 }}>
-                  <div style={{ fontSize: 10, fontWeight: 700, color: isDark ? '#34d399' : '#065f46', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 2 }}>
+                  <div style={{ fontSize: 10, fontWeight: 700, color: '#10b981', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 2 }}>
                     Now Playing
                   </div>
                   <div style={{ fontSize: 14, fontWeight: 700, color: isDark ? 'white' : '#0f172a', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 200, fontFamily: "'Outfit', sans-serif" }}>
@@ -748,7 +776,7 @@ export default function AdvancedRadioPage() {
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, flex: '1 1 auto', maxWidth: 440 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
                   {/* Prev */}
-                  <button style={{ background: 'none', border: 'none', cursor: 'pointer', color: isDark ? '#64748b' : '#94a3b8', display: 'flex' }}>
+                  <button style={{ background: 'none', border: 'none', cursor: 'pointer', color: isDark ? '#64748b' : '#94a3b8', display: 'flex', transition: 'color 0.2s' }} onMouseEnter={e => e.currentTarget.style.color = '#10b981'} onMouseLeave={e => e.currentTarget.style.color = isDark ? '#64748b' : '#94a3b8'}>
                     <span className="material-icons-round">skip_previous</span>
                   </button>
                   {/* Play / Pause */}
@@ -756,12 +784,20 @@ export default function AdvancedRadioPage() {
                     onClick={async () => { if (isPlaying) { await safePause(); } else { await safePlay(); } }}
                     style={{
                       width: 48, height: 48, borderRadius: '50%',
-                      background: '#065f46',
+                      background: '#10b981',
                       border: 'none', cursor: 'pointer',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      boxShadow: '0 4px 20px rgba(6,95,70,0.4)',
-                      transition: 'transform 0.15s',
+                      boxShadow: '0 4px 20px rgba(16,185,129,0.4)',
+                      transition: 'transform 0.15s, box-shadow 0.15s',
                       color: 'white',
+                    }}
+                    onMouseEnter={e => {
+                      e.currentTarget.style.transform = 'scale(1.08)';
+                      e.currentTarget.style.boxShadow = '0 6px 28px rgba(16,185,129,0.5)';
+                    }}
+                    onMouseLeave={e => {
+                      e.currentTarget.style.transform = 'scale(1)';
+                      e.currentTarget.style.boxShadow = '0 4px 20px rgba(16,185,129,0.4)';
                     }}
                   >
                     {isBuffering ? (
@@ -773,14 +809,16 @@ export default function AdvancedRadioPage() {
                     )}
                   </button>
                   {/* Next */}
-                  <button style={{ background: 'none', border: 'none', cursor: 'pointer', color: isDark ? '#64748b' : '#94a3b8', display: 'flex' }}>
+                  <button style={{ background: 'none', border: 'none', cursor: 'pointer', color: isDark ? '#64748b' : '#94a3b8', display: 'flex', transition: 'color 0.2s' }} onMouseEnter={e => e.currentTarget.style.color = '#10b981'} onMouseLeave={e => e.currentTarget.style.color = isDark ? '#64748b' : '#94a3b8'}>
                     <span className="material-icons-round">skip_next</span>
                   </button>
                   {/* Stop */}
                   <button
                     onClick={handleStop}
                     title="Stop"
-                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: isDark ? '#64748b' : '#94a3b8', display: 'flex' }}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: isDark ? '#64748b' : '#94a3b8', display: 'flex', transition: 'color 0.2s' }}
+                    onMouseEnter={e => e.currentTarget.style.color = '#f87171'}
+                    onMouseLeave={e => e.currentTarget.style.color = isDark ? '#64748b' : '#94a3b8'}
                   >
                     <span className="material-icons-round">stop_circle</span>
                   </button>
@@ -791,20 +829,22 @@ export default function AdvancedRadioPage() {
               <div style={{ display: 'flex', alignItems: 'center', gap: 16, flex: '0 0 auto' }}>
                 {/* Volume */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <span className="material-icons-round" style={{ color: isDark ? '#64748b' : '#94a3b8', fontSize: 20 }}>
+                  <span className="material-icons-round" style={{ color: '#10b981', fontSize: 20 }}>
                     {volume === 0 ? 'volume_off' : volume < 0.4 ? 'volume_down' : 'volume_up'}
                   </span>
                   <input
                     type="range" min="0" max="1" step="0.01" value={volume}
                     onChange={e => setVolume(parseFloat(e.target.value))}
-                    style={{ width: 80, accentColor: '#065f46', cursor: 'pointer' }}
+                    style={{ width: 80, accentColor: '#10b981', cursor: 'pointer' }}
                   />
                 </div>
                 {/* EQ button */}
-                <div style={{ width: 1, height: 24, background: isDark ? '#1e293b' : '#e2e8f0' }} />
+                <div style={{ width: 1, height: 24, background: isDark ? 'rgba(16,185,129,0.2)' : '#e2e8f0' }} />
                 <button
                   onClick={() => setShowEqualizer(true)}
-                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: isDark ? '#64748b' : '#94a3b8', display: 'flex', alignItems: 'center', gap: 4, fontSize: 12, fontWeight: 600 }}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: isDark ? '#64748b' : '#94a3b8', display: 'flex', alignItems: 'center', gap: 4, fontSize: 12, fontWeight: 600, transition: 'color 0.2s' }}
+                  onMouseEnter={e => e.currentTarget.style.color = '#10b981'}
+                  onMouseLeave={e => e.currentTarget.style.color = isDark ? '#64748b' : '#94a3b8'}
                   title="Equalizer"
                 >
                   <span className="material-icons-round" style={{ fontSize: 20 }}>equalizer</span>
