@@ -639,7 +639,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                 <span className="material-symbols-outlined" style={{ color: '#11d442', fontSize: 26 }}>auto_stories</span>
                             </div>
                             <div className="nq-nav-label">
-                                <p style={{ margin: 0, fontWeight: 700, fontSize: 15, color: '#0f172a', lineHeight: 1 }}>Nur Quran</p>
+                                <p style={{ margin: 0, fontWeight: 700, fontSize: 15, color: '#0f172a', lineHeight: 1 }}>Learn Quran</p>
                                 <p style={{ margin: 0, color: '#11d442', fontSize: 9, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.12em' }}>Learning Hub</p>
                             </div>
                         </div>
@@ -670,12 +670,20 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                     </div>
                     {/* Profile */}
                     <div style={{ padding: '0 12px' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: 10, borderRadius: 12, background: '#f8fafc', border: '1px solid #e2e8f0' }}>
-                            <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'linear-gradient(135deg,#11d442,#059669)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 700, fontSize: 14, flexShrink: 0, border: '2px solid rgba(17,212,66,0.3)' }}>A</div>
-                            <div className="nq-nav-label" style={{ minWidth: 0 }}>
-                                <p style={{ margin: 0, fontWeight: 700, fontSize: 12, color: '#0f172a', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Ahmed Khalid</p>
-                                <p style={{ margin: 0, fontSize: 10, color: '#94a3b8' }}>Premium Member</p>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, padding: 10, borderRadius: 12, background: '#f8fafc', border: '1px solid #e2e8f0' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                                <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'linear-gradient(135deg,#475569,#334155)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                                    <span className="material-symbols-outlined" style={{ fontSize: 18, color: 'white' }}>person</span>
+                                </div>
+                                <div className="nq-nav-label" style={{ minWidth: 0 }}>
+                                    <p style={{ margin: 0, fontWeight: 700, fontSize: 12, color: '#0f172a', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Browsing Anonymously</p>
+                                    <p style={{ margin: 0, fontSize: 10, color: '#94a3b8' }}>Guest User</p>
+                                </div>
                             </div>
+                            <Link href="/signup" className="nq-nav-label" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, width: '100%', padding: '7px 0', borderRadius: 8, textDecoration: 'none', background: 'linear-gradient(135deg,#11d442,#059669)', color: 'white', fontSize: 11.5, fontWeight: 700, letterSpacing: '0.03em' }}>
+                                <span className="material-symbols-outlined" style={{ fontSize: 14 }}>star</span>
+                                Subscribe Now
+                            </Link>
                         </div>
                     </div>
                 </aside>
