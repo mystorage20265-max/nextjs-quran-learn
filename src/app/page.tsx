@@ -413,7 +413,7 @@ export default function HomePage() {
                   <p style={{ margin: '0 0 12px', fontSize: 12, ...S.muted }}>Go to a specific page (1–604)</p>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 6 }}>
                     {Array.from({ length: 604 }, (_, i) => i + 1).map(p => (
-                      <Link key={p} href={`/read-quran/1?mode=reading&page=${p}`} onClick={() => setShowNav(false)} style={{ textDecoration: 'none' }}>
+                      <Link key={p} href={`/page/${p}`} onClick={() => setShowNav(false)} style={{ textDecoration: 'none' }}>
                         <div style={{
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                           padding: '9px 4px', borderRadius: 8, fontSize: 12, fontWeight: 600,
