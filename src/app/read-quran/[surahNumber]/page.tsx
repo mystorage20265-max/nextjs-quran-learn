@@ -311,9 +311,13 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
     const [tooltip, setTooltip] = useState<{ meaning: string; x: number; y: number } | null>(null);
     const tooltipRef = useRef<HTMLDivElement | null>(null);
 
+    // Mushaf page pagination for reading mode
+    const [mushafPageIndex, setMushafPageIndex] = useState(0);
+
     // Load chapter data
     useEffect(() => {
         let isCancelled = false;
+        setMushafPageIndex(0); // Reset page when surah changes
         async function loadData() {
             if (surahNumber < 1 || surahNumber > 114) { setError('Invalid surah number'); setLoading(false); return; }
             try {
@@ -864,10 +868,34 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
 
                                         const ayahSize = isMobile ? Math.max(20, Math.round(fontSize * 0.72)) : Math.max(26, Math.round(fontSize * 0.95));
                                         const surahInfo = ALL_SURAHS.find(s => s.number === surahNumber);
+
+                                        // Clamp page index
+                                        const totalPages = pageGroups.length;
+                                        const safePageIndex = Math.max(0, Math.min(mushafPageIndex, totalPages - 1));
+                                        const group = pageGroups[safePageIndex];
+                                        const groupIdx = safePageIndex;
                                         
                                         return (
-                                            <div style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? 20 : 32 }}>
-                                                {pageGroups.map((group, groupIdx) => (
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? 16 : 24 }}>
+                                                {/* Page indicator */}
+                                                <div style={{
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    gap: 12,
+                                                    padding: '8px 0',
+                                                }}>
+                                                    <span style={{
+                                                        fontSize: 13,
+                                                        fontWeight: 600,
+                                                        color: '#64748b',
+                                                        fontFamily: "'Inter', 'Lexend', sans-serif",
+                                                    }}>
+                                                        Page {safePageIndex + 1} of {totalPages}
+                                                    </span>
+                                                </div>
+
+                                                {group && (
                                                     <div key={group.pageNumber}>
                                                         {/* ===== MUSHAF PAGE FRAME ===== */}
                                                         <div style={{
@@ -1025,12 +1053,81 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                ))}
-                                                {/* Surah navigation */}
-                                                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 32 }}>
-                                                    {surahNumber > 1 ? <Link href={`/read-quran/${surahNumber - 1}?mode=reading`} className="reader-nav-btn"><ChevronLeft size={18} /><span>Previous Surah</span></Link> : <div />}
-                                                    {surahNumber < 114 && <Link href={`/read-quran/${surahNumber + 1}?mode=reading`} className="reader-nav-btn primary"><span>Next Surah</span><ChevronRight size={18} /></Link>}
+                                                )}
+
+                                                {/* Prev / Next Page Buttons */}
+                                                <div style={{
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'space-between',
+                                                    gap: 12,
+                                                    marginTop: 8,
+                                                }}>
+                                                    {safePageIndex > 0 ? (
+                                                        <button
+                                                            onClick={() => { setMushafPageIndex(safePageIndex - 1); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                                                            style={{
+                                                                display: 'flex', alignItems: 'center', gap: 8,
+                                                                padding: isMobile ? '12px 18px' : '14px 24px',
+                                                                background: 'white', border: '1.5px solid rgba(17,212,66,0.2)',
+                                                                borderRadius: 10, color: '#1e293b', fontSize: 14, fontWeight: 600,
+                                                                fontFamily: "'Inter', 'Lexend', sans-serif", cursor: 'pointer',
+                                                                transition: 'all 0.2s', boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+                                                            }}
+                                                            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(17,212,66,0.06)'; e.currentTarget.style.borderColor = 'rgba(17,212,66,0.4)'; }}
+                                                            onMouseLeave={e => { e.currentTarget.style.background = 'white'; e.currentTarget.style.borderColor = 'rgba(17,212,66,0.2)'; }}
+                                                        >
+                                                            <ChevronLeft size={18} />
+                                                            <span>Previous Page</span>
+                                                        </button>
+                                                    ) : <div />}
+
+                                                    {safePageIndex < totalPages - 1 ? (
+                                                        <button
+                                                            onClick={() => { setMushafPageIndex(safePageIndex + 1); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                                                            style={{
+                                                                display: 'flex', alignItems: 'center', gap: 8,
+                                                                padding: isMobile ? '12px 18px' : '14px 24px',
+                                                                background: 'linear-gradient(135deg, #11d442, #10B981)', border: 'none',
+                                                                borderRadius: 10, color: 'white', fontSize: 14, fontWeight: 600,
+                                                                fontFamily: "'Inter', 'Lexend', sans-serif", cursor: 'pointer',
+                                                                transition: 'all 0.2s', boxShadow: '0 2px 8px rgba(17,212,66,0.25)',
+                                                            }}
+                                                            onMouseEnter={e => { e.currentTarget.style.filter = 'brightness(1.1)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
+                                                            onMouseLeave={e => { e.currentTarget.style.filter = 'none'; e.currentTarget.style.transform = 'none'; }}
+                                                        >
+                                                            <span>Next Page</span>
+                                                            <ChevronRight size={18} />
+                                                        </button>
+                                                    ) : (
+                                                        // Last page — show next surah link
+                                                        surahNumber < 114 ? (
+                                                            <Link href={`/read-quran/${surahNumber + 1}?mode=reading`} style={{
+                                                                display: 'flex', alignItems: 'center', gap: 8,
+                                                                padding: isMobile ? '12px 18px' : '14px 24px',
+                                                                background: 'linear-gradient(135deg, #11d442, #10B981)', border: 'none',
+                                                                borderRadius: 10, color: 'white', fontSize: 14, fontWeight: 600,
+                                                                fontFamily: "'Inter', 'Lexend', sans-serif", textDecoration: 'none',
+                                                                transition: 'all 0.2s', boxShadow: '0 2px 8px rgba(17,212,66,0.25)',
+                                                            }}>
+                                                                <span>Next Surah</span>
+                                                                <ChevronRight size={18} />
+                                                            </Link>
+                                                        ) : <div />
+                                                    )}
                                                 </div>
+
+                                                {/* Previous Surah link at start */}
+                                                {safePageIndex === 0 && surahNumber > 1 && (
+                                                    <div style={{ textAlign: 'center', paddingBottom: 8 }}>
+                                                        <Link href={`/read-quran/${surahNumber - 1}?mode=reading`} style={{
+                                                            fontSize: 13, color: '#64748b', textDecoration: 'none', fontWeight: 500,
+                                                            fontFamily: "'Inter', 'Lexend', sans-serif",
+                                                        }}>
+                                                            ← Previous Surah
+                                                        </Link>
+                                                    </div>
+                                                )}
                                             </div>
                                         );
                                     })()
