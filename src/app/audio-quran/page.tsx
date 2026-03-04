@@ -769,8 +769,8 @@ export default function AudioQuranPage() {
           .aq-reciter-select { max-width: 120px !important; font-size: 11px !important; }
           .aq-join-btn { display: none !important; }
 
-          /* Main */
-          .aq-main { padding: 16px 12px 140px !important; }
+          /* Main - extra bottom padding for player + mobile nav */
+          .aq-main { padding: 16px 12px 210px !important; }
 
           /* Hero */
           .aq-hero-inner { flex-direction: column !important; align-items: flex-start !important; gap: 16px !important; }
@@ -785,8 +785,8 @@ export default function AudioQuranPage() {
           /* Sidebar */
           .aq-sidebar { display: none !important; }
 
-          /* Bottom Player */
-          .aq-player { padding: 10px 12px !important; }
+          /* Bottom Player - push above mobile nav */
+          .aq-player { padding: 10px 12px !important; bottom: 68px !important; }
           .aq-player-inner { flex-direction: column !important; gap: 10px !important; }
           .aq-player-track { width: 100% !important; }
           .aq-player-center { width: 100% !important; max-width: none !important; }
@@ -800,14 +800,14 @@ export default function AudioQuranPage() {
           .aq-search-box input { width: 70px !important; }
           .aq-reciter-select { display: none !important; }
 
-          .aq-main { padding: 12px 8px 150px !important; }
+          .aq-main { padding: 12px 8px 220px !important; }
 
           /* Table: tighter */
           .audio-quran-root table th,
           .audio-quran-root table td { padding: 10px 8px !important; }
 
-          /* Bottom Player - minimal */
-          .aq-player { padding: 8px 10px !important; }
+          /* Bottom Player - minimal, above mobile nav */
+          .aq-player { padding: 8px 10px !important; bottom: 68px !important; }
           .aq-player-track { gap: 10px !important; }
           .aq-player-track > div:first-child { width: 36px !important; height: 36px !important; }
         }
