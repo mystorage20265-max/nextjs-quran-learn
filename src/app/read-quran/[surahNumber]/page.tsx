@@ -806,8 +806,9 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                             <div style={{ maxWidth: 896, margin: '0 auto' }}>
                                 {readingMode === 'reading' ? (
                                     (() => {
-                                        // For Surah 1 (Al-Fatiha), verse 1 IS the Bismillah so include it
-                                        const versesToRender = surahNumber === 1 ? displayVerses : displayVerses.filter(v => !(v.verse_number === 1 && chapter.bismillah_pre));
+                                        // Keep all verses – the Bismillah prefix is already shown
+                                        // separately and renderVerseWords() strips it from verse 1 text.
+                                        const versesToRender = displayVerses;
                                         const pageGroups: { pageNumber: number; juzNumber: number; verses: typeof versesToRender }[] = [];
                                         for (const verse of versesToRender) {
                                             const pn = verse.page_number || 1;

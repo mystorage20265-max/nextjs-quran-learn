@@ -121,6 +121,7 @@ const SURAHS = [
 
 const FEATURES = [
   { icon: 'menu_book', label: 'Read Quran', sub: '114 Surahs', href: '/read-quran/1', color: '#11d442' },
+  { icon: 'explore', label: 'Navigate', sub: 'Surah · Juz · Page', href: '#navigate', color: '#0ea5e9' },
   { icon: 'ads_click', label: 'Memorize', sub: 'Hifz Program', href: '/memorize-quran', color: '#a855f7' },
   { icon: 'music_note', label: 'Audio Quran', sub: 'Listen & Learn', href: '/audio-quran', color: '#f59e0b' },
   { icon: 'radio', label: 'Quran Radio', sub: '24/7 Recitation', href: '/radio', color: '#ef4444' },
@@ -134,6 +135,39 @@ const STATS = [
   { num: '77,797', label: 'Words' },
 ];
 
+const JUZ_DATA = [
+  { juz: 1, start: '1:1', surah: 'Al-Fatihah', page: 1 },
+  { juz: 2, start: '2:142', surah: 'Al-Baqarah', page: 22 },
+  { juz: 3, start: '2:253', surah: 'Al-Baqarah', page: 42 },
+  { juz: 4, start: '3:93', surah: "Ali 'Imran", page: 62 },
+  { juz: 5, start: '4:24', surah: 'An-Nisa', page: 82 },
+  { juz: 6, start: '4:148', surah: 'An-Nisa', page: 102 },
+  { juz: 7, start: '5:83', surah: "Al-Ma'idah", page: 121 },
+  { juz: 8, start: '6:111', surah: "Al-An'am", page: 142 },
+  { juz: 9, start: '7:88', surah: "Al-A'raf", page: 162 },
+  { juz: 10, start: '8:41', surah: 'Al-Anfal', page: 182 },
+  { juz: 11, start: '9:93', surah: 'At-Tawbah', page: 201 },
+  { juz: 12, start: '11:6', surah: 'Hud', page: 222 },
+  { juz: 13, start: '12:53', surah: 'Yusuf', page: 242 },
+  { juz: 14, start: '15:1', surah: 'Al-Hijr', page: 262 },
+  { juz: 15, start: '17:1', surah: "Al-Isra'", page: 282 },
+  { juz: 16, start: '18:75', surah: 'Al-Kahf', page: 302 },
+  { juz: 17, start: '21:1', surah: "Al-Anbiya'", page: 322 },
+  { juz: 18, start: '23:1', surah: "Al-Mu'minun", page: 342 },
+  { juz: 19, start: '25:21', surah: 'Al-Furqan', page: 362 },
+  { juz: 20, start: '27:56', surah: 'An-Naml', page: 382 },
+  { juz: 21, start: '29:46', surah: 'Al-Ankabut', page: 402 },
+  { juz: 22, start: '33:31', surah: 'Al-Ahzab', page: 422 },
+  { juz: 23, start: '36:28', surah: 'Ya-Sin', page: 442 },
+  { juz: 24, start: '39:32', surah: 'Az-Zumar', page: 462 },
+  { juz: 25, start: '41:47', surah: 'Fussilat', page: 482 },
+  { juz: 26, start: '46:1', surah: 'Al-Ahqaf', page: 502 },
+  { juz: 27, start: '51:31', surah: 'Adh-Dhariyat', page: 522 },
+  { juz: 28, start: '58:1', surah: 'Al-Mujadila', page: 542 },
+  { juz: 29, start: '67:1', surah: 'Al-Mulk', page: 564 },
+  { juz: 30, start: '78:1', surah: "An-Naba'", page: 582 },
+];
+
 export default function HomePage() {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [query, setQuery] = useState('');
@@ -145,6 +179,12 @@ export default function HomePage() {
   const [dark, setDark] = useState(false);
   const [sessionTime, setSessionTime] = useState(0); // seconds this session
   const [totalTime, setTotalTime] = useState(0);     // cumulative seconds all sessions
+
+  // ── Navigate Quran panel ──
+  const [showNav, setShowNav] = useState(false);
+  const [navTab, setNavTab] = useState<'surah' | 'juz' | 'page'>('surah');
+  const [navSearch, setNavSearch] = useState('');
+  const navRef = useRef<HTMLDivElement>(null);
 
   // ── Tasbeeh counter ──
   const TASBEEH_PRESETS = [
@@ -192,6 +232,14 @@ export default function HomePage() {
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
   }, []);
+
+  // Close nav on Escape
+  useEffect(() => {
+    if (!showNav) return;
+    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') setShowNav(false); };
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, [showNav]);
 
   const dropdownResults = query.trim()
     ? SURAHS.filter(s => {
@@ -248,6 +296,153 @@ export default function HomePage() {
 
   return (
     <>
+      {/* ── NAVIGATE QURAN OVERLAY ── */}
+      {showNav && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 9999, display: 'flex' }}>
+          {/* Backdrop */}
+          <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)' }} onClick={() => setShowNav(false)} />
+          {/* Panel */}
+          <div ref={navRef} style={{
+            position: 'relative', zIndex: 1, width: '100%', maxWidth: 420,
+            background: dark ? '#0d1b12' : 'white', borderRight: `1px solid ${dark ? '#1e3a2a' : '#e2e8f0'}`,
+            display: 'flex', flexDirection: 'column', animation: 'navSlideIn 0.25s ease',
+            boxShadow: '8px 0 40px rgba(0,0,0,0.15)',
+          }}>
+            {/* Panel Header */}
+            <div style={{ padding: '18px 20px 14px', borderBottom: `1px solid ${dark ? '#1e3a2a' : '#f1f5f9'}`, flexShrink: 0 }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+                <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700, ...S.text, display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span className="material-symbols-outlined" style={{ fontSize: 22, color: '#11d442' }}>menu_book</span>
+                  Navigate Quran
+                </h2>
+                <button onClick={() => setShowNav(false)} style={{ background: dark ? '#1e3a2a' : '#f1f5f9', border: 'none', borderRadius: 8, width: 32, height: 32, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8' }}>
+                  <span className="material-symbols-outlined" style={{ fontSize: 18 }}>close</span>
+                </button>
+              </div>
+              {/* Tabs */}
+              <div style={{ display: 'flex', background: dark ? '#111f16' : '#f1f5f9', borderRadius: 10, padding: 3, gap: 2 }}>
+                {(['surah', 'juz', 'page'] as const).map(tab => (
+                  <button key={tab} onClick={() => { setNavTab(tab); setNavSearch(''); }} style={{
+                    flex: 1, padding: '8px 12px', borderRadius: 8, border: 'none', cursor: 'pointer',
+                    fontSize: 13, fontWeight: 600, transition: 'all 0.15s',
+                    background: navTab === tab ? '#11d442' : 'transparent',
+                    color: navTab === tab ? 'white' : '#94a3b8',
+                  }}>{tab.charAt(0).toUpperCase() + tab.slice(1)}</button>
+                ))}
+              </div>
+              {/* Search within panel */}
+              {navTab === 'surah' && (
+                <div style={{ position: 'relative', marginTop: 12 }}>
+                  <span className="material-symbols-outlined" style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', fontSize: 18, color: '#94a3b8', pointerEvents: 'none' }}>search</span>
+                  <input
+                    type="text" value={navSearch} onChange={e => setNavSearch(e.target.value)}
+                    placeholder="Search Surah…"
+                    style={{ width: '100%', padding: '9px 12px 9px 36px', borderRadius: 10, border: `1px solid ${dark ? '#1e3a2a' : '#e2e8f0'}`, background: dark ? '#111f16' : 'white', fontSize: 13, color: dark ? '#e2e8e5' : '#334155', outline: 'none', boxSizing: 'border-box' }}
+                    onFocus={e => e.target.style.boxShadow = '0 0 0 2px rgba(17,212,66,0.3)'}
+                    onBlur={e => e.target.style.boxShadow = 'none'}
+                    autoFocus
+                  />
+                </div>
+              )}
+            </div>
+            {/* Panel Body */}
+            <div className="hp-scroll" style={{ flex: 1, overflowY: 'auto', padding: 0 }}>
+              {navTab === 'surah' && (() => {
+                const q = navSearch.toLowerCase();
+                const list = q ? SURAHS.filter(s => s.name.toLowerCase().includes(q) || s.ar.includes(q) || s.meaning.toLowerCase().includes(q) || String(s.num) === q) : SURAHS;
+                return list.length === 0 ? (
+                  <div style={{ padding: 32, textAlign: 'center', ...S.muted, fontSize: 13 }}>No surahs found</div>
+                ) : list.map((s, i) => (
+                  <Link key={s.num} href={`/read-quran/${s.num}?mode=reading`} onClick={() => { trackVisit(s); setShowNav(false); }} style={{ textDecoration: 'none', display: 'block' }}>
+                    <div style={{
+                      display: 'flex', alignItems: 'center', gap: 12, padding: '12px 20px',
+                      borderBottom: `1px solid ${dark ? '#1e3a2a12' : '#f8fafc'}`,
+                      transition: 'background 0.12s', cursor: 'pointer',
+                    }}
+                      onMouseEnter={e => e.currentTarget.style.background = dark ? '#1a2f1f' : '#f0fdf4'}
+                      onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                    >
+                      <div style={{ width: 36, height: 36, borderRadius: 8, background: 'rgba(17,212,66,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 13, color: '#11d442', flexShrink: 0 }}>
+                        {s.num}
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <p style={{ margin: 0, fontWeight: 600, fontSize: 13.5, ...S.text }}>{s.name}</p>
+                        <p style={{ margin: 0, fontSize: 11, ...S.muted }}>{s.meaning} · {s.v} verses</p>
+                      </div>
+                      <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                        <span className="font-arabic" style={{ fontSize: 18, fontWeight: 700, ...S.text, display: 'block' }}>{s.ar}</span>
+                        <span style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: '0.1em', color: s.t === 'Meccan' ? '#11d442' : '#94a3b8' }}>{s.t}</span>
+                      </div>
+                    </div>
+                  </Link>
+                ));
+              })()}
+
+              {navTab === 'juz' && (
+                <div style={{ padding: '8px 12px' }}>
+                  {JUZ_DATA.map(j => {
+                    const surahNum = parseInt(j.start.split(':')[0]);
+                    return (
+                      <Link key={j.juz} href={`/read-quran/${surahNum}?mode=reading`} onClick={() => setShowNav(false)} style={{ textDecoration: 'none', display: 'block' }}>
+                        <div style={{
+                          display: 'flex', alignItems: 'center', gap: 12, padding: '14px 12px',
+                          borderRadius: 10, marginBottom: 4, transition: 'background 0.12s', cursor: 'pointer',
+                        }}
+                          onMouseEnter={e => e.currentTarget.style.background = dark ? '#1a2f1f' : '#f0fdf4'}
+                          onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                        >
+                          <div style={{ width: 40, height: 40, borderRadius: 10, background: 'linear-gradient(135deg, rgba(17,212,66,0.12), rgba(5,150,105,0.08))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: 15, color: '#11d442', flexShrink: 0 }}>
+                            {j.juz}
+                          </div>
+                          <div style={{ flex: 1 }}>
+                            <p style={{ margin: 0, fontWeight: 600, fontSize: 14, ...S.text }}>Juz {j.juz}</p>
+                            <p style={{ margin: 0, fontSize: 11.5, ...S.muted }}>Starts at {j.surah} ({j.start})</p>
+                          </div>
+                          <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                            <span style={{ fontSize: 11, ...S.muted }}>Page {j.page}</span>
+                          </div>
+                        </div>
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
+
+              {navTab === 'page' && (
+                <div style={{ padding: '16px 16px' }}>
+                  <p style={{ margin: '0 0 12px', fontSize: 12, ...S.muted }}>Go to a specific page (1–604)</p>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 6 }}>
+                    {Array.from({ length: 604 }, (_, i) => i + 1).map(p => (
+                      <Link key={p} href={`/read-quran/1?mode=reading&page=${p}`} onClick={() => setShowNav(false)} style={{ textDecoration: 'none' }}>
+                        <div style={{
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          padding: '9px 4px', borderRadius: 8, fontSize: 12, fontWeight: 600,
+                          color: '#64748b', cursor: 'pointer', transition: 'all 0.12s',
+                          background: dark ? '#111f16' : '#f8fafc',
+                          border: `1px solid ${dark ? '#1e3a2a' : '#f1f5f9'}`,
+                        }}
+                          onMouseEnter={e => { e.currentTarget.style.background = '#11d442'; e.currentTarget.style.color = 'white'; e.currentTarget.style.borderColor = '#11d442'; }}
+                          onMouseLeave={e => { e.currentTarget.style.background = dark ? '#111f16' : '#f8fafc'; e.currentTarget.style.color = '#64748b'; e.currentTarget.style.borderColor = dark ? '#1e3a2a' : '#f1f5f9'; }}
+                        >
+                          {p}
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+            {/* Panel Footer */}
+            <div style={{ padding: '12px 20px', borderTop: `1px solid ${dark ? '#1e3a2a' : '#f1f5f9'}`, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <span style={{ fontSize: 11, ...S.muted }}>
+                {navTab === 'surah' ? '114 Surahs' : navTab === 'juz' ? '30 Juz' : '604 Pages'}
+              </span>
+              <span style={{ fontSize: 11, ...S.muted }}>ESC to close</span>
+            </div>
+          </div>
+        </div>
+      )}
+
       <style>{`
         .hp-scroll::-webkit-scrollbar{width:5px}.hp-scroll::-webkit-scrollbar-track{background:transparent}.hp-scroll::-webkit-scrollbar-thumb{background:rgba(17,212,66,0.25);border-radius:3px}
         .surah-card{transition:transform 0.18s ease,box-shadow 0.18s ease}.surah-card:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(17,212,66,0.12)}
@@ -259,6 +454,7 @@ export default function HomePage() {
         .tc-btn:active{transform:scale(0.93)}
         .tc-flash{animation:tc-pop 0.22s ease}
         @keyframes tc-pop{0%{transform:scale(1)}50%{transform:scale(1.13)}100%{transform:scale(1)}}
+        @keyframes navSlideIn{from{transform:translateX(-100%);opacity:0}to{transform:translateX(0);opacity:1}}
         /* ── Responsive ── */
         .hp-header-inner{padding:10px 16px !important}
         .hp-content{padding:16px 16px 60px !important}
@@ -367,6 +563,19 @@ export default function HomePage() {
               <span className="material-symbols-outlined" style={{ fontSize: 18 }}>play_circle</span>
               <span className="hp-qs-hide">Quick Start</span>
             </Link>
+            <button
+              onClick={() => setShowNav(true)}
+              style={{
+                background: dark ? '#1e3a2a' : '#f1f5f9', color: dark ? '#11d442' : '#475569',
+                borderRadius: 12, padding: '9px 14px', fontWeight: 600, fontSize: 13.5,
+                display: 'flex', alignItems: 'center', gap: 6,
+                border: `1px solid ${dark ? '#2d5a3e' : '#e2e8f0'}`,
+                cursor: 'pointer', flexShrink: 0, transition: 'all 0.18s',
+              }}
+            >
+              <span className="material-symbols-outlined" style={{ fontSize: 18 }}>menu_book</span>
+              <span className="hp-qs-hide">Navigate</span>
+            </button>
           </div>
         </header>
         {/* MAIN — scrollable content only */}
@@ -446,8 +655,9 @@ export default function HomePage() {
             <section style={{ marginBottom: 32 }}>
               <h2 style={{ margin: '0 0 14px', fontWeight: 700, fontSize: 17, ...S.text }}>Quick Access</h2>
               <div className="hp-features" style={{ display: 'grid', gap: 10 }}>
-                {FEATURES.map(f => (
-                  <Link key={f.label} href={f.href} style={{ textDecoration: 'none' }}>
+                {FEATURES.map(f => {
+                  const isNav = f.href === '#navigate';
+                  const inner = (
                     <div className="feat-card" style={{ ...S.card, padding: '14px 10px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, cursor: 'pointer', textAlign: 'center' }}>
                       <div style={{ width: 40, height: 40, borderRadius: 12, background: `${f.color}18`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <span className="material-symbols-outlined" style={{ fontSize: 22, color: f.color }}>{f.icon}</span>
@@ -457,8 +667,10 @@ export default function HomePage() {
                         <p style={{ margin: 0, fontSize: 10, ...S.muted }}>{f.sub}</p>
                       </div>
                     </div>
-                  </Link>
-                ))}
+                  );
+                  if (isNav) return <div key={f.label} onClick={() => setShowNav(true)} style={{ textDecoration: 'none', cursor: 'pointer' }}>{inner}</div>;
+                  return <Link key={f.label} href={f.href} style={{ textDecoration: 'none' }}>{inner}</Link>;
+                })}
               </div>
             </section>
 
