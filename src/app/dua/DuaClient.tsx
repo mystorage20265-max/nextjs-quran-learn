@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import Link from 'next/link';
 
 const ARABIC_FONT = "'Naskh IndoPak', serif";
 
@@ -165,57 +164,6 @@ export default function DuaClient() {
       `}</style>
 
       <div className="dua-page">
-
-        {/* ── Nav ── */}
-        <nav style={{ position: 'sticky', top: 0, zIndex: 50, background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(12px)', borderBottom: '1px solid #e2e8f0' }}>
-          <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 24px', height: 72, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
-              {/* Logo */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <div style={{ background: 'rgba(17,212,66,0.15)', padding: 8, borderRadius: 10 }}>
-                  <span className="material-symbols-outlined" style={{ color: '#11d442', fontSize: 22 }}>auto_stories</span>
-                </div>
-                <div>
-                  <p style={{ margin: 0, fontWeight: 700, fontSize: 14, color: '#0f172a', lineHeight: 1 }}>Nur Quran</p>
-                  <p style={{ margin: 0, color: '#11d442', fontSize: 9, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.12em' }}>Learning Hub</p>
-                </div>
-              </div>
-              {/* Nav links */}
-              <div style={{ display: 'flex', gap: 4 }}>
-                {[
-                  { label: 'Home', href: '/' },
-                  { label: 'Read Quran', href: '/read-quran' },
-                  { label: 'Dua Explorer', href: '/dua', active: true },
-                  { label: 'Memorize', href: '/memorize-quran' },
-                ].map(link => (
-                  <Link key={link.label} href={link.href} style={{
-                    padding: '6px 14px', borderRadius: 8, fontSize: 13, fontWeight: link.active ? 700 : 500,
-                    color: link.active ? '#11d442' : '#64748b',
-                    background: link.active ? 'rgba(17,212,66,0.1)' : 'transparent',
-                    textDecoration: 'none', transition: 'all 0.15s',
-                  }}>
-                    {link.label}
-                  </Link>
-                ))}
-              </div>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <button style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8', display: 'flex', padding: 6, borderRadius: 8, transition: 'color 0.15s' }}
-                onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = '#11d442'}
-                onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = '#94a3b8'}>
-                <span className="material-symbols-outlined">notifications</span>
-              </button>
-              <div style={{ width: 1, height: 28, background: '#e2e8f0' }} />
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <div style={{ textAlign: 'right' }}>
-                  <p style={{ margin: 0, fontSize: 13, fontWeight: 700, color: '#0f172a', lineHeight: 1 }}>Ahmed Khalid</p>
-                  <p style={{ margin: 0, fontSize: 10, color: '#94a3b8' }}>Premium Member</p>
-                </div>
-                <div style={{ width: 38, height: 38, borderRadius: '50%', background: 'linear-gradient(135deg,#11d442,#059669)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 700, fontSize: 14, border: '2px solid rgba(17,212,66,0.3)' }}>A</div>
-              </div>
-            </div>
-          </div>
-        </nav>
 
         {/* ── Hero Search Area ── */}
         <div className="islamic-pattern" style={{ background: 'rgba(255,255,255,0.5)', borderBottom: '1px solid rgba(226,232,240,0.5)', padding: '48px 24px' }}>

@@ -22,6 +22,7 @@ import {
     getChapter,
     getAllVerses,
     getVersesWithWords,
+    getTafsirContent,
     Chapter,
     VerseWithTranslation,
     POPULAR_RECITERS,
@@ -284,6 +285,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
     const [showSettings, setShowSettings] = useState(false);
     const [showTranslation, setShowTranslation] = useState(true);
     const [autoScroll, setAutoScroll] = useState(true);
+    const [audioEnabled, setAudioEnabled] = useState(true);
 
     // Mobile viewport detection for responsive inline styles
     const [isMobile, setIsMobile] = useState(false);
@@ -305,6 +307,10 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
     const [showSurahPicker, setShowSurahPicker] = useState(false);
     const [bookmarks, setBookmarks] = useState<string[]>([]);
     const [expandedTafsir, setExpandedTafsir] = useState<number | null>(null);
+    const [tafsirContent, setTafsirContent] = useState<Record<string, string>>({});
+    const [tafsirLoading, setTafsirLoading] = useState(false);
+    const [tafsirLoaded, setTafsirLoaded] = useState(false);
+    const TAFSIR_ID = 169; // Ibn Kathir (en)
     const [toast, setToast] = useState<{ message: string; type: 'success' | 'warning' } | null>(null);
 
     // Tooltip state for word meanings
@@ -318,6 +324,9 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
     useEffect(() => {
         let isCancelled = false;
         setMushafPageIndex(0); // Reset page when surah changes
+        setTafsirContent({});  // Reset tafsir when surah changes
+        setTafsirLoaded(false);
+        setExpandedTafsir(null);
         async function loadData() {
             if (surahNumber < 1 || surahNumber > 114) { setError('Invalid surah number'); setLoading(false); return; }
             try {
@@ -413,9 +422,9 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
             switch (e.code) {
-                case 'Space': e.preventDefault(); if (isPlaying) stopAudio(); else playVerse(currentVerse || 1); break;
-                case 'ArrowRight': if (currentVerse && currentVerse < verses.length) playVerse(currentVerse + 1); break;
-                case 'ArrowLeft': if (currentVerse && currentVerse > 1) playVerse(currentVerse - 1); break;
+                case 'Space': e.preventDefault(); if (isPlaying) stopAudio(); else if (audioEnabled) playVerse(currentVerse || 1, true); break;
+                case 'ArrowRight': if (audioEnabled && currentVerse && currentVerse < verses.length) playVerse(currentVerse + 1); break;
+                case 'ArrowLeft': if (audioEnabled && currentVerse && currentVerse > 1) playVerse(currentVerse - 1); break;
                 case 'Escape': stopAudio(); setShowSettings(false); setShowVerseNav(false); break;
                 case 'KeyS': if (e.metaKey || e.ctrlKey) { e.preventDefault(); setShowSettings(true); } break;
             }
@@ -427,6 +436,42 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
     const showToast = (message: string, type: 'success' | 'warning' = 'success') => {
         setToast({ message, type });
         setTimeout(() => setToast(null), 2500);
+    };
+
+    // Fetch tafsir for the entire chapter (lazy – only on first expand)
+    const fetchTafsir = useCallback(async () => {
+        if (tafsirLoaded || tafsirLoading) return;
+        setTafsirLoading(true);
+        try {
+            const content = await getTafsirContent(TAFSIR_ID, surahNumber);
+            setTafsirContent(content);
+            setTafsirLoaded(true);
+        } catch {
+            showToast('Could not load Tafsir', 'warning');
+        } finally {
+            setTafsirLoading(false);
+        }
+    }, [surahNumber, tafsirLoaded, tafsirLoading]);
+
+    const toggleTafsir = useCallback((verseNumber: number) => {
+        if (expandedTafsir === verseNumber) {
+            setExpandedTafsir(null);
+        } else {
+            setExpandedTafsir(verseNumber);
+            fetchTafsir();
+        }
+    }, [expandedTafsir, fetchTafsir]);
+
+    // Strip HTML tags from tafsir text for clean rendering
+    const stripTafsirHtml = (html: string): string => {
+        if (!html) return '';
+        return html
+            .replace(/<sup[^>]*>.*?<\/sup>/gi, '') // remove footnote superscripts
+            .replace(/<[^>]+>/g, ' ')              // strip all tags
+            .replace(/\s{2,}/g, ' ')
+            .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+            .replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&nbsp;/g, ' ')
+            .trim();
     };
 
     const toggleBookmark = useCallback((verseKey: string) => {
@@ -456,7 +501,8 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
         }
     }, [surahNumber]);
 
-    const playVerse = useCallback((verseNumber: number) => {
+    const playVerse = useCallback((verseNumber: number, forcePlay = false) => {
+        if (!audioEnabled && !forcePlay) return;
         const myPlaybackId = ++playbackIdRef.current;
         if (!isMountedRef.current) return;
         const verse = verses.find(v => v.verse_number === verseNumber);
@@ -477,7 +523,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
         };
         audio.onerror = () => { if (isMountedRef.current && myPlaybackId === playbackIdRef.current) { setIsPlaying(false); showToast('Audio failed to load', 'warning'); } };
         audio.play().catch(() => showToast('Could not play audio', 'warning'));
-    }, [surahNumber, verses, selectedReciter]);
+    }, [surahNumber, verses, selectedReciter, audioEnabled]);
 
     const stopAudio = useCallback(() => {
         playbackIdRef.current++;
@@ -672,6 +718,24 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                     .nq-header-subtitle{font-size:11px;font-weight:400;color:#94a3b8;flex-shrink:0}
                     @media(min-width:480px){.nq-header-subtitle{font-size:13px}}
                     .dark .nq-header-title{color:#e2e8f0}
+                    /* Audio toggle */
+                    .nq-audio-toggle{display:flex;align-items:center;gap:8px;flex-shrink:0}
+                    .nq-audio-toggle-label{font-size:11px;font-weight:600;color:#94a3b8;white-space:nowrap;font-family:'Lexend',sans-serif;text-transform:uppercase;letter-spacing:0.06em}
+                    .nq-audio-toggle-pill{position:relative;width:38px;height:22px;border-radius:11px;cursor:pointer;transition:background 0.22s;flex-shrink:0;border:none;padding:0}
+                    .nq-audio-toggle-pill.on{background:#11d442}
+                    .nq-audio-toggle-pill.off{background:#94a3b8}
+                    .nq-audio-toggle-pill-thumb{position:absolute;top:3px;width:16px;height:16px;border-radius:50%;background:white;transition:left 0.22s;box-shadow:0 1px 3px rgba(0,0,0,0.2)}
+                    .nq-audio-toggle-pill.on .nq-audio-toggle-pill-thumb{left:19px}
+                    .nq-audio-toggle-pill.off .nq-audio-toggle-pill-thumb{left:3px}
+                    /* Tafsir panel */
+                    .nq-tafsir-panel{margin-top:16px;border-radius:12px;border:1px solid rgba(17,212,66,0.2);background:rgba(17,212,66,0.03);overflow:hidden;animation:fadeIn 0.2s ease-out}
+                    @keyframes fadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+                    .nq-tafsir-header{display:flex;align-items:center;gap:8px;padding:10px 14px;background:rgba(17,212,66,0.08);border-bottom:1px solid rgba(17,212,66,0.15);font-size:12px;font-weight:700;color:#11d442;text-transform:uppercase;letter-spacing:0.06em;font-family:'Lexend',sans-serif}
+                    .nq-tafsir-text{margin:0;padding:14px 16px;font-size:14px;line-height:1.85;color:#334155;max-height:320px;overflow-y:auto;font-family:'Inter','Lexend',sans-serif}
+                    .dark .nq-tafsir-text{color:#94a3b8}
+                    .nq-tafsir-loading{display:flex;align-items:center;gap:10px;padding:16px;font-size:13px;color:#64748b;font-family:'Lexend',sans-serif}
+                    .nq-tafsir-text::-webkit-scrollbar{width:4px}
+                    .nq-tafsir-text::-webkit-scrollbar-thumb{background:rgba(17,212,66,0.3);border-radius:2px}
                 `}</style>
 
             <div className="nq-shell">
@@ -842,16 +906,16 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                     wordList = wordList.slice(skip);
                                                 }
                                                 if (verseTokens.length > 0 && verseTokens.length === wordList.length) {
-                                                    words = wordList.map((w: any, i: number) => ({ 
-                                                        text: stripInvisibleChars(verseTokens[i]), 
+                                                    words = wordList.map((w: any, i: number) => ({
+                                                        text: stripInvisibleChars(verseTokens[i]),
                                                         key: w.id || w.position,
                                                         translation: w.translation?.text?.trim() || '',
                                                         transliteration: w.transliteration?.text?.trim() || '',
                                                         wordObj: w
                                                     }));
                                                 } else {
-                                                    words = wordList.map((w: any) => ({ 
-                                                        text: stripInvisibleChars(w.text_imlaei || w.text_indopak || w.text_uthmani), 
+                                                    words = wordList.map((w: any) => ({
+                                                        text: stripInvisibleChars(w.text_imlaei || w.text_indopak || w.text_uthmani),
                                                         key: w.id || w.position,
                                                         translation: w.translation?.text?.trim() || '',
                                                         transliteration: w.transliteration?.text?.trim() || '',
@@ -859,9 +923,9 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                     }));
                                                 }
                                             } else {
-                                                words = verseTokens.map((w, idx) => ({ 
-                                                    text: stripInvisibleChars(w), 
-                                                    key: idx 
+                                                words = verseTokens.map((w, idx) => ({
+                                                    text: stripInvisibleChars(w),
+                                                    key: idx
                                                 }));
                                             }
                                             return words.map(w => ({ ...w, text: stripInvisibleChars(w.text || '') }));
@@ -875,7 +939,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                         const safePageIndex = Math.max(0, Math.min(mushafPageIndex, totalPages - 1));
                                         const group = pageGroups[safePageIndex];
                                         const groupIdx = safePageIndex;
-                                        
+
                                         return (
                                             <div style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? 16 : 24 }}>
                                                 {/* Page indicator */}
@@ -1008,8 +1072,8 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                                                                     (e.currentTarget as HTMLElement).style.background = 'rgba(17,212,66,0.15)';
                                                                                                     let meaningText = word.translation?.trim() || word.transliteration?.trim() || '';
                                                                                                     if (!meaningText && (word as any).wordObj) {
-                                                                                                        meaningText = (word as any).wordObj.translation?.text?.trim() || 
-                                                                                                                    (word as any).wordObj.transliteration?.text?.trim() || '';
+                                                                                                        meaningText = (word as any).wordObj.translation?.text?.trim() ||
+                                                                                                            (word as any).wordObj.transliteration?.text?.trim() || '';
                                                                                                     }
                                                                                                     if (meaningText && meaningText.trim().length > 0 && hasVisibleContent(meaningText)) {
                                                                                                         const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
@@ -1161,9 +1225,21 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                     <button className="verse-action-btn" onClick={() => copyVerse(verse)}><Copy size={14} /><span>Copy</span></button>
                                                     <button className={`verse-action-btn ${bookmarks.includes(verse.verse_key) ? 'bookmarked' : ''}`} onClick={() => toggleBookmark(verse.verse_key)}><Bookmark size={14} /><span>{bookmarks.includes(verse.verse_key) ? 'Saved' : 'Save'}</span></button>
                                                     <button className="verse-action-btn" onClick={() => shareVerse(verse)}><Share2 size={14} /><span>Share</span></button>
-                                                    <button className={`verse-tafsir-toggle ${expandedTafsir === verse.verse_number ? 'active' : ''}`} onClick={() => setExpandedTafsir(expandedTafsir === verse.verse_number ? null : verse.verse_number)}><BookOpen size={14} /><span>Tafsir</span></button>
+                                                    <button className={`verse-tafsir-toggle ${expandedTafsir === verse.verse_number ? 'active' : ''}`} onClick={() => toggleTafsir(verse.verse_number)}><BookOpen size={14} /><span>Tafsir</span></button>
                                                 </div>
-                                                {expandedTafsir === verse.verse_number && <div className="verse-tafsir-panel"><div className="verse-tafsir-title">Brief Tafsir</div><div className="verse-tafsir-content">Tafsir for verse {verse.verse_number}. Integrate a Tafsir API for detailed explanations.</div></div>}
+                                                {expandedTafsir === verse.verse_number && (
+                                                    <div className="nq-tafsir-panel">
+                                                        <div className="nq-tafsir-header">
+                                                            <BookOpen size={15} style={{ color: '#11d442' }} />
+                                                            <span>Tafsir Ibn Kathir — Verse {verse.verse_number}</span>
+                                                        </div>
+                                                        {tafsirLoading ? (
+                                                            <div className="nq-tafsir-loading"><div className="reader-spinner" style={{ width: 20, height: 20, borderWidth: 2 }} /> Loading Tafsir…</div>
+                                                        ) : (
+                                                            <p className="nq-tafsir-text">{stripTafsirHtml(tafsirContent[verse.verse_key] || '') || 'Tafsir not available for this verse.'}</p>
+                                                        )}
+                                                    </div>
+                                                )}
                                             </div>
                                         ))}
                                         {/* Surah navigation */}
@@ -1192,14 +1268,25 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                         <p className="nq-translation-text">{parseTranslationWithFootnotes(verse.translations?.[0]?.text || 'Translation not available')}</p>
                                                     </div>
                                                 )}
-                                                <div className="nq-actions">
+                                                <div className="nq-actions" style={{ opacity: 1 }}>
                                                     <button className="nq-action-btn" onClick={() => playVerse(verse.verse_number)} title="Play"><Volume2 size={14} /></button>
                                                     <button className="nq-action-btn" onClick={() => shareVerse(verse)} title="Share"><Share2 size={14} /></button>
                                                     <button className="nq-action-btn" onClick={() => copyVerse(verse)} title="Copy"><Copy size={14} /></button>
                                                     <button className={`nq-action-btn ${bookmarks.includes(verse.verse_key) ? 'nq-bookmarked' : ''}`} onClick={() => toggleBookmark(verse.verse_key)} title="Bookmark"><Bookmark size={14} /></button>
+                                                    <button className={`nq-action-btn ${expandedTafsir === verse.verse_number ? 'nq-active-btn' : ''}`} onClick={() => toggleTafsir(verse.verse_number)} title="Tafsir"><BookOpen size={14} /></button>
                                                 </div>
                                                 {expandedTafsir === verse.verse_number && (
-                                                    <div className="verse-tafsir-panel"><div className="verse-tafsir-title">Brief Tafsir</div><div className="verse-tafsir-content">Tafsir for verse {verse.verse_number}. Integrate a Tafsir API.</div></div>
+                                                    <div className="nq-tafsir-panel">
+                                                        <div className="nq-tafsir-header">
+                                                            <BookOpen size={15} style={{ color: '#11d442' }} />
+                                                            <span>Tafsir Ibn Kathir — Verse {verse.verse_number}</span>
+                                                        </div>
+                                                        {tafsirLoading ? (
+                                                            <div className="nq-tafsir-loading"><div className="reader-spinner" style={{ width: 20, height: 20, borderWidth: 2 }} /> Loading Tafsir…</div>
+                                                        ) : (
+                                                            <p className="nq-tafsir-text">{stripTafsirHtml(tafsirContent[verse.verse_key] || '') || 'Tafsir not available for this verse.'}</p>
+                                                        )}
+                                                    </div>
                                                 )}
                                             </div>
                                         ))}
@@ -1226,26 +1313,40 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                         <div className="nq-audio-bar-inner">
                             <div className="nq-reciter-info">
                                 <div className="nq-reciter-avatar">
-                                    <span className="material-symbols-outlined" style={{ fontSize: 22, color: '#11d442' }}>person</span>
+                                    <span className="material-symbols-outlined" style={{ fontSize: 22, color: audioEnabled ? '#11d442' : '#94a3b8' }}>person</span>
                                     <span className="nq-reciter-badge">HQ</span>
                                 </div>
                                 <div style={{ minWidth: 0 }}>
                                     <p className="nq-reciter-name">{currentReciter?.name || 'Mishary Alafasy'}</p>
-                                    <p className="nq-reciter-sub">{currentVerse ? `Reciting: Ayah ${currentVerse}` : 'Ready to play'}</p>
+                                    <p className="nq-reciter-sub">{!audioEnabled ? 'Audio disabled' : currentVerse ? `Reciting: Ayah ${currentVerse}` : 'Ready to play'}</p>
                                 </div>
                             </div>
                             <div className="nq-audio-controls">
                                 <button className="nq-ctrl-btn hide-xs" title="Repeat"><span className="material-symbols-outlined" style={{ fontSize: 22 }}>repeat_one</span></button>
-                                <button className="nq-ctrl-btn lg" onClick={playPrev} title="Previous (←)"><SkipBack size={26} /></button>
-                                <button className="nq-play-btn" onClick={() => isPlaying ? stopAudio() : playVerse(currentVerse || 1)} title={isPlaying ? 'Pause (Space)' : 'Play (Space)'}>
+                                <button className="nq-ctrl-btn lg" onClick={playPrev} title="Previous (←)" disabled={!audioEnabled} style={{ opacity: audioEnabled ? 1 : 0.4 }}><SkipBack size={26} /></button>
+                                <button className="nq-play-btn" onClick={() => { if (!audioEnabled) return; isPlaying ? stopAudio() : playVerse(currentVerse || 1, true); }} title={!audioEnabled ? 'Audio disabled' : isPlaying ? 'Pause (Space)' : 'Play (Space)'} style={{ opacity: audioEnabled ? 1 : 0.5 }}>
                                     {isPlaying ? <Pause size={24} /> : <Play size={24} />}
                                 </button>
-                                <button className="nq-ctrl-btn lg" onClick={playNext} title="Next (→)"><SkipForward size={26} /></button>
+                                <button className="nq-ctrl-btn lg" onClick={playNext} title="Next (→)" disabled={!audioEnabled} style={{ opacity: audioEnabled ? 1 : 0.4 }}><SkipForward size={26} /></button>
                                 <button className="nq-ctrl-btn hide-xs" title="Shuffle"><span className="material-symbols-outlined" style={{ fontSize: 22 }}>shuffle</span></button>
                             </div>
                             <div className="nq-audio-right">
-                                <Volume2 size={18} style={{ color: '#94a3b8', flexShrink: 0 }} />
-                                <div className="nq-volume-track"><div className="nq-volume-fill" style={{ width: '75%' }} /></div>
+                                {/* Audio Enable Toggle */}
+                                <div className="nq-audio-toggle">
+                                    <span className="nq-audio-toggle-label" style={{ color: audioEnabled ? '#11d442' : '#94a3b8' }}>
+                                        {audioEnabled ? 'On' : 'Off'}
+                                    </span>
+                                    <button
+                                        className={`nq-audio-toggle-pill ${audioEnabled ? 'on' : 'off'}`}
+                                        onClick={() => { if (audioEnabled) stopAudio(); setAudioEnabled(!audioEnabled); }}
+                                        title={audioEnabled ? 'Disable audio' : 'Enable audio'}
+                                        aria-label="Toggle audio"
+                                    >
+                                        <span className="nq-audio-toggle-pill-thumb" />
+                                    </button>
+                                </div>
+                                <Volume2 size={18} style={{ color: audioEnabled ? '#94a3b8' : '#cbd5e1', flexShrink: 0 }} />
+                                <div className="nq-volume-track"><div className="nq-volume-fill" style={{ width: audioEnabled ? '75%' : '0%', transition: 'width 0.3s' }} /></div>
                                 <button className="nq-ctrl-btn" onClick={() => setShowSettings(true)} title="Settings"><span className="material-symbols-outlined" style={{ fontSize: 22 }}>more_vert</span></button>
                             </div>
                         </div>
