@@ -297,70 +297,7 @@ export default function AudioQuranPage() {
   return (
     <div className="audio-quran-root" style={{ minHeight: "100vh", background: "var(--aq-bg)", fontFamily: "'Inter', sans-serif" }}>
 
-      {/* ── STICKY NAV ── */}
-      <header className="aq-header" style={{
-        position: "sticky", top: 0, zIndex: 50,
-        display: "flex", alignItems: "center", justifyContent: "space-between",
-        padding: "0 40px", height: 64,
-        background: "var(--aq-nav-bg)",
-        backdropFilter: "blur(12px)",
-        borderBottom: "1px solid var(--aq-border)",
-      }}>
-        {/* Logo + Nav */}
-        <div style={{ display: "flex", alignItems: "center", gap: 32 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <div style={{ width: 36, height: 36, background: "#f48c25", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <span className="material-symbols-outlined" style={{ color: "white", fontSize: 20 }}>menu_book</span>
-            </div>
-            <span style={{ fontWeight: 700, fontSize: 17, color: "var(--aq-text)" }}>Quran Audio</span>
-          </div>
-          <nav className="aq-nav-links" style={{ display: "flex", gap: 24, alignItems: "center" }}>
-            {[
-              { label: "Home", href: "/" },
-              { label: "Reciters", href: "#reciters" },
-              { label: "Radio", href: "/radio" },
-              { label: "Read", href: "/read-quran/1" },
-            ].map(link => (
-              <Link key={link.href} href={link.href} style={{ fontSize: 13, fontWeight: 500, color: "var(--aq-muted)", textDecoration: "none" }}>
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-        </div>
 
-        {/* Right side */}
-        <div className="aq-header-right" style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          {/* Search */}
-          <div className="aq-search-box" style={{ display: "flex", alignItems: "center", gap: 8, background: "var(--aq-input-bg)", borderRadius: 10, padding: "0 12px", height: 40 }}>
-            <span className="material-symbols-outlined" style={{ fontSize: 18, color: "var(--aq-muted)" }}>search</span>
-            <input
-              type="text"
-              placeholder="Search Surah or Reciter"
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              style={{ background: "none", border: "none", outline: "none", fontSize: 13, color: "var(--aq-text)", width: 200 }}
-            />
-          </div>
-          {/* Reciter selector */}
-          <select
-            className="aq-reciter-select"
-            value={selectedReciter}
-            onChange={e => handleReciterChange(e.target.value)}
-            style={{
-              background: "var(--aq-input-bg)", border: "1px solid var(--aq-border)",
-              borderRadius: 8, padding: "0 10px", height: 36, fontSize: 12,
-              color: "var(--aq-text)", cursor: "pointer", maxWidth: 180,
-            }}
-          >
-            {reciters.map((r: any) => (
-              <option key={r.identifier} value={r.identifier}>{r.englishName}</option>
-            ))}
-          </select>
-          <button className="aq-join-btn" style={{ height: 36, padding: "0 18px", background: "#f48c25", color: "white", border: "none", borderRadius: 8, fontWeight: 700, fontSize: 13, cursor: "pointer" }}>
-            Join Now
-          </button>
-        </div>
-      </header>
 
       {/* ── MAIN ── */}
       <main className="aq-main" style={{ maxWidth: 1280, margin: "0 auto", padding: "32px 24px", paddingBottom: 120 }}>
