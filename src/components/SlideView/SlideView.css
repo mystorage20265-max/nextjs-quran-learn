@@ -246,7 +246,7 @@ body:has(.slide-view) {
 }
 
 .arabic-text {
-  font-family: 'Uthmanic', 'Noto Naskh Arabic', serif;
+  font-family: 'Naskh IndoPak', serif;
   font-size: clamp(2.5rem, 8vmin, 5.5rem);
   line-height: 1.8;
   direction: rtl;

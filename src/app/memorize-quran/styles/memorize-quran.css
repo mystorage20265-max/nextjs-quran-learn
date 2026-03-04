@@ -61,8 +61,7 @@
 }
 
 .memorize-title-arabic {
-    font-family: "KFGQPC Uthmanic Script HAFS", "Uthmanic", "Scheherazade New", "Amiri Quran", "Traditional Arabic", serif;
-    font-size: 2rem;
+    font-family: 'Naskh IndoPak', serif;
     color: var(--mq-primary);
     font-weight: 400;
 }

@@ -109,7 +109,7 @@
 }
 
 .verse-text {
-  font-family: var(--arabic-font, 'Noto Naskh Arabic'), serif;
+  font-family: var(--arabic-font, 'Naskh IndoPak'), serif;
   font-size: 2rem;
   line-height: 2;
   text-align: center;

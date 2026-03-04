@@ -6,7 +6,7 @@
 @import './responsive.css';
 
 :root {
-  --font-arabic: 'KFGQPC Uthmanic Script HAFS', serif;
+  --font-arabic: 'Naskh IndoPak', serif;
   --bg: #f7f7fb;
   --card: #fff;
   --accent: #0066cc;

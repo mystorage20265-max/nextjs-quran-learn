@@ -86,7 +86,7 @@
 
 /* Text content styling */
 .arabic-text {
-  font-family: "Noto Naskh Arabic", "Uthmanic", serif;
+  font-family: 'Naskh IndoPak', serif;
   text-align: center;
   direction: rtl;
   line-height: 1.8;

@@ -298,7 +298,7 @@ export default function AudioQuranPage() {
     <div className="audio-quran-root" style={{ minHeight: "100vh", background: "var(--aq-bg)", fontFamily: "'Inter', sans-serif" }}>
 
       {/* ── STICKY NAV ── */}
-      <header style={{
+      <header className="aq-header" style={{
         position: "sticky", top: 0, zIndex: 50,
         display: "flex", alignItems: "center", justifyContent: "space-between",
         padding: "0 40px", height: 64,
@@ -314,7 +314,7 @@ export default function AudioQuranPage() {
             </div>
             <span style={{ fontWeight: 700, fontSize: 17, color: "var(--aq-text)" }}>Quran Audio</span>
           </div>
-          <nav style={{ display: "flex", gap: 24, alignItems: "center" }}>
+          <nav className="aq-nav-links" style={{ display: "flex", gap: 24, alignItems: "center" }}>
             {[
               { label: "Home", href: "/" },
               { label: "Reciters", href: "#reciters" },
@@ -329,9 +329,9 @@ export default function AudioQuranPage() {
         </div>
 
         {/* Right side */}
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <div className="aq-header-right" style={{ display: "flex", alignItems: "center", gap: 12 }}>
           {/* Search */}
-          <div style={{ display: "flex", alignItems: "center", gap: 8, background: "var(--aq-input-bg)", borderRadius: 10, padding: "0 12px", height: 40 }}>
+          <div className="aq-search-box" style={{ display: "flex", alignItems: "center", gap: 8, background: "var(--aq-input-bg)", borderRadius: 10, padding: "0 12px", height: 40 }}>
             <span className="material-symbols-outlined" style={{ fontSize: 18, color: "var(--aq-muted)" }}>search</span>
             <input
               type="text"
@@ -343,6 +343,7 @@ export default function AudioQuranPage() {
           </div>
           {/* Reciter selector */}
           <select
+            className="aq-reciter-select"
             value={selectedReciter}
             onChange={e => handleReciterChange(e.target.value)}
             style={{
@@ -355,15 +356,15 @@ export default function AudioQuranPage() {
               <option key={r.identifier} value={r.identifier}>{r.englishName}</option>
             ))}
           </select>
-          <button style={{ height: 36, padding: "0 18px", background: "#f48c25", color: "white", border: "none", borderRadius: 8, fontWeight: 700, fontSize: 13, cursor: "pointer" }}>
+          <button className="aq-join-btn" style={{ height: 36, padding: "0 18px", background: "#f48c25", color: "white", border: "none", borderRadius: 8, fontWeight: 700, fontSize: 13, cursor: "pointer" }}>
             Join Now
           </button>
         </div>
       </header>
 
       {/* ── MAIN ── */}
-      <main style={{ maxWidth: 1280, margin: "0 auto", padding: "32px 24px", paddingBottom: 120 }}>
-        <div style={{ display: "flex", gap: 32, alignItems: "flex-start" }}>
+      <main className="aq-main" style={{ maxWidth: 1280, margin: "0 auto", padding: "32px 24px", paddingBottom: 120 }}>
+        <div className="aq-layout" style={{ display: "flex", gap: 32, alignItems: "flex-start" }}>
 
           {/* ── LEFT: Hero + Table ── */}
           <div style={{ flex: 1, minWidth: 0 }}>
@@ -380,7 +381,7 @@ export default function AudioQuranPage() {
               {/* Dot-grid overlay */}
               <div style={{ position: "absolute", inset: 0, opacity: 0.08, backgroundImage: "radial-gradient(circle at 2px 2px, white 1px, transparent 0)", backgroundSize: "24px 24px", pointerEvents: "none" }} />
 
-              <div style={{ position: "relative", zIndex: 1, display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 24, flexWrap: "wrap" }}>
+              <div className="aq-hero-inner" style={{ position: "relative", zIndex: 1, display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 24, flexWrap: "wrap" }}>
                 {/* Info */}
                 <div>
                   <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(209,250,229,0.7)", marginBottom: 8 }}>
@@ -479,8 +480,8 @@ export default function AudioQuranPage() {
                       <tr style={{ background: "var(--aq-thead)", color: "var(--aq-muted)", fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", textAlign: "left" }}>
                         <th style={{ padding: "14px 24px", width: 56 }}>#</th>
                         <th style={{ padding: "14px 24px" }}>Surah Name</th>
-                        <th style={{ padding: "14px 24px" }}>Revelation</th>
-                        <th style={{ padding: "14px 24px" }}>Verses</th>
+                        <th className="aq-hide-mobile" style={{ padding: "14px 24px" }}>Revelation</th>
+                        <th className="aq-hide-mobile" style={{ padding: "14px 24px" }}>Verses</th>
                         <th style={{ padding: "14px 24px", textAlign: "right" }}>Listen</th>
                       </tr>
                     </thead>
@@ -530,7 +531,7 @@ export default function AudioQuranPage() {
                             </td>
 
                             {/* Revelation */}
-                            <td style={{ padding: "16px 24px" }}>
+                            <td className="aq-hide-mobile" style={{ padding: "16px 24px" }}>
                               {isMeccan ? (
                                 <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 10px", borderRadius: 999, background: "rgba(244,140,37,0.1)", color: "#f48c25", fontSize: 11, fontWeight: 600 }}>
                                   <span className="material-symbols-outlined" style={{ fontSize: 12 }}>sunny</span>
@@ -545,7 +546,7 @@ export default function AudioQuranPage() {
                             </td>
 
                             {/* Verses */}
-                            <td style={{ padding: "16px 24px", fontSize: 13, color: "var(--aq-muted)" }}>
+                            <td className="aq-hide-mobile" style={{ padding: "16px 24px", fontSize: 13, color: "var(--aq-muted)" }}>
                               {s.numberOfAyahs} Verses
                             </td>
 
@@ -590,7 +591,7 @@ export default function AudioQuranPage() {
           </div>
 
           {/* ── RIGHT SIDEBAR ── */}
-          <aside id="reciters" style={{ width: 300, flexShrink: 0, position: "sticky", top: 80 }}>
+          <aside id="reciters" className="aq-sidebar" style={{ width: 300, flexShrink: 0, position: "sticky", top: 80 }}>
 
             {/* Top Reciters */}
             <div style={{ background: "var(--aq-card)", borderRadius: 16, border: "1px solid var(--aq-border)", overflow: "hidden", marginBottom: 20, boxShadow: "0 2px 12px rgba(0,0,0,0.04)" }}>
@@ -671,6 +672,7 @@ export default function AudioQuranPage() {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            className="aq-player"
             style={{
               position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 60,
               background: "var(--aq-player-bg)",
@@ -680,10 +682,10 @@ export default function AudioQuranPage() {
               boxShadow: "0 -4px 32px rgba(0,0,0,0.08)",
             }}
           >
-            <div style={{ maxWidth: 1280, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24 }}>
+            <div className="aq-player-inner" style={{ maxWidth: 1280, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24 }}>
 
               {/* Left: Track info */}
-              <div style={{ display: "flex", alignItems: "center", gap: 14, width: 240, flexShrink: 0 }}>
+              <div className="aq-player-track" style={{ display: "flex", alignItems: "center", gap: 14, width: 240, flexShrink: 0 }}>
                 <div style={{ width: 44, height: 44, borderRadius: 8, background: "#059669", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                   <span className="material-symbols-outlined" style={{ color: "white", fontSize: 22 }}>music_note</span>
                 </div>
@@ -705,7 +707,7 @@ export default function AudioQuranPage() {
               </div>
 
               {/* Center: Controls + seek */}
-              <div style={{ flex: 1, maxWidth: 520, display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
+              <div className="aq-player-center" style={{ flex: 1, maxWidth: 520, display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
                   <button
                     onClick={() => setIsShuffle(v => !v)}
@@ -748,7 +750,7 @@ export default function AudioQuranPage() {
               </div>
 
               {/* Right: Volume */}
-              <div style={{ display: "flex", alignItems: "center", gap: 12, width: 200, justifyContent: "flex-end" }}>
+              <div className="aq-player-volume" style={{ display: "flex", alignItems: "center", gap: 12, width: 200, justifyContent: "flex-end" }}>
                 <button
                   onClick={() => setIsMuted(v => !v)}
                   style={{ background: "none", border: "none", cursor: "pointer", color: "var(--aq-muted)", display: "flex" }}
@@ -810,6 +812,68 @@ export default function AudioQuranPage() {
         .audio-quran-root a { color: var(--aq-muted); }
         .audio-quran-root a:hover { color: #f48c25; }
         input[type=range] { height: 4px; border-radius: 999px; }
+
+        /* ===== MOBILE RESPONSIVE ===== */
+
+        /* Tablet: hide sidebar, adjust table */
+        @media (max-width: 1024px) {
+          .aq-sidebar { display: none !important; }
+          .aq-layout { gap: 0 !important; }
+        }
+
+        /* Mobile: <=768px */
+        @media (max-width: 768px) {
+          /* Header */
+          .aq-header { padding: 0 16px !important; gap: 8px !important; }
+          .aq-nav-links { display: none !important; }
+          .aq-header-right { gap: 8px !important; }
+          .aq-search-box { padding: 0 8px !important; height: 36px !important; }
+          .aq-search-box input { width: 100px !important; font-size: 12px !important; }
+          .aq-reciter-select { max-width: 120px !important; font-size: 11px !important; }
+          .aq-join-btn { display: none !important; }
+
+          /* Main */
+          .aq-main { padding: 16px 12px 140px !important; }
+
+          /* Hero */
+          .aq-hero-inner { flex-direction: column !important; align-items: flex-start !important; gap: 16px !important; }
+
+          /* Table columns */
+          .aq-hide-mobile { display: none !important; }
+
+          /* Table cells padding */
+          .audio-quran-root table th,
+          .audio-quran-root table td { padding: 12px 12px !important; }
+
+          /* Sidebar */
+          .aq-sidebar { display: none !important; }
+
+          /* Bottom Player */
+          .aq-player { padding: 10px 12px !important; }
+          .aq-player-inner { flex-direction: column !important; gap: 10px !important; }
+          .aq-player-track { width: 100% !important; }
+          .aq-player-center { width: 100% !important; max-width: none !important; }
+          .aq-player-center > div:first-child { gap: 12px !important; }
+          .aq-player-volume { display: none !important; }
+        }
+
+        /* Small mobile: <=480px */
+        @media (max-width: 480px) {
+          .aq-header { height: 56px !important; padding: 0 10px !important; }
+          .aq-search-box input { width: 70px !important; }
+          .aq-reciter-select { display: none !important; }
+
+          .aq-main { padding: 12px 8px 150px !important; }
+
+          /* Table: tighter */
+          .audio-quran-root table th,
+          .audio-quran-root table td { padding: 10px 8px !important; }
+
+          /* Bottom Player - minimal */
+          .aq-player { padding: 8px 10px !important; }
+          .aq-player-track { gap: 10px !important; }
+          .aq-player-track > div:first-child { width: 36px !important; height: 36px !important; }
+        }
       `}</style>
     </div>
   );
