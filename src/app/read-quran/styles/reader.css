@@ -36,7 +36,7 @@
   --reader-border-light: var(--border-strong);
 
   /* Typography */
-  --font-arabic: var(--font-arabic);
+  --font-arabic: 'Naskh IndoPak', serif;
   --font-ui: var(--font-sans);
 
   /* Spacing */
@@ -1610,7 +1610,12 @@
 .quran-reader .reader-surah-name-arabic,
 .quran-reader .word-arabic,
 .quran-reader .interactive-word,
-.quran-reader .word-tooltip-arabic {
+.quran-reader .word-tooltip-arabic,
+.nq-shell .word-arabic,
+.nq-shell .reader-verse-arabic,
+.nq-shell .reader-bismillah-text,
+.nq-shell .nq-arabic-text,
+.nq-shell .nq-bismillah-text {
   font-family: 'Naskh IndoPak', serif !important;
 }
 

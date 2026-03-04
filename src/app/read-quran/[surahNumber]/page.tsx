@@ -547,6 +547,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 .nq-arabic-text{font-family:var(--rq-font-arabic);font-size:var(--nq-fs,26px);line-height:2;text-align:right;flex:1;color:#1e293b;direction:rtl}
                 @media(min-width:640px){.nq-arabic-text{font-size:var(--nq-fs,36px)}}
                 .dark .nq-arabic-text{color:#e2e8f0}
+                .nq-shell .word-arabic,.nq-shell .reader-verse-arabic,.nq-shell .reader-bismillah-text,.nq-shell .nq-bismillah-text,.nq-shell .nq-arabic-text{font-family:'Naskh IndoPak',serif!important}
                 .nq-verse-badge{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;border:1px solid rgba(17,212,66,0.4);font-size:12px;font-weight:700;color:#11d442;margin-right:6px;font-family:'Lexend',sans-serif;cursor:pointer;vertical-align:middle;transition:background 0.15s}
                 @media(min-width:640px){.nq-verse-badge{width:40px;height:40px;font-size:14px;margin-right:8px}}
                 .nq-verse-badge:hover{background:rgba(17,212,66,0.1)}
