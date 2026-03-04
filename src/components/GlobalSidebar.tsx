@@ -48,8 +48,7 @@ function useIsExcluded(pathname: string): boolean {
         p.startsWith('/manzil/') ||
         p.startsWith('/juz/') ||
         p.startsWith('/surah/') ||
-        p.startsWith('/ruku/') ||
-        p.startsWith('/page/')
+        p.startsWith('/ruku/')
     );
 }
 
