@@ -843,7 +843,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                         بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
                                         {surahNumber === 1 && (
                                             <span style={{ cursor: 'pointer', flexShrink: 0 }} onClick={() => playVerse(1)}>
-                                                <AyahMarker number={1} size={Math.max(28, Math.round(fontSize * 1.15))} />
+                                                <AyahMarker number={1} size={isMobile ? Math.max(22, Math.round(fontSize * 0.78)) : Math.max(28, Math.round(fontSize * 1.15))} />
                                             </span>
                                         )}
                                     </div>
@@ -851,9 +851,9 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                     <div style={{
                                         textAlign: 'center',
                                         color: '#6b7280',
-                                        fontSize: 15,
+                                        fontSize: isMobile ? 13 : 15,
                                         fontStyle: 'italic',
-                                        paddingBottom: 28,
+                                        paddingBottom: isMobile ? 20 : 28,
                                         fontFamily: "'Lexend', sans-serif",
                                         fontWeight: 400,
                                     }}>
