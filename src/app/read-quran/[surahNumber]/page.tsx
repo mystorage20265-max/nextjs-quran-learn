@@ -285,6 +285,15 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
     const [showTranslation, setShowTranslation] = useState(true);
     const [autoScroll, setAutoScroll] = useState(true);
 
+    // Mobile viewport detection for responsive inline styles
+    const [isMobile, setIsMobile] = useState(false);
+    useEffect(() => {
+        const check = () => setIsMobile(window.innerWidth < 640);
+        check();
+        window.addEventListener('resize', check);
+        return () => window.removeEventListener('resize', check);
+    }, []);
+
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentVerse, setCurrentVerse] = useState<number | null>(null);
     const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -792,8 +801,8 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                             {chapter.bismillah_pre && (
                                 <div style={{
                                     maxWidth: 896,
-                                    margin: '0 auto 48px',
-                                    borderRadius: 24,
+                                    margin: isMobile ? '0 auto 28px' : '0 auto 48px',
+                                    borderRadius: isMobile ? 16 : 24,
                                     background: 'linear-gradient(180deg, #fdf8f0 0%, #fdf4e8 50%, #faf0e0 100%)',
                                     border: '1px solid rgba(234,179,8,0.15)',
                                     boxShadow: '0 4px 24px rgba(0,0,0,0.06)',
@@ -818,18 +827,18 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                     {/* Arabic text */}
                                     <div style={{
                                         fontFamily: 'var(--rq-font-arabic)',
-                                        fontSize: 'clamp(32px, 5vw, 52px)',
+                                        fontSize: 'clamp(26px, 5vw, 52px)',
                                         textAlign: 'center',
                                         direction: 'rtl',
                                         color: '#1c1c1c',
-                                        padding: '16px 48px 20px',
-                                        lineHeight: 1.8,
+                                        padding: isMobile ? '12px 16px 16px' : '16px 48px 20px',
+                                        lineHeight: isMobile ? 1.6 : 1.8,
                                         fontFeatureSettings: '"liga" 1, "calt" 1',
                                         textRendering: 'optimizeLegibility',
                                         display: 'flex',
                                         alignItems: 'center',
                                         justifyContent: 'center',
-                                        gap: 12,
+                                        gap: isMobile ? 8 : 12,
                                     }}>
                                         بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
                                         {surahNumber === 1 && (
@@ -931,7 +940,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                 .map(w => ({ ...w, text: stripInvisibleChars(w.text || '') }));
                                         };
 
-                                        const ayahSize = Math.max(28, Math.round(fontSize * 1.15));
+                                        const ayahSize = isMobile ? Math.max(22, Math.round(fontSize * 0.78)) : Math.max(28, Math.round(fontSize * 1.15));
                                         return (
                                             <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
                                                 {pageGroups.map((group, groupIdx) => (
@@ -940,16 +949,17 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                             background: '#fff',
                                                             border: '1px solid #e2ddd3',
                                                             borderRadius: 2,
-                                                            padding: 'clamp(20px, 4vw, 40px) clamp(24px, 5vw, 56px)',
+                                                            padding: isMobile ? '16px 12px' : 'clamp(20px, 4vw, 40px) clamp(24px, 5vw, 56px)',
                                                             position: 'relative',
+                                                            overflowX: 'hidden',
                                                         }}>
                                                             {groupIdx === 0 && surahNumber === 1 && verses.length > 0 && (
                                                                 <div
                                                                     onClick={() => playVerse(1)}
                                                                     style={{
                                                                         fontFamily: 'var(--rq-font-arabic)',
-                                                                        fontSize: `${Math.round(fontSize * 1.05)}px`,
-                                                                        lineHeight: 1.8,
+                                                                        fontSize: isMobile ? `${Math.round(fontSize * 0.82)}px` : `${Math.round(fontSize * 1.05)}px`,
+                                                                        lineHeight: isMobile ? 1.6 : 1.8,
                                                                         textAlign: 'center',
                                                                         direction: 'rtl',
                                                                         color: '#222',
@@ -962,7 +972,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                                         display: 'flex',
                                                                         alignItems: 'center',
                                                                         justifyContent: 'center',
-                                                                        gap: 8,
+                                                                        gap: isMobile ? 6 : 8,
                                                                     }}
                                                                 >
                                                                     بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
@@ -971,8 +981,8 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                             )}
                                                             <div style={{
                                                                 fontFamily: 'var(--rq-font-arabic)',
-                                                                fontSize: `${fontSize}px`,
-                                                                lineHeight: 2.1,
+                                                                fontSize: isMobile ? `${Math.round(fontSize * 0.78)}px` : `${fontSize}px`,
+                                                                lineHeight: isMobile ? 1.9 : 2.1,
                                                                 textAlign: 'center',
                                                                 direction: 'rtl',
                                                                 color: '#222',
@@ -982,7 +992,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                                 display: 'flex',
                                                                 flexWrap: 'wrap',
                                                                 justifyContent: 'center',
-                                                                gap: '0 6px',
+                                                                gap: isMobile ? '0 3px' : '0 6px',
                                                             }}>
                                                                 {group.verses.map((verse) => {
                                                                     const words = renderVerseWords(verse);
