@@ -41,12 +41,39 @@ import '../styles/reader.css';
 const cleanIndopakText = (text: string): string => {
     if (!text) return '';
     return text
+        .replace(/[\n\r\t]+/g, ' ')       // Normalize newlines, carriage returns, tabs to spaces
         .replace(/[\u0610-\u061A]/g, '') // Arabic Quran-specific phonetic marks
         .replace(/\u06E1/g, '\u0652')     // IndoPak sukun (ۡ U+06E1) → standard sukun (ْ U+0652), BEFORE range strip
         .replace(/[\u06D6-\u06FF]/g, '') // waqf marks, annotation glyphs, Indo-Pak marks
         .replace(/[\uFBB2-\uFBC2]/g, '') // Arabic Presentation Forms (Quran edition marks)
-        .replace(/\s{2,}/g, ' ')
+        .replace(/\s{2,}/g, ' ')         // Collapse multiple spaces to single space
         .trim();
+};
+
+// Remove zero-width/invisible characters that can slip through
+// Only remove truly invisible Unicode - preserve spaces and word structure
+const stripInvisibleChars = (text: string): string => {
+    if (!text) return '';
+    return text
+        .replace(/[\u200B-\u200D]/g, '')  // Zero-width space, joiner, non-joiner
+        .replace(/[\uFEFF]/g, '')         // Zero-width no-break space
+        .replace(/[\u061C]/g, '')         // Arabic letter mark
+        .replace(/[\u180E]/g, '')         // Mongolian vowel separator
+        .replace(/[\u00A0]/g, ' ')        // Non-breaking space → regular space
+        .replace(/[\u2000-\u200A]/g, ' ') // Various Unicode spaces → regular space
+        .replace(/[\u3000]/g, ' ')        // Ideographic space → regular space
+        .trim();
+};
+
+// Ultra-strict: check if text has at least one visible/meaningful character
+const hasVisibleContent = (text: string): boolean => {
+    if (!text) return false;
+    const cleaned = stripInvisibleChars(text);
+    if (!cleaned || cleaned.length === 0) return false;
+    // Must have at least one non-whitespace character that's actual content
+    // Check for: Arabic, Latin, numbers, or other visible punctuation
+    const hasContent = /[\u0600-\u06FF\u0750-\u077F\p{L}\p{N}\p{P}]/u.test(cleaned);
+    return hasContent;
 };
 
 
@@ -834,7 +861,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                         }
 
                                         const renderVerseWords = (verse: typeof versesToRender[0]) => {
-                                            let words: { text: string; key: string | number; translation?: string; transliteration?: string }[] = [];
+                                            let words: { text: string; key: string | number; translation?: string; transliteration?: string; wordObj?: any }[] = [];
                                             // Use verse-level text_indopak (from QuranCDN via getVersesWithWords).
                                             // It has proper kasra/fatha/damma on all words (e.g. اِهدِنَا with kasra).
                                             // cleanIndopakText strips Quran-specific chars (ۡ U+06E1) but preserves
@@ -862,34 +889,36 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                 }
                                                 if (verseTokens.length > 0 && verseTokens.length === wordList.length) {
                                                     // Perfect match — use verse-level tokens (proper kasra/fatha from IndoPak)
+                                                    // Preserve the word object for translation data
                                                     words = wordList.map((w: any, i: number) => ({ 
-                                                        text: verseTokens[i], 
+                                                        text: stripInvisibleChars(verseTokens[i]), 
                                                         key: w.id || w.position,
-                                                        translation: w.translation?.text || '',
-                                                        transliteration: w.transliteration?.text || ''
-                                                    }));
-                                                } else if (verseTokens.length > 0) {
-                                                    // Token count mismatch — still use verse tokens (better diacritics than per-word fields)
-                                                    words = verseTokens.map((tok, i) => ({ 
-                                                        text: tok, 
-                                                        key: i,
-                                                        translation: wordList[i]?.translation?.text || '',
-                                                        transliteration: wordList[i]?.transliteration?.text || ''
+                                                        translation: w.translation?.text?.trim() || '',
+                                                        transliteration: w.transliteration?.text?.trim() || '',
+                                                        wordObj: w
                                                     }));
                                                 } else {
-                                                    // No verse text — last resort: per-word imlaei
+                                                    // Token count mismatch OR no verse text — use wordList as sole source of truth
+                                                    // This ensures each word's display text and tooltip always stay aligned
                                                     words = wordList.map((w: any) => ({ 
-                                                        text: w.text_imlaei || w.text_uthmani, 
+                                                        text: stripInvisibleChars(w.text_imlaei || w.text_indopak || w.text_uthmani), 
                                                         key: w.id || w.position,
-                                                        translation: w.translation?.text || '',
-                                                        transliteration: w.transliteration?.text || ''
+                                                        translation: w.translation?.text?.trim() || '',
+                                                        transliteration: w.transliteration?.text?.trim() || '',
+                                                        wordObj: w
                                                     }));
                                                 }
                                             } else {
                                                 // No word data at all — use the verse-level tokens directly
-                                                words = verseTokens.map((w, idx) => ({ text: w, key: idx }));
+                                                words = verseTokens.map((w, idx) => ({ 
+                                                    text: stripInvisibleChars(w), 
+                                                    key: idx 
+                                                }));
                                             }
-                                            return words;
+                                            // CRITICAL: Apply stripInvisibleChars but keep all words (including empty ones)
+                                            // for proper tooltip positioning and layout matching
+                                            return words
+                                                .map(w => ({ ...w, text: stripInvisibleChars(w.text || '') }));
                                         };
 
                                         const ayahSize = Math.max(28, Math.round(fontSize * 1.15));
@@ -945,38 +974,55 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                                     if (words.length === 0) return null;
                                                                     return (
                                                                         <span key={verse.id} style={{ display: 'contents' }}>
-                                                                            {words.map((word) => (
+                                                                            {words.map((word) => {
+                                                                                // Render all words for layout consistency (including invisible ones)
+                                                                                const hasVisibleText = hasVisibleContent(word.text);
+                                                                                const hasMeaning = word.translation?.trim() || (word as any).wordObj?.translation?.text?.trim();
+                                                                                return (
                                                                                 <span
                                                                                     key={word.key}
                                                                                     style={{
                                                                                         display: 'inline-block',
-                                                                                        cursor: 'pointer',
+                                                                                        cursor: hasVisibleText ? 'pointer' : 'default',
                                                                                         padding: '2px 2px',
                                                                                         borderRadius: 4,
                                                                                         transition: 'background 0.15s',
-                                                                                        background: currentVerse === verse.verse_number ? 'rgba(66,133,244,0.08)' : 'transparent',
-                                                                                        position: 'relative'
+                                                                                        background: currentVerse === verse.verse_number && hasVisibleText ? 'rgba(66,133,244,0.08)' : 'transparent',
+                                                                                        position: 'relative',
+                                                                                        minWidth: hasVisibleText ? 'auto' : '1px'
                                                                                     }}
-                                                                                    onClick={() => playVerse(verse.verse_number)}
+                                                                                    onClick={() => hasVisibleText && playVerse(verse.verse_number)}
                                                                                     onMouseEnter={(e) => {
+                                                                                        if (!hasVisibleText) return;
                                                                                         (e.currentTarget as HTMLElement).style.background = 'rgba(66,133,244,0.1)';
-                                                                                        if (word.translation) {
+                                                                                        
+                                                                                        let meaningText = word.translation?.trim() || word.transliteration?.trim() || '';
+                                                                                        
+                                                                                        // Fallback: try to extract from word object if direct access fails
+                                                                                        if (!meaningText && (word as any).wordObj) {
+                                                                                            meaningText = (word as any).wordObj.translation?.text?.trim() || 
+                                                                                                        (word as any).wordObj.transliteration?.text?.trim() || '';
+                                                                                        }
+                                                                                        
+                                                                                        // Only show tooltip if we have actual meaningful content
+                                                                                        if (meaningText && meaningText.trim().length > 0 && hasVisibleContent(meaningText)) {
                                                                                             const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
                                                                                             setTooltip({
-                                                                                                meaning: word.translation,
+                                                                                                meaning: meaningText.trim(),
                                                                                                 x: rect.left + rect.width / 2,
                                                                                                 y: rect.top - 8
                                                                                             });
                                                                                         }
                                                                                     }}
                                                                                     onMouseLeave={(e) => {
-                                                                                        (e.currentTarget as HTMLElement).style.background = currentVerse === verse.verse_number ? 'rgba(66,133,244,0.08)' : 'transparent';
+                                                                                        (e.currentTarget as HTMLElement).style.background = currentVerse === verse.verse_number && hasVisibleText ? 'rgba(66,133,244,0.08)' : 'transparent';
                                                                                         setTooltip(null);
                                                                                     }}
                                                                                 >
                                                                                     {word.text}
                                                                                 </span>
-                                                                            ))}
+                                                                            );
+                                                                            })}
                                                                             <span style={{ alignSelf: 'center', cursor: 'pointer' }} onClick={() => playVerse(verse.verse_number)}>
                                                                                 <AyahMarker number={verse.verse_number} size={ayahSize} />
                                                                             </span>
@@ -1185,7 +1231,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                         left: `${tooltip.x}px`,
                         top: `${tooltip.y}px`,
                         transform: 'translateX(-50%)',
-                        zIndex: 1000,
+                        zIndex: 10000,
                         pointerEvents: 'none',
                         animation: 'fadeIn 0.15s ease-out'
                     }}
@@ -1199,12 +1245,13 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                             fontSize: '13px',
                             fontWeight: 500,
                             whiteSpace: 'nowrap',
-                            maxWidth: '200px',
+                            maxWidth: '250px',
                             overflow: 'hidden',
                             textOverflow: 'ellipsis',
                             boxShadow: '0 4px 12px rgba(0,0,0,0.25)',
                             fontFamily: "'Lexend', sans-serif",
-                            letterSpacing: '0.3px'
+                            letterSpacing: '0.3px',
+                            border: '1px solid rgba(255,255,255,0.1)'
                         }}
                     >
                         {tooltip.meaning}
