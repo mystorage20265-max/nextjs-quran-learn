@@ -212,9 +212,7 @@
   /* Font families */
   --font-sans:
     "Figtree", "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-arabic:
-    "Amiri Quran", "Scheherazade New", "Noto Naskh Arabic",
-    "KFGQPC Uthmanic Script HAFS", "Uthmanic", "Traditional Arabic", serif;
+  --font-arabic: "Naskh IndoPak", serif;
   --font-mono: "JetBrains Mono", "Fira Code", monospace;
 
   /* Font sizes - Slightly larger for readability */

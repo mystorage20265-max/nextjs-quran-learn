@@ -131,7 +131,7 @@ const AyahMarker = ({ number, size = 30 }: { number: number; size?: number }) =>
             <circle cx="9.5" cy="40.5" r="1" fill={c} />
             <circle cx="40.5" cy="40.5" r="1" fill={c} />
             <text x="25" y="26" textAnchor="middle" dominantBaseline="central"
-                fontFamily="'Amiri Quran', 'Scheherazade New', serif"
+                fontFamily="'Naskh IndoPak', serif"
                 fontSize={fs} fill={c}>{numStr}</text>
         </svg>
     );
@@ -533,7 +533,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 .nq-islamic{background-image:radial-gradient(circle at 2px 2px,rgba(17,212,66,0.05) 1px,transparent 0);background-size:24px 24px}
                 /* Bismillah */
                 .nq-bismillah{display:flex;flex-direction:column;align-items:center;margin-bottom:48px}
-                .nq-bismillah-text{font-family:var(--rq-font-arabic),'Scheherazade New','Traditional Arabic',serif;font-size:36px;color:#1e293b;padding:32px 0;opacity:0.9}
+                .nq-bismillah-text{font-family:var(--rq-font-arabic);font-size:36px;color:#1e293b;padding:32px 0;opacity:0.9}
                 .dark .nq-bismillah-text{color:#e2e8f0}
                 .nq-bismillah-hr{width:128px;height:4px;background:linear-gradient(90deg,transparent,rgba(17,212,66,0.3),transparent);border:none;margin:0}
                 /* Verse cards */
@@ -544,7 +544,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 .nq-active-accent{position:absolute;left:-3px;top:32px;width:6px;height:48px;background:#11d442;border-radius:3px}
                 .nq-arabic-row{display:flex;flex-direction:row-reverse;align-items:flex-start;gap:12px;margin-bottom:0}
                 @media(min-width:640px){.nq-arabic-row{gap:24px}}
-                .nq-arabic-text{font-family:var(--rq-font-arabic),'Scheherazade New','Traditional Arabic',serif;font-size:var(--nq-fs,26px);line-height:2;text-align:right;flex:1;color:#1e293b;direction:rtl}
+                .nq-arabic-text{font-family:var(--rq-font-arabic);font-size:var(--nq-fs,26px);line-height:2;text-align:right;flex:1;color:#1e293b;direction:rtl}
                 @media(min-width:640px){.nq-arabic-text{font-size:var(--nq-fs,36px)}}
                 .dark .nq-arabic-text{color:#e2e8f0}
                 .nq-verse-badge{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;border:1px solid rgba(17,212,66,0.4);font-size:12px;font-weight:700;color:#11d442;margin-right:6px;font-family:'Lexend',sans-serif;cursor:pointer;vertical-align:middle;transition:background 0.15s}

@@ -2,17 +2,9 @@
 /* Fully Responsive, Animated, Glassmorphism Design */
 
 /* ============ FONTS ============ */
-@import url("https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Scheherazade+New:wght@400;700&family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
 
-/* Note: KFGQPC Uthmanic Script HAFS is declared in globals.css */
-/* Uthmanic (secondary) font */
-@font-face {
-  font-family: "Uthmanic";
-  src: url("/fonts/uthmanic.otf") format("opentype");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
+/* Note: Naskh IndoPak is declared in globals.css */
 
 /* ============ VARIABLES ============ */
 :root {
@@ -53,9 +45,7 @@
 
   /* Typography */
   --rq-font-sans: "Outfit", "Inter", system-ui, sans-serif;
-  --rq-font-arabic:
-    "Amiri Quran", "Scheherazade New", "Noto Naskh Arabic",
-    "KFGQPC Uthmanic Script HAFS", "Uthmanic", "Traditional Arabic", serif;
+  --rq-font-arabic: "Naskh IndoPak", serif;
 
   /* Layout */
   --rq-radius-lg: 20px;

@@ -467,11 +467,9 @@
   color: white;
 }
 
-/* Arabic Text - Optimized for KFGQPC Uthmanic Script */
+/* Arabic Text - Optimized for Naskh IndoPak */
 .reader-verse-arabic {
-  /* 'Scheherazade New' and 'Traditional Arabic' are full Unicode Quran fonts and act
-     as fallback for any waqf/annotation glyph the primary font doesn't support. */
-  font-family: var(--font-arabic), 'Scheherazade New', 'Traditional Arabic', serif;
+  font-family: var(--font-arabic);
   font-size: var(--arabic-font-size, 32px);
   line-height: 2.2;
   text-align: right;
@@ -531,7 +529,7 @@
 }
 
 .word-arabic {
-  font-family: var(--font-arabic), 'Scheherazade New', 'Traditional Arabic', serif;
+  font-family: var(--font-arabic);
   font-size: 28px;
   color: var(--reader-text-arabic);
   margin-bottom: 8px;
@@ -1604,7 +1602,7 @@
 }
 
 /* ============ FONT ENFORCEMENT ============ */
-/* High-specificity rules to ensure KFGQPC Uthmanic Script is always used for Arabic */
+/* High-specificity rules to ensure Naskh IndoPak is always used for Arabic */
 .quran-reader .reader-verse-arabic,
 .quran-reader .reader-bismillah-text,
 .quran-reader .reader-mushaf-text,
@@ -1613,7 +1611,7 @@
 .quran-reader .word-arabic,
 .quran-reader .interactive-word,
 .quran-reader .word-tooltip-arabic {
-  font-family: 'KFGQPC Uthmanic Script HAFS', 'Uthmanic', 'Scheherazade New', 'Amiri Quran', 'Traditional Arabic', serif !important;
+  font-family: 'Naskh IndoPak', serif !important;
 }
 
 /* ============ TOOLTIP ANIMATIONS ============ */

@@ -253,7 +253,7 @@ export default function HomePage() {
         .surah-card{transition:transform 0.18s ease,box-shadow 0.18s ease}.surah-card:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(17,212,66,0.12)}
         .feat-card{transition:transform 0.18s ease,box-shadow 0.18s ease}.feat-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.10)}
         .hp-dot{background-image:radial-gradient(circle at 2px 2px,rgba(17,212,66,0.06) 1px,transparent 0);background-size:24px 24px}
-        .font-arabic{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif}
+        .font-arabic{font-family:'Naskh IndoPak',serif}
         .filter-btn{padding:6px 14px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:500;transition:all 0.15s}
         .tc-btn{cursor:pointer;border:none;outline:none;background:none;-webkit-tap-highlight-color:transparent;transition:transform 0.08s ease;user-select:none}
         .tc-btn:active{transform:scale(0.93)}
@@ -334,7 +334,7 @@ export default function HomePage() {
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
                           <span style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: s.t === 'Meccan' ? '#11d442' : '#94a3b8' }}>{s.t}</span>
-                          <span style={{ fontFamily: "'Amiri','Scheherazade New',serif", fontSize: 17, color: dark ? '#e2e8e5' : '#1e293b' }}>{s.ar}</span>
+                          <span style={{ fontFamily: "'Naskh IndoPak',serif", fontSize: 17, color: dark ? '#e2e8e5' : '#1e293b' }}>{s.ar}</span>
                         </div>
                       </div>
                     </Link>

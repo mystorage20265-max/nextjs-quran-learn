@@ -8,21 +8,11 @@
 /* ============ FONT IMPORTS ============ */
 @import url("https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap");
-/* Arabic Quran fonts */
-@import url("https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Scheherazade+New:wght@400;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap");
 
-/* Arabic Font - KFGQPC Uthmanic Script HAFS */
+/* Arabic Font - Naskh Nastaleeq IndoPak QWBW */
 @font-face {
-  font-family: "KFGQPC Uthmanic Script HAFS";
-  src: url("/fonts/kfgqpc-uthmanic.otf") format("opentype");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Uthmanic";
-  src: url("/fonts/uthmanic.otf") format("opentype");
+  font-family: "Naskh IndoPak";
+  src: url("/fonts/Naskh-Nastaleeq-IndoPak-QWBW.woff2") format("woff2");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
