@@ -797,100 +797,30 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                     <div className="nq-content">
                         {/* Scrollable verse area */}
                         <div className="nq-scroll nq-islamic" style={{ '--nq-fs': `${fontSize}px` } as React.CSSProperties}>
-                            {/* Bismillah Header Card */}
-                            {chapter.bismillah_pre && (
-                                <div style={{
-                                    maxWidth: 896,
-                                    margin: isMobile ? '0 auto 28px' : '0 auto 48px',
-                                    borderRadius: isMobile ? 16 : 24,
-                                    background: 'linear-gradient(180deg, #fdf8f0 0%, #fdf4e8 50%, #faf0e0 100%)',
-                                    border: '1px solid rgba(234,179,8,0.15)',
-                                    boxShadow: '0 4px 24px rgba(0,0,0,0.06)',
-                                    overflow: 'hidden',
-                                    position: 'relative',
-                                }}>
-                                    {/* Orange top decoration */}
-                                    <div style={{
-                                        position: 'absolute',
-                                        top: 0,
-                                        left: '50%',
-                                        transform: 'translateX(-50%)',
-                                        width: 120,
-                                        height: 5,
-                                        background: 'linear-gradient(90deg, #f97316, #fb923c, #f97316)',
-                                        borderRadius: '0 0 8px 8px',
-                                    }} />
-                                    {/* Tiny icon above */}
-                                    <div style={{ textAlign: 'center', paddingTop: 28, marginBottom: -6 }}>
-                                        <span style={{ fontSize: 18, color: '#f97316', opacity: 0.7, fontFamily: 'var(--rq-font-arabic)' }}>﷽</span>
-                                    </div>
-                                    {/* Arabic text */}
-                                    <div style={{
-                                        fontFamily: 'var(--rq-font-arabic)',
-                                        fontSize: 'clamp(26px, 5vw, 52px)',
-                                        textAlign: 'center',
-                                        direction: 'rtl',
-                                        color: '#1c1c1c',
-                                        padding: isMobile ? '12px 16px 16px' : '16px 48px 20px',
-                                        lineHeight: isMobile ? 1.6 : 1.8,
-                                        fontFeatureSettings: '"liga" 1, "calt" 1',
-                                        textRendering: 'optimizeLegibility',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        gap: isMobile ? 8 : 12,
-                                    }}>
-                                        بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
-                                        {surahNumber === 1 && (
-                                            <span style={{ cursor: 'pointer', flexShrink: 0 }} onClick={() => playVerse(1)}>
-                                                <AyahMarker number={1} size={isMobile ? Math.max(22, Math.round(fontSize * 0.78)) : Math.max(28, Math.round(fontSize * 1.15))} />
-                                            </span>
-                                        )}
-                                    </div>
-                                    {/* Translation */}
-                                    <div style={{
-                                        textAlign: 'center',
-                                        color: '#6b7280',
-                                        fontSize: isMobile ? 13 : 15,
-                                        fontStyle: 'italic',
-                                        paddingBottom: isMobile ? 20 : 28,
-                                        fontFamily: "'Lexend', sans-serif",
-                                        fontWeight: 400,
-                                    }}>
-                                        In the Name of Allah—the Most Compassionate, Most Merciful.
-                                    </div>
-                                </div>
-                            )}
-
 
                             {/* Verses */}
                             <div style={{ maxWidth: 896, margin: '0 auto' }}>
                                 {readingMode === 'reading' ? (
                                     (() => {
-                                        const versesToRender = displayVerses.filter(v => !(surahNumber === 1 && v.verse_number === 1));
-                                        const pageGroups: { pageNumber: number; verses: typeof versesToRender }[] = [];
+                                        // For Surah 1 (Al-Fatiha), verse 1 IS the Bismillah so include it
+                                        const versesToRender = surahNumber === 1 ? displayVerses : displayVerses.filter(v => !(v.verse_number === 1 && chapter.bismillah_pre));
+                                        const pageGroups: { pageNumber: number; juzNumber: number; verses: typeof versesToRender }[] = [];
                                         for (const verse of versesToRender) {
                                             const pn = verse.page_number || 1;
                                             const last = pageGroups[pageGroups.length - 1];
                                             if (last && last.pageNumber === pn) {
                                                 last.verses.push(verse);
                                             } else {
-                                                pageGroups.push({ pageNumber: pn, verses: [verse] });
+                                                pageGroups.push({ pageNumber: pn, juzNumber: verse.juz_number || 1, verses: [verse] });
                                             }
                                         }
 
                                         const renderVerseWords = (verse: typeof versesToRender[0]) => {
                                             let words: { text: string; key: string | number; translation?: string; transliteration?: string; wordObj?: any }[] = [];
-                                            // Use verse-level text_indopak (from QuranCDN via getVersesWithWords).
-                                            // It has proper kasra/fatha/damma on all words (e.g. اِهدِنَا with kasra).
-                                            // cleanIndopakText strips Quran-specific chars (ۡ U+06E1) but preserves
-                                            // standard diacritics, giving exactly the voweled text we want.
                                             const verseText = verse.text_indopak || verse.text_uthmani || '';
                                             const hasWordData = verse.words && verse.words.length > 0;
-
-                                            // Clean and split verse-level text into word tokens
                                             const cleanedVerse = cleanIndopakText(
-                                                verse.verse_number === 1 && chapter.bismillah_pre
+                                                verse.verse_number === 1 && chapter.bismillah_pre && surahNumber !== 1
                                                     ? removeBismillah(verseText)
                                                     : verseText
                                             );
@@ -898,7 +828,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
 
                                             if (hasWordData) {
                                                 let wordList = verse.words!.filter((w: any) => w.char_type_name !== 'end');
-                                                if (verse.verse_number === 1 && chapter.bismillah_pre) {
+                                                if (verse.verse_number === 1 && chapter.bismillah_pre && surahNumber !== 1) {
                                                     let skip = 0;
                                                     for (const w of wordList) {
                                                         if (isBismillahWord(w.text_uthmani) && skip < 4) skip++;
@@ -907,8 +837,6 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                     wordList = wordList.slice(skip);
                                                 }
                                                 if (verseTokens.length > 0 && verseTokens.length === wordList.length) {
-                                                    // Perfect match — use verse-level tokens (proper kasra/fatha from IndoPak)
-                                                    // Preserve the word object for translation data
                                                     words = wordList.map((w: any, i: number) => ({ 
                                                         text: stripInvisibleChars(verseTokens[i]), 
                                                         key: w.id || w.position,
@@ -917,8 +845,6 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                         wordObj: w
                                                     }));
                                                 } else {
-                                                    // Token count mismatch OR no verse text — use wordList as sole source of truth
-                                                    // This ensures each word's display text and tooltip always stay aligned
                                                     words = wordList.map((w: any) => ({ 
                                                         text: stripInvisibleChars(w.text_imlaei || w.text_indopak || w.text_uthmani), 
                                                         key: w.id || w.position,
@@ -928,147 +854,183 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                     }));
                                                 }
                                             } else {
-                                                // No word data at all — use the verse-level tokens directly
                                                 words = verseTokens.map((w, idx) => ({ 
                                                     text: stripInvisibleChars(w), 
                                                     key: idx 
                                                 }));
                                             }
-                                            // CRITICAL: Apply stripInvisibleChars but keep all words (including empty ones)
-                                            // for proper tooltip positioning and layout matching
-                                            return words
-                                                .map(w => ({ ...w, text: stripInvisibleChars(w.text || '') }));
+                                            return words.map(w => ({ ...w, text: stripInvisibleChars(w.text || '') }));
                                         };
 
-                                        const ayahSize = isMobile ? Math.max(22, Math.round(fontSize * 0.78)) : Math.max(28, Math.round(fontSize * 1.15));
+                                        const ayahSize = isMobile ? Math.max(20, Math.round(fontSize * 0.72)) : Math.max(26, Math.round(fontSize * 0.95));
+                                        const surahInfo = ALL_SURAHS.find(s => s.number === surahNumber);
+                                        
                                         return (
-                                            <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? 20 : 32 }}>
                                                 {pageGroups.map((group, groupIdx) => (
                                                     <div key={group.pageNumber}>
+                                                        {/* ===== MUSHAF PAGE FRAME ===== */}
                                                         <div style={{
-                                                            background: '#fff',
-                                                            border: '1px solid #e2ddd3',
-                                                            borderRadius: 2,
-                                                            padding: isMobile ? '16px 12px' : 'clamp(20px, 4vw, 40px) clamp(24px, 5vw, 56px)',
+                                                            background: '#f6f8f6',
+                                                            border: '1.5px solid rgba(17,212,66,0.18)',
+                                                            borderRadius: 8,
                                                             position: 'relative',
-                                                            overflowX: 'hidden',
+                                                            overflow: 'hidden',
                                                         }}>
-                                                            {groupIdx === 0 && surahNumber === 1 && verses.length > 0 && (
-                                                                <div
-                                                                    onClick={() => playVerse(1)}
-                                                                    style={{
-                                                                        fontFamily: 'var(--rq-font-arabic)',
-                                                                        fontSize: isMobile ? `${Math.round(fontSize * 0.82)}px` : `${Math.round(fontSize * 1.05)}px`,
-                                                                        lineHeight: isMobile ? 1.6 : 1.8,
-                                                                        textAlign: 'center',
-                                                                        direction: 'rtl',
-                                                                        color: '#222',
-                                                                        padding: '0 0 16px',
-                                                                        marginBottom: 12,
-                                                                        borderBottom: '1px solid #eae5db',
-                                                                        cursor: 'pointer',
+                                                            {/* Juz Header */}
+                                                            {groupIdx === 0 && (
+                                                                <div style={{
+                                                                    textAlign: 'center',
+                                                                    padding: isMobile ? '10px 8px' : '14px 16px',
+                                                                    borderBottom: '1.5px solid rgba(17,212,66,0.15)',
+                                                                    background: 'rgba(17,212,66,0.06)',
+                                                                }}>
+                                                                    <span style={{
+                                                                        fontFamily: "'Naskh IndoPak', 'KFGQPC Uthmanic Script HAFS Regular', 'Scheherazade New', 'Amiri', 'Traditional Arabic', serif",
+                                                                        fontSize: isMobile ? 20 : 28,
+                                                                        color: '#1e293b',
+                                                                        fontWeight: 700,
                                                                         fontFeatureSettings: '"liga" 1, "calt" 1',
-                                                                        textRendering: 'optimizeLegibility',
-                                                                        display: 'flex',
-                                                                        alignItems: 'center',
-                                                                        justifyContent: 'center',
-                                                                        gap: isMobile ? 6 : 8,
-                                                                    }}
-                                                                >
-                                                                    بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
-                                                                    <AyahMarker number={1} size={ayahSize} />
+                                                                    }}>
+                                                                        جُزْءٌ - {toArabicNumeral(group.juzNumber)}
+                                                                    </span>
                                                                 </div>
                                                             )}
+
+                                                            {/* Surah Title Header */}
+                                                            {groupIdx === 0 && (
+                                                                <div style={{
+                                                                    textAlign: 'center',
+                                                                    padding: isMobile ? '14px 8px' : '18px 16px',
+                                                                    borderBottom: '1px solid rgba(17,212,66,0.12)',
+                                                                    background: 'rgba(17,212,66,0.03)',
+                                                                }}>
+                                                                    <div style={{
+                                                                        fontFamily: "'Naskh IndoPak', 'KFGQPC Uthmanic Script HAFS Regular', 'Scheherazade New', 'Amiri', 'Traditional Arabic', serif",
+                                                                        fontSize: isMobile ? 24 : 36,
+                                                                        fontWeight: 700,
+                                                                        color: '#1e293b',
+                                                                        lineHeight: 1.5,
+                                                                        fontFeatureSettings: '"liga" 1, "calt" 1',
+                                                                    }}>
+                                                                        سُورَةُ {chapter.name_arabic}
+                                                                    </div>
+                                                                </div>
+                                                            )}
+
+                                                            {/* Bismillah - for surahs with bismillah_pre (except Surah 9) */}
+                                                            {groupIdx === 0 && chapter.bismillah_pre && surahNumber !== 1 && (
+                                                                <div style={{
+                                                                    textAlign: 'center',
+                                                                    padding: isMobile ? '14px 12px' : '20px 24px',
+                                                                    borderBottom: '1px solid rgba(17,212,66,0.12)',
+                                                                }}>
+                                                                    <span style={{
+                                                                        fontFamily: "'Naskh IndoPak', 'KFGQPC Uthmanic Script HAFS Regular', 'Scheherazade New', 'Amiri', 'Traditional Arabic', serif",
+                                                                        fontSize: isMobile ? Math.round(fontSize * 0.82) : Math.round(fontSize * 1.05),
+                                                                        color: '#1e293b',
+                                                                        lineHeight: 1.8,
+                                                                        fontFeatureSettings: '"liga" 1, "calt" 1',
+                                                                        textRendering: 'optimizeLegibility',
+                                                                    }}>
+                                                                        بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+                                                                    </span>
+                                                                </div>
+                                                            )}
+
+                                                            {/* ===== VERSE CONTENT AREA ===== */}
                                                             <div style={{
-                                                                fontFamily: 'var(--rq-font-arabic)',
-                                                                fontSize: isMobile ? `${Math.round(fontSize * 0.78)}px` : `${fontSize}px`,
-                                                                lineHeight: isMobile ? 1.9 : 2.1,
-                                                                textAlign: 'center',
-                                                                direction: 'rtl',
-                                                                color: '#222',
-                                                                margin: 0,
-                                                                fontFeatureSettings: '"liga" 1, "calt" 1',
-                                                                textRendering: 'optimizeLegibility',
-                                                                display: 'flex',
-                                                                flexWrap: 'wrap',
-                                                                justifyContent: 'center',
-                                                                gap: isMobile ? '0 3px' : '0 6px',
+                                                                padding: isMobile ? '16px 10px' : '28px 32px',
                                                             }}>
-                                                                {group.verses.map((verse) => {
-                                                                    const words = renderVerseWords(verse);
-                                                                    if (words.length === 0) return null;
-                                                                    return (
-                                                                        <span key={verse.id} style={{ display: 'contents' }}>
-                                                                            {words.map((word) => {
-                                                                                // Render all words for layout consistency (including invisible ones)
-                                                                                const hasVisibleText = hasVisibleContent(word.text);
-                                                                                const hasMeaning = word.translation?.trim() || (word as any).wordObj?.translation?.text?.trim();
-                                                                                return (
-                                                                                <span
-                                                                                    key={word.key}
-                                                                                    style={{
-                                                                                        display: 'inline-block',
-                                                                                        cursor: hasVisibleText ? 'pointer' : 'default',
-                                                                                        padding: '2px 2px',
-                                                                                        borderRadius: 4,
-                                                                                        transition: 'background 0.15s',
-                                                                                        background: currentVerse === verse.verse_number && hasVisibleText ? 'rgba(66,133,244,0.08)' : 'transparent',
-                                                                                        position: 'relative',
-                                                                                        minWidth: hasVisibleText ? 'auto' : '1px'
-                                                                                    }}
-                                                                                    onClick={() => hasVisibleText && playVerse(verse.verse_number)}
-                                                                                    onMouseEnter={(e) => {
-                                                                                        if (!hasVisibleText) return;
-                                                                                        (e.currentTarget as HTMLElement).style.background = 'rgba(66,133,244,0.1)';
-                                                                                        
-                                                                                        let meaningText = word.translation?.trim() || word.transliteration?.trim() || '';
-                                                                                        
-                                                                                        // Fallback: try to extract from word object if direct access fails
-                                                                                        if (!meaningText && (word as any).wordObj) {
-                                                                                            meaningText = (word as any).wordObj.translation?.text?.trim() || 
-                                                                                                        (word as any).wordObj.transliteration?.text?.trim() || '';
-                                                                                        }
-                                                                                        
-                                                                                        // Only show tooltip if we have actual meaningful content
-                                                                                        if (meaningText && meaningText.trim().length > 0 && hasVisibleContent(meaningText)) {
-                                                                                            const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-                                                                                            setTooltip({
-                                                                                                meaning: meaningText.trim(),
-                                                                                                x: rect.left + rect.width / 2,
-                                                                                                y: rect.top - 8
-                                                                                            });
-                                                                                        }
-                                                                                    }}
-                                                                                    onMouseLeave={(e) => {
-                                                                                        (e.currentTarget as HTMLElement).style.background = currentVerse === verse.verse_number && hasVisibleText ? 'rgba(66,133,244,0.08)' : 'transparent';
-                                                                                        setTooltip(null);
-                                                                                    }}
-                                                                                >
-                                                                                    {word.text}
+                                                                <div style={{
+                                                                    fontFamily: "'Naskh IndoPak', 'KFGQPC Uthmanic Script HAFS Regular', 'Scheherazade New', 'Amiri', 'Traditional Arabic', serif",
+                                                                    fontSize: isMobile ? `${Math.round(fontSize * 0.78)}px` : `${fontSize}px`,
+                                                                    lineHeight: isMobile ? 2.0 : 2.4,
+                                                                    textAlign: 'center',
+                                                                    direction: 'rtl' as const,
+                                                                    color: '#1e293b',
+                                                                    margin: 0,
+                                                                    fontFeatureSettings: '"liga" 1, "calt" 1',
+                                                                    textRendering: 'optimizeLegibility',
+                                                                    wordSpacing: 'normal',
+                                                                    letterSpacing: '-0.01em',
+                                                                    WebkitFontSmoothing: 'antialiased',
+                                                                }}>
+                                                                    {group.verses.map((verse) => {
+                                                                        const words = renderVerseWords(verse);
+                                                                        if (words.length === 0) return null;
+                                                                        return (
+                                                                            <span key={verse.id}>
+                                                                                {words.map((word, wordIdx) => {
+                                                                                    const hasVisibleText = hasVisibleContent(word.text);
+                                                                                    return (
+                                                                                        <span key={word.key}>
+                                                                                            <span
+                                                                                                style={{
+                                                                                                    cursor: hasVisibleText ? 'pointer' : 'default',
+                                                                                                    padding: '0px 1px',
+                                                                                                    borderRadius: 3,
+                                                                                                    transition: 'background 0.15s',
+                                                                                                    background: currentVerse === verse.verse_number && hasVisibleText ? 'rgba(17,212,66,0.12)' : 'transparent',
+                                                                                                }}
+                                                                                                onClick={() => hasVisibleText && playVerse(verse.verse_number)}
+                                                                                                onMouseEnter={(e) => {
+                                                                                                    if (!hasVisibleText) return;
+                                                                                                    (e.currentTarget as HTMLElement).style.background = 'rgba(17,212,66,0.15)';
+                                                                                                    let meaningText = word.translation?.trim() || word.transliteration?.trim() || '';
+                                                                                                    if (!meaningText && (word as any).wordObj) {
+                                                                                                        meaningText = (word as any).wordObj.translation?.text?.trim() || 
+                                                                                                                    (word as any).wordObj.transliteration?.text?.trim() || '';
+                                                                                                    }
+                                                                                                    if (meaningText && meaningText.trim().length > 0 && hasVisibleContent(meaningText)) {
+                                                                                                        const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+                                                                                                        setTooltip({ meaning: meaningText.trim(), x: rect.left + rect.width / 2, y: rect.top - 8 });
+                                                                                                    }
+                                                                                                }}
+                                                                                                onMouseLeave={(e) => {
+                                                                                                    (e.currentTarget as HTMLElement).style.background = currentVerse === verse.verse_number && hasVisibleText ? 'rgba(17,212,66,0.12)' : 'transparent';
+                                                                                                    setTooltip(null);
+                                                                                                }}
+                                                                                            >
+                                                                                                {word.text}
+                                                                                            </span>
+                                                                                            {wordIdx < words.length - 1 && ' '}
+                                                                                        </span>
+                                                                                    );
+                                                                                })}
+                                                                                {' '}
+                                                                                <span style={{ cursor: 'pointer', verticalAlign: 'middle' }} onClick={() => playVerse(verse.verse_number)}>
+                                                                                    <AyahMarker number={verse.verse_number} size={ayahSize} />
                                                                                 </span>
-                                                                            );
-                                                                            })}
-                                                                            <span style={{ alignSelf: 'center', cursor: 'pointer' }} onClick={() => playVerse(verse.verse_number)}>
-                                                                                <AyahMarker number={verse.verse_number} size={ayahSize} />
+                                                                                {' '}
                                                                             </span>
-                                                                        </span>
-                                                                    );
-                                                                })}
+                                                                        );
+                                                                    })}
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                        <div style={{
-                                                            textAlign: 'center',
-                                                            padding: '10px 0 0',
-                                                            fontSize: 13,
-                                                            color: '#a0a0a0',
-                                                            fontFamily: "'Inter', sans-serif",
-                                                            fontWeight: 400,
-                                                            letterSpacing: '0.02em',
-                                                        }}>
-                                                            {group.pageNumber}
+
+                                                            {/* ===== PAGE FOOTER ===== */}
+                                                            <div style={{
+                                                                textAlign: 'center',
+                                                                padding: isMobile ? '10px 8px' : '14px 16px',
+                                                                borderTop: '1.5px solid rgba(17,212,66,0.15)',
+                                                                background: 'rgba(17,212,66,0.06)',
+                                                                fontFamily: "'Inter', 'Lexend', sans-serif",
+                                                                fontSize: isMobile ? 11 : 13,
+                                                                color: '#475569',
+                                                                fontWeight: 500,
+                                                                letterSpacing: '0.02em',
+                                                            }}>
+                                                                Surah {surahNumber}. {surahInfo?.name || chapter.name_simple} ({surahInfo?.translation || chapter.translated_name.name}) - Page {group.pageNumber} - Juz {group.juzNumber}
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 ))}
+                                                {/* Surah navigation */}
+                                                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 32 }}>
+                                                    {surahNumber > 1 ? <Link href={`/read-quran/${surahNumber - 1}?mode=reading`} className="reader-nav-btn"><ChevronLeft size={18} /><span>Previous Surah</span></Link> : <div />}
+                                                    {surahNumber < 114 && <Link href={`/read-quran/${surahNumber + 1}?mode=reading`} className="reader-nav-btn primary"><span>Next Surah</span><ChevronRight size={18} /></Link>}
+                                                </div>
                                             </div>
                                         );
                                     })()
