@@ -4,7 +4,7 @@
   padding: 2rem 1rem;
   min-height: 100vh;
   background: linear-gradient(135deg, #f0f4f8 0%, #e3e8f0 100%);
-  font-family: var(--font-primary);
+  font-family: var(--font-sans);
 }
 
 .header {

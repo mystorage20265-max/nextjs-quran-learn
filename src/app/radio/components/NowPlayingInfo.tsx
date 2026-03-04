@@ -92,7 +92,7 @@ export default function NowPlayingInfo({
 
                     {/* Surah Info */}
                     <div className="text-right text-white space-y-1">
-                        <div className="text-4xl font-bold drop-shadow-lg" style={{ fontFamily: 'serif' }}>
+                        <div className="text-4xl font-bold drop-shadow-lg" style={{ fontFamily: "'Naskh IndoPak', serif" }}>
                             {surahNameArabic}
                         </div>
                         <div className="text-xl font-semibold">

@@ -116,7 +116,7 @@ const toArabicNumeral = (num: number): string => {
 
 const AyahMarker = ({ number, size = 30 }: { number: number; size?: number }) => {
     const numStr = toArabicNumeral(number);
-    const fs = numStr.length > 2 ? size * 0.3 : size * 0.36;
+    const fs = numStr.length > 2 ? size * 0.34 : numStr.length > 1 ? size * 0.38 : size * 0.42;
     const c = '#333';
     return (
         <svg width={size} height={size} viewBox="0 0 50 50" style={{ display: 'inline-block', verticalAlign: 'middle', flexShrink: 0 }}>
@@ -131,8 +131,8 @@ const AyahMarker = ({ number, size = 30 }: { number: number; size?: number }) =>
             <circle cx="9.5" cy="40.5" r="1" fill={c} />
             <circle cx="40.5" cy="40.5" r="1" fill={c} />
             <text x="25" y="26" textAnchor="middle" dominantBaseline="central"
-                fontFamily="'Naskh IndoPak', serif"
-                fontSize={fs} fill={c}>{numStr}</text>
+                fontFamily="'Scheherazade New', 'Amiri', 'Traditional Arabic', 'Arial', sans-serif"
+                fontSize={fs} fontWeight="600" fill={c}>{numStr}</text>
         </svg>
     );
 };
