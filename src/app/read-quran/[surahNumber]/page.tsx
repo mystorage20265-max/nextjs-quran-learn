@@ -826,8 +826,17 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                         lineHeight: 1.8,
                                         fontFeatureSettings: '"liga" 1, "calt" 1',
                                         textRendering: 'optimizeLegibility',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        gap: 12,
                                     }}>
                                         بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+                                        {surahNumber === 1 && (
+                                            <span style={{ cursor: 'pointer', flexShrink: 0 }} onClick={() => playVerse(1)}>
+                                                <AyahMarker number={1} size={Math.max(28, Math.round(fontSize * 1.15))} />
+                                            </span>
+                                        )}
                                     </div>
                                     {/* Translation */}
                                     <div style={{
@@ -950,9 +959,14 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                                         cursor: 'pointer',
                                                                         fontFeatureSettings: '"liga" 1, "calt" 1',
                                                                         textRendering: 'optimizeLegibility',
+                                                                        display: 'flex',
+                                                                        alignItems: 'center',
+                                                                        justifyContent: 'center',
+                                                                        gap: 8,
                                                                     }}
                                                                 >
                                                                     بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+                                                                    <AyahMarker number={1} size={ayahSize} />
                                                                 </div>
                                                             )}
                                                             <div style={{
