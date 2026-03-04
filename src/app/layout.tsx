@@ -86,7 +86,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
         <link
-          href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&family=Noto+Sans+Arabic:wght@400;700&family=Amiri:wght@400;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap"
           rel="stylesheet"
         />
         <link
@@ -95,16 +95,9 @@ export default function RootLayout({
         />
         <link
           rel="preload"
-          href="/fonts/kfgqpc-uthmanic.otf"
+          href="/fonts/Naskh-Nastaleeq-IndoPak-QWBW.woff2"
           as="font"
-          type="font/otf"
-          crossOrigin="anonymous"
-        />
-        <link
-          rel="preload"
-          href="/fonts/uthmanic.otf"
-          as="font"
-          type="font/otf"
+          type="font/woff2"
           crossOrigin="anonymous"
         />
         <link

@@ -14,13 +14,13 @@ export const metadata: Metadata = {
 export default function DuaLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      {/* Material Icons + Amiri font for this section */}
+      {/* Material Icons for this section */}
       <link
         href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined"
         rel="stylesheet"
       />
       <link
-        href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Lexend:wght@400;500;600;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap"
         rel="stylesheet"
       />
       {children}

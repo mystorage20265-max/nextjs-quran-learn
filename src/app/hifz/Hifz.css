@@ -15,7 +15,7 @@
   transform: translateY(-2px) scale(1.01);
 }
 .hifz-heading-arabic {
-  font-family: 'Amiri', 'Scheherazade New', serif;
+  font-family: 'Naskh IndoPak', serif;
   font-size: 2.1rem;
   color: #007f3d;
   margin-bottom: 0.7rem;
@@ -374,7 +374,7 @@
 }
 
 .arabic-name {
-  font-family: 'Amiri', 'Scheherazade New', 'Lateef', serif;
+  font-family: 'Naskh IndoPak', serif;
   font-size: 1.8rem;
   color: var(--text-primary);
   font-weight: 600;
@@ -756,7 +756,7 @@
 }
 
 .verse-arabic-text {
-  font-family: 'Amiri', 'Scheherazade New', 'Lateef', serif;
+  font-family: 'Naskh IndoPak', serif;
   font-size: 1.6rem;
   line-height: 1.8;
   text-align: right;

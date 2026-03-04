@@ -2488,7 +2488,7 @@
 
     font-size: 0.95rem;
 
-    line-height: 1.6;    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);    font-size: 1rem;  font-family: "Scheherazade New", "Noto Naskh Arabic", serif;
+    line-height: 1.6;    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);    font-size: 1rem;  font-family: 'Naskh IndoPak', serif;
 
   }
 
@@ -2926,7 +2926,7 @@
 
     }
 
-    transform-style: preserve-3d;  font-family: "Scheherazade New";
+    transform-style: preserve-3d;  font-family: 'Naskh IndoPak', serif;
 
     .navigationControls {
 
@@ -2934,7 +2934,7 @@
 
         padding: 1rem;
 
-        border-radius: 50px;}.navButton:hover {  src: url("https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;700&display=swap");
+        border-radius: 50px;}.navButton:hover {
 
     }
 

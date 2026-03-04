@@ -3,7 +3,7 @@
 import { useState, useRef } from 'react';
 import Link from 'next/link';
 
-const ARABIC_FONT = 'var(--rq-font-arabic, "Noto Sans Arabic", serif)';
+const ARABIC_FONT = "'Naskh IndoPak', serif";
 
 /* ─── Data ─────────────────────────────────────────────────────── */
 const DUA_OF_THE_DAY = {

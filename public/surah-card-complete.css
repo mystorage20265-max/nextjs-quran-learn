@@ -60,7 +60,7 @@
 
 /* Arabic name styling */
 .surah-arabic-name {
-  font-family: 'Traditional Arabic', 'Scheherazade New', serif;
+  font-family: 'Naskh IndoPak', serif;
   font-size: 24px;
   margin-bottom: 5px;
   color: #333;
@@ -193,7 +193,7 @@
 }
 
 .quran-surah-arabic {
-  font-family: 'Traditional Arabic', 'Scheherazade New', serif;
+  font-family: 'Naskh IndoPak', serif;
   font-size: 24px;
   margin-bottom: 5px;
   color: #333;

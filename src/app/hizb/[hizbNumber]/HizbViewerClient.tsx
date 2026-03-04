@@ -164,7 +164,7 @@ export default function HizbViewerClient({ ayahs, hizb }: { ayahs: Ayah[]; hizb:
       <Navbar />
       <div className="juz-header" style={{ background: '#f0f9ff', textAlign: 'center', padding: '2.5rem 1rem', borderRadius: 12, marginBottom: '2rem', boxShadow: '0 4px 6px rgba(0,0,0,0.05)' }}>
         <div className="juz-title-container" style={{ marginBottom: '1.5rem' }}>
-          <div className="juz-arabic-title" style={{ fontFamily: 'Scheherazade New, Traditional Arabic, serif', fontSize: '2.5rem', color: '#0e9f6e', marginBottom: '0.5rem', fontWeight: 500 }}>{hizb} حِزْب</div>
+          <div className="juz-arabic-title" style={{ fontFamily: "'Naskh IndoPak', serif", fontSize: '2.5rem', color: '#0e9f6e', marginBottom: '0.5rem', fontWeight: 500 }}>{hizb} حِزْب</div>
           <div className="juz-english-title" style={{ fontSize: '2rem', color: '#2563eb', marginBottom: '0.5rem', fontWeight: 700 }}>Hizb {hizb}</div>
           <div className="juz-subtitle" style={{ fontSize: '1.25rem', color: '#64748b', marginBottom: '1.5rem' }}>Section of the Holy Quran</div>
         </div>
@@ -228,7 +228,7 @@ export default function HizbViewerClient({ ayahs, hizb }: { ayahs: Ayah[]; hizb:
               </button>
             </div>
             <div style={{ flex: 1 }}>
-              <div style={{ fontFamily: 'Scheherazade New, Traditional Arabic, serif', fontSize: '1.7rem', color: '#222', marginBottom: 8, textAlign: 'right', direction: 'rtl' }}>{ayah.text}</div>
+              <div style={{ fontFamily: "'Naskh IndoPak', serif", fontSize: '1.7rem', color: '#222', marginBottom: 8, textAlign: 'right', direction: 'rtl' }}>{ayah.text}</div>
               <div style={{ fontSize: '1.1rem', color: '#64748b', marginBottom: 4, textAlign: 'left', direction: 'ltr', borderLeft: '3px solid #10b981', paddingLeft: 12 }}>{ayah.translation}</div>
             </div>
           </div>

@@ -273,7 +273,7 @@
 }
 
 .mq-surah-name-ar {
-    font-family: "KFGQPC Uthmanic Script HAFS", "Uthmanic", "Scheherazade New", "Amiri Quran", "Traditional Arabic", serif;
+    font-family: 'Naskh IndoPak', serif;
     font-size: 1.3rem;
     color: var(--mq-primary);
     flex-shrink: 0;
@@ -602,7 +602,7 @@
 }
 
 .verse-arabic {
-    font-family: 'KFGQPC Uthmanic Script HAFS', 'Amiri Quran', serif;
+    font-family: 'Naskh IndoPak', serif;
     font-size: 2.2rem;
     text-align: right;
     direction: rtl;
@@ -1103,7 +1103,7 @@
 }
 
 .focus-mode-verse {
-    font-family: 'KFGQPC Uthmanic Script HAFS', 'Amiri Quran', serif;
+    font-family: 'Naskh IndoPak', serif;
     font-size: clamp(2rem, 5vw, 3.5rem);
     line-height: 2.2;
     text-align: center;

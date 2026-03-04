@@ -211,7 +211,7 @@ export default function QuranSciencePage() {
                             {/* Left: Scripture */}
                             <div style={{ flex: '1 1 340px', padding: 'clamp(36px,5vw,80px)', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                                 <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.25em', textTransform: 'uppercase', color: '#0fbd74', opacity: 0.7, display: 'block', marginBottom: 28 }}>Scripture Reference</span>
-                                <div style={{ direction: 'rtl', fontFamily: "'Amiri', serif", fontSize: 'clamp(24px,4vw,46px)', lineHeight: 1.8, color: 'var(--qs-text)', marginBottom: 36 }}>
+                                <div style={{ direction: 'rtl', fontFamily: "'Naskh IndoPak', serif", fontSize: 'clamp(24px,4vw,46px)', lineHeight: 1.8, color: 'var(--qs-text)', marginBottom: 36 }}>
                                     ثُمَّ خَلَقْنَا النُّطْفَةَ عَلَقَةً فَخَلَقْنَا الْعَلَقَةَ مُضْغَةً فَخَلَقْنَا الْمُضْغَةَ عِظَامًا فَكَسَوْنَا الْعِظَامَ لَحْمًا
                                 </div>
                                 <div>
@@ -379,7 +379,7 @@ export default function QuranSciencePage() {
 
             {/* ── GLOBAL STYLES ── */}
             <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=Amiri:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
 
         :root {

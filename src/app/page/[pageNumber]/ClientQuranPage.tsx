@@ -158,7 +158,7 @@ function ClientQuranPage({ pageNumber, translationEdition, audioEdition, ayahs }
         }}>
           {/* Large Arabic title */}
           <div style={{
-            fontFamily: 'Scheherazade New, Traditional Arabic, serif',
+            fontFamily: "'Naskh IndoPak', serif",
             fontSize: '2.5rem',
             color: '#10b981',
             fontWeight: 700,
@@ -230,7 +230,7 @@ function ClientQuranPage({ pageNumber, translationEdition, audioEdition, ayahs }
               </div>
               {/* Right: Arabic and translation */}
               <div style={{ flex: 1 }}>
-                <div style={{ fontFamily: 'Scheherazade New, Traditional Arabic, serif', fontSize: '1.8rem', color: '#222', marginBottom: 10, textAlign: 'right', direction: 'rtl', lineHeight: 1.7 }}>{ay.arabic}</div>
+                <div style={{ fontFamily: "'Naskh IndoPak', serif", fontSize: '1.8rem', color: '#222', marginBottom: 10, textAlign: 'right', direction: 'rtl', lineHeight: 1.7 }}>{ay.arabic}</div>
                 <div style={{ fontSize: '1.13rem', color: '#64748b', marginBottom: 4, textAlign: 'left', direction: 'ltr', borderLeft: '3px solid #10b981', paddingLeft: 14 }}>{ay.translation}</div>
               </div>
             </div>

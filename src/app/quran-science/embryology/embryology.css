@@ -3,7 +3,7 @@
    Primary: #0fbd74  |  Background: #fcfdfc  |  Text: #0f172a
    ═══════════════════════════════════════════════════════════════ */
 
-@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=Amiri:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
 
 /* ── Root page ── */
@@ -909,7 +909,7 @@
 }
 
 .arabic-title {
-    font-family: 'Amiri', serif;
+    font-family: 'Naskh IndoPak', serif;
     font-size: clamp(2.4rem, 4vw, 3.5rem);
     color: #0f172a;
     direction: rtl;
@@ -1158,7 +1158,7 @@
 }
 
 .arabic-text {
-    font-family: 'Amiri', serif;
+    font-family: 'Naskh IndoPak', serif;
     font-size: 1.3rem;
     color: #0f172a;
     direction: rtl;
@@ -1212,7 +1212,7 @@
 }
 
 .reflection-title {
-    font-family: 'Amiri', serif;
+    font-family: 'Naskh IndoPak', serif;
     font-size: clamp(1.8rem, 3.5vw, 2.8rem);
     color: #ffffff;
     margin: 0;

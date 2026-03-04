@@ -389,7 +389,7 @@ export default function AudioQuranPage() {
                   </div>
                   {nowPlayingSurahData ? (
                     <>
-                      <div style={{ fontFamily: "'Amiri', serif", fontSize: "clamp(28px,4vw,48px)", fontWeight: 700, marginBottom: 4, lineHeight: 1.2 }}>
+                      <div style={{ fontFamily: "'Naskh IndoPak', serif", fontSize: "clamp(28px,4vw,48px)", fontWeight: 700, marginBottom: 4, lineHeight: 1.2 }}>
                         {nowPlayingSurahData.name}
                       </div>
                       <div style={{ fontSize: 22, fontWeight: 700, marginBottom: 6 }}>
@@ -401,7 +401,7 @@ export default function AudioQuranPage() {
                     </>
                   ) : (
                     <>
-                      <div style={{ fontFamily: "'Amiri', serif", fontSize: "clamp(28px,4vw,48px)", fontWeight: 700, marginBottom: 4 }}>سُورَةُ الفَاتِحَةِ</div>
+                      <div style={{ fontFamily: "'Naskh IndoPak', serif", fontSize: "clamp(28px,4vw,48px)", fontWeight: 700, marginBottom: 4 }}>سُورَةُ الفَاتِحَةِ</div>
                       <div style={{ fontSize: 22, fontWeight: 700, marginBottom: 6 }}>Quran Audio Player</div>
                       <div style={{ color: "rgba(209,250,229,0.85)", fontSize: 14 }}>Select a surah to begin listening</div>
                     </>
@@ -510,7 +510,7 @@ export default function AudioQuranPage() {
                             {/* Name */}
                             <td style={{ padding: "16px 24px" }}>
                               <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-                                <div style={{ width: 40, height: 40, borderRadius: 8, background: "var(--aq-input-bg)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Amiri', serif", fontSize: 18, color: "var(--aq-text)", flexShrink: 0 }}>
+                                <div style={{ width: 40, height: 40, borderRadius: 8, background: "var(--aq-input-bg)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Naskh IndoPak', serif", fontSize: 18, color: "var(--aq-text)", flexShrink: 0 }}>
                                   {toArabicNumeral(s.number)}
                                 </div>
                                 <div>
@@ -775,7 +775,7 @@ export default function AudioQuranPage() {
 
       {/* ── CSS VARS + ANIMATIONS ── */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
 
         :root {
