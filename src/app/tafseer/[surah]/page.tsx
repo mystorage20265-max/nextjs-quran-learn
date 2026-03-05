@@ -2,7 +2,7 @@
 
 import { useState, useEffect, use } from 'react';
 import Link from 'next/link';
-import { ChevronLeft, ChevronRight, BookOpen, Search, ChevronDown } from 'lucide-react';
+import { ChevronLeft, ChevronRight, BookOpen, Search, ChevronDown, X } from 'lucide-react';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface SurahMeta {
@@ -231,76 +231,150 @@ export default function TafseerSurahPage({ params }: PageProps) {
     return (
         <>
             <style>{`
-        *{box-sizing:border-box}
-        .ts-shell{min-height:100vh;background:#f6f8f6;font-family:'Lexend','Figtree',sans-serif}
-        .dark .ts-shell{background:#0d1b12}
-        .ts-header{position:sticky;top:0;z-index:100;background:rgba(246,248,246,0.95);backdrop-filter:blur(12px);border-bottom:1px solid #e2e8f0;padding:0}
-        .dark .ts-header{background:rgba(13,27,18,0.97);border-color:#1e3a2a}
-        .ts-header-inner{max-width:800px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;gap:12px}
-        .ts-body{max-width:800px;margin:0 auto;padding:24px 20px 80px}
-        .ts-hero{background:linear-gradient(135deg,#11d442 0%,#059669 100%);border-radius:20px;padding:32px;margin-bottom:32px;position:relative;overflow:hidden}
-        .ts-hero::before{content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;background:rgba(255,255,255,0.06);border-radius:50%}
-        .ts-hero::after{content:'';position:absolute;bottom:-30px;left:20px;width:120px;height:120px;background:rgba(255,255,255,0.04);border-radius:50%}
-        .ts-verse-card{background:white;border:1px solid #e2e8f0;border-radius:16px;margin-bottom:16px;overflow:hidden;transition:border-color 0.2s,box-shadow 0.2s}
-        .dark .ts-verse-card{background:#111f16;border-color:#1e3a2a}
-        .ts-verse-card:hover{border-color:rgba(17,212,66,0.3);box-shadow:0 4px 20px rgba(17,212,66,0.08)}
-        .ts-verse-card.expanded{border-color:rgba(17,212,66,0.4);box-shadow:0 4px 24px rgba(17,212,66,0.12)}
-        .ts-verse-header{padding:16px 20px;cursor:pointer;display:flex;align-items:flex-start;gap:14px}
-        .ts-verse-num{width:36px;height:36px;border-radius:50%;border:1.5px solid rgba(17,212,66,0.4);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#11d442;flex-shrink:0;margin-top:2px}
-        .ts-arabic{font-family:'Naskh IndoPak','Scheherazade New','Traditional Arabic',serif;font-size:24px;line-height:2;direction:rtl;text-align:right;color:#1e293b;flex:1}
-        .dark .ts-arabic{color:#e2e8f0}
-        @media(max-width:640px){.ts-arabic{font-size:20px}}
-        .ts-translation{padding:0 20px 16px 70px;font-size:15px;line-height:1.8;color:#475569;font-style:italic;border-top:1px solid #f1f5f9}
-        .dark .ts-translation{color:#94a3b8;border-color:#1e3a2a}
-        .ts-tafsir-panel{background:rgba(17,212,66,0.03);border-top:1px solid rgba(17,212,66,0.15);padding:20px;animation:tsIn 0.22s ease}
-        .dark .ts-tafsir-panel{background:rgba(17,212,66,0.04)}
-        @keyframes tsIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
-        .ts-tafsir-label{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#11d442;margin-bottom:12px}
-        .ts-tafsir-text{font-size:14px;line-height:1.9;color:#334155;white-space:pre-line}
-        .dark .ts-tafsir-text{color:#94a3b8}
-        .ts-expand-btn{display:flex;align-items:center;gap:6px;padding:8px 16px;border:1px solid rgba(17,212,66,0.3);border-radius:8px;background:transparent;cursor:pointer;font-size:12px;font-weight:600;color:#11d442;transition:all 0.15s;font-family:'Lexend',sans-serif;white-space:nowrap}
-        .ts-expand-btn:hover{background:rgba(17,212,66,0.08)}
-        .ts-breadcrumb{display:flex;align-items:center;gap:6px;font-size:12px;color:#94a3b8;margin-bottom:24px;flex-wrap:wrap}
+        *{box-sizing:border-box;margin:0;padding:0}
+        .ts-shell{min-height:100vh;background:#f4f7f4;font-family:'Lexend','Figtree',sans-serif}
+        .dark .ts-shell{background:#0a1410}
+
+        /* ── HEADER ── */
+        .ts-header{position:sticky;top:0;z-index:100;background:rgba(244,247,244,0.96);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(17,212,66,0.12);padding:0;box-shadow:0 1px 0 rgba(17,212,66,0.08)}
+        .dark .ts-header{background:rgba(10,20,16,0.97);border-color:rgba(17,212,66,0.15)}
+        .ts-header-inner{max-width:820px;margin:0 auto;padding:0 20px;height:62px;display:flex;align-items:center;gap:12px}
+        .ts-back-btn{width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:10px;background:rgba(17,212,66,0.08);color:#11d442;text-decoration:none;transition:all 0.18s;flex-shrink:0;border:1px solid rgba(17,212,66,0.15)}
+        .ts-back-btn:hover{background:rgba(17,212,66,0.16);transform:translateX(-2px)}
+        .ts-header-surah-btn{display:flex;align-items:center;gap:10px;background:none;border:none;cursor:pointer;padding:0;flex:1;min-width:0;text-align:left}
+        .ts-header-name{font-size:16px;font-weight:700;color:#0f172a;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+        .dark .ts-header-name{color:#e2e8f0}
+        .ts-header-sub{font-size:11px;color:#94a3b8;margin-top:1px}
+        .ts-tafsir-select{padding:7px 10px;border-radius:10px;border:1px solid rgba(17,212,66,0.2);background:white;font-size:11.5px;font-family:'Lexend',sans-serif;color:#334155;cursor:pointer;outline:none;transition:border-color 0.15s;flex-shrink:0;max-width:160px}
+        .ts-tafsir-select:hover,.ts-tafsir-select:focus{border-color:rgba(17,212,66,0.45)}
+        .dark .ts-tafsir-select{background:#111f16;border-color:rgba(17,212,66,0.2);color:#e2e8f0}
+
+        /* ── BODY ── */
+        .ts-body{max-width:820px;margin:0 auto;padding:28px 20px 100px}
+
+        /* ── BREADCRUMB ── */
+        .ts-breadcrumb{display:flex;align-items:center;gap:6px;font-size:11.5px;color:#94a3b8;margin-bottom:22px;flex-wrap:wrap}
         .ts-breadcrumb a{color:#64748b;text-decoration:none;transition:color 0.15s}
         .ts-breadcrumb a:hover{color:#11d442}
-        .ts-nav{display:flex;justify-content:space-between;align-items:center;margin-top:40px;gap:12px;flex-wrap:wrap}
-        .ts-nav-btn{display:flex;align-items:center;gap:8px;padding:12px 20px;border-radius:12px;text-decoration:none;font-size:13px;font-weight:600;color:#64748b;background:white;border:1px solid #e2e8f0;transition:all 0.2s;font-family:'Lexend',sans-serif}
-        .dark .ts-nav-btn{background:#111f16;border-color:#1e3a2a;color:#94a3b8}
-        .ts-nav-btn:hover{border-color:#11d442;color:#11d442}
-        .ts-select{padding:8px 12px;border-radius:10px;border:1px solid #e2e8f0;background:white;font-size:12px;font-family:'Lexend',sans-serif;color:#334155;cursor:pointer;outline:none}
-        .dark .ts-select{background:#111f16;border-color:#1e3a2a;color:#e2e8f0}
-        .ts-scroll::-webkit-scrollbar{width:5px}
-        .ts-scroll::-webkit-scrollbar-thumb{background:rgba(17,212,66,0.3);border-radius:3px}
-        .ts-picker{position:fixed;inset:0;z-index:200;display:flex;align-items:flex-start;justify-content:center;padding-top:80px;background:rgba(0,0,0,0.4);backdrop-filter:blur(4px)}
-        .ts-picker-box{background:white;border-radius:18px;width:min(400px,calc(100vw - 32px));max-height:70vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.2)}
-        .dark .ts-picker-box{background:#111f16}
-        .ts-loading-row{display:flex;align-items:center;gap:10px;padding:16px 20px;font-size:13px;color:#64748b}
-        .ts-spinner{width:18px;height:18px;border:2px solid rgba(17,212,66,0.2);border-top-color:#11d442;border-radius:50%;animation:spin 0.7s linear infinite;flex-shrink:0}
+        .ts-breadcrumb-sep{color:#cbd5e1}
+
+        /* ── HERO ── */
+        .ts-hero{background:linear-gradient(135deg,#0ea844 0%,#059669 55%,#047857 100%);border-radius:20px;padding:28px 28px 24px;margin-bottom:28px;position:relative;overflow:hidden;box-shadow:0 8px 32px rgba(17,212,66,0.22)}
+        .ts-hero::before{content:'';position:absolute;top:-50px;right:-50px;width:220px;height:220px;background:rgba(255,255,255,0.07);border-radius:50%;pointer-events:none}
+        .ts-hero::after{content:'';position:absolute;bottom:-40px;left:10px;width:140px;height:140px;background:rgba(255,255,255,0.04);border-radius:50%;pointer-events:none}
+        .ts-hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.14);border-radius:20px;padding:4px 12px;font-size:10.5px;font-weight:700;color:rgba(255,255,255,0.95);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:14px}
+        .ts-hero-title{font-size:clamp(22px,5vw,34px);font-weight:800;color:white;line-height:1.15;margin-bottom:4px}
+        .ts-hero-meaning{font-size:14px;color:rgba(255,255,255,0.8);margin-bottom:16px}
+        .ts-hero-arabic{font-family:'Naskh IndoPak','Scheherazade New',serif;font-size:clamp(24px,4vw,36px);color:white;direction:rtl;margin-bottom:18px;line-height:1.6;text-shadow:0 1px 3px rgba(0,0,0,0.15)}
+        .ts-hero-chips{display:flex;gap:8px;flex-wrap:wrap}
+        .ts-hero-chip{background:rgba(255,255,255,0.13);border:1px solid rgba(255,255,255,0.18);border-radius:8px;padding:5px 12px;font-size:12px;color:white;font-weight:500}
+
+        /* ── BISMILLAH ── */
+        .ts-bismillah{text-align:center;padding:22px 16px 26px;font-family:'Naskh IndoPak','Scheherazade New',serif;font-size:28px;color:#1e293b;border-bottom:1px solid rgba(17,212,66,0.1);margin-bottom:20px;line-height:1.7}
+        .dark .ts-bismillah{color:#e2e8f0;border-color:rgba(255,255,255,0.06)}
+
+        /* ── VERSE CARD ── */
+        .ts-verse-card{background:white;border:1px solid #e8eef2;border-radius:18px;margin-bottom:14px;overflow:hidden;transition:border-color 0.22s,box-shadow 0.22s,transform 0.15s}
+        .dark .ts-verse-card{background:#101c16;border-color:#1e3a2a}
+        .ts-verse-card:hover{border-color:rgba(17,212,66,0.28);box-shadow:0 4px 20px rgba(17,212,66,0.07);transform:translateY(-1px)}
+        .ts-verse-card.ts-expanded{border-color:rgba(17,212,66,0.4);box-shadow:0 6px 28px rgba(17,212,66,0.12);transform:translateY(-1px)}
+
+        /* ── VERSE TOP (Number + Arabic) ── */
+        .ts-verse-top{padding:20px 20px 0 20px;display:flex;align-items:flex-start;gap:14px}
+        .ts-verse-num{width:38px;height:38px;border-radius:50%;border:1.5px solid rgba(17,212,66,0.35);background:rgba(17,212,66,0.05);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#11d442;flex-shrink:0;margin-top:6px;font-family:'Lexend',sans-serif}
+        .ts-arabic-block{flex:1;direction:rtl;text-align:right}
+        .ts-arabic{font-family:'Naskh IndoPak','Scheherazade New','Traditional Arabic',serif;font-size:26px;line-height:2;color:#1e293b}
+        .dark .ts-arabic{color:#e2e8f0}
+        @media(max-width:640px){.ts-arabic{font-size:21px}}
+
+        /* ── TRANSLATION ── */
+        .ts-translation-block{padding:2px 20px 16px 72px;direction:ltr}
+        .ts-translation-label{font-size:10.5px;font-weight:700;color:#11d442;text-transform:uppercase;letter-spacing:0.08em;display:block;margin-bottom:5px}
+        .ts-translation-text{font-size:14.5px;line-height:1.85;color:#475569;font-style:italic}
+        .dark .ts-translation-text{color:#94a3b8}
+
+        /* ── DIVIDER ── */
+        .ts-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(17,212,66,0.12),transparent);margin:0 20px}
+        .dark .ts-divider{background:linear-gradient(90deg,transparent,rgba(17,212,66,0.1),transparent)}
+
+        /* ── ACTIONS ROW (Tafseer button below arabic+translation) ── */
+        .ts-actions-row{padding:12px 20px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+        .ts-tafseer-btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:10px;border:1.5px solid rgba(17,212,66,0.3);background:rgba(17,212,66,0.04);cursor:pointer;font-size:13px;font-weight:600;color:#11d442;transition:all 0.18s;font-family:'Lexend',sans-serif;letter-spacing:0.01em}
+        .ts-tafseer-btn:hover{background:rgba(17,212,66,0.1);border-color:rgba(17,212,66,0.5);box-shadow:0 2px 10px rgba(17,212,66,0.12)}
+        .ts-tafseer-btn.ts-active{background:rgba(17,212,66,0.12);border-color:rgba(17,212,66,0.5);color:#0ea844}
+        .ts-verse-key-badge{font-size:11px;color:#94a3b8;font-weight:500;font-family:'Lexend',sans-serif}
+
+        /* ── TAFSIR PANEL ── */
+        .ts-tafsir-panel{background:linear-gradient(135deg,rgba(17,212,66,0.03),rgba(5,150,105,0.03));border-top:1.5px solid rgba(17,212,66,0.15);padding:22px 22px 22px;animation:tsIn 0.22s ease-out}
+        .dark .ts-tafsir-panel{background:rgba(17,212,66,0.035);border-color:rgba(17,212,66,0.2)}
+        @keyframes tsIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+        .ts-tafsir-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid rgba(17,212,66,0.1)}
+        .ts-tafsir-icon{width:30px;height:30px;border-radius:8px;background:rgba(17,212,66,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+        .ts-tafsir-meta{flex:1;min-width:0}
+        .ts-tafsir-title{font-size:12px;font-weight:700;color:#11d442;text-transform:uppercase;letter-spacing:0.08em;display:block}
+        .ts-tafsir-subtitle{font-size:11px;color:#94a3b8;margin-top:1px}
+        .ts-tafsir-text{font-size:14px;line-height:1.95;color:#334155;white-space:pre-line;font-family:'Inter','Lexend',sans-serif}
+        .dark .ts-tafsir-text{color:#94a3b8}
+        .ts-tafsir-text::-webkit-scrollbar{width:4px}
+        .ts-tafsir-text::-webkit-scrollbar-thumb{background:rgba(17,212,66,0.3);border-radius:2px}
+
+        /* ── SPINNER ── */
+        .ts-spinner{width:20px;height:20px;border:2px solid rgba(17,212,66,0.2);border-top-color:#11d442;border-radius:50%;animation:spin 0.7s linear infinite;flex-shrink:0}
+        .ts-loading-row{display:flex;align-items:center;gap:12px;padding:8px 0;font-size:13px;color:#64748b;font-family:'Lexend',sans-serif}
         @keyframes spin{to{transform:rotate(360deg)}}
+
+        /* ── NAVIGATION ── */
+        .ts-nav{display:flex;justify-content:space-between;align-items:center;margin-top:44px;gap:12px;flex-wrap:wrap}
+        .ts-nav-btn{display:flex;align-items:center;gap:8px;padding:13px 20px;border-radius:14px;text-decoration:none;font-size:13px;font-weight:600;color:#64748b;background:white;border:1px solid #e2e8f0;transition:all 0.2s;font-family:'Lexend',sans-serif;box-shadow:0 1px 4px rgba(0,0,0,0.04)}
+        .dark .ts-nav-btn{background:#101c16;border-color:#1e3a2a;color:#94a3b8}
+        .ts-nav-btn:hover{border-color:rgba(17,212,66,0.4);color:#11d442;box-shadow:0 4px 16px rgba(17,212,66,0.1);transform:translateY(-1px)}
+        .ts-nav-btn-center{background:rgba(17,212,66,0.07);border-color:rgba(17,212,66,0.25);color:#0ea844}
+        .ts-nav-btn-center:hover{background:rgba(17,212,66,0.14)!important;border-color:rgba(17,212,66,0.5)!important;color:#0ea844!important}
+
+        /* ── SURAH PICKER ── */
+        .ts-picker{position:fixed;inset:0;z-index:200;display:flex;align-items:flex-start;justify-content:center;padding-top:72px;background:rgba(0,0,0,0.45);backdrop-filter:blur(6px)}
+        .ts-picker-box{background:white;border-radius:22px;width:min(420px,calc(100vw - 32px));max-height:72vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 28px 72px rgba(0,0,0,0.22);animation:pkIn 0.2s ease-out}
+        @keyframes pkIn{from{opacity:0;transform:translateY(-12px)scale(0.97)}to{opacity:1;transform:translateY(0)scale(1)}}
+        .dark .ts-picker-box{background:#101c16}
+        .ts-picker-header{padding:18px 18px 14px;border-bottom:1px solid #f1f5f9;flex-shrink:0}
+        .dark .ts-picker-header{border-color:#1e3a2a}
+        .ts-picker-search{display:flex;align-items:center;gap:8px;padding:10px 14px;background:#f8fafc;border-radius:12px;border:1px solid #e2e8f0;margin-top:12px}
+        .dark .ts-picker-search{background:#1e3a2a;border-color:#2d4a38}
+        .ts-picker-search input{flex:1;background:transparent;border:none;outline:none;font-size:13px;color:#334155;font-family:'Lexend',sans-serif}
+        .dark .ts-picker-search input{color:#e2e8f0}
+        .ts-picker-list{overflow-y:auto;flex:1}
+        .ts-picker-list::-webkit-scrollbar{width:4px}
+        .ts-picker-list::-webkit-scrollbar-thumb{background:rgba(17,212,66,0.3);border-radius:2px}
+        .ts-picker-item{display:flex;align-items:center;gap:12px;padding:11px 18px;cursor:pointer;text-decoration:none;border-bottom:1px solid #f8fafc;transition:background 0.12s}
+        .dark .ts-picker-item{border-color:#0f1a12}
+        .ts-picker-item:hover{background:#f8fffe}
+        .dark .ts-picker-item:hover{background:#1a2f22}
+        .ts-picker-item.ts-active-surah{background:rgba(17,212,66,0.06)}
+
+        /* ── SKELETON ── */
+        .ts-skeleton{border-radius:18px;overflow:hidden;margin-bottom:14px;background:white;border:1px solid #e8eef2}
+        .dark .ts-skeleton{background:#101c16;border-color:#1e3a2a}
+        .ts-skel-line{height:14px;border-radius:7px;background:linear-gradient(90deg,#f1f5f9 25%,#e8eef2 50%,#f1f5f9 75%);background-size:200% 100%;animation:shimmer 1.4s infinite}
+        .dark .ts-skel-line{background:linear-gradient(90deg,#1e3a2a 25%,#243d2e 50%,#1e3a2a 75%);background-size:200% 100%}
+        @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
       `}</style>
 
             <div className="ts-shell">
                 {/* ── HEADER ── */}
-                <header className="ts-header">
+                <header className="ts-header" role="banner">
                     <div className="ts-header-inner">
-                        <Link href="/" style={{ color: '#94a3b8', display: 'flex', alignItems: 'center', flexShrink: 0, transition: 'color 0.15s' }}
-                            onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = '#11d442'}
-                            onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = '#94a3b8'}
-                        >
-                            <ChevronLeft size={20} />
+                        <Link href="/" className="ts-back-btn" aria-label="Go home">
+                            <ChevronLeft size={18} />
                         </Link>
-                        <button
-                            onClick={() => setShowSurahPicker(true)}
-                            style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'none', border: 'none', cursor: 'pointer', padding: 0, flex: 1 }}
-                        >
-                            <div style={{ textAlign: 'left' }}>
-                                <p style={{ margin: 0, fontSize: 16, fontWeight: 700, color: '#0f172a' }}>{meta.name}</p>
-                                <p style={{ margin: 0, fontSize: 11, color: '#94a3b8' }}>Tafseer · {meta.v} Verses</p>
+                        <button className="ts-header-surah-btn" onClick={() => setShowSurahPicker(true)} aria-label="Change surah">
+                            <div style={{ minWidth: 0 }}>
+                                <div className="ts-header-name">{meta.name}</div>
+                                <div className="ts-header-sub">Tafseer · {meta.v} Verses · {meta.t}</div>
                             </div>
-                            <ChevronDown size={16} style={{ color: '#94a3b8' }} />
+                            <ChevronDown size={15} style={{ color: '#94a3b8', flexShrink: 0 }} />
                         </button>
                         <select
-                            className="ts-select"
+                            className="ts-tafsir-select"
                             value={selectedTafsir}
                             onChange={e => changeTafsir(parseInt(e.target.value))}
                             title="Select Tafsir Scholar"
@@ -317,43 +391,48 @@ export default function TafseerSurahPage({ params }: PageProps) {
                     {/* Breadcrumb */}
                     <nav className="ts-breadcrumb" aria-label="Breadcrumb">
                         <Link href="/">Home</Link>
-                        <span>›</span>
+                        <span className="ts-breadcrumb-sep">›</span>
                         <Link href="/tafseer">Tafseer</Link>
-                        <span>›</span>
+                        <span className="ts-breadcrumb-sep">›</span>
                         <span style={{ color: '#11d442', fontWeight: 600 }}>{meta.name}</span>
                     </nav>
 
                     {/* Hero */}
-                    <div className="ts-hero">
+                    <div className="ts-hero" role="region" aria-label={`${meta.name} overview`}>
                         <div style={{ position: 'relative', zIndex: 1 }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
-                                <div style={{ background: 'rgba(255,255,255,0.15)', borderRadius: 8, padding: '4px 10px', fontSize: 11, fontWeight: 700, color: 'white', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-                                    {meta.t} · Surah {meta.num}
-                                </div>
+                            <div className="ts-hero-badge">
+                                <span>📖</span>
+                                {meta.t} · Surah {meta.num}
                             </div>
-                            <h1 style={{ margin: '0 0 4px', fontSize: 'clamp(22px,5vw,32px)', fontWeight: 800, color: 'white', lineHeight: 1.2 }}>
-                                {meta.name}
-                            </h1>
-                            <p style={{ margin: '0 0 12px', fontSize: 15, color: 'rgba(255,255,255,0.85)' }}>{meta.meaning}</p>
-                            <div style={{ fontFamily: "'Naskh IndoPak','Scheherazade New',serif", fontSize: 'clamp(22px,4vw,32px)', color: 'white', direction: 'rtl', marginBottom: 16 }}>
-                                {meta.ar}
-                            </div>
-                            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                                <div style={{ background: 'rgba(255,255,255,0.12)', borderRadius: 8, padding: '6px 12px', fontSize: 12, color: 'white' }}>
-                                    📖 {meta.v} Verses
-                                </div>
-                                <div style={{ background: 'rgba(255,255,255,0.12)', borderRadius: 8, padding: '6px 12px', fontSize: 12, color: 'white' }}>
+                            <h1 className="ts-hero-title">{meta.name}</h1>
+                            <p className="ts-hero-meaning">{meta.meaning}</p>
+                            <div className="ts-hero-arabic">{meta.ar}</div>
+                            <div className="ts-hero-chips">
+                                <div className="ts-hero-chip">📜 {meta.v} Verses</div>
+                                <div className="ts-hero-chip">
                                     📚 {TAFSIR_OPTIONS.find(t => t.id === selectedTafsir)?.name}
                                 </div>
+                                <div className="ts-hero-chip">🔤 {TAFSIR_OPTIONS.find(t => t.id === selectedTafsir)?.lang}</div>
                             </div>
                         </div>
                     </div>
 
-                    {/* Loading state */}
+                    {/* Loading skeletons */}
                     {loading && (
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16, padding: '60px 20px', color: '#64748b' }}>
-                            <div className="ts-spinner" style={{ width: 36, height: 36, borderWidth: 3 }} />
-                            <p style={{ margin: 0, fontSize: 14 }}>Loading Surah {meta.name}…</p>
+                        <div>
+                            {[1, 2, 3, 4].map(i => (
+                                <div key={i} className="ts-skeleton" style={{ padding: '20px' }}>
+                                    <div style={{ display: 'flex', gap: 14, marginBottom: 16 }}>
+                                        <div className="ts-skel-line" style={{ width: 38, height: 38, borderRadius: '50%', flexShrink: 0 }} />
+                                        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'flex-end' }}>
+                                            <div className="ts-skel-line" style={{ width: '85%', height: 18 }} />
+                                            <div className="ts-skel-line" style={{ width: '65%', height: 18 }} />
+                                        </div>
+                                    </div>
+                                    <div className="ts-skel-line" style={{ width: '70%', marginBottom: 8 }} />
+                                    <div className="ts-skel-line" style={{ width: '50%' }} />
+                                </div>
+                            ))}
                         </div>
                     )}
 
@@ -362,7 +441,7 @@ export default function TafseerSurahPage({ params }: PageProps) {
                         <>
                             {/* Bismillah */}
                             {meta.num !== 1 && meta.num !== 9 && (
-                                <div style={{ textAlign: 'center', padding: '20px 0 28px', fontFamily: "'Naskh IndoPak','Scheherazade New',serif", fontSize: 26, color: '#1e293b', borderBottom: '1px solid #f1f5f9', marginBottom: 24 }}>
+                                <div className="ts-bismillah">
                                     بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
                                 </div>
                             )}
@@ -371,41 +450,69 @@ export default function TafseerSurahPage({ params }: PageProps) {
                                 const isExpanded = expandedVerse === verse.num;
                                 const tafsirText = stripHtml(tafsirData[verse.key] || '');
                                 return (
-                                    <article key={verse.num} id={`verse-${verse.num}`} className={`ts-verse-card${isExpanded ? ' expanded' : ''}`}>
-                                        {/* Arabic + expand trigger */}
-                                        <div className="ts-verse-header" onClick={() => toggleVerse(verse.num)}>
-                                            <div className="ts-verse-num">{verse.num}</div>
-                                            <div style={{ flex: 1 }}>
+                                    <article
+                                        key={verse.num}
+                                        id={`verse-${verse.num}`}
+                                        className={`ts-verse-card${isExpanded ? ' ts-expanded' : ''}`}
+                                    >
+                                        {/* Arabic text + verse number */}
+                                        <div className="ts-verse-top">
+                                            <div className="ts-verse-num" aria-label={`Verse ${verse.num}`}>{verse.num}</div>
+                                            <div className="ts-arabic-block">
                                                 <p className="ts-arabic">{verse.arabic}</p>
                                             </div>
-                                            <button
-                                                className="ts-expand-btn"
-                                                style={{ marginTop: 6 }}
-                                                onClick={e => { e.stopPropagation(); toggleVerse(verse.num); }}
-                                                aria-expanded={isExpanded}
-                                                aria-label={isExpanded ? 'Hide Tafseer' : 'Show Tafseer'}
-                                            >
-                                                <BookOpen size={13} />
-                                                {isExpanded ? 'Hide' : 'Tafseer'}
-                                                <ChevronDown size={13} style={{ transform: isExpanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
-                                            </button>
                                         </div>
 
                                         {/* Translation */}
-                                        <div className="ts-translation">
-                                            <span style={{ fontSize: 11, fontWeight: 700, color: '#11d442', textTransform: 'uppercase', letterSpacing: '0.08em', fontStyle: 'normal', display: 'block', marginBottom: 4 }}>
-                                                Sahih International
-                                            </span>
-                                            {verse.translation}
+                                        <div className="ts-translation-block">
+                                            <span className="ts-translation-label">Sahih International</span>
+                                            <p className="ts-translation-text">{verse.translation}</p>
+                                        </div>
+
+                                        {/* Divider */}
+                                        <div className="ts-divider" />
+
+                                        {/* Actions row — Tafseer button is HERE, below the arabic */}
+                                        <div className="ts-actions-row">
+                                            <button
+                                                className={`ts-tafseer-btn${isExpanded ? ' ts-active' : ''}`}
+                                                onClick={() => toggleVerse(verse.num)}
+                                                aria-expanded={isExpanded}
+                                                aria-controls={`tafsir-${verse.num}`}
+                                            >
+                                                <BookOpen size={14} />
+                                                {isExpanded ? 'Hide Tafseer' : 'Show Tafseer'}
+                                                <ChevronDown
+                                                    size={13}
+                                                    style={{
+                                                        transform: isExpanded ? 'rotate(180deg)' : 'none',
+                                                        transition: 'transform 0.22s',
+                                                    }}
+                                                />
+                                            </button>
+                                            <span className="ts-verse-key-badge">{verse.key}</span>
                                         </div>
 
                                         {/* Tafseer panel */}
                                         {isExpanded && (
-                                            <div className="ts-tafsir-panel">
-                                                <div className="ts-tafsir-label">
-                                                    <BookOpen size={14} />
-                                                    {TAFSIR_OPTIONS.find(t => t.id === selectedTafsir)?.name} — {verse.key}
+                                            <div
+                                                className="ts-tafsir-panel"
+                                                id={`tafsir-${verse.num}`}
+                                                role="region"
+                                                aria-label={`Tafseer for verse ${verse.num}`}
+                                            >
+                                                <div className="ts-tafsir-header">
+                                                    <div className="ts-tafsir-icon">
+                                                        <BookOpen size={15} color="#11d442" />
+                                                    </div>
+                                                    <div className="ts-tafsir-meta">
+                                                        <span className="ts-tafsir-title">
+                                                            {TAFSIR_OPTIONS.find(t => t.id === selectedTafsir)?.name}
+                                                        </span>
+                                                        <div className="ts-tafsir-subtitle">Verse {verse.key}</div>
+                                                    </div>
                                                 </div>
+
                                                 {tafsirLoading && Object.keys(tafsirData).length === 0 ? (
                                                     <div className="ts-loading-row">
                                                         <div className="ts-spinner" />
@@ -414,7 +521,9 @@ export default function TafseerSurahPage({ params }: PageProps) {
                                                 ) : tafsirText ? (
                                                     <p className="ts-tafsir-text">{tafsirText}</p>
                                                 ) : (
-                                                    <p style={{ color: '#94a3b8', fontSize: 13, margin: 0 }}>Tafseer not available for this verse.</p>
+                                                    <p style={{ color: '#94a3b8', fontSize: 13, fontFamily: "'Lexend',sans-serif" }}>
+                                                        Tafseer not available for this verse.
+                                                    </p>
                                                 )}
                                             </div>
                                         )}
@@ -428,18 +537,19 @@ export default function TafseerSurahPage({ params }: PageProps) {
                                     <Link href={`/tafseer/${prevSurah.num}`} className="ts-nav-btn">
                                         <ChevronLeft size={16} />
                                         <div style={{ textAlign: 'left' }}>
-                                            <div style={{ fontSize: 10, color: '#94a3b8', marginBottom: 2 }}>Previous Surah</div>
+                                            <div style={{ fontSize: 10, color: '#94a3b8', marginBottom: 2 }}>Previous</div>
                                             <div>{prevSurah.name}</div>
                                         </div>
                                     </Link>
                                 ) : <div />}
-                                <Link href="/tafseer" className="ts-nav-btn" style={{ flexShrink: 0 }}>
-                                    <BookOpen size={16} />All Surahs
+                                <Link href="/tafseer" className="ts-nav-btn ts-nav-btn-center" style={{ flexShrink: 0 }}>
+                                    <BookOpen size={15} />
+                                    All Surahs
                                 </Link>
                                 {nextSurah ? (
                                     <Link href={`/tafseer/${nextSurah.num}`} className="ts-nav-btn">
                                         <div style={{ textAlign: 'right' }}>
-                                            <div style={{ fontSize: 10, color: '#94a3b8', marginBottom: 2 }}>Next Surah</div>
+                                            <div style={{ fontSize: 10, color: '#94a3b8', marginBottom: 2 }}>Next</div>
                                             <div>{nextSurah.name}</div>
                                         </div>
                                         <ChevronRight size={16} />
@@ -453,32 +563,54 @@ export default function TafseerSurahPage({ params }: PageProps) {
 
             {/* ── SURAH PICKER OVERLAY ── */}
             {showSurahPicker && (
-                <div className="ts-picker" onClick={() => setShowSurahPicker(false)}>
+                <div className="ts-picker" role="dialog" aria-modal="true" aria-label="Select Surah" onClick={() => setShowSurahPicker(false)}>
                     <div className="ts-picker-box" onClick={e => e.stopPropagation()}>
-                        <div style={{ padding: '16px 16px 12px', borderBottom: '1px solid #f1f5f9', flexShrink: 0 }}>
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-                                <h2 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: '#0f172a' }}>Select Surah</h2>
-                                <button onClick={() => setShowSurahPicker(false)} style={{ background: '#f1f5f9', border: 'none', borderRadius: 8, width: 30, height: 30, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b' }}>✕</button>
+                        <div className="ts-picker-header">
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                <h2 style={{ fontSize: 16, fontWeight: 700, color: '#0f172a', fontFamily: "'Lexend',sans-serif" }}>Select Surah</h2>
+                                <button
+                                    onClick={() => setShowSurahPicker(false)}
+                                    style={{ background: '#f1f5f9', border: 'none', borderRadius: 8, width: 30, height: 30, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b' }}
+                                    aria-label="Close picker"
+                                >
+                                    <X size={16} />
+                                </button>
                             </div>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', background: '#f8fafc', borderRadius: 10, border: '1px solid #e2e8f0' }}>
-                                <Search size={16} style={{ color: '#94a3b8', flexShrink: 0 }} />
-                                <input type="text" placeholder="Search surah…" value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
-                                    style={{ flex: 1, background: 'transparent', border: 'none', outline: 'none', fontSize: 13, color: '#334155' }} autoFocus />
+                            <div className="ts-picker-search">
+                                <Search size={15} style={{ color: '#94a3b8', flexShrink: 0 }} />
+                                <input
+                                    type="text"
+                                    placeholder="Search by name or number…"
+                                    value={searchQuery}
+                                    onChange={e => setSearchQuery(e.target.value)}
+                                    autoFocus
+                                    aria-label="Search surahs"
+                                />
                             </div>
                         </div>
-                        <div className="ts-scroll" style={{ overflowY: 'auto', flex: 1 }}>
+                        <div className="ts-picker-list">
                             {surahPickerFiltered.map(s => (
-                                <Link key={s.num} href={`/tafseer/${s.num}`} onClick={() => { setShowSurahPicker(false); setSearchQuery(''); }}
-                                    style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', borderBottom: '1px solid #f8fafc', cursor: 'pointer', background: s.num === surahNum ? 'rgba(17,212,66,0.06)' : 'transparent' }}
-                                    onMouseEnter={e => { if (s.num !== surahNum) e.currentTarget.style.background = '#f8fffe'; }}
-                                    onMouseLeave={e => { e.currentTarget.style.background = s.num === surahNum ? 'rgba(17,212,66,0.06)' : 'transparent'; }}
+                                <Link
+                                    key={s.num}
+                                    href={`/tafseer/${s.num}`}
+                                    className={`ts-picker-item${s.num === surahNum ? ' ts-active-surah' : ''}`}
+                                    onClick={() => { setShowSurahPicker(false); setSearchQuery(''); }}
                                 >
-                                    <div style={{ width: 32, height: 32, borderRadius: 8, background: s.num === surahNum ? 'rgba(17,212,66,0.15)' : '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700, color: s.num === surahNum ? '#11d442' : '#94a3b8', flexShrink: 0 }}>{s.num}</div>
+                                    <div style={{
+                                        width: 34, height: 34, borderRadius: 9,
+                                        background: s.num === surahNum ? 'rgba(17,212,66,0.12)' : '#f1f5f9',
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                        fontSize: 12, fontWeight: 700,
+                                        color: s.num === surahNum ? '#11d442' : '#94a3b8',
+                                        flexShrink: 0,
+                                    }}>
+                                        {s.num}
+                                    </div>
                                     <div style={{ flex: 1, minWidth: 0 }}>
-                                        <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: s.num === surahNum ? '#11d442' : '#1e293b' }}>{s.name}</p>
+                                        <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: s.num === surahNum ? '#11d442' : '#1e293b', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{s.name}</p>
                                         <p style={{ margin: 0, fontSize: 11, color: '#94a3b8' }}>{s.meaning} · {s.v} verses</p>
                                     </div>
-                                    <span style={{ fontFamily: "'Naskh IndoPak',serif", fontSize: 16, color: '#475569', direction: 'rtl' }}>{s.ar}</span>
+                                    <span style={{ fontFamily: "'Naskh IndoPak',serif", fontSize: 16, color: '#475569', direction: 'rtl', flexShrink: 0 }}>{s.ar}</span>
                                 </Link>
                             ))}
                         </div>

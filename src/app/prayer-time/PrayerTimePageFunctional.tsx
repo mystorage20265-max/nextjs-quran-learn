@@ -1450,9 +1450,9 @@ export default function PrayerTimePageFunctional({
                     const audio = new Audio('/prayer time audio/all prayer time azan.mp3');
                     audio.volume = 1.0;
                     audio.play();
-                  } catch (err) {
+                  } catch (err: any) {
                     console.error('❌ Direct notification error:', err);
-                    alert(`Direct test failed: ${err.message}`);
+                    alert(`Direct test failed: ${err?.message ?? String(err)}`);
                   }
                 }}
                 style={{
