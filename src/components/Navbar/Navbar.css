@@ -527,6 +527,8 @@
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   z-index: 10000;
+  touch-action: none;
+  -webkit-overflow-scrolling: none;
 }
 
 /* ── Mobile drawer ── */
@@ -543,6 +545,7 @@
   flex-direction: column;
   border-left: 1px solid rgba(16, 185, 129, 0.2);
   box-shadow: -16px 0 64px rgba(0, 0, 0, 0.65);
+  overscroll-behavior: contain;
   overflow: hidden;
 }
 

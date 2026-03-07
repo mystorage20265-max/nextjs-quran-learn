@@ -488,7 +488,11 @@ export default function HomePage() {
           .hp-quick{grid-template-columns:repeat(3,1fr) !important}
           .hp-features{grid-template-columns:repeat(auto-fill,minmax(130px,1fr)) !important}
           .hp-surah-grid{grid-template-columns:repeat(3,1fr) !important}
+          .hp-getstarted-inner{grid-template-columns:1fr 1.4fr !important}
+          .hp-getstarted-right{border-left:1px solid rgba(17,212,66,0.12)}
         }
+        .hp-getstarted-inner{grid-template-columns:1fr}
+        .hp-getstarted-right{border-top:1px solid rgba(17,212,66,0.12)}
       `}</style>
 
       <div style={S.shell}>
@@ -874,6 +878,73 @@ export default function HomePage() {
                 </button>
               </div>
             </section>
+
+            {/* ── GET STARTED SECTION ── */}
+            <section style={{
+              marginBottom: 32,
+              borderRadius: 20,
+              background: dark
+                ? 'linear-gradient(135deg,#0a1f10 0%,#0d2618 60%,#061a0e 100%)'
+                : 'linear-gradient(135deg,#f0fdf4 0%,#dcfce7 60%,#ecfdf5 100%)',
+              border: `1px solid ${dark ? 'rgba(17,212,66,0.15)' : 'rgba(17,212,66,0.2)'}`,
+              overflow: 'hidden',
+              position: 'relative',
+            }}>
+              {/* Background dot pattern */}
+              <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle at 2px 2px,rgba(17,212,66,0.06) 1px,transparent 0)', backgroundSize: '24px 24px', pointerEvents: 'none' }} />
+              {/* Decorative orbs */}
+              <div style={{ position: 'absolute', top: -40, right: -40, width: 180, height: 180, borderRadius: '50%', background: 'rgba(17,212,66,0.06)', pointerEvents: 'none' }} />
+              <div style={{ position: 'absolute', bottom: -30, left: -30, width: 120, height: 120, borderRadius: '50%', background: 'rgba(5,150,105,0.07)', pointerEvents: 'none' }} />
+
+              <div className="hp-getstarted-inner" style={{ position: 'relative', zIndex: 1, display: 'grid', gap: 0 }}>
+                {/* Left — headline */}
+                <div className="hp-getstarted-left" style={{ padding: '32px 28px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                  <div style={{ width: 44, height: 44, borderRadius: 14, background: 'rgba(17,212,66,0.14)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 18 }}>
+                    <span className="material-symbols-outlined" style={{ fontSize: 26, color: '#11d442' }}>auto_stories</span>
+                  </div>
+                  <h2 style={{ margin: '0 0 12px', fontWeight: 800, fontSize: 'clamp(22px,4vw,30px)', lineHeight: 1.2, color: dark ? '#f1f5f9' : '#0f172a' }}>
+                    Let&apos;s get{' '}
+                    <span style={{ color: '#11d442' }}>to learning</span>
+                  </h2>
+                  <p style={{ margin: 0, fontSize: 14, lineHeight: 1.7, color: dark ? '#94a3b8' : '#475569', maxWidth: 280 }}>
+                    Explore all the ways QuranicLearn can support your spiritual journey — from reading to memorisation.
+                  </p>
+                </div>
+
+                {/* Right — action list */}
+                <div className="hp-getstarted-right" style={{ display: 'flex', flexDirection: 'column' }}>
+                  {[
+                    { icon: 'support_agent', label: 'Contact us', sub: 'Talk to an expert and see how our platform can meet your goals.', href: '/community', color: '#8b5cf6' },
+                    { icon: 'group', label: 'Join the community', sub: 'Learn, share, and connect with people doing work that matters.', href: '/community', color: '#11d442' },
+                    { icon: 'school', label: 'Find a teacher', sub: 'Realize even more value with a certified Quran tutor.', href: '/learn-quran', color: '#f59e0b' },
+                    { icon: 'view_module', label: 'Explore modules', sub: 'Get hands-on with the QuranicLearn platform.', href: '/courses', color: '#0ea5e9' },
+                  ].map((item, i, arr) => (
+                    <Link key={item.label} href={item.href} style={{ textDecoration: 'none', display: 'block' }}>
+                      <div
+                        style={{
+                          display: 'flex', alignItems: 'center', gap: 16,
+                          padding: '18px 24px',
+                          borderTop: i > 0 ? `1px solid ${dark ? 'rgba(30,58,42,0.6)' : 'rgba(17,212,66,0.1)'}` : 'none',
+                          transition: 'background 0.15s',
+                        }}
+                        onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.background = dark ? 'rgba(17,212,66,0.06)' : 'rgba(17,212,66,0.05)'; }}
+                        onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.background = 'transparent'; }}
+                      >
+                        <div style={{ width: 44, height: 44, borderRadius: 12, background: `${item.color}18`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                          <span className="material-symbols-outlined" style={{ fontSize: 22, color: item.color }}>{item.icon}</span>
+                        </div>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <p style={{ margin: '0 0 2px', fontWeight: 700, fontSize: 14, color: dark ? '#e2e8e5' : '#0f172a' }}>{item.label}</p>
+                          <p style={{ margin: 0, fontSize: 12, color: dark ? '#64748b' : '#64748b', lineHeight: 1.5 }}>{item.sub}</p>
+                        </div>
+                        <span className="material-symbols-outlined" style={{ fontSize: 18, color: dark ? '#334155' : '#cbd5e1', flexShrink: 0 }}>chevron_right</span>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </section>
+
           </div>
         </main>
       </div>

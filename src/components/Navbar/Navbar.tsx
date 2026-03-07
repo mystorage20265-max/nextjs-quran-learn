@@ -59,7 +59,17 @@ export default function Navbar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+  // Lock body scroll when mobile drawer is open
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [isMenuOpen]);
+
+  const toggleMenu = () => setIsMenuOpen(prev => !prev);
   const closeMenu = () => {
     setIsMenuOpen(false);
     setActiveDropdown(null);
