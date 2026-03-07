@@ -642,8 +642,9 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 .nq-reciter-name{margin:0;font-size:12px;font-weight:700;color:#0f172a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
                 .dark .nq-reciter-name{color:#e2e8f0}
                 .nq-reciter-sub{margin:0;font-size:10px;color:#94a3b8}
-                .nq-audio-controls{display:flex;align-items:center;gap:10px}
+                .nq-audio-controls{display:flex;align-items:center;gap:10px;flex:1;justify-content:center}
                 @media(min-width:480px){.nq-audio-controls{gap:16px}}
+                @media(min-width:640px){.nq-audio-controls{flex:none;justify-content:flex-start}}
                 @media(min-width:1024px){.nq-audio-controls{gap:24px}}
                 .nq-ctrl-btn{background:none;border:none;color:#64748b;cursor:pointer;display:flex;align-items:center;padding:0;transition:color 0.15s}
                 .nq-ctrl-btn:hover{color:#11d442}
@@ -663,8 +664,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 /* Sound toggle in tabs */
                 .nq-sound-toggle-wrap{display:flex;align-items:center;gap:6px;padding:0 8px;border-left:1px solid #e2e8f0;margin-left:auto;flex-shrink:0}
                 .dark .nq-sound-toggle-wrap{border-left-color:#1e293b}
-                .nq-sound-toggle-label{font-size:11px;font-weight:600;color:#94a3b8;white-space:nowrap;font-family:'Lexend',sans-serif;display:none}
-                @media(min-width:480px){.nq-sound-toggle-label{display:inline}}
+                .nq-sound-toggle-label{font-size:11px;font-weight:600;color:#94a3b8;white-space:nowrap;font-family:'Lexend',sans-serif;display:inline}
                 .nq-sound-pill{position:relative;width:36px;height:20px;border-radius:10px;cursor:pointer;border:none;padding:0;transition:background 0.22s;flex-shrink:0}
                 .nq-sound-pill.on{background:#11d442}
                 .nq-sound-pill.off{background:#cbd5e1}
@@ -891,7 +891,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                         {/* Sound Toggle — always visible, same for mobile & desktop */}
                         <div className="nq-sound-toggle-wrap">
                             <span className="nq-sound-toggle-label" style={{ color: audioEnabled ? '#11d442' : '#94a3b8' }}>
-                                {audioEnabled ? '🔊 Sound' : '🔇 Sound'}
+                                Play Audio
                             </span>
                             <button
                                 className={`nq-sound-pill ${audioEnabled ? 'on' : 'off'}`}
