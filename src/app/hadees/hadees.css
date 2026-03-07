@@ -843,3 +843,59 @@
     align-items: flex-start;
   }
 }
+
+/* ── Arabic text block ── */
+.hadees-card-arabic-block {
+  padding: 16px 20px;
+  background: var(--bg-elevated);
+  border-radius: 12px;
+  border: 1px solid var(--border-subtle);
+  margin: 12px 0 14px;
+  direction: rtl;
+  text-align: right;
+}
+
+.hadees-card-arabic-text {
+  font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+  line-height: 2;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+/* ── Grade badges ── */
+.hadees-grade-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 2px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.hadees-grade-badge.grade-sahih {
+  background: rgba(34, 197, 94, 0.12);
+  color: #16a34a;
+}
+
+.hadees-grade-badge.grade-hasan {
+  background: var(--brand-primary-soft, rgba(245,158,11,0.1));
+  color: var(--brand-primary, #f59e0b);
+}
+
+.hadees-grade-badge.grade-da-if,
+.hadees-grade-badge.grade-daif {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+}
+
+/* Chapter title under hadith number badge */
+.hadees-card-chapter {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin: 4px 0 0;
+  font-style: italic;
+  line-height: 1.4;
+}

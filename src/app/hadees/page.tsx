@@ -5,8 +5,12 @@ import './hadees.css';
 
 /* ─── Types ─────────────────────────────────────────────────── */
 interface Hadith {
-  hadithnumber: number;
-  text: string;
+  number: string;
+  english: string;
+  arabic: string;
+  grade: string;
+  chapter: string;
+  urn?: number;
 }
 
 interface Collection {
@@ -20,16 +24,14 @@ interface Collection {
 
 /* ─── Constants ──────────────────────────────────────────────── */
 const ARABIC_FONT = "'Naskh IndoPak', serif";
-const BASE_CDN = 'https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions';
-const PAGE_SIZE = 15;
 
 const COLLECTIONS: Collection[] = [
-  { id: 'nawawi40',  name: "Nawawi's 40",    ar: 'الأربعون النووية', description: '40 Essential Hadiths',       color: '#059669', icon: 'bookmark_star'  },
-  { id: 'bukhari',   name: 'Sahih Bukhari',  ar: 'صحيح البخاري',    description: 'Most Authentic Collection',  color: '#f59e0b', icon: 'verified'       },
-  { id: 'muslim',    name: 'Sahih Muslim',   ar: 'صحيح مسلم',       description: 'Second Most Authentic',     color: '#0ea5e9', icon: 'stars'          },
-  { id: 'abudawud',  name: 'Abu Dawud',      ar: 'سنن أبي داود',    description: 'Sunan Abu Dawud',           color: '#8b5cf6', icon: 'history_edu'   },
-  { id: 'tirmidhi',  name: 'Tirmidhi',       ar: 'جامع الترمذي',    description: "Jami' at-Tirmidhi",         color: '#ef4444', icon: 'menu_book'      },
-  { id: 'ibnmajah',  name: 'Ibn Majah',      ar: 'سنن ابن ماجه',    description: 'Sunan Ibn Majah',           color: '#06b6d4', icon: 'library_books'  },
+  { id: 'nawawi40',  name: "Nawawi's 40",    ar: 'الأربعون النووية', description: '40 Essential Hadiths',       color: '#f59e0b', icon: 'bookmark_star'  },
+  { id: 'bukhari',   name: 'Sahih Bukhari',  ar: 'صحيح البخاري',    description: 'Most Authentic Collection',  color: '#d97706', icon: 'verified'       },
+  { id: 'muslim',    name: 'Sahih Muslim',   ar: 'صحيح مسلم',       description: 'Second Most Authentic',      color: '#b45309', icon: 'stars'          },
+  { id: 'abudawud',  name: 'Abu Dawud',      ar: 'سنن أبي داود',    description: 'Sunan Abu Dawud',            color: '#92400e', icon: 'history_edu'   },
+  { id: 'tirmidhi',  name: 'Tirmidhi',       ar: 'جامع الترمذي',    description: "Jami' at-Tirmidhi",          color: '#d97706', icon: 'menu_book'      },
+  { id: 'ibnmajah',  name: 'Ibn Majah',      ar: 'سنن ابن ماجه',    description: 'Sunan Ibn Majah',            color: '#b45309', icon: 'library_books'  },
 ];
 
 const HADITH_OF_THE_DAY = {
@@ -41,12 +43,15 @@ const HADITH_OF_THE_DAY = {
 /* ─── Component ──────────────────────────────────────────────── */
 export default function HadeesPage() {
   const [activeCollection, setActiveCollection] = useState<Collection>(COLLECTIONS[0]);
-  const [allHadiths, setAllHadiths] = useState<Hadith[]>([]);
-  const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [search, setSearch] = useState('');
-  const [expandedId, setExpandedId] = useState<number | null>(null);
+  const [hadiths, setHadiths]       = useState<Hadith[]>([]);
+  const [page, setPage]             = useState(1);
+  const [total, setTotal]           = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading]       = useState(false);
+  const [error, setError]           = useState('');
+  const [searchInput, setSearchInput] = useState('');
+  const [search, setSearch]           = useState('');
+  const [expandedId, setExpandedId] = useState<string | null>(null);
   const [bookmarks, setBookmarks] = useState<Set<string>>(new Set());
   const [copied, setCopied] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -68,69 +73,54 @@ export default function HadeesPage() {
     } catch { /* ignore */ }
   }, [bookmarks]);
 
-  /* Fetch entire collection */
-  const fetchCollection = useCallback(async (col: Collection) => {
+  /* Debounce search input → committed search */
+  useEffect(() => {
+    const t = setTimeout(() => { setSearch(searchInput); setPage(1); }, 500);
+    return () => clearTimeout(t);
+  }, [searchInput]);
+
+  /* Fetch from /api/hadith proxy */
+  const fetchPage = useCallback(async (col: Collection, pg: number, q: string) => {
     setLoading(true);
     setError('');
-    setAllHadiths([]);
-    setPage(1);
-    setSearch('');
     try {
-      const res = await fetch(`${BASE_CDN}/eng-${col.id}.min.json`);
+      const params = new URLSearchParams({ collection: col.id, page: String(pg), limit: '20' });
+      if (q.trim()) params.set('search', q.trim());
+      const res = await fetch(`/api/hadith?${params}`);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const list: Hadith[] = (data.hadiths ?? [])
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .map((h: any) => ({ hadithnumber: Number(h.hadithnumber), text: String(h.text ?? h.body ?? '').trim() }))
-        .filter((h: Hadith) => h.text.length > 0);
-      setAllHadiths(list);
-    } catch {
-      setError('Failed to load collection. Please check your connection and try again.');
+      if (data.error) throw new Error(data.error);
+      setHadiths(data.hadiths ?? []);
+      setTotal(data.total ?? 0);
+      setTotalPages(data.totalPages ?? 1);
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : 'Failed to load collection.';
+      setError(msg);
+      setHadiths([]);
     } finally {
       setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    fetchCollection(activeCollection);
-  }, [activeCollection, fetchCollection]);
-
-  /* Filtered & paginated */
-  const filteredHadiths = useMemo(() => {
-    if (!search.trim()) return allHadiths;
-    const q = search.toLowerCase();
-    return allHadiths.filter(h =>
-      h.text.toLowerCase().includes(q) || String(h.hadithnumber) === search.trim()
-    );
-  }, [allHadiths, search]);
-
-  const totalPages = useMemo(
-    () => Math.max(1, Math.ceil(allHadiths.length / PAGE_SIZE)),
-    [allHadiths]
-  );
-
-  const displayedHadiths = useMemo(() => {
-    if (search.trim()) return filteredHadiths;
-    const start = (page - 1) * PAGE_SIZE;
-    return allHadiths.slice(start, start + PAGE_SIZE);
-  }, [allHadiths, filteredHadiths, page, search]);
+    fetchPage(activeCollection, page, search);
+  }, [activeCollection, page, search, fetchPage]);
 
   /* Actions */
   const toggleBookmark = (key: string) =>
     setBookmarks(prev => { const s = new Set(prev); s.has(key) ? s.delete(key) : s.add(key); return s; });
 
   const copyHadith = (key: string, hadith: Hadith) => {
-    const text = `Hadith #${hadith.hadithnumber} — ${activeCollection.name}\n\n${hadith.text}`;
+    const text = `Hadith #${hadith.number} — ${activeCollection.name}\n\n${hadith.arabic ? hadith.arabic + '\n\n' : ''}${hadith.english}`;
     navigator.clipboard.writeText(text).catch(() => {});
     setCopied(key);
     setTimeout(() => setCopied(null), 2000);
   };
 
   const shareHadith = (hadith: Hadith) => {
-    const text = `Hadith #${hadith.hadithnumber} — ${activeCollection.name}\n\n${hadith.text}`;
-    if (navigator.share) navigator.share({ title: `Hadith #${hadith.hadithnumber}`, text }).catch(() => {});
-    else { navigator.clipboard.writeText(text); setCopied('share-' + hadith.hadithnumber); setTimeout(() => setCopied(null), 2000); }
+    const text = `Hadith #${hadith.number} — ${activeCollection.name}\n\n${hadith.arabic ? hadith.arabic + '\n\n' : ''}${hadith.english}`;
+    if (navigator.share) navigator.share({ title: `Hadith #${hadith.number}`, text }).catch(() => {});
+    else { navigator.clipboard.writeText(text); setCopied('share-' + hadith.number); setTimeout(() => setCopied(null), 2000); }
   };
 
   const changePage = (p: number) => {
@@ -140,6 +130,9 @@ export default function HadeesPage() {
 
   const switchCollection = (col: Collection) => {
     setActiveCollection(col);
+    setPage(1);
+    setSearchInput('');
+    setSearch('');
     setSidebarOpen(false);
   };
 
@@ -264,12 +257,12 @@ export default function HadeesPage() {
               <input
                 type="text"
                 className="hadees-search-input"
-                value={search}
-                onChange={e => setSearch(e.target.value)}
+                value={searchInput}
+                onChange={e => setSearchInput(e.target.value)}
                 placeholder={`Search within ${activeCollection.name}…`}
               />
-              {search && (
-                <button className="hadees-search-clear" onClick={() => setSearch('')}>
+              {searchInput && (
+                <button className="hadees-search-clear" onClick={() => { setSearchInput(''); setSearch(''); }}>
                   <span className="material-symbols-outlined" style={{ fontSize: 18 }}>close</span>
                 </button>
               )}
@@ -283,11 +276,11 @@ export default function HadeesPage() {
                 {search ? 'Search Results' : activeCollection.name}
               </h2>
               <p className="hadees-content-subtitle">
-                {search
-                  ? `${filteredHadiths.length} hadith${filteredHadiths.length !== 1 ? 's' : ''} found for "${search}"`
-                  : loading
+                {loading
                   ? 'Loading…'
-                  : `${allHadiths.length.toLocaleString()} hadiths · Page ${page} of ${totalPages}`}
+                  : search
+                  ? `${total.toLocaleString()} hadith${total !== 1 ? 's' : ''} found for "${search}"`
+                  : `${total.toLocaleString()} hadiths · Page ${page} of ${totalPages}`}
               </p>
             </div>
 
@@ -318,7 +311,7 @@ export default function HadeesPage() {
                 <p style={{ margin: '0 0 2px', fontWeight: 600, color: '#ef4444', fontSize: 14 }}>Failed to load collection</p>
                 <p style={{ margin: 0, fontSize: 12, color: 'var(--text-muted)' }}>{error}</p>
               </div>
-              <button className="hadees-error-retry" onClick={() => fetchCollection(activeCollection)}>Retry</button>
+              <button className="hadees-error-retry" onClick={() => fetchPage(activeCollection, page, search)}>Retry</button>
             </div>
           )}
 
@@ -338,12 +331,12 @@ export default function HadeesPage() {
           )}
 
           {/* Empty */}
-          {!loading && !error && displayedHadiths.length === 0 && (
+          {!loading && !error && hadiths.length === 0 && (
             <div className="hadees-empty">
               <span className="material-symbols-outlined" style={{ fontSize: 56, color: 'var(--text-muted)', display: 'block', marginBottom: 16 }}>search_off</span>
               <h3>No hadiths found</h3>
               <p>Try a different search term or select another collection</p>
-              <button className="hadees-empty-btn" onClick={() => setSearch('')}>
+              <button className="hadees-empty-btn" onClick={() => { setSearchInput(''); setSearch(''); }}>
                 <span className="material-symbols-outlined" style={{ fontSize: 16 }}>restart_alt</span>
                 Clear Search
               </button>
@@ -351,14 +344,14 @@ export default function HadeesPage() {
           )}
 
           {/* Cards */}
-          {!loading && displayedHadiths.length > 0 && (
+          {!loading && hadiths.length > 0 && (
             <div className="hadees-list">
-              {displayedHadiths.map((hadith, idx) => {
-                const key = `${activeCollection.id}-${hadith.hadithnumber}`;
-                const isExpanded = expandedId === hadith.hadithnumber;
+              {hadiths.map((hadith, idx) => {
+                const key = `${activeCollection.id}-${hadith.number}`;
+                const isExpanded = expandedId === hadith.number;
                 const isBookmarked = bookmarks.has(key);
                 const isCopied = copied === key;
-                const isLong = hadith.text.length > 380;
+                const isLong = hadith.english.length > 380;
 
                 return (
                   <article
@@ -371,18 +364,23 @@ export default function HadeesPage() {
                     <div className="hadees-card-header">
                       <div className="hadees-card-header-left">
                         <div className="hadees-card-number" style={{ background: `${activeCollection.color}18`, color: activeCollection.color }}>
-                          {hadith.hadithnumber}
+                          {hadith.number}
                         </div>
                         <div>
                           <p className="hadees-card-collection" style={{ color: activeCollection.color }}>
                             {activeCollection.name}
                           </p>
                           <div className="hadees-card-meta">
-                            <span className="hadees-card-num-badge">Hadith #{hadith.hadithnumber}</span>
-                            <span className="hadees-card-authentic" style={{ background: `${activeCollection.color}12`, color: activeCollection.color }}>
-                              Authentic
-                            </span>
+                            <span className="hadees-card-num-badge">Hadith #{hadith.number}</span>
+                            {hadith.grade && (
+                              <span className={`hadees-grade-badge grade-${hadith.grade.toLowerCase().replace(/[^a-z]/g, '-')}`}>
+                                {hadith.grade}
+                              </span>
+                            )}
                           </div>
+                          {hadith.chapter && (
+                            <p className="hadees-card-chapter">{hadith.chapter}</p>
+                          )}
                         </div>
                       </div>
                       <div className="hadees-card-header-right">
@@ -396,16 +394,22 @@ export default function HadeesPage() {
                       </div>
                     </div>
 
+                    {hadith.arabic && (
+                      <div className="hadees-card-arabic-block">
+                        <p className="hadees-card-arabic-text" style={{ fontFamily: ARABIC_FONT }}>{hadith.arabic}</p>
+                      </div>
+                    )}
+
                     <div className="hadees-card-body-wrapper">
                       <span className="material-symbols-outlined hadees-card-quote-icon">format_quote</span>
                       <p className={`hadees-card-text ${isLong && !isExpanded ? 'collapsed' : ''}`}>
-                        &ldquo;{hadith.text}&rdquo;
+                        &ldquo;{hadith.english}&rdquo;
                       </p>
                     </div>
 
                     <div className="hadees-card-footer">
                       {isLong ? (
-                        <button className="hadees-expand-btn" onClick={() => setExpandedId(isExpanded ? null : hadith.hadithnumber)}>
+                        <button className="hadees-expand-btn" onClick={() => setExpandedId(isExpanded ? null : hadith.number)}>
                           <span className="material-symbols-outlined" style={{ fontSize: 18 }}>{isExpanded ? 'expand_less' : 'expand_more'}</span>
                           {isExpanded ? 'Show Less' : 'Read More'}
                         </button>
@@ -417,7 +421,7 @@ export default function HadeesPage() {
                       )}
                       <div className="hadees-card-actions">
                         <button className="hadees-icon-btn" onClick={() => copyHadith(key, hadith)} title="Copy">
-                          <span className="material-symbols-outlined" style={{ fontSize: 18, color: isCopied ? '#059669' : undefined }}>
+                          <span className="material-symbols-outlined" style={{ fontSize: 18, color: isCopied ? 'var(--brand-primary)' : undefined }}>
                             {isCopied ? 'check' : 'content_copy'}
                           </span>
                         </button>
@@ -433,7 +437,7 @@ export default function HadeesPage() {
           )}
 
           {/* Bottom Pagination */}
-          {!loading && !search && totalPages > 1 && displayedHadiths.length > 0 && (
+          {!loading && !search && totalPages > 1 && hadiths.length > 0 && (
             <div style={{ display: 'flex', justifyContent: 'center', marginTop: 32, marginBottom: 16 }}>
               <div className="hadees-paginator">
                 <button className="hadees-pg-btn" onClick={() => changePage(1)} disabled={page === 1}>
