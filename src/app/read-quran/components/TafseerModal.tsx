@@ -1,9 +1,10 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import {
     X, ChevronLeft, ChevronRight, BookOpen,
-    Copy, Check, Loader2, BookMarked, ScrollText, User
+    Copy, Check, Loader2, BookMarked, ScrollText, User,
+    Share2, RefreshCw
 } from 'lucide-react';
 import { getTafsirContent } from '../lib/api';
 
@@ -42,61 +43,117 @@ const SCHOLARS = [
         id: 169,
         key: 'ibn-kathir',
         name: 'Ibn Kathir',
-        label: 'Abridged',
+        fullName: 'Tafsir Ibn Kathir',
+        label: 'Classical • 14th Century',
+        color: '#f59e0b',
         icon: BookMarked,
-        desc: 'One of the most celebrated classical Quranic commentaries, authored by Imam Ibn Kathir (1301–1373 CE).',
+        desc: 'One of the most celebrated classical Quranic commentaries by Imam Ibn Kathir (1301–1373 CE). Renowned for its hadith-based approach.',
     },
     {
         id: 168,
         key: 'maarif',
         name: "Ma'arif Al-Qur'an",
-        label: 'Mufti Shafi Usmani',
+        fullName: "Ma'arif ul-Quran",
+        label: 'Contemporary • Mufti Shafi',
+        color: '#10b981',
         icon: ScrollText,
-        desc: 'A comprehensive 8-volume Urdu tafseer translated to English, authored by Mufti Muhammad Shafi Usmani.',
+        desc: "A comprehensive 8-volume commentary by Mufti Muhammad Shafi Usmani, combining classical and modern scholarship.",
     },
     {
         id: 817,
         key: 'tazkirul',
         name: 'Tazkirul Quran',
-        label: 'Wahid Uddin Khan',
+        fullName: 'Tazkirul Quran',
+        label: 'Modern • Wahid U. Khan',
+        color: '#6366f1',
         icon: User,
-        desc: 'A modern commentary focused on making the Quran accessible to contemporary readers.',
+        desc: 'A modern commentary by Wahid Uddin Khan focused on making the Quranic message accessible to contemporary readers.',
     },
 ] as const;
 
 type ScholarKey = typeof SCHOLARS[number]['key'];
 
-// Sanitize tafseer HTML: keep paragraph structure but strip unsafe tags
-function sanitizeTafseerHtml(html: string): string {
-    if (!html) return '';
-    return html
-        // Remove script/style/iframe
+function formatTafseerHtml(raw: string): string {
+    if (!raw) return '';
+
+    let html = raw
         .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
         .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
         .replace(/<iframe[^>]*>[\s\S]*?<\/iframe>/gi, '')
-        // Strip all on* event handlers
         .replace(/\s+on\w+="[^"]*"/gi, '')
         .replace(/\s+on\w+='[^']*'/gi, '')
-        // Remove sup footnote elements
         .replace(/<sup[^>]*>[\s\S]*?<\/sup>/gi, '')
-        // Convert h1/h2/h3 → strong paragraphs
-        .replace(/<h[1-3][^>]*>/gi, '<p><strong>')
-        .replace(/<\/h[1-3]>/gi, '</strong></p>')
-        // Convert divs to paragraphs
-        .replace(/<div[^>]*>/gi, '<p>')
-        .replace(/<\/div>/gi, '</p>')
-        // Strip all except safe tags
-        .replace(/<(?!\/?(?:p|strong|em|br|b|i|ul|ol|li|blockquote)\b)[^>]+>/gi, '')
-        // Decode entities
-        .replace(/&amp;/g, '&')
-        .replace(/&lt;/g, '<')
-        .replace(/&gt;/g, '>')
-        .replace(/&quot;/g, '"')
-        .replace(/&#39;/g, "'")
-        .replace(/&nbsp;/g, ' ')
-        // Collapse excessive whitespace
+        .replace(/<div[^>]*>/gi, '<p>').replace(/<\/div>/gi, '</p>')
+        .replace(/<span[^>]*>([\s\S]*?)<\/span>/gi, '$1')
+        .replace(/<h1[^>]*>([\s\S]*?)<\/h1>/gi, '<h2>$1</h2>')
+        .replace(/<h3[^>]*>([\s\S]*?)<\/h3>/gi, '<h2>$1</h2>')
+        .replace(/<(?!\/?(?:p|strong|em|br|b|i|ul|ol|li|blockquote|h2)\b)[^>]+>/gi, '')
+        .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+        .replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&nbsp;/g, ' ')
         .replace(/\s{3,}/g, ' ')
         .trim();
+
+    const paragraphs = html
+        .split(/(<p>[\s\S]*?<\/p>|<h2>[\s\S]*?<\/h2>|<br\s*\/?>)/gi)
+        .map(s => s.trim())
+        .filter(Boolean);
+
+    const sections: string[] = [];
+    let listItems: string[] = [];
+
+    const flushList = () => {
+        if (listItems.length > 0) {
+            sections.push('<ul class="tsm-list">' + listItems.map(li => '<li>' + li + '</li>').join('') + '</ul>');
+            listItems = [];
+        }
+    };
+
+    for (const block of paragraphs) {
+        if (/<h2>/i.test(block)) {
+            flushList();
+            const text = block.replace(/<[^>]+>/g, '').trim();
+            if (text) sections.push('<div class="tsm-section-heading">' + text + '</div>');
+            continue;
+        }
+
+        const text = block.replace(/<[^>]+>/g, '').trim();
+        if (!text || text.length < 3) continue;
+
+        const isBoldOnly = /^<p>\s*<(strong|b)>[^<]{3,80}<\/(strong|b)>\s*<\/p>$/i.test(block);
+        const isShortWithColon = text.endsWith(':') && text.length < 80 && !text.includes('.');
+        const isAllCaps = text === text.toUpperCase() && text.length < 60 && /[A-Z]/.test(text);
+
+        if (isBoldOnly || isShortWithColon || isAllCaps) {
+            flushList();
+            const clean = text.replace(/:$/, '');
+            sections.push('<div class="tsm-section-heading">' + clean + '</div>');
+            continue;
+        }
+
+        const startsWithBullet = /^(\d+[\.\)]\s|[-\u2022\u00B7]\s|[a-z]\)\s)/i.test(text);
+        if (startsWithBullet && text.length < 200) {
+            const content = text.replace(/^(\d+[\.\)]\s|[-\u2022\u00B7]\s|[a-z]\)\s)/i, '');
+            listItems.push(content);
+            continue;
+        }
+
+        const isQuote = (text.startsWith('"') && text.includes('"')) ||
+            /^(Allah|The Prophet|Narrated|It was|Ibn Abbas|Ibn Mas)/i.test(text);
+
+        if (isQuote && text.length < 400) {
+            flushList();
+            const innerHtml = block.replace(/<p>/gi, '').replace(/<\/p>/gi, '');
+            sections.push('<blockquote class="tsm-quote">' + innerHtml + '</blockquote>');
+            continue;
+        }
+
+        flushList();
+        const innerHtml = block.replace(/<\/?p>/gi, '').trim();
+        sections.push('<p class="tsm-para">' + innerHtml + '</p>');
+    }
+
+    flushList();
+    return sections.join('\n');
 }
 
 export default function TafseerModal({
@@ -116,29 +173,29 @@ export default function TafseerModal({
     const [errors, setErrors] = useState<Partial<Record<ScholarKey, boolean>>>({});
     const [copied, setCopied] = useState(false);
     const contentRef = useRef<HTMLDivElement>(null);
-    const panelRef = useRef<HTMLDivElement>(null);
 
-    // Lock body scroll when open
     useEffect(() => {
-        if (isOpen) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = '';
-        }
+        document.body.style.overflow = isOpen ? 'hidden' : '';
         return () => { document.body.style.overflow = ''; };
     }, [isOpen]);
 
-    // ESC key to close
+    const currentIndex = verse ? allVerses.findIndex(v => v.verse_number === verse.verse_number) : -1;
+    const hasPrev = currentIndex > 0;
+    const hasNext = currentIndex < allVerses.length - 1;
+
     useEffect(() => {
-        const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+        const onKey = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') onClose();
+            if (e.key === 'ArrowLeft' && hasPrev) onNavigate(allVerses[currentIndex - 1].verse_number);
+            if (e.key === 'ArrowRight' && hasNext) onNavigate(allVerses[currentIndex + 1].verse_number);
+        };
         if (isOpen) window.addEventListener('keydown', onKey);
         return () => window.removeEventListener('keydown', onKey);
-    }, [isOpen, onClose]);
+    }, [isOpen, onClose, hasPrev, hasNext, currentIndex, allVerses, onNavigate]);
 
-    // Fetch tafseer for active scholar + current surah (lazy, cached per surah)
     const fetchScholarTafsir = useCallback(async (scholarKey: ScholarKey, scholarId: number) => {
-        if (tafsirCache[scholarKey]) return; // already cached
-        if (loading[scholarKey]) return;     // already loading
+        if (tafsirCache[scholarKey]) return;
+        if (loading[scholarKey]) return;
         setLoading(prev => ({ ...prev, [scholarKey]: true }));
         try {
             const content = await getTafsirContent(scholarId, surahNumber);
@@ -151,25 +208,20 @@ export default function TafseerModal({
         }
     }, [surahNumber, tafsirCache, loading]);
 
-    // Fetch when modal opens or scholar tab changes
     useEffect(() => {
         if (!isOpen || !verse) return;
         const scholar = SCHOLARS.find(s => s.key === activeScholar)!;
         fetchScholarTafsir(scholar.key, scholar.id);
     }, [isOpen, activeScholar, verse, fetchScholarTafsir]);
 
-    // Reset cache when surah changes
     useEffect(() => {
         setTafsirCache({});
         setLoading({});
         setErrors({});
     }, [surahNumber]);
 
-    // Scroll content to top when verse or scholar changes
     useEffect(() => {
-        if (contentRef.current) {
-            contentRef.current.scrollTop = 0;
-        }
+        if (contentRef.current) contentRef.current.scrollTop = 0;
     }, [verse?.verse_number, activeScholar]);
 
     if (!verse || !chapter) return null;
@@ -177,7 +229,7 @@ export default function TafseerModal({
     const scholar = SCHOLARS.find(s => s.key === activeScholar)!;
     const cachedContent = tafsirCache[activeScholar];
     const tafsirText = cachedContent?.[verse.verse_key] ?? null;
-    const isLoading = loading[activeScholar];
+    const isScholarLoading = loading[activeScholar];
     const hasError = errors[activeScholar];
 
     const arabicText = cleanArabicText(
@@ -186,202 +238,200 @@ export default function TafseerModal({
             : (verse.text_indopak ?? verse.text_uthmani ?? '')
     );
     const translation = verse.translations?.[0]?.text ?? 'Translation not available.';
-    const currentIndex = allVerses.findIndex(v => v.verse_number === verse.verse_number);
-    const hasPrev = currentIndex > 0;
-    const hasNext = currentIndex < allVerses.length - 1;
 
     const handleCopy = () => {
-        const rawText = tafsirText
-            ? tafsirText.replace(/<[^>]+>/g, ' ').replace(/\s{2,}/g, ' ').trim()
-            : '';
-        const text = `${arabicText}\n\n${translation}\n\n— Tafseer ${scholar.name} (${verse.verse_key})\n\n${rawText}`;
+        const rawText = tafsirText?.replace(/<[^>]+>/g, ' ').replace(/\s{2,}/g, ' ').trim() ?? '';
+        const text = arabicText + '\n\n' + translation + '\n\n— Tafseer ' + scholar.name + ' (' + verse.verse_key + ')\n\n' + rawText;
         navigator.clipboard.writeText(text);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
     };
 
+    const handleShare = async () => {
+        const rawText = tafsirText?.replace(/<[^>]+>/g, ' ').replace(/\s{2,}/g, ' ').trim() ?? '';
+        const text = arabicText + '\n\n' + translation + '\n\n— Tafseer ' + scholar.name + ' (' + verse.verse_key + ')';
+        if (navigator.share) {
+            try { await navigator.share({ title: 'Tafseer ' + verse.verse_key, text }); } catch { }
+        } else {
+            navigator.clipboard.writeText(text + '\n\n' + rawText);
+        }
+    };
+
+    const handleRetry = () => {
+        setErrors(prev => ({ ...prev, [activeScholar]: false }));
+        setTafsirCache(prev => { const c = { ...prev }; delete c[activeScholar]; return c; });
+    };
+
+    const formattedTafsir = tafsirText ? formatTafseerHtml(tafsirText) : '';
+    const wordCount = tafsirText ? tafsirText.replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length : 0;
+
     return (
         <>
-            {/* Backdrop */}
+            <div className={`tsm-backdrop ${isOpen ? 'tsm-backdrop--open' : ''}`} onClick={onClose} aria-hidden="true" />
             <div
-                className={`tsm-backdrop ${isOpen ? 'tsm-backdrop--open' : ''}`}
-                onClick={onClose}
-                aria-hidden="true"
-            />
-
-            {/* Drawer Panel */}
-            <div
-                ref={panelRef}
+                className={`tsm-modal-wrap ${isOpen ? 'tsm-modal-wrap--open' : ''}`}
                 role="dialog"
                 aria-modal="true"
-                aria-label={`Tafseer for verse ${verse.verse_key}`}
-                className={`tsm-panel ${isOpen ? 'tsm-panel--open' : ''}`}
+                aria-label={'Tafseer for verse ' + verse.verse_key}
+                onClick={e => { if (e.target === e.currentTarget) onClose(); }}
             >
-                {/* ── HEADER ── */}
-                <div className="tsm-header">
-                    <div className="tsm-header-meta">
-                        <div className="tsm-surah-badge">
-                            <BookOpen size={13} />
-                            <span>{chapter.name_simple}</span>
+                <div className="tsm-modal">
+                    <div className="tsm-top-accent" style={{ background: 'linear-gradient(90deg,' + scholar.color + ',#2dd4bf)' }} />
+
+                    <div className="tsm-header">
+                        <div className="tsm-header-left">
+                            <div className="tsm-surah-badge">
+                                <BookOpen size={12} />
+                                <span>{chapter.name_simple}</span>
+                                {chapter.revelation_place && (
+                                    <span className="tsm-rev-chip">{chapter.revelation_place}</span>
+                                )}
+                            </div>
+                            <div className="tsm-header-title">
+                                <span className="tsm-header-arabic">{chapter.name_arabic}</span>
+                                <span className="tsm-header-dot">·</span>
+                                <span>Verse {verse.verse_number} of {chapter.verses_count}</span>
+                            </div>
                         </div>
-                        <div className="tsm-verse-label">
-                            <span className="tsm-surah-arabic">{chapter.name_arabic}</span>
-                            <span className="tsm-dot">·</span>
-                            <span>Verse {verse.verse_number} of {chapter.verses_count}</span>
+                        <div className="tsm-header-right">
+                            <button className="tsm-nav-btn" onClick={() => hasPrev && onNavigate(allVerses[currentIndex - 1].verse_number)} disabled={!hasPrev} title="Previous verse">
+                                <ChevronLeft size={15} />
+                            </button>
+                            <span className="tsm-nav-pill">{verse.verse_key}</span>
+                            <button className="tsm-nav-btn" onClick={() => hasNext && onNavigate(allVerses[currentIndex + 1].verse_number)} disabled={!hasNext} title="Next verse">
+                                <ChevronRight size={15} />
+                            </button>
+                            <button className="tsm-close-btn" onClick={onClose} title="Close (Esc)">
+                                <X size={16} />
+                            </button>
                         </div>
                     </div>
 
-                    <div className="tsm-header-actions">
-                        {/* Verse Navigation */}
-                        <button
-                            className="tsm-nav-btn"
-                            onClick={() => hasPrev && onNavigate(allVerses[currentIndex - 1].verse_number)}
-                            disabled={!hasPrev}
-                            title="Previous verse"
-                        >
-                            <ChevronLeft size={15} />
-                        </button>
-                        <span className="tsm-nav-count">{verse.verse_number}/{chapter.verses_count}</span>
-                        <button
-                            className="tsm-nav-btn"
-                            onClick={() => hasNext && onNavigate(allVerses[currentIndex + 1].verse_number)}
-                            disabled={!hasNext}
-                            title="Next verse"
-                        >
-                            <ChevronRight size={15} />
-                        </button>
-                        <button className="tsm-close-btn" onClick={onClose} title="Close">
-                            <X size={17} />
-                        </button>
-                    </div>
-                </div>
+                    <div className="tsm-body" ref={contentRef}>
+                        <div className="tsm-verse-card" style={{ '--sc': scholar.color } as React.CSSProperties}>
+                            <div className="tsm-verse-card-header">
+                                <span className="tsm-verse-key-badge" style={{ color: scholar.color, borderColor: scholar.color + '55', background: scholar.color + '18' }}>
+                                    {verse.verse_key}
+                                </span>
+                                {chapter.revelation_place && (
+                                    <span className="tsm-rev-badge">{chapter.revelation_place}</span>
+                                )}
+                            </div>
+                            <p className="tsm-arabic-text" dir="rtl" lang="ar">{arabicText}</p>
+                            <div className="tsm-translation-wrap">
+                                <p className="tsm-translation-text">{translation}</p>
+                            </div>
+                        </div>
 
-                {/* ── SCROLLABLE BODY ── */}
-                <div className="tsm-body" ref={contentRef}>
+                        <div className="tsm-scholar-section">
+                            <p className="tsm-section-label">
+                                <BookOpen size={12} />
+                                <span>Choose Commentary</span>
+                            </p>
+                            <div className="tsm-scholar-grid">
+                                {SCHOLARS.map(s => {
+                                    const Icon = s.icon;
+                                    const isActive = activeScholar === s.key;
+                                    const isLoaded = !!tafsirCache[s.key] && !loading[s.key];
+                                    return (
+                                        <button
+                                            key={s.key}
+                                            className={'tsm-scholar-card' + (isActive ? ' tsm-scholar-card--active' : '')}
+                                            style={isActive ? { '--sc': s.color, borderColor: s.color + '66', '--sc-bg': s.color + '14' } as React.CSSProperties : {}}
+                                            onClick={() => setActiveScholar(s.key)}
+                                        >
+                                            <div className="tsm-sc-top">
+                                                <div className="tsm-sc-icon" style={isActive ? { background: s.color + '20', color: s.color, borderColor: s.color + '44' } : {}}>
+                                                    <Icon size={14} />
+                                                </div>
+                                                <div className="tsm-sc-status">
+                                                    {loading[s.key] && <Loader2 size={10} className="tsm-sc-spin" />}
+                                                    {isLoaded && <span className="tsm-sc-loaded" />}
+                                                </div>
+                                            </div>
+                                            <p className="tsm-sc-name" style={isActive ? { color: s.color } : {}}>{s.name}</p>
+                                            <p className="tsm-sc-label">{s.label}</p>
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                            <div className="tsm-scholar-info-bar" style={{ borderLeftColor: scholar.color, background: scholar.color + '0a' }}>
+                                <p className="tsm-scholar-info-title" style={{ color: scholar.color }}>{scholar.fullName}</p>
+                                <p className="tsm-scholar-info-desc">{scholar.desc}</p>
+                            </div>
+                        </div>
 
-                    {/* Verse Card */}
-                    <div className="tsm-verse-card">
-                        <div className="tsm-verse-key-row">
-                            <span className="tsm-verse-key-badge">{verse.verse_key}</span>
-                            {chapter.revelation_place && (
-                                <span className="tsm-revelation-badge">{chapter.revelation_place}</span>
+                        <div className="tsm-content-section">
+                            <p className="tsm-section-label">
+                                <ScrollText size={12} />
+                                <span>Commentary</span>
+                                {wordCount > 0 && <span className="tsm-word-count">~{wordCount} words</span>}
+                            </p>
+
+                            {isScholarLoading && (
+                                <div className="tsm-loading-state">
+                                    <div className="tsm-loading-spinner" style={{ borderTopColor: scholar.color }} />
+                                    <p className="tsm-loading-text">Loading {scholar.name}…</p>
+                                    <div className="tsm-skeleton-wrap">
+                                        {[100, 88, 95, 72, 84, 60].map((w, i) => (
+                                            <div key={i} className="tsm-skeleton" style={{ width: w + '%', animationDelay: (i * 0.12) + 's' }} />
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {!isScholarLoading && hasError && (
+                                <div className="tsm-error-state">
+                                    <div className="tsm-error-icon">!</div>
+                                    <p className="tsm-error-title">Failed to load commentary</p>
+                                    <p className="tsm-error-desc">Please check your connection and try again.</p>
+                                    <button className="tsm-retry-btn" onClick={handleRetry} style={{ borderColor: scholar.color, color: scholar.color, background: scholar.color + '12' }}>
+                                        <RefreshCw size={12} /> Retry
+                                    </button>
+                                </div>
+                            )}
+
+                            {!isScholarLoading && !hasError && cachedContent && !tafsirText && (
+                                <div className="tsm-empty-state">
+                                    <BookOpen size={34} className="tsm-empty-icon" />
+                                    <p className="tsm-empty-title">Not Available</p>
+                                    <p className="tsm-empty-desc">No commentary available for this verse. Try another scholar.</p>
+                                </div>
+                            )}
+
+                            {!isScholarLoading && !hasError && !cachedContent && (
+                                <div className="tsm-skeleton-wrap">
+                                    {[100, 88, 95, 72, 84, 60].map((w, i) => (
+                                        <div key={i} className="tsm-skeleton" style={{ width: w + '%', animationDelay: (i * 0.12) + 's' }} />
+                                    ))}
+                                </div>
+                            )}
+
+                            {!isScholarLoading && !hasError && formattedTafsir && (
+                                <div className="tsm-prose" dangerouslySetInnerHTML={{ __html: formattedTafsir }} />
                             )}
                         </div>
-                        <p className="tsm-arabic-text" dir="rtl" lang="ar">{arabicText}</p>
-                        <p className="tsm-translation-text">{translation}</p>
                     </div>
 
-                    {/* Scholar Tabs */}
-                    <div className="tsm-tabs-header">
-                        <p className="tsm-tabs-label">Tafseer Commentary</p>
-                        <div className="tsm-tabs">
-                            {SCHOLARS.map(s => {
-                                const Icon = s.icon;
-                                return (
-                                    <button
-                                        key={s.key}
-                                        className={`tsm-tab ${activeScholar === s.key ? 'tsm-tab--active' : ''}`}
-                                        onClick={() => setActiveScholar(s.key)}
-                                    >
-                                        <Icon size={13} />
-                                        <span className="tsm-tab-name">{s.name}</span>
-                                        {loading[s.key] && <span className="tsm-tab-dot tsm-tab-dot--loading" />}
-                                        {tafsirCache[s.key] && !loading[s.key] && (
-                                            <span className="tsm-tab-dot tsm-tab-dot--loaded" />
-                                        )}
-                                    </button>
-                                );
-                            })}
+                    <div className="tsm-footer">
+                        <div className="tsm-footer-nav">
+                            <button className="tsm-footer-nav-btn" onClick={() => hasPrev && onNavigate(allVerses[currentIndex - 1].verse_number)} disabled={!hasPrev}>
+                                <ChevronLeft size={14} /> Prev
+                            </button>
+                            <span className="tsm-footer-verse">{verse.verse_key}</span>
+                            <button className="tsm-footer-nav-btn" onClick={() => hasNext && onNavigate(allVerses[currentIndex + 1].verse_number)} disabled={!hasNext}>
+                                Next <ChevronRight size={14} />
+                            </button>
+                        </div>
+                        <div className="tsm-footer-actions">
+                            <button className="tsm-footer-action-btn" onClick={handleShare}>
+                                <Share2 size={13} /> Share
+                            </button>
+                            <button className={'tsm-footer-copy-btn' + (copied ? ' tsm-copied' : '')} onClick={handleCopy} style={{ background: copied ? '#22c55e' : 'linear-gradient(135deg,' + scholar.color + ',#2dd4bf)' }}>
+                                {copied ? <><Check size={13} /> Copied!</> : <><Copy size={13} /> Copy</>}
+                            </button>
                         </div>
                     </div>
-
-                    {/* Scholar Info Banner */}
-                    <div className="tsm-scholar-banner">
-                        <div className="tsm-scholar-icon-wrap">
-                            <scholar.icon size={16} />
-                        </div>
-                        <div className="tsm-scholar-info">
-                            <p className="tsm-scholar-name">{scholar.name} — <em>{scholar.label}</em></p>
-                            <p className="tsm-scholar-desc">{scholar.desc}</p>
-                        </div>
-                    </div>
-
-                    {/* Tafseer Content */}
-                    <div className="tsm-content-area">
-                        {isLoading && (
-                            <div className="tsm-loading">
-                                <Loader2 size={20} className="tsm-spinner" />
-                                <span>Loading {scholar.name} commentary…</span>
-                            </div>
-                        )}
-
-                        {!isLoading && hasError && (
-                            <div className="tsm-error">
-                                <p>Could not load tafseer. Please check your connection and try again.</p>
-                                <button
-                                    className="tsm-retry-btn"
-                                    onClick={() => {
-                                        // Reset error so fetchScholarTafsir can retry
-                                        setErrors(prev => ({ ...prev, [activeScholar]: false }));
-                                        setTafsirCache(prev => {
-                                            const copy = { ...prev };
-                                            delete copy[activeScholar];
-                                            return copy;
-                                        });
-                                    }}
-                                >
-                                    Retry
-                                </button>
-                            </div>
-                        )}
-
-                        {!isLoading && !hasError && cachedContent && !tafsirText && (
-                            <div className="tsm-empty">
-                                <BookOpen size={32} className="tsm-empty-icon" />
-                                <p>Tafseer is not available for this verse in this commentary.</p>
-                            </div>
-                        )}
-
-                        {!isLoading && !hasError && tafsirText && (
-                            <div
-                                className="tsm-tafseer-prose"
-                                dangerouslySetInnerHTML={{ __html: sanitizeTafseerHtml(tafsirText) }}
-                            />
-                        )}
-
-                        {/* Skeleton placeholders while first loading */}
-                        {!isLoading && !hasError && !cachedContent && (
-                            <div className="tsm-skeleton-wrap">
-                                {[100, 90, 95, 80, 70].map((w, i) => (
-                                    <div key={i} className="tsm-skeleton" style={{ width: `${w}%` }} />
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                </div>
-
-                {/* ── FOOTER ── */}
-                <div className="tsm-footer">
-                    <div className="tsm-footer-nav">
-                        <button
-                            className="tsm-footer-nav-btn"
-                            onClick={() => hasPrev && onNavigate(allVerses[currentIndex - 1].verse_number)}
-                            disabled={!hasPrev}
-                        >
-                            <ChevronLeft size={14} /> Prev
-                        </button>
-                        <span className="tsm-footer-verse-key">{verse.verse_key}</span>
-                        <button
-                            className="tsm-footer-nav-btn"
-                            onClick={() => hasNext && onNavigate(allVerses[currentIndex + 1].verse_number)}
-                            disabled={!hasNext}
-                        >
-                            Next <ChevronRight size={14} />
-                        </button>
-                    </div>
-                    <button className="tsm-copy-btn" onClick={handleCopy}>
-                        {copied ? <><Check size={14} /> Copied!</> : <><Copy size={14} /> Copy Tafseer</>}
-                    </button>
                 </div>
             </div>
         </>

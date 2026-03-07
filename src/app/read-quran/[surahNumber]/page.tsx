@@ -727,6 +727,42 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                     .nq-tafsir-loading{display:flex;align-items:center;gap:10px;padding:16px;font-size:13px;color:#64748b;font-family:'Lexend',sans-serif}
                     .nq-tafsir-text::-webkit-scrollbar{width:4px}
                     .nq-tafsir-text::-webkit-scrollbar-thumb{background:rgba(17,212,66,0.3);border-radius:2px}
+                    /* === IMPROVED TRANSLATION MODE === */
+                    .nq-ayah-card{margin-bottom:0!important}
+                    .nq-verse-meta-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+                    .nq-verse-ref-tag{font-size:11px;font-weight:700;color:#94a3b8;font-family:'Lexend','Inter',sans-serif;letter-spacing:0.05em;padding:3px 10px;background:#f1f5f9;border-radius:99px;border:1px solid #e2e8f0}
+                    .dark .nq-verse-ref-tag{background:#1e293b;border-color:#334155;color:#64748b}
+                    .nq-inline-play-btn{display:inline-flex;align-items:center;gap:5px;padding:5px 13px;background:rgba(17,212,66,0.08);border:1.5px solid rgba(17,212,66,0.25);border-radius:99px;color:#11d442;cursor:pointer;font-size:11px;font-weight:700;font-family:'Lexend',sans-serif;transition:all 0.2s;letter-spacing:0.02em}
+                    .nq-inline-play-btn:hover{background:rgba(17,212,66,0.15);border-color:rgba(17,212,66,0.5);box-shadow:0 2px 8px rgba(17,212,66,0.15)}
+                    .nq-ayah-card.nq-playing .nq-inline-play-btn{background:rgba(17,212,66,0.15);border-color:#11d442}
+                    .nq-ayah-end-marker{cursor:pointer;display:inline-block;vertical-align:middle;margin:0 2px;transition:opacity 0.15s}
+                    .nq-ayah-end-marker:hover{opacity:0.7}
+                    .nq-translation-row{margin-top:20px;padding:14px 18px;background:#f8fafc;border:1px solid #f1f5f9;border-left:3px solid rgba(17,212,66,0.5);border-radius:0 10px 10px 0;transition:border-left-color 0.2s,background 0.2s}
+                    @media(min-width:640px){.nq-translation-row{margin-top:24px;padding:16px 20px}}
+                    .dark .nq-translation-row{background:rgba(30,41,59,0.5);border-color:#1e293b;border-left-color:rgba(17,212,66,0.4)}
+                    .nq-ayah-card:hover .nq-translation-row{border-left-color:rgba(17,212,66,0.6);background:rgba(17,212,66,0.02)}
+                    .nq-ayah-card.nq-playing .nq-translation-row{border-left-color:#11d442;background:rgba(17,212,66,0.05)}
+                    .nq-translation-text{color:#334155;font-size:15px;line-height:1.9;margin:0}
+                    @media(min-width:640px){.nq-translation-text{font-size:17px;line-height:2.0}}
+                    .dark .nq-translation-text{color:#94a3b8}
+                    .nq-actions-bar{display:flex;align-items:center;gap:6px;margin-top:16px;padding-top:12px;border-top:1px solid #f1f5f9;flex-wrap:wrap}
+                    @media(min-width:640px){.nq-actions-bar{gap:8px;margin-top:20px;padding-top:14px}}
+                    .dark .nq-actions-bar{border-top-color:#1e293b}
+                    .nq-bar-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 12px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;color:#64748b;cursor:pointer;font-size:12px;font-weight:500;transition:all 0.15s;font-family:'Lexend',sans-serif;white-space:nowrap}
+                    @media(min-width:640px){.nq-bar-btn{padding:8px 14px}}
+                    .dark .nq-bar-btn{background:#1e293b;border-color:#334155;color:#94a3b8}
+                    .nq-bar-btn:hover{background:rgba(17,212,66,0.08);border-color:rgba(17,212,66,0.3);color:#11d442}
+                    .nq-bar-btn.nq-bar-active{color:#11d442;background:rgba(17,212,66,0.08);border-color:rgba(17,212,66,0.3)}
+                    .nq-ayah-sep{display:flex;align-items:center;gap:16px;padding:6px 0}
+                    .nq-sep-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(100,116,139,0.15) 20%,rgba(100,116,139,0.2) 50%,rgba(100,116,139,0.15) 80%,transparent)}
+                    .nq-sep-icon{font-size:14px;color:rgba(17,212,66,0.45);flex-shrink:0;line-height:1;font-family:'Traditional Arabic','Scheherazade New','Amiri',serif;user-select:none}
+                    .nq-surah-header{text-align:center;margin-bottom:32px;padding:24px 16px 20px;border-bottom:1px solid rgba(17,212,66,0.1)}
+                    .nq-surah-header-arabic{font-family:var(--rq-font-arabic);color:#1e293b;font-weight:700;line-height:1.6;display:block}
+                    .dark .nq-surah-header-arabic{color:#e2e8f0}
+                    .nq-surah-header-sub{font-size:13px;color:#64748b;margin-top:6px;font-weight:500;font-family:'Lexend',sans-serif}
+                    .nq-bismillah-header{text-align:center;margin-bottom:32px;font-family:var(--rq-font-arabic);color:#1e293b;line-height:2;opacity:0.9}
+                    .dark .nq-bismillah-header{color:#e2e8f0}
+                    @media(max-width:479px){.nq-bar-btn span{display:none}.nq-inline-play-btn span{display:none}}
                 `}</style>
 
             <div className="nq-shell">
@@ -1243,32 +1279,63 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                         </div>
                                     </div>
                                 ) : (
-                                    // Translation mode — new card design
+                                    // Translation mode — improved card design
                                     <div>
-                                        {verses.map((verse) => (
-                                            <div key={verse.id} id={`verse-${verse.verse_number}`} className={`nq-ayah-card ${currentVerse === verse.verse_number ? 'nq-playing' : ''}`}>
-                                                {currentVerse === verse.verse_number && <div className="nq-active-accent" />}
-                                                <div className="nq-arabic-row">
-                                                    <span className="nq-arabic-text">
-                                                        {verse.verse_number === 1 && chapter.bismillah_pre ? cleanIndopakText(removeBismillah(verse.text_indopak ?? verse.text_uthmani)) : cleanIndopakText(verse.text_indopak ?? verse.text_uthmani)}
-                                                        {' '}
-                                                        <span className="nq-verse-badge" onClick={() => playVerse(verse.verse_number)} title={`Play verse ${verse.verse_number}`}>
-                                                            {toArabicNumeral(verse.verse_number)}
+                                        {/* Surah title header */}
+                                        <div className="nq-surah-header">
+                                            <span className="nq-surah-header-arabic" style={{ fontSize: isMobile ? 28 : 42 }}>{chapter.name_arabic}</span>
+                                            <p className="nq-surah-header-sub">{chapter.translated_name.name} &bull; {chapter.verses_count} Verses</p>
+                                        </div>
+                                        {/* Bismillah */}
+                                        {chapter.bismillah_pre && surahNumber !== 9 && (
+                                            <div className="nq-bismillah-header" style={{ fontSize: isMobile ? 22 : 32, marginBottom: 36 }}>
+                                                بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+                                            </div>
+                                        )}
+                                        {verses.map((verse, idx) => (
+                                            <div key={verse.id}>
+                                                <div id={`verse-${verse.verse_number}`} className={`nq-ayah-card ${currentVerse === verse.verse_number ? 'nq-playing' : ''}`}>
+                                                    {currentVerse === verse.verse_number && <div className="nq-active-accent" />}
+                                                    {/* Verse meta row: reference pill + play button */}
+                                                    <div className="nq-verse-meta-row">
+                                                        <span className="nq-verse-ref-tag">{verse.verse_key}</span>
+                                                        <button className="nq-inline-play-btn" onClick={() => playVerse(verse.verse_number)} title={`Play verse ${verse.verse_number}`}>
+                                                            <Volume2 size={13} />
+                                                            <span>Play</span>
+                                                        </button>
+                                                    </div>
+                                                    {/* Arabic text with ayah marker at end */}
+                                                    <div className="nq-arabic-row">
+                                                        <span className="nq-arabic-text">
+                                                            {verse.verse_number === 1 && chapter.bismillah_pre ? cleanIndopakText(removeBismillah(verse.text_indopak ?? verse.text_uthmani)) : cleanIndopakText(verse.text_indopak ?? verse.text_uthmani)}
+                                                            {' '}
+                                                            <span className="nq-ayah-end-marker" onClick={() => playVerse(verse.verse_number)}>
+                                                                <AyahMarker number={verse.verse_number} size={isMobile ? 26 : 32} />
+                                                            </span>
                                                         </span>
-                                                    </span>
+                                                    </div>
+                                                    {/* Translation */}
+                                                    {showTranslation && (
+                                                        <div className="nq-translation-row">
+                                                            <p className="nq-translation-text">{parseTranslationWithFootnotes(verse.translations?.[0]?.text || 'Translation not available')}</p>
+                                                        </div>
+                                                    )}
+                                                    {/* Bottom action bar — share is here below */}
+                                                    <div className="nq-actions-bar">
+                                                        <button className="nq-bar-btn" onClick={() => copyVerse(verse)} title="Copy"><Copy size={13} /><span>Copy</span></button>
+                                                        <button className={`nq-bar-btn ${bookmarks.includes(verse.verse_key) ? 'nq-bar-active' : ''}`} onClick={() => toggleBookmark(verse.verse_key)} title="Bookmark"><Bookmark size={13} /><span>{bookmarks.includes(verse.verse_key) ? 'Saved' : 'Save'}</span></button>
+                                                        <button className="nq-bar-btn" onClick={() => shareVerse(verse)} title="Share"><Share2 size={13} /><span>Share</span></button>
+                                                        <button className={`nq-bar-btn ${tafseerModalVerse === verse.verse_number ? 'nq-bar-active' : ''}`} onClick={() => openTafseer(verse.verse_number)} title="Tafsir"><BookOpen size={13} /><span>Tafsir</span></button>
+                                                    </div>
                                                 </div>
-                                                {showTranslation && (
-                                                    <div className="nq-translation-row">
-                                                        <p className="nq-translation-text">{parseTranslationWithFootnotes(verse.translations?.[0]?.text || 'Translation not available')}</p>
+                                                {/* Decorative separator between verses */}
+                                                {idx < verses.length - 1 && (
+                                                    <div className="nq-ayah-sep">
+                                                        <div className="nq-sep-line" />
+                                                        <span className="nq-sep-icon">۞</span>
+                                                        <div className="nq-sep-line" />
                                                     </div>
                                                 )}
-                                                <div className="nq-actions" style={{ opacity: 1 }}>
-                                                    <button className="nq-action-btn" onClick={() => playVerse(verse.verse_number)} title="Play"><Volume2 size={14} /></button>
-                                                    <button className="nq-action-btn" onClick={() => shareVerse(verse)} title="Share"><Share2 size={14} /></button>
-                                                    <button className="nq-action-btn" onClick={() => copyVerse(verse)} title="Copy"><Copy size={14} /></button>
-                                                    <button className={`nq-action-btn ${bookmarks.includes(verse.verse_key) ? 'nq-bookmarked' : ''}`} onClick={() => toggleBookmark(verse.verse_key)} title="Bookmark"><Bookmark size={14} /></button>
-                                                    <button className={`nq-action-btn ${tafseerModalVerse === verse.verse_number ? 'nq-active-btn' : ''}`} onClick={() => openTafseer(verse.verse_number)} title="Tafsir"><BookOpen size={14} /></button>
-                                                </div>
                                             </div>
                                         ))}
                                         {/* Surah navigation */}
