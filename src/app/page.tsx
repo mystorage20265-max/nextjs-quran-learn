@@ -128,11 +128,21 @@ const FEATURES = [
   { icon: 'translate', label: 'Word by Word', sub: 'Arabic Learning', href: '/read-quran/1?mode=word-by-word', color: '#06b6d4' },
 ];
 
+const AYAHS_OF_DAY = [
+  { ar: 'فَاذْكُرُونِي أَذْكُرْكُمْ وَاشْكُرُوا لِي وَلَا تَكْفُرُونِ', en: '"So remember Me; I will remember you…"', ref: 'Al-Baqarah 2:152', href: '/read-quran/2' },
+  { ar: 'إِنَّ مَعَ الْعُسْرِ يُسْرًا', en: '"Verily, with hardship comes ease."', ref: 'Ash-Sharh 94:6', href: '/read-quran/94' },
+  { ar: 'وَتَوَكَّلْ عَلَى اللَّهِ ۚ وَكَفَىٰ بِاللَّهِ وَكِيلًا', en: '"Trust in Allah — sufficient is Allah as a Trustee."', ref: 'An-Nisa 4:81', href: '/read-quran/4' },
+  { ar: 'إِنَّ اللَّهَ مَعَ الصَّابِرِينَ', en: '"Indeed, Allah is with the patient."', ref: 'Al-Baqarah 2:153', href: '/read-quran/2' },
+  { ar: 'وَمَن يَتَوَكَّلْ عَلَى اللَّهِ فَهُوَ حَسْبُهُ', en: '"Whoever relies upon Allah — He is sufficient for him."', ref: 'At-Talaq 65:3', href: '/read-quran/65' },
+  { ar: 'وَلَا تَيْأَسُوا مِن رَّوْحِ اللَّهِ', en: '"Do not despair of the mercy of Allah."', ref: 'Yusuf 12:87', href: '/read-quran/12' },
+  { ar: 'رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً', en: '"Our Lord, give us good in this world and good in the Hereafter."', ref: 'Al-Baqarah 2:201', href: '/read-quran/2' },
+];
+
 const STATS = [
-  { num: '114', label: 'Surahs' },
-  { num: '6,236', label: 'Ayahs' },
-  { num: '30', label: 'Juz' },
-  { num: '77,797', label: 'Words' },
+  { num: '114', label: 'Surahs', icon: 'menu_book' },
+  { num: '6,236', label: 'Ayahs', icon: 'format_quote' },
+  { num: '30', label: 'Juz', icon: 'auto_stories' },
+  { num: '77,797', label: 'Words', icon: 'abc' },
 ];
 
 const JUZ_DATA = [
@@ -284,7 +294,7 @@ export default function HomePage() {
     return matchQ && matchT;
   });
   const displayed = showAll ? filtered : filtered.slice(0, 12);
-
+  const todayAyah = AYAHS_OF_DAY[new Date().getDate() % AYAHS_OF_DAY.length];
 
   const S = {
     shell: { display: 'flex', flexDirection: 'column' as const, flex: 1, minHeight: '100vh', background: dark ? '#0d1b12' : 'white', fontFamily: "'Figtree','Lexend',sans-serif" },
@@ -475,7 +485,7 @@ export default function HomePage() {
           .hp-content{padding:24px 28px 60px !important}
           .hp-stats{grid-template-columns:repeat(4,1fr) !important}
           .hp-quick{grid-template-columns:repeat(3,1fr) !important}
-          .hp-features{grid-template-columns:repeat(6,1fr) !important}
+          .hp-features{grid-template-columns:repeat(auto-fill,minmax(130px,1fr)) !important}
           .hp-surah-grid{grid-template-columns:repeat(3,1fr) !important}
         }
       `}</style>
@@ -585,9 +595,10 @@ export default function HomePage() {
             {/* ── STATS BAR ── */}
             <div className="hp-stats" style={{ display: 'grid', gap: 12, marginBottom: 24 }}>
               {STATS.map(s => (
-                <div key={s.label} style={{ ...S.card, padding: '14px 16px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
-                  <span style={{ fontSize: 22, fontWeight: 700, color: '#11d442' }}>{s.num}</span>
-                  <span style={{ fontSize: 11, ...S.muted, fontWeight: 500 }}>{s.label}</span>
+                <div key={s.label} style={{ ...S.card, padding: '12px 16px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+                  <span className="material-symbols-outlined" style={{ fontSize: 18, color: '#11d442', opacity: 0.8 }}>{s.icon}</span>
+                  <span style={{ fontSize: 20, fontWeight: 700, color: '#11d442', lineHeight: 1 }}>{s.num}</span>
+                  <span style={{ fontSize: 10, ...S.muted, fontWeight: 500 }}>{s.label}</span>
                 </div>
               ))}
             </div>
@@ -601,11 +612,11 @@ export default function HomePage() {
                     <span style={{ fontSize: 9, fontWeight: 700, color: '#11d442', textTransform: 'uppercase', letterSpacing: '0.14em' }}>Continue Reading</span>
                     <span className="material-symbols-outlined" style={{ color: '#cbd5e1', fontSize: 18 }}>bookmark</span>
                   </div>
-                  <h3 style={{ margin: '0 0 3px', fontWeight: 700, fontSize: 15, ...S.text }}>Al-Baqarah</h3>
-                  <p style={{ margin: '0 0 14px', fontSize: 12, ...S.muted }}>Ayah 152 · Juz 2</p>
+                  <h3 style={{ margin: '0 0 3px', fontWeight: 700, fontSize: 15, ...S.text }}>{recent[0]?.name ?? 'Al-Fatihah'}</h3>
+                  <p style={{ margin: '0 0 14px', fontSize: 12, ...S.muted }}>{recent[0] ? `Surah ${recent[0].num} · ${recent[0].v} verses` : 'Begin your journey'}</p>
                 </div>
-                <Link href="/read-quran/2" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, background: dark ? '#1e3a2a' : '#f1f5f9', borderRadius: 8, padding: '7px 10px', fontWeight: 600, fontSize: 12, color: dark ? '#11d442' : '#475569', textDecoration: 'none' }}>
-                  <span className="material-symbols-outlined" style={{ fontSize: 14 }}>resume</span>Resume
+                <Link href={`/read-quran/${recent[0]?.num ?? 1}`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, background: dark ? '#1e3a2a' : '#f1f5f9', borderRadius: 8, padding: '7px 10px', fontWeight: 600, fontSize: 12, color: dark ? '#11d442' : '#475569', textDecoration: 'none' }}>
+                  <span className="material-symbols-outlined" style={{ fontSize: 14 }}>resume</span>{recent[0] ? 'Resume' : 'Start'}
                 </Link>
               </div>
               {/* Session Timer Card */}
@@ -635,7 +646,7 @@ export default function HomePage() {
                 </div>
               </div>
               {/* Ayah of the Day */}
-              <Link href="/read-quran/2" style={{ textDecoration: 'none', display: 'block' }}>
+              <Link href={todayAyah.href} style={{ textDecoration: 'none', display: 'block' }}>
                 <div style={{ background: 'linear-gradient(135deg,#11d442,#059669)', borderRadius: 16, padding: 18, boxShadow: '0 8px 24px rgba(17,212,66,0.25)', position: 'relative', overflow: 'hidden', minHeight: 140, cursor: 'pointer', transition: 'transform 0.18s ease, box-shadow 0.18s ease' }}
                   onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-3px)'; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 12px 32px rgba(17,212,66,0.35)'; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = ''; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 8px 24px rgba(17,212,66,0.25)'; }}
@@ -643,9 +654,9 @@ export default function HomePage() {
                   <span className="material-symbols-outlined" style={{ position: 'absolute', top: -8, right: -14, fontSize: 90, color: 'white', opacity: 0.08, lineHeight: 1 }}>star_half</span>
                   <div style={{ position: 'relative', zIndex: 1 }}>
                     <span style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.18em', color: 'rgba(255,255,255,0.8)' }}>Ayah of the Day</span>
-                    <p className="font-arabic" dir="rtl" style={{ margin: '8px 0 6px', fontSize: 16, lineHeight: 1.9, textAlign: 'right', color: 'white', fontWeight: 700 }}>فَاذْكُرُونِي أَذْكُرْكُمْ وَاشْكُرُوا لِي وَلَا تَكْفُرُونِ</p>
-                    <p style={{ margin: '0 0 4px', fontSize: 11, fontStyle: 'italic', color: 'rgba(255,255,255,0.88)', lineHeight: 1.5 }}>&quot;So remember Me; I will remember you…&quot;</p>
-                    <p style={{ margin: 0, fontSize: 10, fontWeight: 700, color: 'white' }}>Al-Baqarah 2:152 →</p>
+                      <p className="font-arabic" dir="rtl" style={{ margin: '8px 0 6px', fontSize: 16, lineHeight: 1.9, textAlign: 'right', color: 'white', fontWeight: 700 }}>{todayAyah.ar}</p>
+                      <p style={{ margin: '0 0 4px', fontSize: 11, fontStyle: 'italic', color: 'rgba(255,255,255,0.88)', lineHeight: 1.5 }}>{todayAyah.en}</p>
+                      <p style={{ margin: 0, fontSize: 10, fontWeight: 700, color: 'white' }}>{todayAyah.ref} →</p>
                   </div>
                 </div>
               </Link>
@@ -848,6 +859,24 @@ export default function HomePage() {
                 ))}
               </div>
             </section>
+
+            {/* ── RECENTLY VISITED ── */}
+            {recent.length > 0 && (
+              <section style={{ marginBottom: 28 }}>
+                <h2 style={{ margin: '0 0 12px', fontWeight: 700, fontSize: 17, ...S.text }}>Recently Visited</h2>
+                <div className="hp-scroll" style={{ display: 'flex', gap: 10, overflowX: 'auto', paddingBottom: 6 }}>
+                  {recent.map(s => (
+                    <Link key={s.num} href={`/read-quran/${s.num}`} onClick={() => trackVisit(s)} style={{ textDecoration: 'none', flexShrink: 0 }}>
+                      <div className="surah-card" style={{ ...S.card, padding: '12px 14px', width: 130, cursor: 'pointer', borderTop: '3px solid #11d442' }}>
+                        <span className="font-arabic" style={{ fontSize: 18, fontWeight: 700, ...S.text, display: 'block', marginBottom: 6 }}>{s.ar}</span>
+                        <p style={{ margin: '0 0 2px', fontWeight: 600, fontSize: 12, ...S.text, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{s.name}</p>
+                        <p style={{ margin: 0, fontSize: 10, ...S.muted }}>{s.v} verses</p>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </section>
+            )}
 
             {/* ── EXPLORE SURAHS ── */}
 
