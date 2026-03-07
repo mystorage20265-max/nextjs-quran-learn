@@ -127,6 +127,7 @@ const FEATURES = [
   { icon: 'radio', label: 'Quran Radio', sub: '24/7 Recitation', href: '/radio', color: '#ef4444' },
   { icon: 'translate', label: 'Word by Word', sub: 'Arabic Learning', href: '/read-quran/1?mode=word-by-word', color: '#06b6d4' },
   { icon: 'book_2', label: 'Tafseer', sub: 'Verse Explanations', href: '/tafseer', color: '#8b5cf6' },
+  { icon: 'format_quote', label: 'Hadees', sub: "Prophet's Sayings", href: '/hadees', color: '#f59e0b' },
 ];
 
 const AYAHS_OF_DAY = [
@@ -688,6 +689,52 @@ export default function HomePage() {
                   return <Link key={f.label} href={f.href} style={{ textDecoration: 'none' }}>{inner}</Link>;
                 })}
               </div>
+            </section>
+
+            {/* ── HADEES OF THE DAY ── */}
+            <section style={{ marginBottom: 32 }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+                <h2 style={{ margin: 0, fontWeight: 700, fontSize: 17, ...S.text, display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span className="material-symbols-outlined" style={{ fontSize: 20, color: '#f59e0b' }}>format_quote</span>
+                  Hadees of the Day
+                </h2>
+                <Link href="/hadees" style={{ fontSize: 12.5, fontWeight: 600, color: '#f59e0b', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
+                  Browse All
+                  <span className="material-symbols-outlined" style={{ fontSize: 16 }}>chevron_right</span>
+                </Link>
+              </div>
+              <Link href="/hadees" style={{ textDecoration: 'none', display: 'block' }}>
+                <div style={{
+                  ...S.card,
+                  padding: '22px 24px',
+                  borderLeft: '4px solid #f59e0b',
+                  cursor: 'pointer',
+                  transition: 'transform 0.18s ease, box-shadow 0.18s ease',
+                  position: 'relative',
+                  overflow: 'hidden',
+                }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-2px)'; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 8px 28px rgba(245,158,11,0.12)'; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = ''; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 1px 4px rgba(0,0,0,0.06)'; }}
+                >
+                  <span className="material-symbols-outlined" style={{ position: 'absolute', right: 12, top: 8, fontSize: 72, color: 'rgba(245,158,11,0.07)', lineHeight: 1, pointerEvents: 'none' }}>format_quote</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12, position: 'relative', zIndex: 1 }}>
+                    <div style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(245,158,11,0.14)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <span className="material-symbols-outlined" style={{ fontSize: 15, color: '#f59e0b' }}>format_quote</span>
+                    </div>
+                    <span style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: '0.14em', color: '#f59e0b' }}>Nawawi's 40 · Daily Hadith</span>
+                  </div>
+                  <p style={{ margin: '0 0 12px', fontSize: 13.5, lineHeight: 1.85, ...S.text, fontStyle: 'italic', position: 'relative', zIndex: 1 }}>
+                    "On the authority of Umar ibn al-Khattab — Actions are but by intentions, and every person shall have only that which he intended. So whoever's emigration was for Allah and His Messenger, his emigration is for Allah and His Messenger."
+                  </p>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'relative', zIndex: 1 }}>
+                    <span style={{ fontSize: 11, ...S.muted }}>— Sahih al-Bukhari &amp; Muslim</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11.5, color: '#f59e0b', fontWeight: 600 }}>
+                      View Collection
+                      <span className="material-symbols-outlined" style={{ fontSize: 14 }}>arrow_forward</span>
+                    </div>
+                  </div>
+                </div>
+              </Link>
             </section>
 
             {/* ── TASBEEH COUNTER ── */}
