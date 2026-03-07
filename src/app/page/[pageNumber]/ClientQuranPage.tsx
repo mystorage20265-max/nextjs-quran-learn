@@ -161,7 +161,7 @@ function ClientQuranPage({ pageNumber, translationEdition, audioEdition, ayahs }
         .qp-scroll::-webkit-scrollbar{width:5px}.qp-scroll::-webkit-scrollbar-track{background:transparent}.qp-scroll::-webkit-scrollbar-thumb{background:rgba(17,212,66,0.25);border-radius:3px}
         .verse-card{transition:transform 0.18s ease,box-shadow 0.18s ease}.verse-card:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(17,212,66,0.12) !important}
         .page-btn{transition:all 0.15s ease}.page-btn:hover:not(:disabled){transform:scale(1.03);box-shadow:0 4px 14px rgba(17,212,66,0.25)}
-        .font-arabic{font-family:'Naskh IndoPak',serif}
+        .font-arabic{font-family:'Naskh IndoPak',serif!important}
         @media(max-width:640px){.qp-header-inner{padding:20px 16px !important}.qp-stats{flex-direction:row;gap:12px !important}.qp-stat-divider{display:none !important}.qp-btns{flex-direction:column !important;gap:10px !important}.qp-btn{width:100% !important;min-width:0 !important}}
       `}</style>
 
