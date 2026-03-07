@@ -303,9 +303,11 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
     const playbackIdRef = useRef(0);
     const isMountedRef = useRef(true);
     const surahBtnRef = useRef<HTMLButtonElement | null>(null);
+    const verseBtnRef = useRef<HTMLButtonElement | null>(null);
 
     const [showVerseNav, setShowVerseNav] = useState(false);
     const [showSurahPicker, setShowSurahPicker] = useState(false);
+    const [showVersePicker, setShowVersePicker] = useState(false);
     const [bookmarks, setBookmarks] = useState<string[]>([]);
     // Tafseer modal state (replaces inline expand panels)
     const [tafseerModalVerse, setTafseerModalVerse] = useState<number | null>(null);
@@ -421,7 +423,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 case 'Space': e.preventDefault(); if (isPlaying) stopAudio(); else if (audioEnabled) playVerse(currentVerse || 1, true); break;
                 case 'ArrowRight': if (audioEnabled && currentVerse && currentVerse < verses.length) playVerse(currentVerse + 1); break;
                 case 'ArrowLeft': if (audioEnabled && currentVerse && currentVerse > 1) playVerse(currentVerse - 1); break;
-                case 'Escape': stopAudio(); setShowSettings(false); setShowVerseNav(false); break;
+                case 'Escape': stopAudio(); setShowSettings(false); setShowVerseNav(false); setShowVersePicker(false); setShowSurahPicker(false); break;
                 case 'KeyS': if (e.metaKey || e.ctrlKey) { e.preventDefault(); setShowSettings(true); } break;
             }
         };
@@ -849,16 +851,27 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                 </button>
                             </div>
                         </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                             {/* Surah picker button */}
                             <button
                                 ref={surahBtnRef}
-                                onClick={() => setShowSurahPicker(!showSurahPicker)}
+                                onClick={() => { setShowSurahPicker(!showSurahPicker); setShowVersePicker(false); }}
                                 className="nq-hdr-btn"
                                 style={{ gap: 6, display: 'flex', alignItems: 'center', padding: '6px 12px' }}
                             >
                                 <span className="material-symbols-outlined" style={{ fontSize: 16 }}>menu_book</span>
                                 <span style={{ fontSize: 13, fontWeight: 500 }}>Surah</span>
+                                <ChevronDown size={14} />
+                            </button>
+                            {/* Verse picker button */}
+                            <button
+                                ref={verseBtnRef}
+                                onClick={() => { setShowVersePicker(!showVersePicker); setShowSurahPicker(false); }}
+                                className="nq-hdr-btn"
+                                style={{ gap: 6, display: 'flex', alignItems: 'center', padding: '6px 12px' }}
+                            >
+                                <span className="material-symbols-outlined" style={{ fontSize: 16 }}>format_list_numbered</span>
+                                <span style={{ fontSize: 13, fontWeight: 500 }}>Verse</span>
                                 <ChevronDown size={14} />
                             </button>
                             {/* Translation / Transliteration toggle */}
@@ -1497,19 +1510,174 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
             {/* Close dropdowns on outside click */}
             {showVerseNav && <div style={{ position: 'fixed', inset: 0, zIndex: 50 }} onClick={() => setShowVerseNav(false)} />}
 
-            {/* Surah Picker — rendered outside the header to escape backdrop-filter stacking context */}
+            {/* Verse Picker — bottom sheet on mobile, dropdown on desktop */}
+            {showVersePicker && (() => {
+                if (isMobile) {
+                    return (
+                        <>
+                            <div onClick={() => setShowVersePicker(false)} style={{ position: 'fixed', inset: 0, zIndex: 10100, background: 'rgba(2,8,20,0.55)', backdropFilter: 'blur(4px)' }} />
+                            <div style={{
+                                position: 'fixed', left: 0, right: 0, bottom: 0, zIndex: 10101,
+                                background: 'white', borderRadius: '20px 20px 0 0',
+                                boxShadow: '0 -8px 40px rgba(0,0,0,0.18)',
+                                display: 'flex', flexDirection: 'column', maxHeight: '78vh',
+                            }}>
+                                <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 10, paddingBottom: 4, flexShrink: 0 }}>
+                                    <div style={{ width: 36, height: 4, borderRadius: 99, background: '#e2e8f0' }} />
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 18px', borderBottom: '1px solid #f1f5f9', flexShrink: 0 }}>
+                                    <div>
+                                        <span style={{ fontWeight: 700, fontSize: 13, color: '#0f172a', textTransform: 'uppercase', letterSpacing: '0.08em', fontFamily: 'Lexend, sans-serif' }}>Go to Verse</span>
+                                        <span style={{ marginLeft: 8, fontSize: 11, color: '#94a3b8', fontFamily: 'Lexend, sans-serif' }}>{chapter.verses_count} verses</span>
+                                    </div>
+                                    <button onClick={() => setShowVersePicker(false)} style={{ background: '#f1f5f9', border: 'none', borderRadius: 8, width: 30, height: 30, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#64748b', fontSize: 16 }}>✕</button>
+                                </div>
+                                <div style={{ overflowY: 'auto', flex: 1, padding: '8px 14px 16px', display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 8 }}>
+                                    {verses.map(v => {
+                                        const isCurrent = v.verse_number === currentVerse;
+                                        const isBookmarked = bookmarks.includes(v.verse_key);
+                                        return (
+                                            <button
+                                                key={v.verse_number}
+                                                onClick={() => { setShowVersePicker(false); jumpToVerse(v.verse_number); }}
+                                                style={{
+                                                    width: '100%', aspectRatio: '1', borderRadius: 10,
+                                                    border: isCurrent ? '2px solid #11d442' : isBookmarked ? '2px solid #f59e0b' : '1.5px solid #e2e8f0',
+                                                    background: isCurrent ? 'rgba(17,212,66,0.1)' : isBookmarked ? 'rgba(245,158,11,0.06)' : '#f8fafc',
+                                                    color: isCurrent ? '#11d442' : isBookmarked ? '#d97706' : '#475569',
+                                                    fontSize: 13, fontWeight: 700, cursor: 'pointer',
+                                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                    fontFamily: 'Lexend, sans-serif',
+                                                    transition: 'all 0.15s',
+                                                }}
+                                            >
+                                                {v.verse_number}
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        </>
+                    );
+                }
+                // ── DESKTOP: anchored dropdown ──
+                const btnRect = verseBtnRef.current?.getBoundingClientRect();
+                const dropW = 260;
+                const rightEdge = btnRect ? btnRect.right : 400;
+                const leftPos = Math.max(8, rightEdge - dropW);
+                const topPos = btnRect ? btnRect.bottom + 8 : 80;
+                return (
+                    <>
+                        <div style={{ position: 'fixed', inset: 0, zIndex: 150 }} onClick={() => setShowVersePicker(false)} />
+                        <div style={{
+                            position: 'fixed', top: topPos, left: leftPos, zIndex: 9999,
+                            background: 'white', border: '1px solid #e2e8f0', borderRadius: 14,
+                            boxShadow: '0 8px 32px rgba(0,0,0,0.15)', width: dropW,
+                            maxHeight: 380, overflowY: 'auto', padding: '10px 12px 12px',
+                        }}>
+                            <div style={{ fontWeight: 700, fontSize: 11, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.08em', fontFamily: 'Lexend, sans-serif', marginBottom: 10 }}>
+                                Go to Verse · {chapter.verses_count} total
+                            </div>
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 6 }}>
+                                {verses.map(v => {
+                                    const isCurrent = v.verse_number === currentVerse;
+                                    const isBookmarked = bookmarks.includes(v.verse_key);
+                                    return (
+                                        <button
+                                            key={v.verse_number}
+                                            onClick={() => { setShowVersePicker(false); jumpToVerse(v.verse_number); }}
+                                            style={{
+                                                width: '100%', aspectRatio: '1', borderRadius: 8,
+                                                border: isCurrent ? '2px solid #11d442' : isBookmarked ? '2px solid #f59e0b' : '1px solid #e2e8f0',
+                                                background: isCurrent ? 'rgba(17,212,66,0.1)' : isBookmarked ? 'rgba(245,158,11,0.06)' : '#f8fafc',
+                                                color: isCurrent ? '#11d442' : isBookmarked ? '#d97706' : '#475569',
+                                                fontSize: 11, fontWeight: 700, cursor: 'pointer',
+                                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                fontFamily: 'Lexend, sans-serif', transition: 'all 0.15s',
+                                            }}
+                                        >
+                                            {v.verse_number}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    </>
+                );
+            })()}
+
+            {/* Surah Picker — bottom sheet on mobile, dropdown on desktop */}
             {showSurahPicker && (() => {
+                if (isMobile) {
+                    // ── MOBILE: full bottom sheet ──
+                    return (
+                        <>
+                            {/* Dim backdrop */}
+                            <div
+                                onClick={() => setShowSurahPicker(false)}
+                                style={{ position: 'fixed', inset: 0, zIndex: 10100, background: 'rgba(2,8,20,0.55)', backdropFilter: 'blur(4px)' }}
+                            />
+                            {/* Sheet */}
+                            <div style={{
+                                position: 'fixed', left: 0, right: 0, bottom: 0, zIndex: 10101,
+                                background: 'white', borderRadius: '20px 20px 0 0',
+                                boxShadow: '0 -8px 40px rgba(0,0,0,0.18)',
+                                display: 'flex', flexDirection: 'column',
+                                maxHeight: '82vh',
+                            }}>
+                                {/* Drag handle */}
+                                <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 10, paddingBottom: 4, flexShrink: 0 }}>
+                                    <div style={{ width: 36, height: 4, borderRadius: 99, background: '#e2e8f0' }} />
+                                </div>
+                                {/* Header */}
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 18px 10px', borderBottom: '1px solid #f1f5f9', flexShrink: 0 }}>
+                                    <span style={{ fontWeight: 700, fontSize: 13, color: '#0f172a', textTransform: 'uppercase', letterSpacing: '0.08em', fontFamily: 'Lexend, sans-serif' }}>Select Surah</span>
+                                    <button onClick={() => setShowSurahPicker(false)} style={{ background: '#f1f5f9', border: 'none', borderRadius: 8, width: 30, height: 30, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#64748b', fontSize: 16 }}>✕</button>
+                                </div>
+                                {/* List */}
+                                <div style={{ overflowY: 'auto', flex: 1 }}>
+                                    {ALL_SURAHS.map(s => (
+                                        <Link
+                                            key={s.number}
+                                            href={`/read-quran/${s.number}`}
+                                            onClick={() => setShowSurahPicker(false)}
+                                            style={{
+                                                display: 'flex', alignItems: 'center', gap: 12,
+                                                padding: '11px 18px', textDecoration: 'none',
+                                                background: s.number === surahNumber ? 'rgba(17,212,66,0.08)' : 'transparent',
+                                                borderBottom: '1px solid #f8fafc',
+                                                color: s.number === surahNumber ? '#11d442' : '#1e293b',
+                                            }}
+                                        >
+                                            <span style={{
+                                                width: 32, height: 32, borderRadius: '50%', flexShrink: 0,
+                                                background: s.number === surahNumber ? 'rgba(17,212,66,0.15)' : '#f1f5f9',
+                                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                fontSize: 12, fontWeight: 700,
+                                                color: s.number === surahNumber ? '#11d442' : '#64748b',
+                                            }}>{s.number}</span>
+                                            <span style={{ flex: 1, minWidth: 0 }}>
+                                                <span style={{ display: 'block', fontSize: 14, fontWeight: 600 }}>{s.name}</span>
+                                                <span style={{ display: 'block', fontSize: 11.5, color: '#94a3b8' }}>{s.translation}</span>
+                                            </span>
+                                            <span style={{ fontSize: 16, fontFamily: 'var(--rq-font-arabic)', color: '#475569', direction: 'rtl' }}>{s.arabic}</span>
+                                        </Link>
+                                    ))}
+                                </div>
+                            </div>
+                        </>
+                    );
+                }
+
+                // ── DESKTOP: anchored dropdown ──
                 const btnRect = surahBtnRef.current?.getBoundingClientRect();
                 const dropdownWidth = 280;
-                // Anchor right-edge of dropdown to right-edge of button so it doesn't overflow right
                 const rightEdge = btnRect ? btnRect.right : 320;
                 const leftPos = Math.max(8, rightEdge - dropdownWidth);
                 const topPos = btnRect ? btnRect.bottom + 8 : 80;
                 return (
                     <>
-                        {/* Backdrop: dismisses picker on outside click */}
                         <div style={{ position: 'fixed', inset: 0, zIndex: 150 }} onClick={() => setShowSurahPicker(false)} />
-                        {/* Dropdown: higher z-index, use Link for reliable navigation */}
                         <div style={{
                             position: 'fixed', top: topPos, left: leftPos, zIndex: 9999,
                             background: 'white', border: '1px solid #e2e8f0', borderRadius: 14,

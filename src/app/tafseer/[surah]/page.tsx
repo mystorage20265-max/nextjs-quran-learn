@@ -3,6 +3,8 @@
 import { useState, useEffect, use } from 'react';
 import Link from 'next/link';
 import { ChevronLeft, ChevronRight, BookOpen, Search, ChevronDown, X } from 'lucide-react';
+import TafseerModal from '@/app/read-quran/components/TafseerModal';
+import '@/app/read-quran/styles/tafseer-modal.css';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface SurahMeta {
@@ -125,26 +127,6 @@ const ALL_SURAHS: SurahMeta[] = [
     { num: 114, ar: 'الناس', name: 'An-Nas', meaning: 'The Mankind', v: 6, t: 'Meccan' },
 ];
 
-const TAFSIR_OPTIONS = [
-    { id: 169, name: 'Ibn Kathir (Abridged)', lang: 'English' },
-    { id: 168, name: "Ma'arif al-Qur'an", lang: 'English' },
-    { id: 817, name: 'Tazkirul Quran', lang: 'English' },
-    { id: 160, name: 'Tafsir Ibn Kathir', lang: 'Urdu' },
-    { id: 157, name: 'Fi Zilal al-Quran', lang: 'Urdu' },
-];
-
-// Strip HTML from tafsir text
-function stripHtml(html: string): string {
-    if (!html) return '';
-    return html
-        .replace(/<sup[^>]*>.*?<\/sup>/gi, '')
-        .replace(/<[^>]+>/g, ' ')
-        .replace(/\s{2,}/g, ' ')
-        .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
-        .replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&nbsp;/g, ' ')
-        .trim();
-}
-
 interface PageProps { params: Promise<{ surah: string }> }
 
 export default function TafseerSurahPage({ params }: PageProps) {
@@ -153,11 +135,8 @@ export default function TafseerSurahPage({ params }: PageProps) {
     const meta = ALL_SURAHS.find(s => s.num === surahNum);
 
     const [verses, setVerses] = useState<{ num: number; arabic: string; translation: string; key: string }[]>([]);
-    const [tafsirData, setTafsirData] = useState<Record<string, string>>({});
     const [loading, setLoading] = useState(true);
-    const [tafsirLoading, setTafsirLoading] = useState(false);
-    const [selectedTafsir, setSelectedTafsir] = useState(169);
-    const [expandedVerse, setExpandedVerse] = useState<number | null>(null);
+    const [modalVerseNum, setModalVerseNum] = useState<number | null>(null);
     const [showSurahPicker, setShowSurahPicker] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
 
@@ -166,8 +145,7 @@ export default function TafseerSurahPage({ params }: PageProps) {
         if (!surahNum || surahNum < 1 || surahNum > 114) return;
         setLoading(true);
         setVerses([]);
-        setTafsirData({});
-        setExpandedVerse(null);
+        setModalVerseNum(null);
 
         fetch(`https://api.alquran.cloud/v1/surah/${surahNum}/editions/quran-simple-enhanced,en.sahih`)
             .then(r => r.json())
@@ -185,33 +163,6 @@ export default function TafseerSurahPage({ params }: PageProps) {
             .catch(console.error)
             .finally(() => setLoading(false));
     }, [surahNum]);
-
-    // Fetch tafsir for selected scholar
-    const loadTafsir = (tafsirId: number) => {
-        setTafsirLoading(true);
-        fetch(`https://api.quran.com/api/v4/tafsirs/${tafsirId}/by_chapter/${surahNum}?language=en`)
-            .then(r => r.json())
-            .then(json => {
-                const map: Record<string, string> = {};
-                (json.tafsirs || []).forEach((t: any) => { map[t.verse_key] = t.text; });
-                setTafsirData(map);
-            })
-            .catch(console.error)
-            .finally(() => setTafsirLoading(false));
-    };
-
-    // Load tafsir when verse is first expanded
-    const toggleVerse = (num: number) => {
-        if (expandedVerse === num) { setExpandedVerse(null); return; }
-        setExpandedVerse(num);
-        if (Object.keys(tafsirData).length === 0) loadTafsir(selectedTafsir);
-    };
-
-    const changeTafsir = (id: number) => {
-        setSelectedTafsir(id);
-        setTafsirData({});
-        if (expandedVerse !== null) loadTafsir(id);
-    };
 
     const prevSurah = surahNum > 1 ? ALL_SURAHS.find(s => s.num === surahNum - 1) : null;
     const nextSurah = surahNum < 114 ? ALL_SURAHS.find(s => s.num === surahNum + 1) : null;
@@ -373,16 +324,6 @@ export default function TafseerSurahPage({ params }: PageProps) {
                             </div>
                             <ChevronDown size={15} style={{ color: '#94a3b8', flexShrink: 0 }} />
                         </button>
-                        <select
-                            className="ts-tafsir-select"
-                            value={selectedTafsir}
-                            onChange={e => changeTafsir(parseInt(e.target.value))}
-                            title="Select Tafsir Scholar"
-                        >
-                            {TAFSIR_OPTIONS.map(t => (
-                                <option key={t.id} value={t.id}>{t.name}</option>
-                            ))}
-                        </select>
                     </div>
                 </header>
 
@@ -409,10 +350,7 @@ export default function TafseerSurahPage({ params }: PageProps) {
                             <div className="ts-hero-arabic">{meta.ar}</div>
                             <div className="ts-hero-chips">
                                 <div className="ts-hero-chip">📜 {meta.v} Verses</div>
-                                <div className="ts-hero-chip">
-                                    📚 {TAFSIR_OPTIONS.find(t => t.id === selectedTafsir)?.name}
-                                </div>
-                                <div className="ts-hero-chip">🔤 {TAFSIR_OPTIONS.find(t => t.id === selectedTafsir)?.lang}</div>
+                                <div className="ts-hero-chip">📚 Ibn Kathir · Ma'arif · Tazkirul</div>
                             </div>
                         </div>
                     </div>
@@ -447,13 +385,11 @@ export default function TafseerSurahPage({ params }: PageProps) {
                             )}
 
                             {verses.map(verse => {
-                                const isExpanded = expandedVerse === verse.num;
-                                const tafsirText = stripHtml(tafsirData[verse.key] || '');
                                 return (
                                     <article
                                         key={verse.num}
                                         id={`verse-${verse.num}`}
-                                        className={`ts-verse-card${isExpanded ? ' ts-expanded' : ''}`}
+                                        className="ts-verse-card"
                                     >
                                         {/* Arabic text + verse number */}
                                         <div className="ts-verse-top">
@@ -472,61 +408,19 @@ export default function TafseerSurahPage({ params }: PageProps) {
                                         {/* Divider */}
                                         <div className="ts-divider" />
 
-                                        {/* Actions row — Tafseer button is HERE, below the arabic */}
+                                        {/* Actions row */}
                                         <div className="ts-actions-row">
                                             <button
-                                                className={`ts-tafseer-btn${isExpanded ? ' ts-active' : ''}`}
-                                                onClick={() => toggleVerse(verse.num)}
-                                                aria-expanded={isExpanded}
-                                                aria-controls={`tafsir-${verse.num}`}
+                                                className="ts-tafseer-btn"
+                                                onClick={() => setModalVerseNum(verse.num)}
+                                                aria-label={`Open Tafseer for verse ${verse.num}`}
                                             >
                                                 <BookOpen size={14} />
-                                                {isExpanded ? 'Hide Tafseer' : 'Show Tafseer'}
-                                                <ChevronDown
-                                                    size={13}
-                                                    style={{
-                                                        transform: isExpanded ? 'rotate(180deg)' : 'none',
-                                                        transition: 'transform 0.22s',
-                                                    }}
-                                                />
+                                                Show Tafseer
+                                                <ChevronDown size={13} />
                                             </button>
                                             <span className="ts-verse-key-badge">{verse.key}</span>
                                         </div>
-
-                                        {/* Tafseer panel */}
-                                        {isExpanded && (
-                                            <div
-                                                className="ts-tafsir-panel"
-                                                id={`tafsir-${verse.num}`}
-                                                role="region"
-                                                aria-label={`Tafseer for verse ${verse.num}`}
-                                            >
-                                                <div className="ts-tafsir-header">
-                                                    <div className="ts-tafsir-icon">
-                                                        <BookOpen size={15} color="#11d442" />
-                                                    </div>
-                                                    <div className="ts-tafsir-meta">
-                                                        <span className="ts-tafsir-title">
-                                                            {TAFSIR_OPTIONS.find(t => t.id === selectedTafsir)?.name}
-                                                        </span>
-                                                        <div className="ts-tafsir-subtitle">Verse {verse.key}</div>
-                                                    </div>
-                                                </div>
-
-                                                {tafsirLoading && Object.keys(tafsirData).length === 0 ? (
-                                                    <div className="ts-loading-row">
-                                                        <div className="ts-spinner" />
-                                                        Loading Tafseer…
-                                                    </div>
-                                                ) : tafsirText ? (
-                                                    <p className="ts-tafsir-text">{tafsirText}</p>
-                                                ) : (
-                                                    <p style={{ color: '#94a3b8', fontSize: 13, fontFamily: "'Lexend',sans-serif" }}>
-                                                        Tafseer not available for this verse.
-                                                    </p>
-                                                )}
-                                            </div>
-                                        )}
                                     </article>
                                 );
                             })}
@@ -617,6 +511,45 @@ export default function TafseerSurahPage({ params }: PageProps) {
                     </div>
                 </div>
             )}
+
+            {/* ── TAFSEER MODAL ── */}
+            {(() => {
+                const modalVerse = modalVerseNum !== null ? verses.find(v => v.num === modalVerseNum) : null;
+                const modalVerseObj = modalVerse ? {
+                    id: modalVerse.num,
+                    verse_number: modalVerse.num,
+                    verse_key: modalVerse.key,
+                    text_uthmani: modalVerse.arabic,
+                    translations: [{ text: modalVerse.translation }],
+                } : null;
+                const allVerseObjs = verses.map(v => ({
+                    id: v.num,
+                    verse_number: v.num,
+                    verse_key: v.key,
+                    text_uthmani: v.arabic,
+                    translations: [{ text: v.translation }],
+                }));
+                const chapterObj = meta ? {
+                    id: surahNum,
+                    name_arabic: meta.ar,
+                    name_simple: meta.name,
+                    translated_name: { name: meta.meaning },
+                    verses_count: meta.v,
+                    revelation_place: meta.t,
+                } : null;
+                return (
+                    <TafseerModal
+                        isOpen={modalVerseNum !== null}
+                        onClose={() => setModalVerseNum(null)}
+                        verse={modalVerseObj}
+                        chapter={chapterObj}
+                        allVerses={allVerseObjs}
+                        onNavigate={(num) => setModalVerseNum(num)}
+                        surahNumber={surahNum}
+                        cleanArabicText={(t) => t}
+                    />
+                );
+            })()}
         </>
     );
 }

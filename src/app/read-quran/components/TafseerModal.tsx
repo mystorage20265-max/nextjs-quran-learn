@@ -3,8 +3,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import {
     X, ChevronLeft, ChevronRight, BookOpen,
-    Copy, Check, Loader2, BookMarked, ScrollText, User,
-    Share2, RefreshCw
+    Loader2, BookMarked, ScrollText, User,
+    RefreshCw
 } from 'lucide-react';
 import { getTafsirContent } from '../lib/api';
 
@@ -171,7 +171,7 @@ export default function TafseerModal({
     const [tafsirCache, setTafsirCache] = useState<Partial<Record<ScholarKey, Record<string, string>>>>({});
     const [loading, setLoading] = useState<Partial<Record<ScholarKey, boolean>>>({});
     const [errors, setErrors] = useState<Partial<Record<ScholarKey, boolean>>>({});
-    const [copied, setCopied] = useState(false);
+
     const contentRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -238,24 +238,6 @@ export default function TafseerModal({
             : (verse.text_indopak ?? verse.text_uthmani ?? '')
     );
     const translation = verse.translations?.[0]?.text ?? 'Translation not available.';
-
-    const handleCopy = () => {
-        const rawText = tafsirText?.replace(/<[^>]+>/g, ' ').replace(/\s{2,}/g, ' ').trim() ?? '';
-        const text = arabicText + '\n\n' + translation + '\n\n— Tafseer ' + scholar.name + ' (' + verse.verse_key + ')\n\n' + rawText;
-        navigator.clipboard.writeText(text);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-    };
-
-    const handleShare = async () => {
-        const rawText = tafsirText?.replace(/<[^>]+>/g, ' ').replace(/\s{2,}/g, ' ').trim() ?? '';
-        const text = arabicText + '\n\n' + translation + '\n\n— Tafseer ' + scholar.name + ' (' + verse.verse_key + ')';
-        if (navigator.share) {
-            try { await navigator.share({ title: 'Tafseer ' + verse.verse_key, text }); } catch { }
-        } else {
-            navigator.clipboard.writeText(text + '\n\n' + rawText);
-        }
-    };
 
     const handleRetry = () => {
         setErrors(prev => ({ ...prev, [activeScholar]: false }));
@@ -423,14 +405,7 @@ export default function TafseerModal({
                                 Next <ChevronRight size={14} />
                             </button>
                         </div>
-                        <div className="tsm-footer-actions">
-                            <button className="tsm-footer-action-btn" onClick={handleShare}>
-                                <Share2 size={13} /> Share
-                            </button>
-                            <button className={'tsm-footer-copy-btn' + (copied ? ' tsm-copied' : '')} onClick={handleCopy} style={{ background: copied ? '#22c55e' : 'linear-gradient(135deg,' + scholar.color + ',#2dd4bf)' }}>
-                                {copied ? <><Check size={13} /> Copied!</> : <><Copy size={13} /> Copy</>}
-                            </button>
-                        </div>
+
                     </div>
                 </div>
             </div>
