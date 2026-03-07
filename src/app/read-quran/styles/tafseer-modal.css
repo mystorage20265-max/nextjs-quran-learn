@@ -694,6 +694,27 @@
     .tsm-sc-label { display: none; }
     .tsm-arabic-text { font-size: 24px; }
     .tsm-body { padding: 16px; }
-    .tsm-header { padding: 14px 16px; }
-    .tsm-footer { padding: 10px 16px; }
+    .tsm-header { padding: 10px 14px; }
+    .tsm-footer { padding: 10px 14px; gap: 6px; }
+}
+
+/* ── COMPACT HEADER on small phones ── */
+@media (max-width: 480px) {
+    /* Hide Arabic name & dot from header title — saves ~60px width */
+    .tsm-header-arabic { display: none; }
+    .tsm-header-dot { display: none; }
+    /* Hide revelation chip from badge — name alone is enough */
+    .tsm-rev-chip { display: none; }
+    /* Tighten header layout */
+    .tsm-header { gap: 8px; padding: 10px 12px; }
+    .tsm-surah-badge { font-size: 10px; padding: 3px 8px; }
+    .tsm-header-title { font-size: 12px; }
+    /* Nav buttons slightly smaller */
+    .tsm-nav-btn { width: 26px; height: 26px; }
+    .tsm-nav-pill { font-size: 10px; padding: 2px 8px; }
+    .tsm-close-btn { width: 28px; height: 28px; }
+    /* Footer — stack share/copy tighter */
+    .tsm-footer-action-btn { padding: 7px 10px; font-size: 11px; }
+    .tsm-footer-copy-btn { padding: 7px 13px; font-size: 11px; }
+    .tsm-footer-nav-btn { padding: 7px 10px; font-size: 11px; }
 }
