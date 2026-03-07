@@ -115,6 +115,13 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="QuranLearn" />
         <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
 
+        {/* ✅ Theme init – runs before first paint to prevent flash */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var s=localStorage.getItem('quran-learn-theme');var sys=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';var t=s&&s!=='system'?s:sys;document.documentElement.setAttribute('data-theme',t);}catch(e){}})();`,
+          }}
+        />
+
         {/* ✅ JSON-LD Structured Data for SEO */}
         <script
           type="application/ld+json"
