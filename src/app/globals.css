@@ -944,7 +944,7 @@ textarea::placeholder {
 
 /* Sidebar-less variant — top padding for fixed navbar */
 .app-shell.no-sidebar {
-  padding-top: 0;
+  padding-top: 66px;
 }
 
 .app-shell > main,

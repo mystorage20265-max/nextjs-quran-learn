@@ -126,6 +126,7 @@ const FEATURES = [
   { icon: 'music_note', label: 'Audio Quran', sub: 'Listen & Learn', href: '/audio-quran', color: '#f59e0b' },
   { icon: 'radio', label: 'Quran Radio', sub: '24/7 Recitation', href: '/radio', color: '#ef4444' },
   { icon: 'translate', label: 'Word by Word', sub: 'Arabic Learning', href: '/read-quran/1?mode=word-by-word', color: '#06b6d4' },
+  { icon: 'book_2', label: 'Tafseer', sub: 'Verse Explanations', href: '/tafseer', color: '#8b5cf6' },
 ];
 
 const AYAHS_OF_DAY = [
@@ -779,84 +780,6 @@ export default function HomePage() {
                     </button>
                   </div>
                 </div>
-              </div>
-            </section>
-
-            {/* ── TAFSEER SECTION ── */}
-            <section style={{ marginBottom: 32 }}>
-              {/* Section header */}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16, flexWrap: 'wrap', gap: 10 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <div style={{ width: 4, height: 22, background: 'linear-gradient(180deg,#11d442,#059669)', borderRadius: 2 }} />
-                  <div>
-                    <h2 style={{ margin: '0 0 2px', fontWeight: 700, fontSize: 19, ...S.text }}>Explore Tafseer</h2>
-                    <p style={{ margin: 0, fontSize: 13, ...S.muted }}>Verse-by-verse Quran explanations</p>
-                  </div>
-                </div>
-                <Link href="/tafseer" style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 13, fontWeight: 600, color: '#11d442', textDecoration: 'none', border: '1px solid rgba(17,212,66,0.3)', borderRadius: 8, padding: '6px 12px', transition: 'all 0.15s' }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(17,212,66,0.08)'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
-                >
-                  View All Surahs
-                  <span className="material-symbols-outlined" style={{ fontSize: 16 }}>arrow_forward</span>
-                </Link>
-              </div>
-
-              {/* Tafseer promo banner */}
-              <Link href="/tafseer" style={{ textDecoration: 'none', display: 'block', marginBottom: 16 }}>
-                <div style={{
-                  background: dark ? 'linear-gradient(135deg,#0a2b14,#112b1a)' : 'linear-gradient(135deg,#f0fdf4,#dcfce7)',
-                  border: `1px solid ${dark ? 'rgba(17,212,66,0.2)' : 'rgba(17,212,66,0.25)'}`,
-                  borderRadius: 16, padding: '18px 20px', display: 'flex', alignItems: 'center', gap: 16,
-                  transition: 'all 0.18s', position: 'relative', overflow: 'hidden',
-                }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = '0 6px 24px rgba(17,212,66,0.15)'; (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-1px)'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = 'none'; (e.currentTarget as HTMLDivElement).style.transform = ''; }}
-                >
-                  <div style={{ background: 'rgba(17,212,66,0.15)', borderRadius: 12, padding: 12, flexShrink: 0 }}>
-                    <span className="material-symbols-outlined" style={{ fontSize: 26, color: '#11d442' }}>menu_book</span>
-                  </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <p style={{ margin: '0 0 3px', fontWeight: 700, fontSize: 15, color: dark ? '#e2e8e5' : '#0f172a' }}>
-                      Ibn Kathir · Ma'arif al-Qur'an · Tazkirul Quran
-                    </p>
-                    <p style={{ margin: 0, fontSize: 12, color: '#94a3b8', lineHeight: 1.5 }}>
-                      Deep explanations for all 114 Surahs from world-renowned scholars
-                    </p>
-                  </div>
-                  <span className="material-symbols-outlined" style={{ fontSize: 22, color: '#11d442', flexShrink: 0 }}>chevron_right</span>
-                </div>
-              </Link>
-
-              {/* Featured Tafseer cards */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 12 }}>
-                {[
-                  { num: 1, ar: 'الفاتحة', name: 'Al-Fatihah', meaning: 'The Opening', v: 7 },
-                  { num: 2, ar: 'البقرة', name: 'Al-Baqarah', meaning: 'The Cow', v: 286 },
-                  { num: 18, ar: 'الكهف', name: 'Al-Kahf', meaning: 'The Cave', v: 110 },
-                  { num: 36, ar: 'يس', name: 'Ya-Sin', meaning: 'Ya-Sin', v: 83 },
-                  { num: 55, ar: 'الرحمن', name: 'Ar-Rahman', meaning: 'The Beneficent', v: 78 },
-                  { num: 67, ar: 'الملك', name: 'Al-Mulk', meaning: 'The Sovereignty', v: 30 },
-                ].map(s => (
-                  <Link key={s.num} href={`/tafseer/${s.num}`} style={{ textDecoration: 'none' }}>
-                    <div className="surah-card" style={{
-                      ...S.card, padding: '14px 16px', cursor: 'pointer', display: 'flex', flexDirection: 'column', gap: 10,
-                    }}>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                        <div style={{ width: 30, height: 30, background: 'rgba(17,212,66,0.10)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: '#11d442', fontSize: 12 }}>{s.num}</div>
-                        <span className="font-arabic" style={{ fontSize: 18, fontWeight: 700, ...S.text }}>{s.ar}</span>
-                      </div>
-                      <div>
-                        <p style={{ margin: '0 0 2px', fontWeight: 700, fontSize: 13, ...S.text }}>{s.name}</p>
-                        <p style={{ margin: 0, fontSize: 11, ...S.muted }}>{s.meaning} · {s.v}v</p>
-                      </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11, fontWeight: 600, color: '#11d442' }}>
-                        <span className="material-symbols-outlined" style={{ fontSize: 14 }}>book_2</span>
-                        Read Tafseer
-                      </div>
-                    </div>
-                  </Link>
-                ))}
               </div>
             </section>
 
