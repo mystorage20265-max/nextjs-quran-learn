@@ -1,22 +1,64 @@
 {
   "duas": [
     {
-      "id": "1",
+      "id": "me-1",
       "category": "morning-evening",
-      "title": "Morning Supplication",
-      "arabic": "أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لاَ إِلَـهَ إِلاَّ اللهُ وَحْدَهُ لاَ شَرِيْكَ لَهُ",
-      "transliteration": "Asbahna wa asbahal mulku lillah, walhamdu lillah, la ilaha illallah wahdahu la shareeka lah",
-      "translation": "We have reached the morning and at this very time all sovereignty belongs to Allah, praise is to Allah. None has the right to be worshipped except Allah, alone, without any partner",
-      "reference": "Abu Dawud"
+      "title": "Morning Remembrance",
+      "arabic": "أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لاَ إِلَـهَ إِلاَّ اللهُ وَحْدَهُ لاَ شَرِيكَ لَهُ",
+      "transliteration": "Asbahna wa-asbahal mulku lillah, walhamdu lillah, la ilaha illallahu wahdahu la shareeka lah",
+      "translation": "We have reached the morning and at this very time all sovereignty belongs to Allah. All praise is for Allah. None has the right to be worshipped except Allah, alone, without partner.",
+      "reference": "Sahih Muslim",
+      "source": "Hadith"
     },
     {
-      "id": "2",
+      "id": "me-2",
       "category": "morning-evening",
-      "title": "Evening Supplication",
-      "arabic": "أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لاَ إِلَـهَ إِلاَّ اللهُ وَحْدَهُ لاَ شَرِيْكَ لَهُ",
-      "transliteration": "Amsayna wa amsal mulku lillah, walhamdu lillah, la ilaha illallah wahdahu la shareeka lah",
-      "translation": "We have reached the evening and at this very time all sovereignty belongs to Allah, praise is to Allah. None has the right to be worshipped except Allah, alone, without any partner",
-      "reference": "Abu Dawud"
+      "title": "Seeking Protection in the Morning",
+      "arabic": "اللَّهُمَّ بِكَ أَصْبَحْنَا، وَبِكَ أَمْسَيْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ، وَإِلَيْكَ النُّشُورُ",
+      "transliteration": "Allahumma bika asbahna, wa bika amsayna, wa bika nahya, wa bika namootu, wa ilaykan-nushoor",
+      "translation": "O Allah, by Your grace we have reached the morning, by Your grace we reach the evening, by You we live and by You we die, and unto You is the resurrection.",
+      "reference": "At-Tirmidhi",
+      "source": "Hadith"
+    },
+    {
+      "id": "me-3",
+      "category": "morning-evening",
+      "title": "Master of Seeking Forgiveness",
+      "arabic": "اللَّهُمَّ أَنْتَ رَبِّي لاَ إِلَهَ إِلاَّ أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ",
+      "transliteration": "Allahumma anta Rabbi la ilaha illa Anta, khalaqtani wa ana 'abduka, wa ana 'ala 'ahdika wa wa'dika mastata'tu",
+      "translation": "O Allah, You are my Lord, none has the right to be worshipped except You. You created me and I am Your servant, and I abide by Your covenant and promise as best I can.",
+      "reference": "Sahih Al-Bukhari",
+      "source": "Hadith"
+    },
+    {
+      "id": "me-4",
+      "category": "morning-evening",
+      "title": "Evening Remembrance",
+      "arabic": "أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلاَّ اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ",
+      "transliteration": "Amsayna wa-amsal mulku lillah, walhamdu lillah, la ilaha illallahu wahdahu la shareeka lah",
+      "translation": "We have reached the evening and at this very time all sovereignty belongs to Allah. All praise is for Allah. None has the right to be worshipped except Allah, alone, without partner.",
+      "reference": "Sahih Muslim",
+      "source": "Hadith"
+    },
+    {
+      "id": "me-5",
+      "category": "morning-evening",
+      "title": "Protection from All Evil",
+      "arabic": "بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ",
+      "transliteration": "Bismillahil-ladhi la yadurru ma'a ismihi shay'un fil-ardi wa la fis-sama'i wa huwas-Samee'ul-'Aleem",
+      "translation": "In the name of Allah, with whose name nothing on earth or in the heavens can cause harm, and He is the All-Hearing, the All-Knowing.",
+      "reference": "Abu Dawud, At-Tirmidhi",
+      "source": "Hadith"
+    },
+    {
+      "id": "me-6",
+      "category": "morning-evening",
+      "title": "Contentment with Allah",
+      "arabic": "رَضِيتُ بِاللَّهِ رَبًّا، وَبِالْإِسْلَامِ دِينًا، وَبِمُحَمَّدٍ صَلَّى اللهُ عَلَيْهِ وَسَلَّمَ نَبِيًّا",
+      "transliteration": "Radheetu billahi Rabba, wa bil-Islami deena, wa bi-Muhammadin sallal-lahu 'alayhi wa sallama nabiyya",
+      "translation": "I am pleased with Allah as my Lord, Islam as my religion, and Muhammad, peace be upon him, as my Prophet.",
+      "reference": "Abu Dawud",
+      "source": "Hadith"
     }
   ]
 }

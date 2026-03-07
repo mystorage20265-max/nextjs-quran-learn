@@ -1,0 +1,64 @@
+{
+    "duas": [
+        {
+            "id": "family-1",
+            "category": "family",
+            "title": "For Parents",
+            "arabic": "رَّبِّ ارْحَمْهُمَا كَمَا رَبَّيَانِي صَغِيرًا",
+            "transliteration": "Rabbi irhamhuma kama rabbayani saghira",
+            "translation": "My Lord, have mercy upon them as they brought me up when I was small.",
+            "reference": "Surah Al-Isra 17:24",
+            "source": "Quran"
+        },
+        {
+            "id": "family-2",
+            "category": "family",
+            "title": "For Righteous Spouse and Children",
+            "arabic": "رَبَّنَا هَبْ لَنَا مِنْ أَزْوَاجِنَا وَذُرِّيَّاتِنَا قُرَّةَ أَعْيُنٍ وَاجْعَلْنَا لِلْمُتَّقِينَ إِمَامًا",
+            "transliteration": "Rabbana hab lana min azwajina wa dhurriyyatina qurrata a'yunin waj'alna lil-muttaqina imama",
+            "translation": "Our Lord! Bless us with pious spouses and offspring who will be the joy of our eyes, and make us models for the righteous.",
+            "reference": "Surah Al-Furqan 25:74",
+            "source": "Quran"
+        },
+        {
+            "id": "family-3",
+            "category": "family",
+            "title": "For a Blissful Family",
+            "arabic": "رَبِّ اجْعَلْنِي مُقِيمَ الصَّلَاةِ وَمِن ذُرِّيَّتِي رَبَّنَا وَتَقَبَّلْ دُعَاءِ",
+            "transliteration": "Rabbij'alni muqimas-salati wa min dhurriyyati Rabbana wa taqabbal du'a",
+            "translation": "My Lord, make me an establisher of prayer, and from my descendants. Our Lord, and accept my supplication.",
+            "reference": "Surah Ibrahim 14:40",
+            "source": "Quran"
+        },
+        {
+            "id": "family-4",
+            "category": "family",
+            "title": "Asking for a Child",
+            "arabic": "رَبِّ هَبْ لِي مِن لَّدُنكَ ذُرِّيَّةً طَيِّبَةً إِنَّكَ سَمِيعُ الدُّعَاءِ",
+            "transliteration": "Rabbi hab li mil-ladunka dhurriyyatan tayyibatan innaka samee'ud-du'a",
+            "translation": "My Lord, grant me from Yourself a good offspring. Indeed, You are the Hearer of supplication.",
+            "reference": "Surah Ali 'Imran 3:38",
+            "source": "Quran"
+        },
+        {
+            "id": "family-5",
+            "category": "family",
+            "title": "For Newlyweds",
+            "arabic": "بَارَكَ اللَّهُ لَكَ وَبَارَكَ عَلَيْكَ وَجَمَعَ بَيْنَكُمَا فِي خَيْرٍ",
+            "transliteration": "Barakallahu laka wa baraka 'alayka wa jama'a baynakuma fi khayr",
+            "translation": "May Allah bless you and shower His blessings upon you, and may He unite you both in goodness.",
+            "reference": "Abu Dawud, At-Tirmidhi",
+            "source": "Hadith"
+        },
+        {
+            "id": "family-6",
+            "category": "family",
+            "title": "For a Newborn Child",
+            "arabic": "أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّةِ مِنْ كُلِّ شَيْطَانٍ وَهَامَّةٍ وَمِنْ كُلِّ عَيْنٍ لَامَّةٍ",
+            "transliteration": "U'eedhuka bi kalimatillahit-tammati min kulli shaytanin wa hammah, wa min kulli 'aynin lammah",
+            "translation": "I seek refuge for you in the perfect words of Allah from every devil and harmful creature and from every envious evil eye.",
+            "reference": "Sahih Al-Bukhari",
+            "source": "Hadith"
+        }
+    ]
+}

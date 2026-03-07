@@ -1,0 +1,24 @@
+{
+    "duas": [
+        {
+            "id": "quran-1",
+            "category": "quran",
+            "title": "The Opening Supplication",
+            "arabic": "اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ",
+            "transliteration": "Ihdinas-siratal-mustaqeem",
+            "translation": "Guide us to the straight path.",
+            "reference": "Surah Al-Fatiha 1:6",
+            "source": "Quran"
+        },
+        {
+            "id": "quran-2",
+            "category": "quran",
+            "title": "Dua of Ibrahim (AS)",
+            "arabic": "رَبِّ اجْعَلْ هَٰذَا الْبَلَدَ آمِنًا وَاجْنُبْنِي وَبَنِيَّ أَن نَّعْبُدَ الْأَصْنَامَ",
+            "transliteration": "Rabbij'al hadhal-balada aminan wajnubni wa baniyya an na'budal-asnam",
+            "translation": "My Lord, make this city [Makkah] secure and keep me and my sons away from worshipping idols.",
+            "reference": "Surah Ibrahim 14:35",
+            "source": "Quran"
+        }
+    ]
+}

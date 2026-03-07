@@ -1,39 +1,112 @@
 {
   "categories": [
     {
+      "id": "rabbana",
+      "slug": "rabbana",
+      "title": "Rabbana Duas",
+      "description": "Quranic supplications beginning with 'Our Lord'",
+      "totalDuas": 8,
+      "icon": "auto_stories",
+      "color": "#f59e0b"
+    },
+    {
       "id": "morning-evening",
       "slug": "morning-evening",
       "title": "Morning & Evening",
-      "description": "Duas for morning and evening",
-      "totalDuas": 20
-    },
-    {
-      "id": "quran",
-      "slug": "quran",
-      "title": "Quranic Duas",
-      "description": "Supplications from the Holy Quran",
-      "totalDuas": 40
+      "description": "Daily adhkar for morning and evening remembrance",
+      "totalDuas": 6,
+      "icon": "wb_twilight",
+      "color": "#f97316"
     },
     {
       "id": "daily",
       "slug": "daily",
       "title": "Daily Duas",
-      "description": "Duas for daily activities",
-      "totalDuas": 30
+      "description": "Essential duas for everyday activities",
+      "totalDuas": 8,
+      "icon": "today",
+      "color": "#14b8a6"
+    },
+    {
+      "id": "salah",
+      "slug": "salah",
+      "title": "Salah & Prayer",
+      "description": "Duas recited during and after prayers",
+      "totalDuas": 6,
+      "icon": "mosque",
+      "color": "#8b5cf6"
     },
     {
       "id": "protection",
       "slug": "protection",
       "title": "Protection & Safety",
-      "description": "Duas for seeking protection",
-      "totalDuas": 25
+      "description": "Seeking Allah's protection from harm and evil",
+      "totalDuas": 6,
+      "icon": "shield",
+      "color": "#3b82f6"
     },
     {
       "id": "forgiveness",
       "slug": "forgiveness",
-      "title": "Forgiveness",
-      "description": "Duas for seeking forgiveness",
-      "totalDuas": 15
+      "title": "Forgiveness & Mercy",
+      "description": "Duas for seeking Allah's forgiveness",
+      "totalDuas": 6,
+      "icon": "favorite",
+      "color": "#ec4899"
+    },
+    {
+      "id": "travel",
+      "slug": "travel",
+      "title": "Travel & Journey",
+      "description": "Supplications for travelers and journeys",
+      "totalDuas": 4,
+      "icon": "flight",
+      "color": "#06b6d4"
+    },
+    {
+      "id": "health",
+      "slug": "health",
+      "title": "Health & Healing",
+      "description": "Duas for good health, cure and recovery",
+      "totalDuas": 4,
+      "icon": "healing",
+      "color": "#22c55e"
+    },
+    {
+      "id": "family",
+      "slug": "family",
+      "title": "Family & Relations",
+      "description": "Duas for parents, spouse, and children",
+      "totalDuas": 6,
+      "icon": "family_restroom",
+      "color": "#e11d48"
+    },
+    {
+      "id": "ramadan",
+      "slug": "ramadan",
+      "title": "Ramadan Duas",
+      "description": "Special supplications for the holy month",
+      "totalDuas": 6,
+      "icon": "nightlight",
+      "color": "#a855f7"
+    },
+    {
+      "id": "anxiety",
+      "slug": "anxiety",
+      "title": "Anxiety & Ease",
+      "description": "Finding peace and comfort through dua",
+      "totalDuas": 5,
+      "icon": "self_improvement",
+      "color": "#0ea5e9"
+    },
+    {
+      "id": "success",
+      "slug": "success",
+      "title": "Success & Guidance",
+      "description": "Duas for guidance and worldly success",
+      "totalDuas": 5,
+      "icon": "star",
+      "color": "#eab308"
     }
   ]
 }

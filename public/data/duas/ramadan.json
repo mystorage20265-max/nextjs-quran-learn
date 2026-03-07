@@ -1,0 +1,64 @@
+{
+    "duas": [
+        {
+            "id": "ram-1",
+            "category": "ramadan",
+            "title": "Ramadan Moon Sighting",
+            "arabic": "اللَّهُمَّ أَهِلَّهُ عَلَيْنَا بِالْأَمْنِ وَالْإِيمَانِ وَالسَّلَامَةِ وَالْإِسْلَامِ رَبِّي وَرَبُّكَ اللَّهُ",
+            "transliteration": "Allahumma ahillahu 'alayna bil-amni wal-eemani was-salamati wal-Islam, Rabbi wa Rabbukallah",
+            "translation": "O Allah, let this moon come upon us with security, faith, safety, and Islam. My Lord and your Lord is Allah.",
+            "reference": "At-Tirmidhi",
+            "source": "Hadith"
+        },
+        {
+            "id": "ram-2",
+            "category": "ramadan",
+            "title": "Sehri Dua (Opening Fast)",
+            "arabic": "وَبِصَوْمِ غَدٍ نَّوَيْتُ مِنْ شَهْرِ رَمَضَانَ",
+            "transliteration": "Wa bisawmi ghadin nawaytu min shahri Ramadan",
+            "translation": "I intend to keep the fast for tomorrow in the month of Ramadan.",
+            "reference": "Abu Dawud",
+            "source": "Hadith"
+        },
+        {
+            "id": "ram-3",
+            "category": "ramadan",
+            "title": "Iftar Dua (Breaking Fast)",
+            "arabic": "ذَهَبَ الظَّمَأُ وَابْتَلَّتِ الْعُرُوقُ وَثَبَتَ الْأَجْرُ إِنْ شَاءَ اللَّهُ",
+            "transliteration": "Dhahabaz-zama'u wabtallatil-'urooqu wa thabatal-ajru in sha' Allah",
+            "translation": "The thirst has gone, the veins are moistened, and the reward is confirmed, if Allah wills.",
+            "reference": "Abu Dawud",
+            "source": "Hadith"
+        },
+        {
+            "id": "ram-4",
+            "category": "ramadan",
+            "title": "Laylatul Qadr (Night of Decree)",
+            "arabic": "اللَّهُمَّ إِنَّكَ عَفُوٌّ تُحِبُّ الْعَفْوَ فَاعْفُ عَنِّي",
+            "transliteration": "Allahumma innaka 'afuwwun tuhibbul-'afwa fa'fu 'anni",
+            "translation": "O Allah, You are the One who pardons greatly, and You love to pardon, so pardon me.",
+            "reference": "At-Tirmidhi, Ibn Majah",
+            "source": "Hadith"
+        },
+        {
+            "id": "ram-5",
+            "category": "ramadan",
+            "title": "First Ashra (First 10 Days)",
+            "arabic": "رَبِّ اغْفِرْ وَارْحَمْ وَأَنتَ خَيْرُ الرَّاحِمِينَ",
+            "transliteration": "Rabbighfir warham wa anta khayrur-Rahimeen",
+            "translation": "My Lord, forgive and have mercy, and You are the best of the merciful.",
+            "reference": "Surah Al-Mu'minun 23:118",
+            "source": "Quran"
+        },
+        {
+            "id": "ram-6",
+            "category": "ramadan",
+            "title": "For Those Who Provide Iftar",
+            "arabic": "أَفْطَرَ عِنْدَكُمُ الصَّائِمُونَ، وَأَكَلَ طَعَامَكُمُ الْأَبْرَارُ، وَصَلَّتْ عَلَيْكُمُ الْمَلَائِكَةُ",
+            "transliteration": "Aftara 'indakumus-sa'imun, wa akala ta'amakumul-abrar, wa sallat 'alaykumul-mala'ikah",
+            "translation": "May those who are fasting break their fast in your home, and may the dutiful and pious eat your food, and may the angels pray for blessings upon you.",
+            "reference": "Abu Dawud, An-Nasai",
+            "source": "Hadith"
+        }
+    ]
+}

@@ -1,12 +1,12 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Duas & Supplications - Learn Quran',
-  description: 'Collection of authentic duas and supplications from the Quran and Sunnah with translations and transliterations.',
-  keywords: ['duas', 'supplications', 'islamic prayers', 'quran', 'sunnah', 'dhikr'],
+  title: 'Duas & Supplications - Nur Quran Learning Hub',
+  description: 'Collection of authentic duas and supplications from the Quran and Sunnah with Arabic text, transliteration, and translations. Rabbana Duas, Morning & Evening Adhkar, Daily Duas, Protection Duas, and more.',
+  keywords: ['duas', 'supplications', 'islamic prayers', 'quran', 'sunnah', 'dhikr', 'rabbana duas', 'morning adhkar', 'evening adhkar', 'ramadan duas'],
   openGraph: {
-    title: 'Duas & Supplications - Learn Quran',
-    description: 'Collection of authentic duas and supplications from the Quran and Sunnah.',
+    title: 'Duas & Supplications - Nur Quran Learning Hub',
+    description: 'Authentic Islamic supplications from Quran and Sunnah with Arabic, transliteration & translation.',
     type: 'website',
   },
 };
@@ -14,15 +14,6 @@ export const metadata: Metadata = {
 export default function DuaLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      {/* Material Icons for this section */}
-      <link
-        href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined"
-        rel="stylesheet"
-      />
-      <link
-        href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap"
-        rel="stylesheet"
-      />
       {children}
     </>
   );

@@ -1,0 +1,64 @@
+{
+    "duas": [
+        {
+            "id": "prot-1",
+            "category": "protection",
+            "title": "Protection from Evil Eye",
+            "arabic": "أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ",
+            "transliteration": "A'udhu bikalimatillahit-tammati min sharri ma khalaq",
+            "translation": "I seek refuge in the perfect words of Allah from the evil of what He has created.",
+            "reference": "Sahih Muslim",
+            "source": "Hadith"
+        },
+        {
+            "id": "prot-2",
+            "category": "protection",
+            "title": "Ayatul Kursi",
+            "arabic": "اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ",
+            "transliteration": "Allahu la ilaha illa Huwal-Hayyul-Qayyum, la ta'khudhuhu sinatun wa la nawm",
+            "translation": "Allah! There is no deity except Him, the Ever-Living, the Sustainer of existence. Neither drowsiness overtakes Him nor sleep.",
+            "reference": "Surah Al-Baqarah 2:255",
+            "source": "Quran"
+        },
+        {
+            "id": "prot-3",
+            "category": "protection",
+            "title": "Protection from Satan",
+            "arabic": "أَعُوذُ بِاللَّهِ السَّمِيعِ الْعَلِيمِ مِنَ الشَّيْطَانِ الرَّجِيمِ",
+            "transliteration": "A'udhu billahis-Samee'il-'Aleem minash-shaytanir-rajeem",
+            "translation": "I seek refuge in Allah, the All-Hearing, All-Knowing, from the accursed Satan.",
+            "reference": "Abu Dawud",
+            "source": "Hadith"
+        },
+        {
+            "id": "prot-4",
+            "category": "protection",
+            "title": "Surah Al-Falaq",
+            "arabic": "قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ مِنْ شَرِّ مَا خَلَقَ وَمِنْ شَرِّ غَاسِقٍ إِذَا وَقَبَ",
+            "transliteration": "Qul a'udhu bi-Rabbil-falaq, min sharri ma khalaq, wa min sharri ghasiqin idha waqab",
+            "translation": "Say, I seek refuge in the Lord of daybreak, from the evil of what He has created, and from the evil of darkness when it settles.",
+            "reference": "Surah Al-Falaq 113:1-3",
+            "source": "Quran"
+        },
+        {
+            "id": "prot-5",
+            "category": "protection",
+            "title": "Protection from Harm",
+            "arabic": "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ جَهْدِ الْبَلَاءِ وَدَرَكِ الشَّقَاءِ وَسُوءِ الْقَضَاءِ وَشَمَاتَةِ الْأَعْدَاءِ",
+            "transliteration": "Allahumma inni a'udhu bika min jahdil-bala'i wa darakish-shaqa'i wa su'il-qada'i wa shamatil-a'da'",
+            "translation": "O Allah, I seek refuge with You from severe calamity, from misery to fall upon me, from a bad fate, and from the gloating of enemies.",
+            "reference": "Sahih Al-Bukhari",
+            "source": "Hadith"
+        },
+        {
+            "id": "prot-6",
+            "category": "protection",
+            "title": "Seeking Refuge in All Affairs",
+            "arabic": "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْكُفْرِ وَالْفَقْرِ وَعَذَابِ الْقَبْرِ",
+            "transliteration": "Allahumma inni a'udhu bika minal-kufri wal-faqri wa 'adhabil-qabr",
+            "translation": "O Allah, I seek refuge with You from disbelief, poverty, and the punishment of the grave.",
+            "reference": "An-Nasai",
+            "source": "Hadith"
+        }
+    ]
+}

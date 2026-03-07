@@ -1,0 +1,54 @@
+{
+    "duas": [
+        {
+            "id": "suc-1",
+            "category": "success",
+            "title": "Seeking Guidance",
+            "arabic": "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْهُدَى وَالتُّقَى وَالْعَفَافَ وَالْغِنَى",
+            "transliteration": "Allahumma inni as'alukal-huda wat-tuqa wal-'afafa wal-ghina",
+            "translation": "O Allah, I ask You for guidance, righteousness, chastity and self-sufficiency.",
+            "reference": "Sahih Muslim",
+            "source": "Hadith"
+        },
+        {
+            "id": "suc-2",
+            "category": "success",
+            "title": "For Beneficial Knowledge",
+            "arabic": "اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْمًا نَافِعًا وَرِزْقًا طَيِّبًا وَعَمَلًا مُتَقَبَّلًا",
+            "transliteration": "Allahumma inni as'aluka 'ilman nafi'an, wa rizqan tayyiban, wa 'amalan mutaqabbala",
+            "translation": "O Allah, I ask You for beneficial knowledge, good provisions, and accepted deeds.",
+            "reference": "Ibn Majah",
+            "source": "Hadith"
+        },
+        {
+            "id": "suc-3",
+            "category": "success",
+            "title": "For Gratitude",
+            "arabic": "رَبِّ أَوْزِعْنِي أَنْ أَشْكُرَ نِعْمَتَكَ الَّتِي أَنْعَمْتَ عَلَيَّ وَعَلَىٰ وَالِدَيَّ وَأَنْ أَعْمَلَ صَالِحًا تَرْضَاهُ",
+            "transliteration": "Rabbi awzi'ni an ashkura ni'matakal-lati an'amta 'alayya wa 'ala walidayya wa an a'mala salihan tardahu",
+            "translation": "My Lord, enable me to be grateful for Your favor which You have bestowed upon me and upon my parents and to do righteousness of which You approve.",
+            "reference": "Surah Al-Ahqaf 46:15",
+            "source": "Quran"
+        },
+        {
+            "id": "suc-4",
+            "category": "success",
+            "title": "For Increase in Knowledge",
+            "arabic": "رَّبِّ زِدْنِي عِلْمًا",
+            "transliteration": "Rabbi zidni 'ilma",
+            "translation": "My Lord, increase me in knowledge.",
+            "reference": "Surah Ta-Ha 20:114",
+            "source": "Quran"
+        },
+        {
+            "id": "suc-5",
+            "category": "success",
+            "title": "For Rizq (Sustenance)",
+            "arabic": "اللَّهُمَّ اكْفِنِي بِحَلَالِكَ عَنْ حَرَامِكَ وَأَغْنِنِي بِفَضْلِكَ عَمَّنْ سِوَاكَ",
+            "transliteration": "Allahummak-fini bihalaalika 'an haraamika wa aghnini bifadlika 'amman siwaak",
+            "translation": "O Allah, suffice me with what You have permitted so that I have no need of that which You have forbidden, and make me independent of all besides You.",
+            "reference": "At-Tirmidhi",
+            "source": "Hadith"
+        }
+    ]
+}
