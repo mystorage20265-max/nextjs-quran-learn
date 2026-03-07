@@ -282,12 +282,12 @@
 
 /* ── Mega menu ──────────────────────────────────────────────── */
 .nb-mega-wrap {
-  position: relative;
+  position: static;
 }
 
 .nb-mega {
-  position: absolute;
-  top: calc(100% + 16px);
+  position: fixed;
+  top: calc(var(--nb-h) + 8px);
   left: 50%;
   transform: translateX(-50%);
   width: 720px;
