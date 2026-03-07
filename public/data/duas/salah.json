@@ -1,0 +1,64 @@
+{
+    "duas": [
+        {
+            "id": "salah-1",
+            "category": "salah",
+            "title": "Opening of Prayer (Istiftah)",
+            "arabic": "سُبْحَانَكَ اللَّهُمَّ وَبِحَمْدِكَ وَتَبَارَكَ اسْمُكَ وَتَعَالَى جَدُّكَ وَلاَ إِلَهَ غَيْرُكَ",
+            "transliteration": "Subhanaka Allahumma wa bihamdika, wa tabarakasmuka, wa ta'ala jadduka, wa la ilaha ghayruk",
+            "translation": "Glory be to You O Allah, and praise. Blessed is Your name, exalted is Your majesty, and there is no deity other than You.",
+            "reference": "Abu Dawud, At-Tirmidhi",
+            "source": "Hadith"
+        },
+        {
+            "id": "salah-2",
+            "category": "salah",
+            "title": "After Tashahhud",
+            "arabic": "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ عَذَابِ جَهَنَّمَ، وَمِنْ عَذَابِ الْقَبْرِ، وَمِنْ فِتْنَةِ الْمَحْيَا وَالْمَمَاتِ، وَمِنْ شَرِّ فِتْنَةِ الْمَسِيحِ الدَّجَّالِ",
+            "transliteration": "Allahumma inni a'udhu bika min 'adhabi jahannam, wa min 'adhabil-qabr, wa min fitnatil-mahya wal-mamat, wa min sharri fitnatil-masihid-dajjal",
+            "translation": "O Allah, I seek refuge with You from the torment of Hellfire, the torment of the grave, the trials of life and death, and from the evil of the trial of the Antichrist.",
+            "reference": "Sahih Al-Bukhari, Sahih Muslim",
+            "source": "Hadith"
+        },
+        {
+            "id": "salah-3",
+            "category": "salah",
+            "title": "Dua Qunoot (Witr Prayer)",
+            "arabic": "اللَّهُمَّ اهْدِنِي فِيمَنْ هَدَيْتَ، وَعَافِنِي فِيمَنْ عَافَيْتَ، وَتَوَلَّنِي فِيمَنْ تَوَلَّيْتَ",
+            "transliteration": "Allahumma-hdini fiman hadayt, wa 'afini fiman 'afayt, wa tawallani fiman tawallayt",
+            "translation": "O Allah, guide me among those whom You have guided, grant me well-being among those You have granted well-being, and befriend me among those You have befriended.",
+            "reference": "Abu Dawud, An-Nasai",
+            "source": "Hadith"
+        },
+        {
+            "id": "salah-4",
+            "category": "salah",
+            "title": "After Salah Tasbeeh",
+            "arabic": "سُبْحَانَ اللَّهِ (٣٣) الْحَمْدُ لِلَّهِ (٣٣) اللَّهُ أَكْبَرُ (٣٣) لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ",
+            "transliteration": "SubhanAllah (33), Alhamdulillah (33), Allahu Akbar (33), La ilaha illallahu wahdah",
+            "translation": "Glory be to Allah (33 times), All praise is for Allah (33 times), Allah is the Greatest (33 times), There is no deity except Allah alone.",
+            "reference": "Sahih Muslim",
+            "source": "Hadith"
+        },
+        {
+            "id": "salah-5",
+            "category": "salah",
+            "title": "Darood Ibrahim",
+            "arabic": "اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ كَمَا صَلَّيْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ إِنَّكَ حَمِيدٌ مَجِيدٌ",
+            "transliteration": "Allahumma salli 'ala Muhammadin wa 'ala ali Muhammadin kama sallayta 'ala Ibrahima wa 'ala ali Ibrahima innaka Hameedun Majeed",
+            "translation": "O Allah, send prayers upon Muhammad and upon the family of Muhammad, as You sent prayers upon Ibrahim and upon the family of Ibrahim. Indeed, You are Praiseworthy, Glorious.",
+            "reference": "Sahih Al-Bukhari",
+            "source": "Hadith"
+        },
+        {
+            "id": "salah-6",
+            "category": "salah",
+            "title": "Between Two Sujood",
+            "arabic": "رَبِّ اغْفِرْ لِي، رَبِّ اغْفِرْ لِي",
+            "transliteration": "Rabbighfir li, Rabbighfir li",
+            "translation": "My Lord, forgive me. My Lord, forgive me.",
+            "reference": "Abu Dawud, Ibn Majah",
+            "source": "Hadith"
+        }
+    ]
+}

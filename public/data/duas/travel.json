@@ -1,0 +1,44 @@
+{
+    "duas": [
+        {
+            "id": "travel-1",
+            "category": "travel",
+            "title": "Dua for Traveling",
+            "arabic": "سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَٰذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ وَإِنَّا إِلَىٰ رَبِّنَا لَمُنقَلِبُونَ",
+            "transliteration": "Subhanal-ladhi sakhkhara lana hadha wa ma kunna lahu muqrinin, wa inna ila Rabbina lamunqaliboon",
+            "translation": "Glory to Him who has subjected this to us, and we could never have done it (ourselves). And indeed, to our Lord, we shall return.",
+            "reference": "Surah Az-Zukhruf 43:13-14",
+            "source": "Quran"
+        },
+        {
+            "id": "travel-2",
+            "category": "travel",
+            "title": "Entering a Town/City",
+            "arabic": "اللَّهُمَّ رَبَّ السَّمَوَاتِ السَّبْعِ وَمَا أَظْلَلْنَ، وَرَبَّ الأَرَضِينَ السَّبْعِ وَمَا أَقْلَلْنَ، أَسْأَلُكَ خَيْرَ هَذِهِ الْقَرْيَةِ وَخَيْرَ أَهْلِهَا",
+            "transliteration": "Allahumma Rabbas-samawatis-sab'i wa ma azlaln, wa Rabbal-aradeenas-sab'i wa ma aqlaln, as'aluka khayra hadhihil-qaryati wa khayra ahlaha",
+            "translation": "O Allah, Lord of the seven heavens and all they cover, Lord of the seven earths and all they carry, I ask You for the good of this town and the good of its people.",
+            "reference": "An-Nasai, Ibn Hibban",
+            "source": "Hadith"
+        },
+        {
+            "id": "travel-3",
+            "category": "travel",
+            "title": "Returning from Travel",
+            "arabic": "آيِبُونَ تَائِبُونَ عَابِدُونَ لِرَبِّنَا حَامِدُونَ",
+            "transliteration": "Ayibuna, ta'ibuna, 'abiduna, li Rabbina hamidun",
+            "translation": "We are returning, repenting, worshipping, and praising our Lord.",
+            "reference": "Sahih Al-Bukhari, Sahih Muslim",
+            "source": "Hadith"
+        },
+        {
+            "id": "travel-4",
+            "category": "travel",
+            "title": "During the Journey",
+            "arabic": "اللَّهُمَّ إِنِّا نَسْأَلُكَ فِي سَفَرِنَا هَذَا الْبِرَّ وَالتَّقْوَى وَمِنَ الْعَمَلِ مَا تَرْضَى",
+            "transliteration": "Allahumma inna nas'aluka fi safarina hadhal-birra wat-taqwa, wa minal-'amali ma tarda",
+            "translation": "O Allah, we ask You in this journey of ours for righteousness, piety, and deeds that please You.",
+            "reference": "Sahih Muslim",
+            "source": "Hadith"
+        }
+    ]
+}

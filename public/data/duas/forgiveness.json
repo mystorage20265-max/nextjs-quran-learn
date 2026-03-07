@@ -1,0 +1,64 @@
+{
+    "duas": [
+        {
+            "id": "forg-1",
+            "category": "forgiveness",
+            "title": "Sayyidul Istighfar",
+            "arabic": "اللَّهُمَّ أَنْتَ رَبِّي لاَ إِلَهَ إِلاَّ أَنْتَ خَلَقْتَنِي وَأَنَا عَبْدُكَ وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَيَّ وَأَبُوءُ بِذَنْبِي فَاغْفِرْ لِي فَإِنَّهُ لاَ يَغْفِرُ الذُّنُوبَ إِلاَّ أَنْتَ",
+            "transliteration": "Allahumma anta Rabbi la ilaha illa ant, khalaqtani wa ana 'abduk, wa ana 'ala 'ahdika wa wa'dika mastat'at, a'udhu bika min sharri ma sana'at, abu'u laka bini'matika 'alayya wa abu'u bidhanbi, faghfir li fa'innahu la yaghfirudh-dhunuba illa ant",
+            "translation": "O Allah, You are my Lord, none has the right to be worshipped except You. You created me and I am Your servant, and I abide by Your covenant and promise as best I can. I seek refuge with You from the evil I have done. I acknowledge Your favor upon me and I acknowledge my sin, so forgive me, for verily none can forgive sins except You.",
+            "reference": "Sahih Al-Bukhari",
+            "source": "Hadith"
+        },
+        {
+            "id": "forg-2",
+            "category": "forgiveness",
+            "title": "Simple Istighfar",
+            "arabic": "أَسْتَغْفِرُ اللَّهَ الَّذِي لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ وَأَتُوبُ إِلَيْهِ",
+            "transliteration": "Astaghfirullal-ladhi la ilaha illa Huwal-Hayyul-Qayyumu wa atubu ilayh",
+            "translation": "I seek forgiveness from Allah, the One besides whom there is no deity, the Ever-Living, the Sustainer, and I repent to Him.",
+            "reference": "Abu Dawud, At-Tirmidhi",
+            "source": "Hadith"
+        },
+        {
+            "id": "forg-3",
+            "category": "forgiveness",
+            "title": "Forgiveness for All Sins",
+            "arabic": "رَبِّ اغْفِرْ لِي خَطِيئَتِي وَجَهْلِي وَإِسْرَافِي فِي أَمْرِي وَمَا أَنْتَ أَعْلَمُ بِهِ مِنِّي",
+            "transliteration": "Rabbighfir li khati'ati wa jahli wa israfi fi amri wa ma anta a'lamu bihi minni",
+            "translation": "My Lord, forgive me my sins, my ignorance, my transgressions in my affairs, and what You know better about me than I know myself.",
+            "reference": "Sahih Al-Bukhari, Sahih Muslim",
+            "source": "Hadith"
+        },
+        {
+            "id": "forg-4",
+            "category": "forgiveness",
+            "title": "Dua of Prophet Yunus",
+            "arabic": "لَا إِلَٰهَ إِلَّا أَنتَ سُبْحَانَكَ إِنِّي كُنتُ مِنَ الظَّالِمِينَ",
+            "transliteration": "La ilaha illa anta, subhanaka inni kuntu minaz-zalimin",
+            "translation": "There is no deity except You; exalted are You. Indeed, I have been of the wrongdoers.",
+            "reference": "Surah Al-Anbiya 21:87",
+            "source": "Quran"
+        },
+        {
+            "id": "forg-5",
+            "category": "forgiveness",
+            "title": "Forgiveness for Parents",
+            "arabic": "رَبِّ اغْفِرْ لِي وَلِوَالِدَيَّ وَلِمَن دَخَلَ بَيْتِيَ مُؤْمِنًا وَلِلْمُؤْمِنِينَ وَالْمُؤْمِنَاتِ",
+            "transliteration": "Rabbighfir li wa liwalidayya wa liman dakhala bayti-ya mu'minan wa lil-mu'mineena wal-mu'minat",
+            "translation": "My Lord, forgive me and my parents and whoever enters my house as a believer and all the believing men and believing women.",
+            "reference": "Surah Nuh 71:28",
+            "source": "Quran"
+        },
+        {
+            "id": "forg-6",
+            "category": "forgiveness",
+            "title": "Repentance and Return",
+            "arabic": "رَبَّنَا ظَلَمْنَا أَنفُسَنَا وَإِن لَّمْ تَغْفِرْ لَنَا وَتَرْحَمْنَا لَنَكُونَنَّ مِنَ الْخَاسِرِينَ",
+            "transliteration": "Rabbana zalamna anfusana wa il-lam taghfir lana wa tarhamna lanakoonanna minal-khasireen",
+            "translation": "Our Lord! We have wronged ourselves. If You do not forgive us and have mercy on us, we will certainly be among the losers.",
+            "reference": "Surah Al-A'raf 7:23",
+            "source": "Quran"
+        }
+    ]
+}

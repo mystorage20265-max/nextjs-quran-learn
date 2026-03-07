@@ -1,0 +1,44 @@
+{
+    "duas": [
+        {
+            "id": "health-1",
+            "category": "health",
+            "title": "Seeking Cure from Illness",
+            "arabic": "اللَّهُمَّ رَبَّ النَّاسِ، أَذْهِبِ الْبَأْسَ، اشْفِ أَنْتَ الشَّافِي لَا شِفَاءَ إِلَّا شِفَاؤُكَ شِفَاءً لَا يُغَادِرُ سَقَمًا",
+            "transliteration": "Allahumma Rabban-nas, adh-hibil-ba's, ishfi antash-Shafi la shifa'a illa shifa'uk, shifa'an la yughadiru saqama",
+            "translation": "O Allah, Lord of mankind, remove the harm, cure (him/her), for You are the Healer. There is no cure except Your cure – a cure which leaves no illness behind.",
+            "reference": "Sahih Al-Bukhari, Sahih Muslim",
+            "source": "Hadith"
+        },
+        {
+            "id": "health-2",
+            "category": "health",
+            "title": "Good Health and Protection",
+            "arabic": "اللَّهُمَّ عَافِنِي فِي بَدَنِي، اللَّهُمَّ عَافِنِي فِي سَمْعِي، اللَّهُمَّ عَافِنِي فِي بَصَرِي",
+            "transliteration": "Allahumma 'afini fi badani, Allahumma 'afini fi sam'i, Allahumma 'afini fi basari",
+            "translation": "O Allah, grant me health in my body. O Allah, grant me good hearing. O Allah, grant me good eyesight.",
+            "reference": "Abu Dawud",
+            "source": "Hadith"
+        },
+        {
+            "id": "health-3",
+            "category": "health",
+            "title": "Visiting the Sick",
+            "arabic": "أَسْأَلُ اللَّهَ الْعَظِيمَ رَبَّ الْعَرْشِ الْعَظِيمِ أَنْ يَشْفِيَكَ",
+            "transliteration": "As'alullahal-'Azeem, Rabbal-'arshil-'azeem an yashfiyak",
+            "translation": "I ask Allah the Almighty, the Lord of the Magnificent Throne, to cure you. (Recite 7 times)",
+            "reference": "Abu Dawud, At-Tirmidhi",
+            "source": "Hadith"
+        },
+        {
+            "id": "health-4",
+            "category": "health",
+            "title": "Pain Relief",
+            "arabic": "بِسْمِ اللَّهِ أَعُوذُ بِعِزَّةِ اللَّهِ وَقُدْرَتِهِ مِنْ شَرِّ مَا أَجِدُ وَأُحَاذِرُ",
+            "transliteration": "Bismillahi a'udhu bi'izzatillahi wa qudratihi min sharri ma ajidu wa uhadhir",
+            "translation": "In the name of Allah, I seek refuge in Allah's might and power from the evil of what I feel and fear.",
+            "reference": "Sahih Muslim",
+            "source": "Hadith"
+        }
+    ]
+}

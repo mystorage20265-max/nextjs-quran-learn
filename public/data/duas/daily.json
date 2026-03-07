@@ -1,22 +1,84 @@
 {
   "duas": [
     {
-      "id": "1",
+      "id": "daily-1",
       "category": "daily",
       "title": "Before Eating",
-      "arabic": "بِسْمِ اللَّهِ",
-      "transliteration": "Bismillah",
-      "translation": "In the name of Allah",
-      "reference": "Abu Dawud"
+      "arabic": "بِسْمِ اللَّهِ وَعَلَى بَرَكَةِ اللَّهِ",
+      "transliteration": "Bismillahi wa 'ala barakatillah",
+      "translation": "In the name of Allah and with the blessings of Allah.",
+      "reference": "Abu Dawud",
+      "source": "Hadith"
     },
     {
-      "id": "2",
+      "id": "daily-2",
       "category": "daily",
       "title": "After Eating",
-      "arabic": "الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنِي هَذَا وَرَزَقَنِيهِ مِنْ غَيْرِ حَوْلٍ مِنِّي وَلَا قُوَّةٍ",
-      "transliteration": "Alhamdu lillahil-ladhi at'amani hadha wa razaqanihi min ghairi haulin minni wa la quwwah",
-      "translation": "Praise be to Allah who has given me this food and provided it for me without any effort or power on my part",
-      "reference": "Abu Dawud, Tirmidhi"
+      "arabic": "الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنَا وَسَقَانَا وَجَعَلَنَا مُسْلِمِينَ",
+      "transliteration": "Alhamdu lillahil-ladhi at'amana wa saqana wa ja'alna Muslimeen",
+      "translation": "Praise be to Allah who has fed us and given us drink and made us Muslims.",
+      "reference": "Abu Dawud, At-Tirmidhi",
+      "source": "Hadith"
+    },
+    {
+      "id": "daily-3",
+      "category": "daily",
+      "title": "Before Sleeping",
+      "arabic": "بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا",
+      "transliteration": "Bismika Allahumma amutu wa ahya",
+      "translation": "In Your name, O Allah, I die and I live.",
+      "reference": "Sahih Al-Bukhari",
+      "source": "Hadith"
+    },
+    {
+      "id": "daily-4",
+      "category": "daily",
+      "title": "Upon Waking Up",
+      "arabic": "الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ النُّشُورُ",
+      "transliteration": "Alhamdu lillahil-ladhi ahyana ba'da ma amatana wa ilayhin-nushoor",
+      "translation": "All praise is for Allah who gave us life after having taken it from us, and unto Him is the resurrection.",
+      "reference": "Sahih Al-Bukhari",
+      "source": "Hadith"
+    },
+    {
+      "id": "daily-5",
+      "category": "daily",
+      "title": "Entering the Home",
+      "arabic": "بِسْمِ اللَّهِ وَلَجْنَا، وَبِسْمِ اللَّهِ خَرَجْنَا، وَعَلَى اللَّهِ رَبِّنَا تَوَكَّلْنَا",
+      "transliteration": "Bismillahi walajna, wa bismillahi kharajna, wa 'ala Allahi Rabbina tawakkalna",
+      "translation": "In the name of Allah we enter and in the name of Allah we leave, and upon our Lord we place our trust.",
+      "reference": "Abu Dawud",
+      "source": "Hadith"
+    },
+    {
+      "id": "daily-6",
+      "category": "daily",
+      "title": "Leaving the Home",
+      "arabic": "بِسْمِ اللَّهِ تَوَكَّلْتُ عَلَى اللَّهِ لاَ حَوْلَ وَلاَ قُوَّةَ إِلاَّ بِاللَّهِ",
+      "transliteration": "Bismillahi tawakkaltu 'alal-lahi la hawla wa la quwwata illa billah",
+      "translation": "In the name of Allah, I place my trust in Allah. There is no power and no strength except with Allah.",
+      "reference": "Abu Dawud, At-Tirmidhi",
+      "source": "Hadith"
+    },
+    {
+      "id": "daily-7",
+      "category": "daily",
+      "title": "Entering the Toilet",
+      "arabic": "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْخُبُثِ وَالْخَبَائِثِ",
+      "transliteration": "Allahumma inni a'udhu bika minal-khubuthi wal-khaba'ith",
+      "translation": "O Allah, I seek refuge with You from evil and impure things.",
+      "reference": "Sahih Al-Bukhari, Sahih Muslim",
+      "source": "Hadith"
+    },
+    {
+      "id": "daily-8",
+      "category": "daily",
+      "title": "When Wearing New Clothes",
+      "arabic": "اللَّهُمَّ لَكَ الْحَمْدُ أَنْتَ كَسَوْتَنِيهِ أَسْأَلُكَ مِنْ خَيْرِهِ وَخَيْرِ مَا صُنِعَ لَهُ",
+      "transliteration": "Allahumma lakal-hamdu anta kasawtaneehi, as'aluka min khayrihi wa khayri ma suni'a lah",
+      "translation": "O Allah, for You is all praise, You have clothed me with it. I ask You for its good and the good for which it was made.",
+      "reference": "Abu Dawud, At-Tirmidhi",
+      "source": "Hadith"
     }
   ]
 }
