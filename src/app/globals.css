@@ -924,42 +924,31 @@ textarea::placeholder {
 }
 
 /* ============ GLOBAL SIDEBAR ============ */
-/* Hidden by default (mobile-first). Shown on tablet+. */
+/* Sidebar hidden for now — code preserved, display forced off */
 .gsb-root {
   display: none !important;
 }
 
-@media (min-width: 768px) {
-  .gsb-root {
-    display: flex !important;
-  }
-}
-
-/* Mobile bottom nav: visible only below 768px */
+/* Mobile bottom nav: also hidden while sidebar is off */
 .gsb-mobile-nav {
-  display: flex !important;
+  display: none !important;
 }
 
-@media (min-width: 768px) {
-  .gsb-mobile-nav {
-    display: none !important;
-  }
-}
-
-/* App shell wrapper: sidebar + main side-by-side */
+/* App shell wrapper: full-width when no sidebar */
 .app-shell {
-  display: flex;
+  display: block;
   min-height: 100vh;
-  background: #f6f8f6;
+  background: var(--bg-base);
   transition: background 0.2s;
 }
 
-.dark .app-shell {
-  background: #0d1b12;
+/* Sidebar-less variant — top padding for fixed navbar */
+.app-shell.no-sidebar {
+  padding-top: 0;
 }
 
-.app-shell>main,
-.app-shell>div {
+.app-shell > main,
+.app-shell > div {
   flex: 1;
   min-width: 0;
 }

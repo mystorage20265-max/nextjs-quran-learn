@@ -33,6 +33,7 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [scrollProgress, setScrollProgress] = useState(0);
   const { resolvedTheme, toggleTheme } = useTheme();
 
   const pathname = usePathname();
@@ -41,8 +42,10 @@ export default function Navbar() {
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
+      const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+      setScrollProgress(scrollable > 0 ? Math.min(100, (window.scrollY / scrollable) * 100) : 0);
     };
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -81,6 +84,7 @@ export default function Navbar() {
 
   return (
     <nav className={`nav-wrapper ${isScrolled ? 'nav-scrolled' : ''}`}>
+      <div className="nav-progress-bar" style={{ width: `${scrollProgress}%` }} />
       <div className="nav-container">
         {/* Logo Section */}
         <Link href="/" className="nav-logo" onClick={closeMenu}>

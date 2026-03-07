@@ -22,7 +22,6 @@ import {
     getChapter,
     getAllVerses,
     getVersesWithWords,
-    getTafsirContent,
     Chapter,
     VerseWithTranslation,
     POPULAR_RECITERS,
@@ -31,7 +30,9 @@ import {
 import { saveLastRead, markVerseRead } from '../lib/progress';
 import { parseTranslationWithFootnotes } from '../lib/translationUtils';
 import { trackSurahVisit } from '@/lib/recentSurahs';
+import TafseerModal from '../components/TafseerModal';
 import '../styles/reader.css';
+import '../styles/tafseer-modal.css';
 
 // Clean Indo-Pak text — strips all annotation/mark characters that render as boxes.
 // Three ranges are stripped:
@@ -306,11 +307,8 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
     const [showVerseNav, setShowVerseNav] = useState(false);
     const [showSurahPicker, setShowSurahPicker] = useState(false);
     const [bookmarks, setBookmarks] = useState<string[]>([]);
-    const [expandedTafsir, setExpandedTafsir] = useState<number | null>(null);
-    const [tafsirContent, setTafsirContent] = useState<Record<string, string>>({});
-    const [tafsirLoading, setTafsirLoading] = useState(false);
-    const [tafsirLoaded, setTafsirLoaded] = useState(false);
-    const TAFSIR_ID = 169; // Ibn Kathir (en)
+    // Tafseer modal state (replaces inline expand panels)
+    const [tafseerModalVerse, setTafseerModalVerse] = useState<number | null>(null);
     const [toast, setToast] = useState<{ message: string; type: 'success' | 'warning' } | null>(null);
 
     // Tooltip state for word meanings
@@ -324,9 +322,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
     useEffect(() => {
         let isCancelled = false;
         setMushafPageIndex(0); // Reset page when surah changes
-        setTafsirContent({});  // Reset tafsir when surah changes
-        setTafsirLoaded(false);
-        setExpandedTafsir(null);
+        setTafseerModalVerse(null);
         async function loadData() {
             if (surahNumber < 1 || surahNumber > 114) { setError('Invalid surah number'); setLoading(false); return; }
             try {
@@ -438,41 +434,14 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
         setTimeout(() => setToast(null), 2500);
     };
 
-    // Fetch tafsir for the entire chapter (lazy – only on first expand)
-    const fetchTafsir = useCallback(async () => {
-        if (tafsirLoaded || tafsirLoading) return;
-        setTafsirLoading(true);
-        try {
-            const content = await getTafsirContent(TAFSIR_ID, surahNumber);
-            setTafsirContent(content);
-            setTafsirLoaded(true);
-        } catch {
-            showToast('Could not load Tafsir', 'warning');
-        } finally {
-            setTafsirLoading(false);
-        }
-    }, [surahNumber, tafsirLoaded, tafsirLoading]);
+    // Open tafseer modal for a specific verse
+    const openTafseer = useCallback((verseNumber: number) => {
+        setTafseerModalVerse(verseNumber);
+    }, []);
 
-    const toggleTafsir = useCallback((verseNumber: number) => {
-        if (expandedTafsir === verseNumber) {
-            setExpandedTafsir(null);
-        } else {
-            setExpandedTafsir(verseNumber);
-            fetchTafsir();
-        }
-    }, [expandedTafsir, fetchTafsir]);
-
-    // Strip HTML tags from tafsir text for clean rendering
-    const stripTafsirHtml = (html: string): string => {
-        if (!html) return '';
-        return html
-            .replace(/<sup[^>]*>.*?<\/sup>/gi, '') // remove footnote superscripts
-            .replace(/<[^>]+>/g, ' ')              // strip all tags
-            .replace(/\s{2,}/g, ' ')
-            .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
-            .replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&nbsp;/g, ' ')
-            .trim();
-    };
+    const closeTafseer = useCallback(() => {
+        setTafseerModalVerse(null);
+    }, []);
 
     const toggleBookmark = useCallback((verseKey: string) => {
         const isBookmarked = bookmarks.includes(verseKey);
@@ -583,9 +552,12 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 .dark .nq-header{background:rgba(15,23,42,0.8);border-color:#1e293b}
                 .nq-content{flex:1;display:flex;flex-direction:column;overflow:hidden}
                 @media(min-width:1280px){.nq-content{display:grid;grid-template-columns:1fr 256px}}
-                .nq-scroll{flex:1;overflow-y:auto;padding:16px 16px 160px}
-                @media(min-width:640px){.nq-scroll{padding:24px 24px 160px}}
-                @media(min-width:1024px){.nq-scroll{padding:32px 48px 140px}}
+                .nq-scroll{flex:1;overflow-y:auto;padding:16px 16px 32px}
+                @media(min-width:640px){.nq-scroll{padding:24px 24px 32px}}
+                @media(min-width:1024px){.nq-scroll{padding:32px 48px 32px}}
+                .nq-scroll.audio-on{padding-bottom:160px!important}
+                @media(min-width:640px){.nq-scroll.audio-on{padding-bottom:160px!important}}
+                @media(min-width:1024px){.nq-scroll.audio-on{padding-bottom:140px!important}}
                 .nq-right{flex-shrink:0;border-left:1px solid #e2e8f0;background:white;display:none;flex-direction:column;overflow:hidden}
                 @media(min-width:1280px){.nq-right{display:flex;width:256px}}
                 .dark .nq-right{background:#0f172a;border-color:#1e293b}
@@ -650,9 +622,10 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 .nq-bkmk-btn{width:34px;height:34px;background:#11d442;border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;cursor:pointer;box-shadow:0 4px 14px rgba(17,212,66,0.3);flex-shrink:0}
                 @media(min-width:640px){.nq-bkmk-btn{width:40px;height:40px}}
                 /* Audio bar */
-                .nq-audio-bar{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);width:calc(100% - 20px);background:rgba(255,255,255,0.97);backdrop-filter:blur(16px);border:1px solid #e2e8f0;border-radius:18px;box-shadow:0 8px 32px rgba(0,0,0,0.12);z-index:20;padding:10px 14px}
-                @media(min-width:640px){.nq-audio-bar{bottom:20px;padding:13px 18px;border-radius:22px;width:calc(100% - 32px)}}
-                @media(min-width:1024px){.nq-audio-bar{bottom:24px;padding:16px;border-radius:24px;width:min(800px,90%)}}
+                .nq-audio-bar{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);width:calc(100% - 24px);max-width:720px;background:rgba(255,255,255,0.97);backdrop-filter:blur(16px);border:1px solid #e2e8f0;border-radius:20px;box-shadow:0 8px 32px rgba(0,0,0,0.12);z-index:20;padding:10px 14px;animation:audioBarIn 0.22s ease-out}
+                @keyframes audioBarIn{from{opacity:0;transform:translateX(-50%) translateY(12px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+                @media(min-width:640px){.nq-audio-bar{bottom:20px;padding:13px 18px;border-radius:22px;width:calc(100% - 40px);max-width:760px}}
+                @media(min-width:1024px){.nq-audio-bar{bottom:24px;padding:16px;border-radius:24px;width:calc(100% - 64px);max-width:800px}}
                 .dark .nq-audio-bar{background:rgba(15,23,42,0.97);border-color:#1e293b}
                 .nq-audio-progress-row{margin-bottom:8px}
                 .nq-audio-progress-track{width:100%;height:4px;background:#f1f5f9;border-radius:999px;overflow:hidden;cursor:pointer;position:relative}
@@ -662,7 +635,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 @media(min-width:640px){.nq-audio-bar-inner{gap:16px}}
                 @media(min-width:1024px){.nq-audio-bar-inner{gap:24px}}
                 .nq-reciter-info{display:none;align-items:center;gap:12px;flex:1;min-width:0}
-                @media(min-width:768px){.nq-reciter-info{display:flex}}
+                @media(min-width:640px){.nq-reciter-info{display:flex}}
                 .nq-reciter-avatar{position:relative;width:40px;height:40px;border-radius:50%;background:#f1f5f9;display:flex;align-items:center;justify-content:center;flex-shrink:0}
                 .dark .nq-reciter-avatar{background:#1e293b}
                 .nq-reciter-badge{position:absolute;bottom:-4px;right:-4px;background:#11d442;color:white;font-size:8px;font-weight:700;padding:1px 4px;border-radius:999px;border:2px solid white;font-family:'Lexend',sans-serif}
@@ -681,11 +654,27 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 .nq-play-btn{width:42px;height:42px;background:#11d442;border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;cursor:pointer;box-shadow:0 4px 20px rgba(17,212,66,0.35);transition:transform 0.15s;flex-shrink:0}
                 @media(min-width:640px){.nq-play-btn{width:48px;height:48px}}
                 .nq-play-btn:hover{transform:scale(1.05)}
-                .nq-audio-right{display:none;align-items:center;gap:12px;flex:1;justify-content:flex-end;min-width:0}
-                @media(min-width:768px){.nq-audio-right{display:flex}}
-                .nq-volume-track{width:80px;height:4px;background:#f1f5f9;border-radius:999px;overflow:hidden}
+                .nq-audio-right{display:flex;align-items:center;gap:8px;flex-shrink:0;min-width:0}
+                @media(min-width:640px){.nq-audio-right{gap:12px}}
+                .nq-volume-track{width:60px;height:4px;background:#f1f5f9;border-radius:999px;overflow:hidden;display:none}
+                @media(min-width:640px){.nq-volume-track{display:block;width:80px}}
                 .dark .nq-volume-track{background:#1e293b}
                 .nq-volume-fill{height:100%;background:#94a3b8;border-radius:999px}
+                /* Sound toggle in tabs */
+                .nq-sound-toggle-wrap{display:flex;align-items:center;gap:6px;padding:0 8px;border-left:1px solid #e2e8f0;margin-left:auto;flex-shrink:0}
+                .dark .nq-sound-toggle-wrap{border-left-color:#1e293b}
+                .nq-sound-toggle-label{font-size:11px;font-weight:600;color:#94a3b8;white-space:nowrap;font-family:'Lexend',sans-serif;display:none}
+                @media(min-width:480px){.nq-sound-toggle-label{display:inline}}
+                .nq-sound-pill{position:relative;width:36px;height:20px;border-radius:10px;cursor:pointer;border:none;padding:0;transition:background 0.22s;flex-shrink:0}
+                .nq-sound-pill.on{background:#11d442}
+                .nq-sound-pill.off{background:#cbd5e1}
+                .dark .nq-sound-pill.off{background:#334155}
+                .nq-sound-pill-thumb{position:absolute;top:2px;width:16px;height:16px;border-radius:50%;background:white;transition:left 0.22s;box-shadow:0 1px 3px rgba(0,0,0,0.2)}
+                .nq-sound-pill.on .nq-sound-pill-thumb{left:18px}
+                .nq-sound-pill.off .nq-sound-pill-thumb{left:2px}
+                /* scroll padding when audio bar visible */
+                .nq-scroll.audio-on{padding-bottom:160px}
+                .nq-scroll.audio-off{padding-bottom:32px}
                 /* Right panel */
                 .nq-panel-section{padding:24px;border-bottom:1px solid #f1f5f9}
                 .dark .nq-panel-section{border-color:#1e293b}
@@ -703,22 +692,24 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 .nq-scroll::-webkit-scrollbar-thumb{background:rgba(17,212,66,0.2);border-radius:3px}
                 .nq-right::-webkit-scrollbar{width:4px}
                 .nq-right::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.08);border-radius:2px}
-                /* Mode tabs */
-                .nq-mode-tabs{display:flex;gap:4px;padding:0 16px;background:rgba(255,255,255,0.8);border-bottom:1px solid #e2e8f0;height:44px;align-items:center;flex-shrink:0;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+                /* Mode tabs row */
+                .nq-tabs-row{display:flex;align-items:center;background:rgba(255,255,255,0.8);border-bottom:1px solid #e2e8f0;height:44px;flex-shrink:0;min-width:0}
+                @media(min-width:640px){.nq-tabs-row{height:48px}}
+                .dark .nq-tabs-row{background:rgba(15,23,42,0.8);border-color:#1e293b}
+                .nq-mode-tabs{display:flex;gap:4px;padding:0 8px 0 16px;flex:1;min-width:0;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;align-items:center;height:100%}
                 .nq-mode-tabs::-webkit-scrollbar{display:none}
-                @media(min-width:640px){.nq-mode-tabs{padding:0 24px;height:48px}}
-                    @media(min-width:1024px){.nq-mode-tabs{padding:0 32px}}
-                    .dark .nq-mode-tabs{background:rgba(15,23,42,0.8);border-color:#1e293b}
-                    .nq-mode-tab{padding:5px 12px;border-radius:8px;border:none;cursor:pointer;font-size:12px;font-weight:500;transition:all 0.15s;background:transparent;color:#64748b;font-family:'Lexend',sans-serif;white-space:nowrap;flex-shrink:0}
-                    @media(min-width:640px){.nq-mode-tab{padding:6px 16px;font-size:13px}}
-                    .nq-mode-tab.active{background:#11d442;color:white}
+                @media(min-width:640px){.nq-mode-tabs{padding:0 8px 0 24px}}
+                @media(min-width:1024px){.nq-mode-tabs{padding:0 8px 0 32px}}
+                .nq-mode-tab{padding:5px 12px;border-radius:8px;border:none;cursor:pointer;font-size:12px;font-weight:500;transition:all 0.15s;background:transparent;color:#64748b;font-family:'Lexend',sans-serif;white-space:nowrap;flex-shrink:0}
+                @media(min-width:640px){.nq-mode-tab{padding:6px 16px;font-size:13px}}
+                .nq-mode-tab.active{background:#11d442;color:white}
                     .nq-header-title{margin:0;font-size:14px;font-weight:700;color:#0f172a;display:flex;align-items:baseline;gap:5px;white-space:nowrap;overflow:hidden;min-width:0}
                     @media(min-width:640px){.nq-header-title{font-size:17px;gap:7px}}
                     @media(min-width:1024px){.nq-header-title{font-size:20px;gap:8px}}
                     .nq-header-subtitle{font-size:11px;font-weight:400;color:#94a3b8;flex-shrink:0}
                     @media(min-width:480px){.nq-header-subtitle{font-size:13px}}
                     .dark .nq-header-title{color:#e2e8f0}
-                    /* Audio toggle */
+                    /* Audio toggle (legacy - kept for settings panel compat) */
                     .nq-audio-toggle{display:flex;align-items:center;gap:8px;flex-shrink:0}
                     .nq-audio-toggle-label{font-size:11px;font-weight:600;color:#94a3b8;white-space:nowrap;font-family:'Lexend',sans-serif;text-transform:uppercase;letter-spacing:0.06em}
                     .nq-audio-toggle-pill{position:relative;width:38px;height:22px;border-radius:11px;cursor:pointer;transition:background 0.22s;flex-shrink:0;border:none;padding:0}
@@ -852,19 +843,35 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                         </div>
                     </header>
 
-                    {/* Mode tabs */}
-                    <div className="nq-mode-tabs">
-                        {(['reading', 'translation', 'word-by-word'] as ReadingMode[]).map(m => (
-                            <button key={m} className={`nq-mode-tab ${readingMode === m ? 'active' : ''}`} onClick={() => setReadingMode(m)}>
-                                {m === 'word-by-word' ? 'Word by Word' : m.charAt(0).toUpperCase() + m.slice(1)}
+                    {/* Mode tabs + Sound Toggle */}
+                    <div className="nq-tabs-row">
+                        <div className="nq-mode-tabs">
+                            {(['reading', 'translation', 'word-by-word'] as ReadingMode[]).map(m => (
+                                <button key={m} className={`nq-mode-tab ${readingMode === m ? 'active' : ''}`} onClick={() => setReadingMode(m)}>
+                                    {m === 'word-by-word' ? 'Word by Word' : m.charAt(0).toUpperCase() + m.slice(1)}
+                                </button>
+                            ))}
+                        </div>
+                        {/* Sound Toggle — always visible, same for mobile & desktop */}
+                        <div className="nq-sound-toggle-wrap">
+                            <span className="nq-sound-toggle-label" style={{ color: audioEnabled ? '#11d442' : '#94a3b8' }}>
+                                {audioEnabled ? '🔊 Sound' : '🔇 Sound'}
+                            </span>
+                            <button
+                                className={`nq-sound-pill ${audioEnabled ? 'on' : 'off'}`}
+                                onClick={() => { if (audioEnabled) stopAudio(); setAudioEnabled(!audioEnabled); }}
+                                title={audioEnabled ? 'Disable audio' : 'Enable audio'}
+                                aria-label="Toggle sound"
+                            >
+                                <span className="nq-sound-pill-thumb" />
                             </button>
-                        ))}
+                        </div>
                     </div>
 
                     {/* Content area */}
                     <div className="nq-content">
                         {/* Scrollable verse area */}
-                        <div className="nq-scroll nq-islamic" style={{ '--nq-fs': `${fontSize}px` } as React.CSSProperties}>
+                        <div className={`nq-scroll nq-islamic ${audioEnabled ? 'audio-on' : 'audio-off'}`} style={{ '--nq-fs': `${fontSize}px` } as React.CSSProperties}>
 
                             {/* Verses */}
                             <div style={{ maxWidth: 896, margin: '0 auto' }}>
@@ -1225,21 +1232,8 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                     <button className="verse-action-btn" onClick={() => copyVerse(verse)}><Copy size={14} /><span>Copy</span></button>
                                                     <button className={`verse-action-btn ${bookmarks.includes(verse.verse_key) ? 'bookmarked' : ''}`} onClick={() => toggleBookmark(verse.verse_key)}><Bookmark size={14} /><span>{bookmarks.includes(verse.verse_key) ? 'Saved' : 'Save'}</span></button>
                                                     <button className="verse-action-btn" onClick={() => shareVerse(verse)}><Share2 size={14} /><span>Share</span></button>
-                                                    <button className={`verse-tafsir-toggle ${expandedTafsir === verse.verse_number ? 'active' : ''}`} onClick={() => toggleTafsir(verse.verse_number)}><BookOpen size={14} /><span>Tafsir</span></button>
+                                                    <button className={`verse-tafsir-toggle ${tafseerModalVerse === verse.verse_number ? 'active' : ''}`} onClick={() => openTafseer(verse.verse_number)}><BookOpen size={14} /><span>Tafsir</span></button>
                                                 </div>
-                                                {expandedTafsir === verse.verse_number && (
-                                                    <div className="nq-tafsir-panel">
-                                                        <div className="nq-tafsir-header">
-                                                            <BookOpen size={15} style={{ color: '#11d442' }} />
-                                                            <span>Tafsir Ibn Kathir — Verse {verse.verse_number}</span>
-                                                        </div>
-                                                        {tafsirLoading ? (
-                                                            <div className="nq-tafsir-loading"><div className="reader-spinner" style={{ width: 20, height: 20, borderWidth: 2 }} /> Loading Tafsir…</div>
-                                                        ) : (
-                                                            <p className="nq-tafsir-text">{stripTafsirHtml(tafsirContent[verse.verse_key] || '') || 'Tafsir not available for this verse.'}</p>
-                                                        )}
-                                                    </div>
-                                                )}
                                             </div>
                                         ))}
                                         {/* Surah navigation */}
@@ -1273,21 +1267,8 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                     <button className="nq-action-btn" onClick={() => shareVerse(verse)} title="Share"><Share2 size={14} /></button>
                                                     <button className="nq-action-btn" onClick={() => copyVerse(verse)} title="Copy"><Copy size={14} /></button>
                                                     <button className={`nq-action-btn ${bookmarks.includes(verse.verse_key) ? 'nq-bookmarked' : ''}`} onClick={() => toggleBookmark(verse.verse_key)} title="Bookmark"><Bookmark size={14} /></button>
-                                                    <button className={`nq-action-btn ${expandedTafsir === verse.verse_number ? 'nq-active-btn' : ''}`} onClick={() => toggleTafsir(verse.verse_number)} title="Tafsir"><BookOpen size={14} /></button>
+                                                    <button className={`nq-action-btn ${tafseerModalVerse === verse.verse_number ? 'nq-active-btn' : ''}`} onClick={() => openTafseer(verse.verse_number)} title="Tafsir"><BookOpen size={14} /></button>
                                                 </div>
-                                                {expandedTafsir === verse.verse_number && (
-                                                    <div className="nq-tafsir-panel">
-                                                        <div className="nq-tafsir-header">
-                                                            <BookOpen size={15} style={{ color: '#11d442' }} />
-                                                            <span>Tafsir Ibn Kathir — Verse {verse.verse_number}</span>
-                                                        </div>
-                                                        {tafsirLoading ? (
-                                                            <div className="nq-tafsir-loading"><div className="reader-spinner" style={{ width: 20, height: 20, borderWidth: 2 }} /> Loading Tafsir…</div>
-                                                        ) : (
-                                                            <p className="nq-tafsir-text">{stripTafsirHtml(tafsirContent[verse.verse_key] || '') || 'Tafsir not available for this verse.'}</p>
-                                                        )}
-                                                    </div>
-                                                )}
                                             </div>
                                         ))}
                                         {/* Surah navigation */}
@@ -1303,54 +1284,42 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
 
                     </div>
 
-                    {/* AUDIO BAR */}
-                    <div className="nq-audio-bar">
-                        <div className="nq-audio-progress-row">
-                            <div className="nq-audio-progress-track">
-                                <div className="nq-audio-progress-fill" style={{ width: currentVerse && verses.length ? `${(currentVerse / verses.length) * 100}%` : '0%' }} />
-                            </div>
-                        </div>
-                        <div className="nq-audio-bar-inner">
-                            <div className="nq-reciter-info">
-                                <div className="nq-reciter-avatar">
-                                    <span className="material-symbols-outlined" style={{ fontSize: 22, color: audioEnabled ? '#11d442' : '#94a3b8' }}>person</span>
-                                    <span className="nq-reciter-badge">HQ</span>
-                                </div>
-                                <div style={{ minWidth: 0 }}>
-                                    <p className="nq-reciter-name">{currentReciter?.name || 'Mishary Alafasy'}</p>
-                                    <p className="nq-reciter-sub">{!audioEnabled ? 'Audio disabled' : currentVerse ? `Reciting: Ayah ${currentVerse}` : 'Ready to play'}</p>
+                    {/* AUDIO BAR — Only visible when sound is ON */}
+                    {audioEnabled && (
+                        <div className="nq-audio-bar">
+                            <div className="nq-audio-progress-row">
+                                <div className="nq-audio-progress-track">
+                                    <div className="nq-audio-progress-fill" style={{ width: currentVerse && verses.length ? `${(currentVerse / verses.length) * 100}%` : '0%' }} />
                                 </div>
                             </div>
-                            <div className="nq-audio-controls">
-                                <button className="nq-ctrl-btn hide-xs" title="Repeat"><span className="material-symbols-outlined" style={{ fontSize: 22 }}>repeat_one</span></button>
-                                <button className="nq-ctrl-btn lg" onClick={playPrev} title="Previous (←)" disabled={!audioEnabled} style={{ opacity: audioEnabled ? 1 : 0.4 }}><SkipBack size={26} /></button>
-                                <button className="nq-play-btn" onClick={() => { if (!audioEnabled) return; isPlaying ? stopAudio() : playVerse(currentVerse || 1, true); }} title={!audioEnabled ? 'Audio disabled' : isPlaying ? 'Pause (Space)' : 'Play (Space)'} style={{ opacity: audioEnabled ? 1 : 0.5 }}>
-                                    {isPlaying ? <Pause size={24} /> : <Play size={24} />}
-                                </button>
-                                <button className="nq-ctrl-btn lg" onClick={playNext} title="Next (→)" disabled={!audioEnabled} style={{ opacity: audioEnabled ? 1 : 0.4 }}><SkipForward size={26} /></button>
-                                <button className="nq-ctrl-btn hide-xs" title="Shuffle"><span className="material-symbols-outlined" style={{ fontSize: 22 }}>shuffle</span></button>
-                            </div>
-                            <div className="nq-audio-right">
-                                {/* Audio Enable Toggle */}
-                                <div className="nq-audio-toggle">
-                                    <span className="nq-audio-toggle-label" style={{ color: audioEnabled ? '#11d442' : '#94a3b8' }}>
-                                        {audioEnabled ? 'On' : 'Off'}
-                                    </span>
-                                    <button
-                                        className={`nq-audio-toggle-pill ${audioEnabled ? 'on' : 'off'}`}
-                                        onClick={() => { if (audioEnabled) stopAudio(); setAudioEnabled(!audioEnabled); }}
-                                        title={audioEnabled ? 'Disable audio' : 'Enable audio'}
-                                        aria-label="Toggle audio"
-                                    >
-                                        <span className="nq-audio-toggle-pill-thumb" />
+                            <div className="nq-audio-bar-inner">
+                                <div className="nq-reciter-info">
+                                    <div className="nq-reciter-avatar">
+                                        <span className="material-symbols-outlined" style={{ fontSize: 22, color: '#11d442' }}>person</span>
+                                        <span className="nq-reciter-badge">HQ</span>
+                                    </div>
+                                    <div style={{ minWidth: 0 }}>
+                                        <p className="nq-reciter-name">{currentReciter?.name || 'Mishary Alafasy'}</p>
+                                        <p className="nq-reciter-sub">{currentVerse ? `Reciting: Ayah ${currentVerse}` : 'Ready to play'}</p>
+                                    </div>
+                                </div>
+                                <div className="nq-audio-controls">
+                                    <button className="nq-ctrl-btn hide-xs" title="Repeat"><span className="material-symbols-outlined" style={{ fontSize: 22 }}>repeat_one</span></button>
+                                    <button className="nq-ctrl-btn lg" onClick={playPrev} title="Previous (←)"><SkipBack size={26} /></button>
+                                    <button className="nq-play-btn" onClick={() => { isPlaying ? stopAudio() : playVerse(currentVerse || 1, true); }} title={isPlaying ? 'Pause (Space)' : 'Play (Space)'}>
+                                        {isPlaying ? <Pause size={24} /> : <Play size={24} />}
                                     </button>
+                                    <button className="nq-ctrl-btn lg" onClick={playNext} title="Next (→)"><SkipForward size={26} /></button>
+                                    <button className="nq-ctrl-btn hide-xs" title="Shuffle"><span className="material-symbols-outlined" style={{ fontSize: 22 }}>shuffle</span></button>
                                 </div>
-                                <Volume2 size={18} style={{ color: audioEnabled ? '#94a3b8' : '#cbd5e1', flexShrink: 0 }} />
-                                <div className="nq-volume-track"><div className="nq-volume-fill" style={{ width: audioEnabled ? '75%' : '0%', transition: 'width 0.3s' }} /></div>
-                                <button className="nq-ctrl-btn" onClick={() => setShowSettings(true)} title="Settings"><span className="material-symbols-outlined" style={{ fontSize: 22 }}>more_vert</span></button>
+                                <div className="nq-audio-right">
+                                    <Volume2 size={16} style={{ color: '#94a3b8', flexShrink: 0 }} />
+                                    <div className="nq-volume-track"><div className="nq-volume-fill" style={{ width: '75%' }} /></div>
+                                    <button className="nq-ctrl-btn" onClick={() => setShowSettings(true)} title="Settings"><span className="material-symbols-outlined" style={{ fontSize: 22 }}>more_vert</span></button>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    )}
                 </div>
             </div>
 
@@ -1514,6 +1483,19 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                     </>
                 );
             })()}
+
+            {/* Tafseer Modal — premium side drawer */}
+            <TafseerModal
+                isOpen={tafseerModalVerse !== null}
+                onClose={closeTafseer}
+                verse={verses.find(v => v.verse_number === tafseerModalVerse) ?? null}
+                chapter={chapter}
+                allVerses={verses}
+                onNavigate={(verseNumber) => setTafseerModalVerse(verseNumber)}
+                surahNumber={surahNumber}
+                cleanArabicText={cleanIndopakText}
+                removeBismillah={removeBismillah}
+            />
         </>
     );
 }
