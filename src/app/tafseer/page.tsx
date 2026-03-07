@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { Search, BookOpen, MapPin } from 'lucide-react';
+import './tafseer.css';
 
 const SURAHS = [
     { num: 1, ar: 'الفاتحة', name: 'Al-Fatihah', meaning: 'The Opening', v: 7, t: 'Meccan', desc: 'The opening chapter — a prayer for guidance repeated in every salaah.' },
@@ -135,188 +135,223 @@ const SURAHS = [
 
 const FEATURED = [1, 2, 18, 36, 55, 67, 112, 113, 114];
 
+const FILTERS = [
+  { id: 'All',     label: 'All Surahs',    icon: 'library_books',  desc: '114 surahs', color: '#f59e0b' },
+  { id: 'Meccan',  label: 'Meccan',        icon: 'wb_sunny',       desc: 'Revealed in Makkah', color: '#d97706' },
+  { id: 'Medinan', label: 'Medinan',       icon: 'location_city',  desc: 'Revealed in Madinah', color: '#b45309' },
+  { id: 'Popular', label: 'Popular',       icon: 'star',           desc: 'Most read surahs', color: '#92400e' },
+];
+
+const ARABIC_FONT = "'Naskh IndoPak', serif";
+
 export default function TafseerIndexPage() {
     const [search, setSearch] = useState('');
-    const [filter, setFilter] = useState<'All' | 'Meccan' | 'Medinan'>('All');
+    const [activeFilter, setActiveFilter] = useState('All');
     const [showAll, setShowAll] = useState(false);
+    const [sidebarOpen, setSidebarOpen] = useState(false);
 
     const filtered = useMemo(() => {
         const q = search.toLowerCase();
         return SURAHS.filter(s => {
             const matchQ = !q || s.name.toLowerCase().includes(q) || s.ar.includes(search) || s.meaning.toLowerCase().includes(q) || String(s.num) === search;
-            const matchT = filter === 'All' || s.t === filter;
+            const matchT = activeFilter === 'All'
+              ? true
+              : activeFilter === 'Popular'
+              ? FEATURED.includes(s.num)
+              : s.t === activeFilter;
             return matchQ && matchT;
         });
-    }, [search, filter]);
+    }, [search, activeFilter]);
 
     const displayed = showAll || search ? filtered : filtered.slice(0, 24);
-    const featuredSurahs = SURAHS.filter(s => FEATURED.includes(s.num));
+    const activeFilterData = FILTERS.find(f => f.id === activeFilter) ?? FILTERS[0];
 
     return (
-        <>
-            <style>{`
-        *{box-sizing:border-box}
-        .ti-shell{min-height:100vh;background:#f6f8f6;font-family:'Lexend','Figtree',sans-serif}
-        .dark .ti-shell{background:#0d1b12}
-        .ti-header{background:rgba(246,248,246,0.97);backdrop-filter:blur(12px);border-bottom:1px solid #e2e8f0;position:sticky;top:0;z-index:50}
-        .dark .ti-header{background:rgba(13,27,18,0.97);border-color:#1e3a2a}
-        .ti-header-inner{max-width:900px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;gap:12px}
-        .ti-body{max-width:900px;margin:0 auto;padding:32px 20px 80px}
-        .ti-hero{background:linear-gradient(135deg,#09722a 0%,#11d442 60%,#059669 100%);padding:48px 32px;text-align:center;position:relative;overflow:hidden}
-        .ti-hero::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 2px 2px,rgba(255,255,255,0.06) 1px,transparent 0);background-size:28px 28px}
-        .ti-card{background:white;border:1px solid #e2e8f0;border-radius:14px;padding:18px;transition:all 0.2s;cursor:pointer;display:flex;flex-direction:column;gap:12px}
-        .dark .ti-card{background:#111f16;border-color:#1e3a2a}
-        .ti-card:hover{transform:translateY(-3px);border-color:rgba(17,212,66,0.35);box-shadow:0 8px 32px rgba(17,212,66,0.12)}
-        .ti-featured-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-bottom:40px}
-        .ti-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
-        .ti-filter-btn{padding:7px 16px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:all 0.15s;font-family:'Lexend',sans-serif}
-        .ti-search{display:flex;align-items:center;gap:10px;padding:12px 16px;background:white;border:1px solid #e2e8f0;border-radius:14px;box-shadow:0 1px 4px rgba(0,0,0,0.06)}
-        .dark .ti-search{background:#111f16;border-color:#1e3a2a}
-        .ti-scroll::-webkit-scrollbar{width:4px}
-        .ti-scroll::-webkit-scrollbar-thumb{background:rgba(17,212,66,0.3);border-radius:2px}
-      `}</style>
+      <div className="tafseer-page">
 
-            <div className="ti-shell">
-                {/* Header */}
-                <header className="ti-header">
-                    <div className="ti-header-inner">
-                        <Link href="/" style={{ color: '#94a3b8', display: 'flex', alignItems: 'center', flexShrink: 0, textDecoration: 'none', transition: 'color 0.15s' }}
-                            onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = '#11d442'}
-                            onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = '#94a3b8'}
-                        >
-                            <span style={{ fontSize: 20 }}>←</span>
-                        </Link>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 10, flex: 1 }}>
-                            <div style={{ background: 'rgba(17,212,66,0.12)', borderRadius: 10, padding: 8 }}>
-                                <BookOpen size={20} style={{ color: '#11d442' }} />
-                            </div>
-                            <div>
-                                <h1 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: '#0f172a' }}>Tafseer</h1>
-                                <p style={{ margin: 0, fontSize: 11, color: '#94a3b8' }}>Quran Explanation • 114 Surahs</p>
-                            </div>
-                        </div>
-                    </div>
-                </header>
-
-                {/* Hero banner */}
-                <div className="ti-hero">
-                    <div style={{ position: 'relative', zIndex: 1 }}>
-                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(255,255,255,0.15)', borderRadius: 20, padding: '6px 16px', marginBottom: 16 }}>
-                            <BookOpen size={14} style={{ color: 'white' }} />
-                            <span style={{ color: 'white', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Ibn Kathir · Ma'arif · Tazkirul</span>
-                        </div>
-                        <h2 style={{ margin: '0 0 12px', fontSize: 'clamp(24px,5vw,40px)', fontWeight: 800, color: 'white', lineHeight: 1.2 }}>
-                            Understand the Quran
-                        </h2>
-                        <p style={{ margin: '0 auto', fontSize: 16, color: 'rgba(255,255,255,0.85)', maxWidth: 500, lineHeight: 1.6 }}>
-                            Verse-by-verse explanations from world-renowned scholars. Deepen your connection with the words of Allah.
-                        </p>
-                        <div style={{ fontFamily: "'Naskh IndoPak','Scheherazade New',serif", fontSize: 24, color: 'rgba(255,255,255,0.7)', marginTop: 20 }}>
-                            وَرَتِّلِ الْقُرْآنَ تَرْتِيلًا
-                        </div>
-                        <p style={{ margin: '6px 0 0', fontSize: 12, color: 'rgba(255,255,255,0.6)' }}>"And recite the Quran with measured recitation." — Al-Muzzammil 73:4</p>
-                    </div>
-                </div>
-
-                <main className="ti-body">
-                    {/* Breadcrumb */}
-                    <nav style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#94a3b8', marginBottom: 28, flexWrap: 'wrap' }}>
-                        <Link href="/" style={{ color: '#64748b', textDecoration: 'none' }}>Home</Link>
-                        <span>›</span>
-                        <span style={{ color: '#11d442', fontWeight: 600 }}>Tafseer</span>
-                    </nav>
-
-                    {/* Featured Surahs */}
-                    <section style={{ marginBottom: 40 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
-                            <div style={{ width: 4, height: 20, background: '#11d442', borderRadius: 2 }} />
-                            <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: '#0f172a' }}>Popular Surahs</h2>
-                        </div>
-                        <div className="ti-featured-grid">
-                            {featuredSurahs.map(s => (
-                                <Link key={s.num} href={`/tafseer/${s.num}`} style={{ textDecoration: 'none' }}>
-                                    <div className="ti-card">
-                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                            <div style={{ width: 38, height: 38, borderRadius: 10, background: 'rgba(17,212,66,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: '#11d442', fontSize: 14 }}>{s.num}</div>
-                                            <span style={{ fontFamily: "'Naskh IndoPak',serif", fontSize: 22, color: '#1e293b', direction: 'rtl' }}>{s.ar}</span>
-                                        </div>
-                                        <div>
-                                            <h3 style={{ margin: '0 0 3px', fontSize: 14, fontWeight: 700, color: '#0f172a' }}>{s.name}</h3>
-                                            <p style={{ margin: '0 0 8px', fontSize: 12, color: '#94a3b8' }}>{s.meaning} · {s.v} verses</p>
-                                            {s.desc && <p style={{ margin: 0, fontSize: 12, color: '#64748b', lineHeight: 1.6 }}>{s.desc}</p>}
-                                        </div>
-                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                            <span style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: s.t === 'Meccan' ? '#11d442' : '#94a3b8', display: 'flex', alignItems: 'center', gap: 4 }}>
-                                                <MapPin size={10} /> {s.t}
-                                            </span>
-                                            <span style={{ fontSize: 12, fontWeight: 600, color: '#11d442', display: 'flex', alignItems: 'center', gap: 4 }}>
-                                                Read Tafseer →
-                                            </span>
-                                        </div>
-                                    </div>
-                                </Link>
-                            ))}
-                        </div>
-                    </section>
-
-                    {/* All Surahs section */}
-                    <section>
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: 20, flexWrap: 'wrap' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                                <div style={{ width: 4, height: 20, background: '#11d442', borderRadius: 2 }} />
-                                <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: '#0f172a' }}>All Surahs</h2>
-                                <span style={{ fontSize: 12, color: '#94a3b8' }}>({filtered.length})</span>
-                            </div>
-                            <div style={{ display: 'flex', gap: 6 }}>
-                                {(['All', 'Meccan', 'Medinan'] as const).map(f => (
-                                    <button key={f} className="ti-filter-btn" onClick={() => setFilter(f)}
-                                        style={{ background: filter === f ? '#11d442' : 'white', color: filter === f ? 'white' : '#64748b', border: filter === f ? 'none' : '1px solid #e2e8f0' }}>
-                                        {f}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Search */}
-                        <div className="ti-search" style={{ marginBottom: 20 }}>
-                            <Search size={18} style={{ color: '#94a3b8', flexShrink: 0 }} />
-                            <input type="text" placeholder="Search surah by name, number or meaning…" value={search} onChange={e => setSearch(e.target.value)}
-                                style={{ flex: 1, background: 'transparent', border: 'none', outline: 'none', fontSize: 14, color: '#334155' }} />
-                        </div>
-
-                        <div className="ti-grid">
-                            {displayed.map(s => (
-                                <Link key={s.num} href={`/tafseer/${s.num}`} style={{ textDecoration: 'none' }}>
-                                    <div className="ti-card" style={{ gap: 10 }}>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                                            <div style={{ width: 34, height: 34, borderRadius: 9, background: 'rgba(17,212,66,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: '#11d442', fontSize: 12, flexShrink: 0 }}>{s.num}</div>
-                                            <div style={{ flex: 1, minWidth: 0 }}>
-                                                <p style={{ margin: 0, fontWeight: 700, fontSize: 13, color: '#0f172a', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{s.name}</p>
-                                                <p style={{ margin: 0, fontSize: 11, color: '#94a3b8' }}>{s.meaning}</p>
-                                            </div>
-                                            <span style={{ fontFamily: "'Naskh IndoPak',serif", fontSize: 18, color: '#475569', flexShrink: 0 }}>{s.ar}</span>
-                                        </div>
-                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                            <span style={{ fontSize: 10, color: s.t === 'Meccan' ? '#11d442' : '#94a3b8', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em' }}>{s.t} · {s.v}v</span>
-                                            <span style={{ fontSize: 11, color: '#11d442', fontWeight: 600 }}>Read →</span>
-                                        </div>
-                                    </div>
-                                </Link>
-                            ))}
-                        </div>
-
-                        {!search && filtered.length > 24 && (
-                            <div style={{ textAlign: 'center', marginTop: 24 }}>
-                                <button onClick={() => setShowAll(v => !v)}
-                                    style={{ background: 'white', border: '1px solid #e2e8f0', padding: '10px 28px', borderRadius: 12, fontWeight: 600, fontSize: 13.5, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6, color: '#334155', fontFamily: "'Lexend',sans-serif" }}>
-                                    {showAll ? 'Show Less' : `Show All ${filtered.length} Surahs`}
-                                    <span style={{ display: 'inline-block', transform: showAll ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}>▼</span>
-                                </button>
-                            </div>
-                        )}
-                    </section>
-                </main>
+        {/* ── Hero Banner ── */}
+        <div className="tafseer-hero">
+          <div className="tafseer-hero-pattern" />
+          <div className="tafseer-hero-glow" />
+          <div className="tafseer-hero-content">
+            <div className="tafseer-hero-badge">
+              <span className="material-symbols-outlined" style={{ fontSize: 14 }}>menu_book</span>
+              Ibn Kathir · Ma&apos;arif · Tazkirul Quran
             </div>
-        </>
+            <p className="tafseer-hero-arabic" style={{ fontFamily: ARABIC_FONT }}>
+              وَرَتِّلِ الْقُرْآنَ تَرْتِيلًا
+            </p>
+            <p className="tafseer-hero-transliteration">
+              Wa rattilil-Qur&apos;āna tartīlā
+            </p>
+            <p className="tafseer-hero-translation">
+              &ldquo;And recite the Quran with measured recitation.&rdquo;
+            </p>
+            <div className="tafseer-hero-ref">
+              <span className="material-symbols-outlined" style={{ fontSize: 14 }}>auto_stories</span>
+              Al-Muzzammil 73:4
+            </div>
+            <div className="tafseer-hero-actions">
+              <Link href="/tafseer/1" className="tafseer-hero-btn-primary">
+                <span className="material-symbols-outlined" style={{ fontSize: 18 }}>play_circle</span>
+                Start with Al-Fatihah
+              </Link>
+              <Link href="/tafseer/18" className="tafseer-hero-btn-secondary">
+                <span className="material-symbols-outlined" style={{ fontSize: 18 }}>star</span>
+                Al-Kahf (Friday Surah)
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Main Layout ── */}
+        <div className="tafseer-layout">
+
+          {/* Mobile sidebar toggle */}
+          <button className="tafseer-sidebar-toggle" onClick={() => setSidebarOpen(!sidebarOpen)}>
+            <span className="material-symbols-outlined">{sidebarOpen ? 'close' : 'menu'}</span>
+            Filter
+          </button>
+
+          {/* ── Sidebar ── */}
+          <aside className={`tafseer-sidebar ${sidebarOpen ? 'open' : ''}`}>
+            <div className="tafseer-sidebar-header">
+              <h3 className="tafseer-sidebar-title">
+                <span className="material-symbols-outlined" style={{ fontSize: 20 }}>filter_list</span>
+                Browse By
+              </h3>
+              <span className="tafseer-sidebar-count">114</span>
+            </div>
+
+            <div className="tafseer-sidebar-divider" />
+
+            {FILTERS.map(f => (
+              <button
+                key={f.id}
+                className={`tafseer-filter-btn ${activeFilter === f.id ? 'active' : ''}`}
+                onClick={() => { setActiveFilter(f.id); setSidebarOpen(false); setShowAll(false); }}
+              >
+                <div className="tafseer-filter-icon" style={{ background: `${f.color}18`, color: f.color }}>
+                  <span className="material-symbols-outlined">{f.icon}</span>
+                </div>
+                <div className="tafseer-filter-info">
+                  <span className="tafseer-filter-name">{f.label}</span>
+                  <span className="tafseer-filter-meta">{f.desc}</span>
+                </div>
+                {activeFilter === f.id && <span className="tafseer-filter-active-dot" />}
+              </button>
+            ))}
+
+            <div className="tafseer-sidebar-divider" />
+
+            <div style={{ padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 10 }}>
+              <span className="material-symbols-outlined" style={{ fontSize: 18, color: 'var(--brand-primary)' }}>info</span>
+              <span style={{ fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.5 }}>
+                Verse-by-verse explanations from classic scholars
+              </span>
+            </div>
+          </aside>
+
+          {/* ── Content ── */}
+          <main className="tafseer-content">
+
+            {/* Search */}
+            <div className="tafseer-toolbar">
+              <div className="tafseer-search-wrapper">
+                <span className="material-symbols-outlined tafseer-search-icon">search</span>
+                <input
+                  type="text"
+                  className="tafseer-search-input"
+                  value={search}
+                  onChange={e => { setSearch(e.target.value); setShowAll(false); }}
+                  placeholder="Search surah by name, number or meaning…"
+                />
+                {search && (
+                  <button className="tafseer-search-clear" onClick={() => setSearch('')}>
+                    <span className="material-symbols-outlined" style={{ fontSize: 18 }}>close</span>
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Content Header */}
+            <div className="tafseer-content-header">
+              <div>
+                <h2 className="tafseer-content-title">
+                  {search ? 'Search Results' : activeFilterData.label}
+                </h2>
+                <p className="tafseer-content-subtitle">
+                  {search
+                    ? `${filtered.length} surah${filtered.length !== 1 ? 's' : ''} found for "${search}"`
+                    : `${filtered.length} surah${filtered.length !== 1 ? 's' : ''} — ${activeFilterData.desc}`}
+                </p>
+              </div>
+            </div>
+
+            {/* Empty state */}
+            {filtered.length === 0 && (
+              <div className="tafseer-empty">
+                <span className="material-symbols-outlined" style={{ fontSize: 56, color: 'var(--text-muted)', display: 'block', marginBottom: 16 }}>search_off</span>
+                <h3>No surahs found</h3>
+                <p>Try a different search term or select another filter</p>
+                <button className="tafseer-empty-btn" onClick={() => { setSearch(''); setActiveFilter('All'); }}>
+                  <span className="material-symbols-outlined" style={{ fontSize: 16 }}>restart_alt</span>
+                  Clear Search
+                </button>
+              </div>
+            )}
+
+            {/* Surah Grid */}
+            {filtered.length > 0 && (
+              <div className="tafseer-grid">
+                {displayed.map((s, idx) => (
+                  <Link
+                    key={s.num}
+                    href={`/tafseer/${s.num}`}
+                    className="tafseer-card"
+                    style={{ animationDelay: `${Math.min(idx * 30, 300)}ms` }}
+                  >
+                    <div className="tafseer-card-accent" />
+
+                    <div className="tafseer-card-top">
+                      <div className="tafseer-card-number">{s.num}</div>
+                      <span className="tafseer-card-arabic" style={{ fontFamily: ARABIC_FONT }}>{s.ar}</span>
+                    </div>
+
+                    <div className="tafseer-card-body">
+                      <h3 className="tafseer-card-name">{s.name}</h3>
+                      <p className="tafseer-card-meaning">{s.meaning}</p>
+                      {s.desc && <p className="tafseer-card-desc">{s.desc}</p>}
+                    </div>
+
+                    <div className="tafseer-card-footer">
+                      <span className={`tafseer-card-type ${s.t === 'Meccan' ? 'meccan' : 'medinan'}`}>
+                        <span className="material-symbols-outlined" style={{ fontSize: 12 }}>{s.t === 'Meccan' ? 'wb_sunny' : 'location_city'}</span>
+                        {s.t}
+                      </span>
+                      <span className="tafseer-card-verses">{s.v} verses</span>
+                      <span className="tafseer-card-cta">
+                        Read
+                        <span className="material-symbols-outlined" style={{ fontSize: 14 }}>arrow_forward</span>
+                      </span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
+
+            {/* Show More */}
+            {!search && filtered.length > 24 && (
+              <div className="tafseer-show-more">
+                <button className="tafseer-show-more-btn" onClick={() => setShowAll(v => !v)}>
+                  <span className="material-symbols-outlined" style={{ fontSize: 18, transform: showAll ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}>expand_more</span>
+                  {showAll ? 'Show Less' : `Show All ${filtered.length} Surahs`}
+                </button>
+              </div>
+            )}
+
+          </main>
+        </div>
+      </div>
     );
 }
