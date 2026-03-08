@@ -51,14 +51,8 @@
 .qcnav__logo {
   display: flex;
   align-items: center;
-  gap: 10px;
   text-decoration: none;
   flex-shrink: 0;
-}
-.qcnav__logo-img {
-  height: 36px;
-  width: auto;
-  object-fit: contain;
 }
 .qcnav__logo-name {
   font-size: 17px;
