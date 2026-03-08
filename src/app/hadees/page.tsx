@@ -26,24 +26,23 @@ interface Collection {
 const ARABIC_FONT = "'Naskh IndoPak', serif";
 
 const COLLECTIONS: Collection[] = [
-  { id: 'nawawi40',  name: "Nawawi's 40",    ar: 'الأربعون النووية', description: '40 Essential Hadiths',       color: '#f59e0b', icon: 'bookmark_star'  },
-  { id: 'bukhari',   name: 'Sahih Bukhari',  ar: 'صحيح البخاري',    description: 'Most Authentic Collection',  color: '#d97706', icon: 'verified'       },
-  { id: 'muslim',    name: 'Sahih Muslim',   ar: 'صحيح مسلم',       description: 'Second Most Authentic',      color: '#b45309', icon: 'stars'          },
-  { id: 'abudawud',  name: 'Abu Dawud',      ar: 'سنن أبي داود',    description: 'Sunan Abu Dawud',            color: '#92400e', icon: 'history_edu'   },
+  { id: 'bukhari',   name: 'Sahih Bukhari',  ar: 'صحيح البخاري',    description: 'Most Authentic Collection',  color: '#f59e0b', icon: 'verified'       },
+  { id: 'muslim',    name: 'Sahih Muslim',   ar: 'صحيح مسلم',       description: 'Second Most Authentic',      color: '#d97706', icon: 'stars'          },
+  { id: 'abudawud',  name: 'Abu Dawud',      ar: 'سنن أبي داود',    description: 'Sunan Abu Dawud',            color: '#b45309', icon: 'history_edu'   },
   { id: 'tirmidhi',  name: 'Tirmidhi',       ar: 'جامع الترمذي',    description: "Jami' at-Tirmidhi",          color: '#d97706', icon: 'menu_book'      },
+  { id: 'nasai',     name: "An-Nasa'i",      ar: 'سنن النسائي',     description: "Sunan an-Nasa'i",            color: '#92400e', icon: 'bookmark_star'  },
   { id: 'ibnmajah',  name: 'Ibn Majah',      ar: 'سنن ابن ماجه',    description: 'Sunan Ibn Majah',            color: '#b45309', icon: 'library_books'  },
 ];
 
 const HADITH_OF_THE_DAY = {
   arabic: 'إِنَّمَا الْأَعْمَالُ بِالنِّيَّاتِ وَإِنَّمَا لِكُلِّ امْرِئٍ مَا نَوَى',
   text: "Actions are but by intentions, and every person shall have only that which he intended. So whoever's emigration was for Allah and His Messenger, his emigration is for Allah and His Messenger; and whoever's emigration was for worldly gain or a woman to marry, his emigration is for that which he emigrated.",
-  reference: "Sahih al-Bukhari & Muslim — Nawawi's 40, Hadith #1",
+  reference: 'Sahih al-Bukhari & Muslim — Hadith #1',
 };
 
 /* ─── Component ──────────────────────────────────────────────── */
 export default function HadeesPage() {
-  const [activeCollection, setActiveCollection] = useState<Collection>(COLLECTIONS[0]);
-  const [hadiths, setHadiths]       = useState<Hadith[]>([]);
+  const [activeCollection, setActiveCollection] = useState<Collection>(COLLECTIONS[0]);  const [hadiths, setHadiths]       = useState<Hadith[]>([]);
   const [page, setPage]             = useState(1);
   const [total, setTotal]           = useState(0);
   const [totalPages, setTotalPages] = useState(1);
@@ -55,7 +54,6 @@ export default function HadeesPage() {
   const [bookmarks, setBookmarks] = useState<Set<string>>(new Set());
   const [copied, setCopied] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [heroCopied, setHeroCopied] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
 
   /* Load bookmarks */
@@ -147,54 +145,6 @@ export default function HadeesPage() {
 
   return (
     <div className="hadees-page">
-
-      {/* ── Hero Banner ── */}
-      <div className="hadees-hero">
-        <div className="hadees-hero-pattern" />
-        <div className="hadees-hero-glow" />
-        <div className="hadees-hero-content">
-          <div className="hadees-hero-badge">
-            <span className="material-symbols-outlined" style={{ fontSize: 14 }}>format_quote</span>
-            Hadith of the Day
-          </div>
-          <p className="hadees-hero-arabic" style={{ fontFamily: ARABIC_FONT }}>
-            {HADITH_OF_THE_DAY.arabic}
-          </p>
-          <p className="hadees-hero-text">
-            &ldquo;{HADITH_OF_THE_DAY.text}&rdquo;
-          </p>
-          <div className="hadees-hero-ref">
-            <span className="material-symbols-outlined" style={{ fontSize: 14 }}>auto_stories</span>
-            {HADITH_OF_THE_DAY.reference}
-          </div>
-          <div className="hadees-hero-actions">
-            <button
-              className="hadees-hero-btn-copy"
-              onClick={() => {
-                navigator.clipboard.writeText(`${HADITH_OF_THE_DAY.arabic}\n\n${HADITH_OF_THE_DAY.text}\n\n${HADITH_OF_THE_DAY.reference}`);
-                setHeroCopied(true);
-                setTimeout(() => setHeroCopied(false), 2000);
-              }}
-            >
-              <span className="material-symbols-outlined" style={{ fontSize: 18 }}>
-                {heroCopied ? 'check' : 'content_copy'}
-              </span>
-              {heroCopied ? 'Copied!' : 'Copy'}
-            </button>
-            <button
-              className="hadees-hero-btn-share"
-              onClick={() => {
-                const t = `${HADITH_OF_THE_DAY.arabic}\n\n${HADITH_OF_THE_DAY.text}\n\n${HADITH_OF_THE_DAY.reference}`;
-                if (navigator.share) navigator.share({ title: 'Hadith of the Day', text: t }).catch(() => {});
-                else { navigator.clipboard.writeText(t); setHeroCopied(true); setTimeout(() => setHeroCopied(false), 2000); }
-              }}
-            >
-              <span className="material-symbols-outlined" style={{ fontSize: 18 }}>share</span>
-              Share
-            </button>
-          </div>
-        </div>
-      </div>
 
       {/* ── Main Layout ── */}
       <div className="hadees-layout">

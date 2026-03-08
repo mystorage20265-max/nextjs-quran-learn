@@ -159,53 +159,6 @@ export default function DuaClient() {
   return (
     <div className="duas-page">
 
-      {/* ── Hero Banner ── */}
-      <div className="duas-hero">
-        <div className="duas-hero-pattern" />
-        <div className="duas-hero-glow" />
-        <div className="duas-hero-content">
-          <div className="duas-hero-badge">
-            <span className="material-symbols-outlined" style={{ fontSize: 14 }}>auto_awesome</span>
-            Dua of the Day
-          </div>
-          <p className="duas-hero-arabic" style={{ fontFamily: ARABIC_FONT }}>
-            {DUA_OF_THE_DAY.arabic}
-          </p>
-          <p className="duas-hero-transliteration">{DUA_OF_THE_DAY.transliteration}</p>
-          <p className="duas-hero-translation">{DUA_OF_THE_DAY.translation}</p>
-          <div className="duas-hero-ref">
-            <span className="material-symbols-outlined" style={{ fontSize: 14 }}>menu_book</span>
-            {DUA_OF_THE_DAY.reference}
-          </div>
-          <div className="duas-hero-actions">
-            <button
-              className="duas-hero-btn-copy"
-              onClick={() => {
-                navigator.clipboard.writeText(`${DUA_OF_THE_DAY.arabic}\n\n${DUA_OF_THE_DAY.translation}\n\n— ${DUA_OF_THE_DAY.reference}`);
-                setCopied('dotd');
-                setTimeout(() => setCopied(null), 2000);
-              }}
-            >
-              <span className="material-symbols-outlined" style={{ fontSize: 18 }}>
-                {copied === 'dotd' ? 'check' : 'content_copy'}
-              </span>
-              {copied === 'dotd' ? 'Copied!' : 'Copy'}
-            </button>
-            <button
-              className="duas-hero-btn-share"
-              onClick={() => {
-                const t = `${DUA_OF_THE_DAY.arabic}\n\n${DUA_OF_THE_DAY.translation}\n\n— ${DUA_OF_THE_DAY.reference}`;
-                if (navigator.share) navigator.share({ title: 'Dua of the Day', text: t }).catch(() => { });
-                else { navigator.clipboard.writeText(t); setCopied('dotd'); setTimeout(() => setCopied(null), 2000); }
-              }}
-            >
-              <span className="material-symbols-outlined" style={{ fontSize: 18 }}>share</span>
-              Share
-            </button>
-          </div>
-        </div>
-      </div>
-
       {/* ── Main Layout ── */}
       <div className="duas-layout">
 
