@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { useTheme } from '@/components/ThemeProvider';
 
 const SURAHS = [
   { num: 1, ar: 'الفاتحة', name: 'Al-Fatihah', meaning: 'The Opening', v: 7, t: 'Meccan' },
@@ -188,7 +189,8 @@ export default function HomePage() {
   const [typeFilter, setTypeFilter] = useState<'All' | 'Meccan' | 'Medinan'>('All');
   const [showAll, setShowAll] = useState(false);
   const [recent, setRecent] = useState<typeof SURAHS>([]);
-  const [dark, setDark] = useState(false);
+  const { resolvedTheme, toggleTheme } = useTheme();
+  const dark = resolvedTheme === 'dark';
   const [sessionTime, setSessionTime] = useState(0); // seconds this session
   const [totalTime, setTotalTime] = useState(0);     // cumulative seconds all sessions
 
@@ -213,26 +215,13 @@ export default function HomePage() {
   useEffect(() => {
     const saved = localStorage.getItem('recentSurahs');
     if (saved) setRecent(JSON.parse(saved));
-    const isDark = document.documentElement.classList.contains('dark');
-    setDark(isDark);
     // Load cumulative time
     const savedTotal = parseInt(localStorage.getItem('quranTotalTime') || '0', 10);
     setTotalTime(savedTotal);
     // Load tasbeeh total
     const savedTasbeehTotal = parseInt(localStorage.getItem('tasbeehTotal') || '0', 10);
     setTasbeehTotal(savedTasbeehTotal);
-    // Sync dark state with external toggles
-    const obs = new MutationObserver(() => setDark(document.documentElement.classList.contains('dark')));
-    obs.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-    return () => obs.disconnect();
   }, []);
-
-  const toggleDark = () => {
-    const html = document.documentElement;
-    const next = !dark;
-    next ? html.classList.add('dark') : html.classList.remove('dark');
-    setDark(next);
-  };
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -299,11 +288,11 @@ export default function HomePage() {
   const todayAyah = AYAHS_OF_DAY[new Date().getDate() % AYAHS_OF_DAY.length];
 
   const S = {
-    shell: { display: 'flex', flexDirection: 'column' as const, flex: 1, minHeight: '100vh', background: dark ? '#0f0d0a' : 'white', fontFamily: "'Figtree','Lexend',sans-serif" },
-    card: { background: dark ? '#1a1612' : 'white', border: `1px solid ${dark ? '#241f1a' : '#f1f5f9'}`, borderRadius: 16, boxShadow: '0 1px 4px rgba(0,0,0,0.06)' },
-    text: { color: dark ? '#e2e8e5' : '#0f172a' },
-    muted: { color: '#94a3b8' },
-    tag: (t: string) => ({ fontSize: 9, fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: '0.12em', color: t === 'Meccan' ? '#f59e0b' : '#94a3b8' }),
+    shell: { display: 'flex', flexDirection: 'column' as const, flex: 1, minHeight: '100vh', background: 'var(--bg-base)', fontFamily: "'Figtree','Lexend',sans-serif" },
+    card: { background: 'var(--bg-card)', border: '1px solid var(--border-default)', borderRadius: 16, boxShadow: '0 1px 4px rgba(0,0,0,0.08)' },
+    text: { color: 'var(--text-primary)' },
+    muted: { color: 'var(--text-muted)' },
+    tag: (t: string) => ({ fontSize: 9, fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: '0.12em', color: t === 'Meccan' ? '#f59e0b' : 'var(--text-muted)' }),
   };
 
   return (
