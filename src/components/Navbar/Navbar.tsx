@@ -26,7 +26,7 @@ const MEGA_SECTIONS = [
       { href: '/read-quran',        label: 'Read Quran',      icon: 'menu_book',          desc: 'Full Arabic text'       },
       { href: '/audio-quran',       label: 'Audio Quran',     icon: 'headphones',         desc: 'Stream recitations'     },
       { href: '/full-surah-reader', label: 'Surah Reader',    icon: 'chrome_reader_mode', desc: 'Immersive reading'      },
-      { href: '/word-by-word',      label: 'Word by Word',    icon: 'text_fields',        desc: 'Every word explained'   },
+      { href: '/read-quran/1?mode=word-by-word', label: 'Word by Word', icon: 'text_fields', desc: 'Every word explained'   },
       { href: '/tafseer',           label: 'Tafseer',         icon: 'lightbulb',          desc: 'Classical commentary'   },
     ],
   },

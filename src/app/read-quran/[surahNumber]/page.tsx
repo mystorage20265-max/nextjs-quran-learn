@@ -1639,7 +1639,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                     {ALL_SURAHS.map(s => (
                                         <Link
                                             key={s.number}
-                                            href={`/read-quran/${s.number}`}
+                                            href={`/read-quran/${s.number}?mode=${readingMode}`}
                                             onClick={() => setShowSurahPicker(false)}
                                             style={{
                                                 display: 'flex', alignItems: 'center', gap: 12,
@@ -1690,7 +1690,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                             {ALL_SURAHS.map(s => (
                                 <Link
                                     key={s.number}
-                                    href={`/read-quran/${s.number}`}
+                                    href={`/read-quran/${s.number}?mode=${readingMode}`}
                                     onClick={() => setShowSurahPicker(false)}
                                     style={{
                                         display: 'flex', alignItems: 'center', gap: 10,
