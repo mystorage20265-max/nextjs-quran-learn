@@ -136,7 +136,7 @@
   transition: filter var(--nb-t), transform var(--nb-t);
 }
 .nb-logo:hover .nb-logo-img {
-  filter: drop-shadow(0 0 16px rgba(16,185,129,0.65));
+  filter: drop-shadow(0 0 16px rgba(245,158,11,0.65));
   transform: scale(1.06);
 }
 

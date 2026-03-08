@@ -1,4 +1,4 @@
-.ruku-header {
+﻿.ruku-header {
   text-align: center;
   background-color: #f0f9ff;
   padding: 2rem 1rem;
@@ -85,7 +85,7 @@
   cursor: pointer;
   transition: all 0.2s ease;
   border: none;
-  background-color: #0ea57a;
+  background-color: #d97706;
   color: white;
 }
 

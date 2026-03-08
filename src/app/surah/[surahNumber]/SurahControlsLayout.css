@@ -1,4 +1,4 @@
-.surah-page-container {
+﻿.surah-page-container {
   /* Add space below navbar */
   margin-top: 80px; /* Increased margin to ensure visibility */
   padding-top: 0;
@@ -60,7 +60,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1.25rem;
-  background: #059669;
+  background: #d97706;
   color: white;
   border: none;
   border-radius: 8px;
@@ -78,7 +78,7 @@
 /* Bookmarked state */
 .bookmark-button.bookmarked {
   background: #ebf5ff;
-  border-color: #3b82f6;
+  border-color: #d97706;
   color: #1d4ed8;
 }
 

@@ -1,6 +1,6 @@
-/* ============================================================
+﻿/* ============================================================
    LEARN QURAN — Light Theme matching Homepage
-   Colors: #11d442 green, white/off-white bg, Lexend + Figtree
+   Colors: #f59e0b green, white/off-white bg, Lexend + Figtree
    ============================================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&family=Figtree:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap');
@@ -11,7 +11,7 @@
     --lq-bg-card: #ffffff;
     --lq-bg-hover: #f0fdf4;
 
-    --lq-primary: #11d442;
+    --lq-primary: #f59e0b;
     --lq-primary-dark: #0ea832;
     --lq-primary-dim: rgba(17, 212, 66, 0.12);
     --lq-primary-glow: rgba(17, 212, 66, 0.25);
@@ -137,7 +137,7 @@ h3 {
     font-weight: 800;
     letter-spacing: -0.04em;
     margin-bottom: 16px;
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #11d442 100%);
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #f59e0b 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -220,7 +220,7 @@ h3 {
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(90deg, #11d442, #059669);
+    background: linear-gradient(90deg, #f59e0b, #d97706);
     opacity: 0;
     transition: opacity 0.3s;
 }
@@ -486,7 +486,7 @@ input:checked+.lq-slider-round:before {
 
 /* ── PLAY BUTTON ── */
 .lq-play-main {
-    background: linear-gradient(135deg, #11d442 0%, #059669 100%);
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
     color: white;
     border: none;
     padding: 11px 26px;
@@ -893,7 +893,7 @@ input:checked+.lq-slider-round:before {
 }
 
 .lq-nav-btn.next {
-    background: linear-gradient(135deg, #11d442 0%, #059669 100%);
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
     color: white;
     font-weight: 700;
     box-shadow: 0 4px 16px var(--lq-primary-glow);

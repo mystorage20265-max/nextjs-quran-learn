@@ -1,4 +1,4 @@
-.playing-button {
+﻿.playing-button {
   background: #38a169 !important;
   color: #fff !important;
   font-weight: bold;
@@ -55,7 +55,7 @@
   justify-content: center;
   width: 2rem;
   height: 2rem;
-  background-color: #0ea57a;
+  background-color: #d97706;
   color: white;
   font-weight: 500;
   border-radius: 50%;
@@ -90,7 +90,7 @@
 }
 
 .verse-audio-btn {
-  background-color: #059669;
+  background-color: #d97706;
   color: white;
   border: none;
   border-radius: 50%;
@@ -113,7 +113,7 @@
 
 .verse-audio-btn:hover {
   transform: scale(1.1);
-  background-color: #047857;
+  background-color: #b45309;
 }
 
 .verse-audio-btn:disabled {
@@ -140,7 +140,7 @@
 }
 
 .verse-audio-btn.play:hover:not(:disabled) {
-  background-color: #047857;
+  background-color: #b45309;
 }
 
 .verse-audio-btn.stop {

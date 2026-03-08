@@ -1,4 +1,4 @@
-.ruku-ayah {
+﻿.ruku-ayah {
   display: flex;
   flex-direction: row;
   align-items: stretch;
@@ -19,7 +19,7 @@
 }
 .ruku-ayah.active {
   background-color: #f0f9ff;
-  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.10);
+  box-shadow: 0 8px 24px rgba(245, 158, 11, 0.10);
 }
 .ruku-left-column {
   width: 80px;
@@ -37,7 +37,7 @@
   justify-content: center;
   width: 2.2rem;
   height: 2.2rem;
-  background-color: #0ea57a;
+  background-color: #d97706;
   color: white;
   font-weight: 600;
   border-radius: 50%;
@@ -45,7 +45,7 @@
   margin-bottom: 0.5rem;
 }
 .ruku-audio-btn {
-  background-color: #059669;
+  background-color: #d97706;
   color: white;
   border: none;
   border-radius: 50%;
@@ -66,7 +66,7 @@
 }
 .ruku-audio-btn:hover {
   transform: scale(1.1);
-  background-color: #047857;
+  background-color: #b45309;
 }
 .ruku-audio-btn:disabled {
   opacity: 0.5;

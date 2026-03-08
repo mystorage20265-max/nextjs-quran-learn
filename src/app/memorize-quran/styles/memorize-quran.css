@@ -1,4 +1,4 @@
-/* Memorize Quran - White/Sober Theme matching Homepage */
+﻿/* Memorize Quran - White/Sober Theme matching Homepage */
 /* Clean, Light, Focus-Driven */
 
 /* ===== FONT IMPORTS ===== */
@@ -9,7 +9,7 @@
 /* ===== VARIABLES ===== */
 :root {
     --mq-bg: #f8fafc;
-    --mq-primary: #11d442;
+    --mq-primary: #f59e0b;
     --mq-primary-dim: rgba(17, 212, 66, 0.1);
     --mq-primary-hover: rgba(17, 212, 66, 0.2);
     --mq-text: #1e293b;
@@ -1066,8 +1066,8 @@
 
 .focus-mode-test-btn.active {
     background: rgba(17, 212, 66, 0.12);
-    border-color: #11d442;
-    color: #11d442;
+    border-color: #f59e0b;
+    color: #f59e0b;
 }
 
 .focus-mode-content {
@@ -1115,7 +1115,7 @@
 }
 
 .verse-end-mark {
-    color: #11d442;
+    color: #f59e0b;
     font-size: 0.75em;
     margin-right: 8px;
 }
@@ -1140,11 +1140,11 @@
 }
 
 .repeat-dot.completed {
-    background: #11d442;
+    background: #f59e0b;
 }
 
 .repeat-dot.active {
-    background: #11d442;
+    background: #f59e0b;
     transform: scale(1.4);
     box-shadow: 0 0 8px rgba(17, 212, 66, 0.4);
 }
@@ -1183,15 +1183,15 @@
 
 .focus-ctrl-btn:hover {
     background: rgba(17, 212, 66, 0.1);
-    border-color: #11d442;
-    color: #11d442;
+    border-color: #f59e0b;
+    color: #f59e0b;
 }
 
 .focus-ctrl-btn.play {
     width: 64px;
     height: 64px;
-    background: #11d442;
-    border-color: #11d442;
+    background: #f59e0b;
+    border-color: #f59e0b;
     color: white;
     font-size: 1.3rem;
     box-shadow: 0 4px 16px rgba(17, 212, 66, 0.3);

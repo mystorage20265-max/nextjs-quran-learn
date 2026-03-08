@@ -1,6 +1,6 @@
-/* ═══════════════════════════════════════════════════════════════
+﻿/* ═══════════════════════════════════════════════════════════════
    Embryology Page — Premium Light Editorial Theme
-   Primary: #0fbd74  |  Background: #fcfdfc  |  Text: #0f172a
+   Primary: #f59e0b  |  Background: #fcfdfc  |  Text: #0f172a
    ═══════════════════════════════════════════════════════════════ */
 
 @import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
@@ -177,7 +177,7 @@
 }
 
 .progress-text {
-    color: #0fbd74;
+    color: #f59e0b;
     font-weight: 700;
     font-size: 0.8rem;
 }
@@ -199,8 +199,8 @@
 
 .comparison-toggle:hover,
 .comparison-toggle.active {
-    background: #0fbd74;
-    border-color: #0fbd74;
+    background: #f59e0b;
+    border-color: #f59e0b;
     color: #ffffff;
     transform: translateY(-2px);
     box-shadow: 0 4px 14px rgba(15, 189, 116, 0.3);
@@ -248,13 +248,13 @@
 
 .timeline-dot:hover {
     transform: scale(1.2);
-    border-color: #0fbd74;
+    border-color: #f59e0b;
     box-shadow: 0 4px 14px rgba(15, 189, 116, 0.2);
 }
 
 .timeline-dot.active {
-    background: #0fbd74;
-    border-color: #0fbd74;
+    background: #f59e0b;
+    border-color: #f59e0b;
     box-shadow: 0 0 0 4px rgba(15, 189, 116, 0.15), 0 4px 14px rgba(15, 189, 116, 0.35);
     transform: scale(1.3);
 }
@@ -265,13 +265,13 @@
 
 .timeline-dot.completed {
     background: rgba(15, 189, 116, 0.15);
-    border-color: #0fbd74;
+    border-color: #f59e0b;
 }
 
 .dot-inner {
     width: 8px;
     height: 8px;
-    background: #0fbd74;
+    background: #f59e0b;
     border-radius: 50%;
 }
 
@@ -349,7 +349,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #0fbd74;
+    color: #f59e0b;
     animation: float-icon 3.5s ease-in-out infinite;
 }
 
@@ -398,7 +398,7 @@
 }
 
 .gradient-text {
-    background: linear-gradient(135deg, #0fbd74 0%, #047857 60%, #064e3b 100%);
+    background: linear-gradient(135deg, #f59e0b 0%, #b45309 60%, #92400e 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -422,7 +422,7 @@
     border-radius: 14px;
     border: 1px solid #e2e8f0;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-    color: #0fbd74;
+    color: #f59e0b;
 }
 
 .hero-verse p {
@@ -530,7 +530,7 @@
     font-family: 'Newsreader', serif;
     font-size: clamp(2.8rem, 5.5vw, 4.5rem);
     font-weight: 800;
-    color: #0fbd74;
+    color: #f59e0b;
     line-height: 1;
 }
 
@@ -569,7 +569,7 @@
 }
 
 .title-highlight {
-    color: #0fbd74;
+    color: #f59e0b;
     position: relative;
 }
 
@@ -580,7 +580,7 @@
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(90deg, #0fbd74, #047857);
+    background: linear-gradient(90deg, #f59e0b, #b45309);
     border-radius: 2px;
 }
 
@@ -608,7 +608,7 @@
 }
 
 .quran-track .track-label {
-    color: #0fbd74;
+    color: #f59e0b;
 }
 
 .science-track .track-label {
@@ -630,7 +630,7 @@
 }
 
 .quran-bar {
-    background: linear-gradient(90deg, #0fbd74, #047857);
+    background: linear-gradient(90deg, #f59e0b, #b45309);
     box-shadow: 0 4px 20px rgba(15, 189, 116, 0.25);
 }
 
@@ -670,7 +670,7 @@
 .marker-dot {
     width: 14px;
     height: 14px;
-    background: #0fbd74;
+    background: #f59e0b;
     border-radius: 50%;
     box-shadow: 0 0 0 4px rgba(15, 189, 116, 0.2);
     animation: pulse-marker 2s ease-in-out infinite;
@@ -720,7 +720,7 @@
 .arrow-line {
     width: 80px;
     height: 3px;
-    background: linear-gradient(90deg, #0fbd74, #94a3b8);
+    background: linear-gradient(90deg, #f59e0b, #94a3b8);
 }
 
 .arrow-head {
@@ -734,7 +734,7 @@
 .gap-label {
     font-size: 0.875rem;
     font-weight: 700;
-    color: #0fbd74;
+    color: #f59e0b;
     background: rgba(15, 189, 116, 0.08);
     padding: 8px 18px;
     border-radius: 20px;
@@ -774,7 +774,7 @@
 }
 
 .kinetic-fact:hover {
-    border-left-color: #0fbd74;
+    border-left-color: #f59e0b;
     transform: translateX(8px);
 }
 
@@ -812,7 +812,7 @@
 }
 
 .highlight {
-    color: #0fbd74;
+    color: #f59e0b;
     font-style: normal;
     font-weight: 700;
     font-family: 'Plus Jakarta Sans', sans-serif;
@@ -852,7 +852,7 @@
     font-weight: 700;
     letter-spacing: 0.3em;
     text-transform: uppercase;
-    color: #0fbd74;
+    color: #f59e0b;
     background: rgba(15, 189, 116, 0.08);
     padding: 6px 14px;
     border-radius: 20px;
@@ -922,7 +922,7 @@
     font-size: 1.5rem;
     font-weight: 600;
     font-style: italic;
-    color: #0fbd74;
+    color: #f59e0b;
     margin: 0;
 }
 
@@ -938,7 +938,7 @@
 .verse-box {
     background: #f8fafc;
     border: 1px solid #e2e8f0;
-    border-left: 3px solid #0fbd74;
+    border-left: 3px solid #f59e0b;
     border-radius: 12px;
     padding: 20px;
     display: flex;
@@ -956,7 +956,7 @@
     font-weight: 700;
     letter-spacing: 0.15em;
     text-transform: uppercase;
-    color: #0fbd74;
+    color: #f59e0b;
 }
 
 .verse-text {
@@ -994,7 +994,7 @@
     background: rgba(15, 189, 116, 0.06);
     border: 1px solid rgba(15, 189, 116, 0.18);
     border-radius: 14px;
-    color: #0fbd74;
+    color: #f59e0b;
     margin-top: auto;
 }
 
@@ -1009,7 +1009,7 @@
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.15em;
-    color: #0fbd74;
+    color: #f59e0b;
 }
 
 .miracle-text {
@@ -1041,7 +1041,7 @@
 .transition-line {
     flex: 1;
     height: 1px;
-    background: linear-gradient(90deg, transparent, #e2e8f0, #0fbd74, #e2e8f0, transparent);
+    background: linear-gradient(90deg, transparent, #e2e8f0, #f59e0b, #e2e8f0, transparent);
 }
 
 .transition-text {
@@ -1141,7 +1141,7 @@
 .stage-badge {
     width: 32px;
     height: 32px;
-    background: #0fbd74;
+    background: #f59e0b;
     color: #ffffff;
     border-radius: 8px;
     display: flex;
@@ -1176,14 +1176,14 @@
 }
 
 .time-col {
-    color: #0fbd74;
+    color: #f59e0b;
     font-weight: 700;
     font-size: 0.8rem;
 }
 
 /* Reflection card */
 .reflection-card {
-    background: linear-gradient(135deg, #0fbd74, #047857, #064e3b);
+    background: linear-gradient(135deg, #f59e0b, #b45309, #92400e);
     border-radius: 24px;
     padding: 48px;
     display: flex;
@@ -1258,13 +1258,13 @@
 }
 
 .action-btn.primary {
-    background: #0fbd74;
+    background: #f59e0b;
     color: #ffffff;
     box-shadow: 0 4px 14px rgba(15, 189, 116, 0.35);
 }
 
 .action-btn.primary:hover {
-    background: #059669;
+    background: #d97706;
     transform: translateY(-2px);
     box-shadow: 0 8px 24px rgba(15, 189, 116, 0.4);
 }
@@ -1277,8 +1277,8 @@
 }
 
 .action-btn.secondary:hover {
-    border-color: #0fbd74;
-    color: #0fbd74;
+    border-color: #f59e0b;
+    color: #f59e0b;
     transform: translateY(-2px);
 }
 

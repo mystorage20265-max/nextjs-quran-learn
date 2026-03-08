@@ -1,4 +1,4 @@
-/* Read Quran - Premium Cinematic Theme */
+﻿/* Read Quran - Premium Cinematic Theme */
 /* Fully Responsive, Animated, Glassmorphism Design */
 
 /* ============ FONTS ============ */
@@ -12,10 +12,10 @@
   --rq-container-width: 900px;
 
   /* Colors - Light Theme */
-  --rq-primary: #10b981;
+  --rq-primary: #f59e0b;
   /* Emerald 500 */
-  --rq-primary-hover: #059669;
-  --rq-primary-glow: rgba(16, 185, 129, 0.4);
+  --rq-primary-hover: #d97706;
+  --rq-primary-glow: rgba(245, 158, 11, 0.4);
   --rq-secondary: #0ea5e9;
   --rq-accent: #f59e0b;
 
@@ -52,7 +52,7 @@
   /* Matching Vercel cards */
   --rq-radius-full: 9999px;
 
-  --rq-shadow-glow: 0 0 20px rgba(16, 185, 129, 0.2);
+  --rq-shadow-glow: 0 0 20px rgba(245, 158, 11, 0.2);
   --rq-blur: blur(12px);
 
   /* Arabic Typography - UPDATED FOR VISIBILITY */
@@ -98,7 +98,7 @@
   background:
     radial-gradient(
       circle at 15% 50%,
-      rgba(16, 185, 129, 0.08) 0%,
+      rgba(245, 158, 11, 0.08) 0%,
       transparent 25%
     ),
     radial-gradient(
@@ -256,8 +256,8 @@
 .rq-surah-card:hover {
   transform: translateY(-8px) scale(1.02);
   border-color: var(--rq-primary);
-  box-shadow: 0 10px 30px -10px rgba(16, 185, 129, 0.3);
-  background: rgba(16, 185, 129, 0.03);
+  box-shadow: 0 10px 30px -10px rgba(245, 158, 11, 0.3);
+  background: rgba(245, 158, 11, 0.03);
 }
 
 /* Stagger animations for first 20 items */
@@ -288,8 +288,8 @@
 .rq-surah-number {
   width: 48px;
   height: 48px;
-  background: rgba(16, 185, 129, 0.1);
-  border: 1px solid rgba(16, 185, 129, 0.2);
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.2);
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -349,7 +349,7 @@
   position: relative;
   background: linear-gradient(
     180deg,
-    rgba(16, 185, 129, 0.1) 0%,
+    rgba(245, 158, 11, 0.1) 0%,
     rgba(15, 23, 42, 0) 100%
   );
   padding: 60px 24px;
@@ -378,7 +378,7 @@
   font-size: clamp(3rem, 8vw, 5rem);
   color: var(--rq-text);
   margin-bottom: 16px;
-  text-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);
+  text-shadow: 0 4px 20px rgba(245, 158, 11, 0.3);
 }
 
 .surah-name-english-large {
@@ -418,7 +418,7 @@
 
 .rq-verse.playing {
   border-color: var(--rq-primary);
-  background: rgba(16, 185, 129, 0.05);
+  background: rgba(245, 158, 11, 0.05);
   box-shadow: var(--rq-shadow-glow);
 }
 
@@ -743,7 +743,7 @@
 .rq-spinner {
   width: 40px;
   height: 40px;
-  border: 3px solid rgba(16, 185, 129, 0.1);
+  border: 3px solid rgba(245, 158, 11, 0.1);
   border-top-color: var(--rq-primary);
   border-radius: 50%;
   animation: rq-spin 1s linear infinite;
@@ -955,7 +955,7 @@
   font-size: 2.5rem;
   color: var(--rq-primary);
   margin: 40px 0;
-  text-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+  text-shadow: 0 0 20px rgba(245, 158, 11, 0.2);
   animation: rq-fadeIn 1s ease-out;
 }
 
@@ -1133,11 +1133,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(16, 185, 129, 0.1);
+  background: rgba(245, 158, 11, 0.1);
   border-radius: 50%;
   font-size: 1.2rem;
   color: var(--rq-primary);
-  border: 1px solid rgba(16, 185, 129, 0.2);
+  border: 1px solid rgba(245, 158, 11, 0.2);
 }
 
 .rq-continue-text {
@@ -1267,10 +1267,10 @@
 .rq-verse.playing {
   border-color: var(--rq-primary);
   box-shadow:
-    0 0 20px rgba(16, 185, 129, 0.15),
-    inset 0 0 20px rgba(16, 185, 129, 0.05);
+    0 0 20px rgba(245, 158, 11, 0.15),
+    inset 0 0 20px rgba(245, 158, 11, 0.05);
   transform: scale(1.01);
-  background: rgba(16, 185, 129, 0.08);
+  background: rgba(245, 158, 11, 0.08);
   /* Subtle green tint */
   transition: all 0.5s ease-out;
 }
@@ -1313,7 +1313,7 @@
   font-family: "Inter", sans-serif;
   font-weight: 700;
   color: var(--rq-primary);
-  background: rgba(16, 185, 129, 0.1);
+  background: rgba(245, 158, 11, 0.1);
   border: 2px solid var(--rq-primary);
   border-radius: 50%;
   position: relative;
@@ -1339,9 +1339,9 @@
   color: var(--rq-primary);
   margin-bottom: 40px;
   padding: 24px;
-  background: rgba(16, 185, 129, 0.05);
+  background: rgba(245, 158, 11, 0.05);
   border-radius: var(--rq-radius-lg);
-  border: 1px solid rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.1);
 }
 
 @keyframes v-fadeSlideUp {
@@ -1399,7 +1399,7 @@
   height: 60vw;
   background: radial-gradient(
     circle,
-    rgba(16, 185, 129, 0.08) 0%,
+    rgba(245, 158, 11, 0.08) 0%,
     transparent 70%
   );
   transform: translate(-50%, -50%);
@@ -1425,7 +1425,7 @@
 .rq-tab.active {
   background: var(--rq-primary);
   color: white;
-  box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
   border-color: var(--rq-primary);
 }
 
@@ -1484,8 +1484,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(16, 185, 129, 0.1);
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.3);
   border-radius: 50%;
   color: var(--rq-primary);
   font-weight: 600;
@@ -1529,12 +1529,12 @@
 }
 
 .interactive-word:hover {
-  background: rgba(16, 185, 129, 0.1);
+  background: rgba(245, 158, 11, 0.1);
   transform: translateY(-2px);
 }
 
 .interactive-word.active {
-  background: rgba(16, 185, 129, 0.15);
+  background: rgba(245, 158, 11, 0.15);
   color: var(--rq-primary);
 }
 
@@ -1581,7 +1581,7 @@
   padding: 16px 20px;
   box-shadow:
     0 10px 40px rgba(0, 0, 0, 0.4),
-    0 0 20px rgba(16, 185, 129, 0.2);
+    0 0 20px rgba(245, 158, 11, 0.2);
   min-width: 200px;
   max-width: 300px;
   text-align: center;

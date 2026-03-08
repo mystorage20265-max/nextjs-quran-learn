@@ -1,4 +1,4 @@
-/* Surah header and navigation styles */
+﻿/* Surah header and navigation styles */
 
 .manzil-navigation {
   display: flex;
@@ -44,7 +44,7 @@
 }
 
 .surah-header {
-  background: linear-gradient(90deg, #059669, #0d9488);
+  background: linear-gradient(90deg, #d97706, #d97706);
   color: white;
   padding: 1.25rem;
   display: flex;

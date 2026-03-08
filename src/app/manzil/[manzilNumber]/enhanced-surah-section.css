@@ -1,4 +1,4 @@
-.surah-section {
+﻿.surah-section {
   margin-bottom: 2.5rem;
   border-radius: 0.5rem;
   overflow: hidden;
@@ -8,7 +8,7 @@
 }
 
 .surah-header {
-  background: linear-gradient(90deg, #059669, #0ea57a);
+  background: linear-gradient(90deg, #d97706, #d97706);
   color: white;
   padding: 1.5rem;
 }

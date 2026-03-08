@@ -1,4 +1,4 @@
-/* ── GlobalSidebar.css ── */
+﻿/* ── GlobalSidebar.css ── */
 
 /* ── Root aside ── */
 .gsb-root {
@@ -78,7 +78,7 @@
 
 .gsb-logo-sub {
   margin: 0;
-  color: #11d442;
+  color: #f59e0b;
   font-size: 9px;
   font-weight: 600;
   text-transform: uppercase;
@@ -99,7 +99,7 @@
 
 .dark .gsb-theme-btn {
   background: #1e3a2a;
-  color: #11d442;
+  color: #f59e0b;
 }
 
 /* ── Nav ── */
@@ -134,12 +134,12 @@
 
 .gsb-link:hover {
   background: rgba(17, 212, 66, 0.08);
-  color: #11d442;
+  color: #f59e0b;
 }
 
 .gsb-link.active {
   background: rgba(17, 212, 66, 0.12);
-  color: #11d442;
+  color: #f59e0b;
   font-weight: 600;
 }
 
@@ -149,12 +149,12 @@
 
 .dark .gsb-link:hover {
   background: rgba(17, 212, 66, 0.08);
-  color: #11d442;
+  color: #f59e0b;
 }
 
 .dark .gsb-link.active {
   background: rgba(17, 212, 66, 0.14);
-  color: #11d442;
+  color: #f59e0b;
 }
 
 /* ── Recently Visited ── */
@@ -175,7 +175,7 @@
   margin: 0;
   font-size: 10px;
   font-weight: 700;
-  color: #11d442;
+  color: #f59e0b;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   padding: 0 4px;
@@ -236,7 +236,7 @@
   justify-content: center;
   font-size: 11px;
   font-weight: 700;
-  color: #11d442;
+  color: #f59e0b;
   flex-shrink: 0;
 }
 
@@ -308,7 +308,7 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #11d442, #059669);
+  background: linear-gradient(135deg, #f59e0b, #d97706);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -391,11 +391,11 @@
 }
 
 .gsb-mob-item:hover {
-  color: #11d442;
+  color: #f59e0b;
 }
 
 .gsb-mob-item.active {
-  color: #11d442;
+  color: #f59e0b;
 }
 
 .dark .gsb-mob-item {
@@ -404,7 +404,7 @@
 
 .dark .gsb-mob-item:hover,
 .dark .gsb-mob-item.active {
-  color: #11d442;
+  color: #f59e0b;
 }
 
 /* Active indicator dot above icon */
@@ -414,7 +414,7 @@
   top: 0;
   width: 24px;
   height: 2px;
-  background: #11d442;
+  background: #f59e0b;
   border-radius: 0 0 2px 2px;
 }
 
