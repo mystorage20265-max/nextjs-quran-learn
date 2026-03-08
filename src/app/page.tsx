@@ -288,7 +288,7 @@ export default function HomePage() {
   const todayAyah = AYAHS_OF_DAY[new Date().getDate() % AYAHS_OF_DAY.length];
 
   const S = {
-    shell: { display: 'flex', flexDirection: 'column' as const, flex: 1, background: 'var(--bg-base)', fontFamily: "'Figtree','Lexend',sans-serif", paddingTop: '20px' },
+    shell: { display: 'flex', flexDirection: 'column' as const, flex: 1, background: 'var(--bg-base)', fontFamily: "'Figtree','Lexend',sans-serif" },
     card: { background: 'var(--bg-card)', border: '1px solid var(--border-default)', borderRadius: 16, boxShadow: '0 1px 4px rgba(0,0,0,0.08)' },
     text: { color: 'var(--text-primary)' },
     muted: { color: 'var(--text-muted)' },
