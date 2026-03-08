@@ -56,6 +56,28 @@ export default function DuaClient() {
   const searchRef = useRef<HTMLInputElement>(null);
   const duaListRef = useRef<HTMLDivElement>(null);
 
+  const [loadProgress, setLoadProgress] = useState(0);
+  const [showLoadBar, setShowLoadBar] = useState(false);
+  const progressTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const isAnyLoading = loading || duasLoading;
+
+  useEffect(() => {
+    if (isAnyLoading) {
+      setLoadProgress(0);
+      setShowLoadBar(true);
+      progressTimerRef.current = setInterval(() => {
+        setLoadProgress(p => (p < 85 ? p + Math.random() * 14 : p));
+      }, 180);
+    } else {
+      if (progressTimerRef.current) clearInterval(progressTimerRef.current);
+      setLoadProgress(100);
+      const t = setTimeout(() => setShowLoadBar(false), 500);
+      return () => clearTimeout(t);
+    }
+    return () => { if (progressTimerRef.current) clearInterval(progressTimerRef.current); };
+  }, [isAnyLoading]);
+
   /* Load favorites from localStorage */
   useEffect(() => {
     try {
@@ -158,8 +180,23 @@ export default function DuaClient() {
 
   return (
     <div className="duas-page">
+      {/* ── Loading progress bar ── */}
+      {showLoadBar && (
+        <div className="duas-progress-track">
+          <div
+            className="duas-progress-bar"
+            style={{
+              width: `${loadProgress}%`,
+              opacity: loadProgress >= 100 ? 0 : 1,
+              transition: loadProgress >= 100
+                ? 'width 0.25s ease, opacity 0.4s ease 0.1s'
+                : 'width 0.18s ease',
+            }}
+          />
+        </div>
+      )}
 
-      {/* ── Main Layout ── */}
+      {/* ── Main Layout ── */}}
       <div className="duas-layout">
 
         {/* Mobile sidebar toggle */}

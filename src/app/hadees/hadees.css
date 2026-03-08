@@ -3,6 +3,24 @@
    Emerald/Green Theme Matching Dua Design System
    ===================================================== */
 
+/* ── Loading Progress Bar ── */
+.hadees-progress-track {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--bg-elevated);
+  z-index: 9999;
+  pointer-events: none;
+}
+.hadees-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #b45309, #f59e0b, #fbbf24);
+  border-radius: 0 2px 2px 0;
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.6);
+}
+
 /* ── Page Container ── */
 .hadees-page {
   min-height: 100vh;
