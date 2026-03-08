@@ -9,7 +9,7 @@
 
 .nav-button {
   background: rgba(245, 158, 11, 0.08);
-  color: #fbbf24;
+  color: var(--brand-primary);
   border: 1px solid rgba(245, 158, 11, 0.2);
   border-radius: 9999px;
   padding: 0.625rem 1.25rem;
@@ -38,9 +38,9 @@
 
 .surah-section {
   margin-bottom: 2.5rem;
-  background-color: #ffffff;
+  background-color: var(--bg-card);
   border-radius: 0.5rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-sm);
   overflow: hidden;
 }
 

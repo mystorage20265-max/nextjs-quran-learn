@@ -6,7 +6,10 @@
   background: linear-gradient(145deg, #1a1209 0%, #2d1f07 45%, #1c160a 100%);
   padding: 2.75rem 2rem 2rem;
   text-align: center;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.28);
+  box-shadow: var(--shadow-lg);
+}
+[data-theme="light"] .manzil-header {
+  background: linear-gradient(145deg, #fff8ed 0%, #fef3c7 45%, #fffbeb 100%);
 }
 
 /* Geometric diamond pattern overlay */
@@ -53,7 +56,7 @@
 
 .manzil-english-title {
   font-size: 1.4rem;
-  color: #fef3c7;
+  color: var(--text-primary);
   font-weight: 700;
   margin-bottom: 0.3rem;
   letter-spacing: 0.08em;
@@ -62,7 +65,7 @@
 
 .manzil-subtitle {
   font-size: 0.85rem;
-  color: rgba(253, 246, 237, 0.45);
+  color: var(--text-muted);
   margin-bottom: 0;
   letter-spacing: 0.04em;
 }
@@ -85,9 +88,9 @@
   width: 2rem;
   height: 2rem;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-surface);
   border: 1.5px solid rgba(245, 158, 11, 0.25);
-  color: rgba(253, 246, 237, 0.4);
+  color: var(--text-disabled);
   font-size: 0.72rem;
   font-weight: 700;
   text-decoration: none;
@@ -135,7 +138,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-surface);
   border: 1px solid rgba(245, 158, 11, 0.15);
   border-radius: 0.875rem;
   padding: 0.6rem 1.25rem;
@@ -145,7 +148,7 @@
 
 .stat-label {
   font-size: 0.65rem;
-  color: rgba(253, 246, 237, 0.45);
+  color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.1em;
   margin-bottom: 0.2rem;
@@ -209,15 +212,15 @@
   cursor: pointer;
   transition: all 0.25s ease;
   background: transparent;
-  color: rgba(253, 246, 237, 0.75);
-  border: 1.5px solid rgba(253, 246, 237, 0.22);
+  color: var(--text-secondary);
+  border: 1.5px solid var(--border-strong);
   text-decoration: none;
   justify-content: center;
 }
 
 .back-to-quran-button:hover {
-  border-color: rgba(253, 246, 237, 0.5);
-  color: #fff;
+  border-color: var(--brand-primary);
+  color: var(--brand-primary);
   transform: translateY(-1px);
 }
 
@@ -235,14 +238,14 @@
 
 .manzil-description {
   font-size: 0.9rem;
-  color: rgba(253, 246, 237, 0.65);
+  color: var(--text-secondary);
   margin-bottom: 0.25rem;
   font-weight: 500;
 }
 
 .manzil-english-description {
   font-size: 0.82rem;
-  color: rgba(245, 158, 11, 0.65);
+  color: var(--brand-primary);
   font-style: italic;
   margin-bottom: 0;
 }
