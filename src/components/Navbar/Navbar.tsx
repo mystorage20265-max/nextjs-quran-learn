@@ -235,10 +235,21 @@ export default function Navbar() {
             >
               {/* Panel header */}
               <div className="qcnav__panel-header">
-                <span className="qcnav__logo-text">Learn Quran App</span>
-                <button className="qcnav__close-btn" onClick={() => setMenuOpen(false)} aria-label="Close menu">
-                  <span className="material-symbols-outlined">close</span>
-                </button>
+                <Link href="/" className="qcnav__logo-text" onClick={() => setMenuOpen(false)} style={{ textDecoration: 'none' }}>Learn Quran App</Link>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <Link
+                    href="/"
+                    className="qcnav__home-btn"
+                    onClick={() => setMenuOpen(false)}
+                    aria-label="Go to homepage"
+                  >
+                    <span className="material-symbols-outlined" style={{ fontSize: 18 }}>home</span>
+                    Home
+                  </Link>
+                  <button className="qcnav__close-btn" onClick={() => setMenuOpen(false)} aria-label="Close menu">
+                    <span className="material-symbols-outlined">close</span>
+                  </button>
+                </div>
               </div>
 
               {/* Sections */}

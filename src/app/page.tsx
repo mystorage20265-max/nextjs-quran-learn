@@ -129,6 +129,7 @@ const FEATURES = [
   { icon: 'translate', label: 'Word by Word', sub: 'Arabic Learning', href: '/read-quran/1?mode=word-by-word', color: '#06b6d4' },
   { icon: 'book_2', label: 'Tafseer', sub: 'Verse Explanations', href: '/tafseer', color: '#8b5cf6' },
   { icon: 'format_quote', label: 'Hadees', sub: "Prophet's Sayings", href: '/hadees', color: '#f59e0b' },
+  { icon: 'volunteer_activism', label: 'Dua', sub: 'Supplications', href: '/dua', color: '#10b981' },
 ];
 
 const AYAHS_OF_DAY = [

@@ -220,7 +220,6 @@
   flex-shrink: 0;
 }
 .qcnav__close-btn {
-  margin-left: auto;
   background: transparent;
   border: none;
   cursor: pointer;
@@ -233,6 +232,26 @@
 }
 .qcnav__close-btn:hover { background: #f3f4f6; }
 [data-theme='dark'] .qcnav__close-btn:hover { background: #1f2937; }
+
+/* Home button in panel header */
+.qcnav__home-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--qcnav-accent);
+  text-decoration: none;
+  background: rgba(22, 163, 74, 0.08);
+  border: 1px solid rgba(22, 163, 74, 0.2);
+  transition: background var(--qcnav-t), border-color var(--qcnav-t);
+}
+.qcnav__home-btn:hover {
+  background: rgba(22, 163, 74, 0.15);
+  border-color: var(--qcnav-accent);
+}
 
 /* Panel body */
 .qcnav__panel-body {
