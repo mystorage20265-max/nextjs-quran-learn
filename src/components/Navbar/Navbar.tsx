@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '@/components/ThemeProvider';
@@ -102,16 +101,8 @@ export default function Navbar() {
         <div className="qcnav__inner">
 
           {/* Logo */}
-          <Link href="/" className="qcnav__logo" aria-label="QuranicLearn home">
-            <Image
-              src="/logo-v4.png"
-              alt="QuranicLearn"
-              width={110}
-              height={110}
-              className="qcnav__logo-img"
-              priority
-            />
-            <span className="qcnav__logo-name">QuranicLearn</span>
+          <Link href="/" className="qcnav__logo" aria-label="Learn Quran App home">
+            <span className="qcnav__logo-text">Learn Quran App</span>
           </Link>
 
           {/* Right controls */}
@@ -246,8 +237,7 @@ export default function Navbar() {
             >
               {/* Panel header */}
               <div className="qcnav__panel-header">
-                <Image src="/logo-v4.png" alt="QuranicLearn" width={80} height={80} className="qcnav__logo-img" />
-                <span className="qcnav__logo-name">QuranicLearn</span>
+                <span className="qcnav__logo-text">Learn Quran App</span>
                 <button className="qcnav__close-btn" onClick={() => setMenuOpen(false)} aria-label="Close menu">
                   <span className="material-symbols-outlined">close</span>
                 </button>

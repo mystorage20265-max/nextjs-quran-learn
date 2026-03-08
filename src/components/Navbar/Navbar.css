@@ -67,6 +67,14 @@
   letter-spacing: -0.01em;
 }
 
+.qcnav__logo-text {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--qcnav-text-hi);
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
 /* ── Right controls ────────────────────────────────────────── */
 .qcnav__controls {
   display: flex;
