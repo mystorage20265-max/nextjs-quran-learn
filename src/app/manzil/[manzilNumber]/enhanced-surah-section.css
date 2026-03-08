@@ -1,22 +1,22 @@
 ﻿.surah-section {
-  margin-bottom: 2.5rem;
-  border-radius: 0.5rem;
+  margin-bottom: 2rem;
+  border-radius: 1rem;
   overflow: hidden;
-  background-color: #ffffff;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-  border: 1px solid #e2e8f0;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(245, 158, 11, 0.12);
 }
 
 .surah-header {
-  background: linear-gradient(90deg, #d97706, #d97706);
-  color: white;
+  background: linear-gradient(135deg, #2d1e06 0%, #1c1508 100%);
+  color: #fde68a;
   padding: 1.5rem;
 }
 
 .surah-header.light-header {
-  background: linear-gradient(90deg, #e6f7f2, #d1f0e8);
-  color: #065f46;
+  background: linear-gradient(135deg, #2a1c06 0%, #1a1209 100%);
+  color: #fde68a;
   padding: 1.5rem;
+  border-bottom: 1px solid rgba(245, 158, 11, 0.15);
 }
 
 .surah-header h2 {
@@ -33,15 +33,18 @@
   justify-content: center;
   width: 2.5rem;
   height: 2.5rem;
-  background-color: rgba(255, 255, 255, 0.2);
+  background: rgba(245, 158, 11, 0.2);
   border-radius: 50%;
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   margin-right: 0.5rem;
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
 .light-header .surah-number {
-  background-color: rgba(245, 158, 11, 0.2);
-  color: #065f46;
+  background: rgba(245, 158, 11, 0.2);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
 .surah-arabic-name {
@@ -53,10 +56,10 @@
 .surah-info {
   display: flex;
   flex-wrap: wrap;
-  gap: 1.5rem;
-  margin-top: 0.75rem;
-  font-size: 0.95rem;
-  opacity: 0.9;
+  gap: 1.25rem;
+  margin-top: 0.6rem;
+  font-size: 0.9rem;
+  color: rgba(253, 246, 237, 0.55);
 }
 
 .surah-controls {
@@ -120,4 +123,5 @@
 
 .verses-container {
   padding: 1.25rem;
+  background: transparent;
 }

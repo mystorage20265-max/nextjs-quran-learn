@@ -39,7 +39,7 @@ export default function ManzilPage({ params }: PageProps) {
     return <div>Loading...</div>;
   }
   return (
-    <div className="manzil-page-container">
+    <div className="manzil-page-container" style={{ minHeight: '100vh', background: '#0a0803' }}>
       <Navbar />
       <main>
         <ManzilViewer manzilNumber={manzilNumber} />

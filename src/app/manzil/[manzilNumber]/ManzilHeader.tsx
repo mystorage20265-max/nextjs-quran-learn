@@ -72,42 +72,54 @@ export default function ManzilHeader({
 
   return (
     <div className="manzil-header">
+      {/* Title block */}
       <div className="manzil-title-container">
         <h1 className="manzil-arabic-title">{currentManzil.arabicTitle}</h1>
         <h2 className="manzil-english-title">Manzil {manzilNumber}</h2>
-        <p className="manzil-subtitle">Section {manzilNumber} of the Holy Quran</p>
+        <p className="manzil-subtitle">Section {manzilNumber} of 7 · Holy Quran</p>
       </div>
-      
+
+      {/* 7-dot progress indicator */}
+      <div className="manzil-progress">
+        {[1, 2, 3, 4, 5, 6, 7].map((n, i) => (
+          <>
+            {i > 0 && <span key={`c-${n}`} className="manzil-dot-connector" />}
+            <Link
+              key={n}
+              href={`/manzil/${n}`}
+              className={`manzil-dot${n === manzilNumber ? ' active' : ''}`}
+              title={`Manzil ${n}`}
+            >
+              {n}
+            </Link>
+          </>
+        ))}
+      </div>
+
       <div className="manzil-stats">
         <div className="stat-item">
-          <div className="stat-label">Total Verses:</div>
+          <div className="stat-label">Verses</div>
           <div className="stat-value">{totalVerses}</div>
         </div>
         <div className="stat-item">
-          <div className="stat-label">Section:</div>
+          <div className="stat-label">Section</div>
           <div className="stat-value">{manzilNumber}/7</div>
         </div>
         <div className="stat-item">
-          <div className="stat-label">Total Pages:</div>
+          <div className="stat-label">Pages</div>
           <div className="stat-value">{totalPages}</div>
         </div>
       </div>
       
       <div className="manzil-actions">
-        {/*
-          Fully functional Auto-Play Manzil button:
-          - Uses the same autoplay state as ManzilViewer
-          - Toggles playback and label
-          - Color changes when active
-        */}
         <button
           className={`auto-play-button ${autoplay ? 'playing' : ''}`}
           onClick={() => setAutoplay(!autoplay)}
         >
-          {autoplay ? 'Stop Auto-Play' : 'Auto-Play Manzil'}
+          {autoplay ? '⏹ Stop' : '▶ Auto-Play'}
         </button>
         <Link href="/quran" className="back-to-quran-button">
-          ← Back to Quran
+          ← Quran Index
         </Link>
       </div>
       

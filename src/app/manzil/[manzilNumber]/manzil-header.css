@@ -1,160 +1,258 @@
 ﻿.manzil-header {
-  text-align: center;
-  background-color: #f0f9ff;
-  padding: 2rem 1rem;
-  border-radius: 8px;
-  margin-bottom: 2rem;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  border-radius: 1.25rem;
+  margin-bottom: 2rem;
+  background: linear-gradient(145deg, #1a1209 0%, #2d1f07 45%, #1c160a 100%);
+  padding: 2.75rem 2rem 2rem;
+  text-align: center;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.28);
+}
+
+/* Geometric diamond pattern overlay */
+.manzil-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cpath d='M30 2 L58 30 L30 58 L2 30 Z' fill='none' stroke='rgba(245,158,11,0.07)' stroke-width='1'/%3E%3C/svg%3E");
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Amber radial glow at top */
+.manzil-header::after {
+  content: '';
+  position: absolute;
+  top: -80px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 360px;
+  height: 220px;
+  background: radial-gradient(ellipse at center, rgba(245, 158, 11, 0.18) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
 }
 
 .manzil-title-container {
+  position: relative;
+  z-index: 1;
   margin-bottom: 1.5rem;
 }
 
 .manzil-arabic-title {
-  font-family: 'Naskh IndoPak', serif;
-  font-size: 2.5rem;
-  color: #0e9f6e;
-  margin-bottom: 0.5rem;
+  font-family: 'Naskh IndoPak', 'Amiri', serif;
+  font-size: 3rem;
+  color: #fbbf24;
+  margin-bottom: 0.4rem;
   font-weight: 500;
+  text-shadow: 0 0 28px rgba(245, 158, 11, 0.45);
+  letter-spacing: 0.02em;
+  line-height: 1.3;
 }
 
 .manzil-english-title {
-  font-size: 2rem;
-  color: #3b82f6;
-  margin-bottom: 0.5rem;
+  font-size: 1.4rem;
+  color: #fef3c7;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .manzil-subtitle {
-  font-size: 1.25rem;
-  color: #64748b;
-  margin-bottom: 1.5rem;
+  font-size: 0.85rem;
+  color: rgba(253, 246, 237, 0.45);
+  margin-bottom: 0;
+  letter-spacing: 0.04em;
 }
 
+/* ── Manzil Progress Dots ── */
+.manzil-progress {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin: 1.25rem 0 1.75rem;
+}
+
+.manzil-dot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1.5px solid rgba(245, 158, 11, 0.25);
+  color: rgba(253, 246, 237, 0.4);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.manzil-dot:hover {
+  border-color: #f59e0b;
+  color: #fbbf24;
+  background: rgba(245, 158, 11, 0.12);
+  transform: scale(1.1);
+}
+
+.manzil-dot.active {
+  width: 2.3rem;
+  height: 2.3rem;
+  background: linear-gradient(135deg, #d97706, #f59e0b);
+  border-color: transparent;
+  color: #fff;
+  font-size: 0.9rem;
+  box-shadow: 0 0 14px rgba(245, 158, 11, 0.55);
+}
+
+.manzil-dot-connector {
+  width: 1.75rem;
+  height: 1.5px;
+  background: rgba(245, 158, 11, 0.2);
+  flex-shrink: 0;
+}
+
+/* ── Stats Row ── */
 .manzil-stats {
+  position: relative;
+  z-index: 1;
   display: flex;
   justify-content: center;
-  gap: 3rem;
-  margin-top: 1rem;
+  gap: 1.25rem;
+  margin-bottom: 1.75rem;
+  flex-wrap: wrap;
 }
 
 .stat-item {
   display: flex;
   flex-direction: column;
   align-items: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(245, 158, 11, 0.15);
+  border-radius: 0.875rem;
+  padding: 0.6rem 1.25rem;
+  min-width: 88px;
+  backdrop-filter: blur(4px);
 }
 
 .stat-label {
-  font-size: 0.9rem;
-  color: #64748b;
-  margin-bottom: 0.25rem;
+  font-size: 0.65rem;
+  color: rgba(253, 246, 237, 0.45);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.2rem;
 }
 
 .stat-value {
-  font-size: 1.25rem;
-  font-weight: 500;
-  color: #334155;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #fbbf24;
 }
 
 .manzil-actions {
+  position: relative;
+  z-index: 1;
   display: flex;
   justify-content: center;
-  gap: 1rem;
-  margin: 2rem 0;
+  align-items: center;
+  gap: 0.875rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
 }
 
 .auto-play-button {
-  padding: 0.75rem 1.5rem;
+  padding: 0.65rem 1.4rem;
   border-radius: 9999px;
-  font-weight: 500;
-  font-size: 1rem;
-  display: flex;
+  font-weight: 600;
+  font-size: 0.88rem;
+  display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
   border: none;
-  background-color: #d97706;
-  color: white;
+  background: linear-gradient(135deg, #d97706, #f59e0b);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(245, 158, 11, 0.35);
 }
 
 .auto-play-button:hover {
-  background-color: #0c8c66;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.48);
 }
 
 .auto-play-button.playing {
-  background-color: #ef4444;
+  background: linear-gradient(135deg, #b91c1c, #ef4444);
+  box-shadow: 0 4px 16px rgba(239, 68, 68, 0.35);
 }
 
 .auto-play-button.playing:hover {
-  background-color: #dc2626;
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.48);
 }
 
 .back-to-quran-button {
-  padding: 0.75rem 1.5rem;
+  padding: 0.65rem 1.4rem;
   border-radius: 9999px;
-  font-weight: 500;
-  font-size: 1rem;
-  display: flex;
+  font-weight: 600;
+  font-size: 0.88rem;
+  display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
   cursor: pointer;
-  transition: all 0.2s ease;
-  border: none;
-  background-color: #3b82f6;
-  color: white;
+  transition: all 0.25s ease;
+  background: transparent;
+  color: rgba(253, 246, 237, 0.75);
+  border: 1.5px solid rgba(253, 246, 237, 0.22);
   text-decoration: none;
   justify-content: center;
 }
 
 .back-to-quran-button:hover {
-  background-color: #2563eb;
+  border-color: rgba(253, 246, 237, 0.5);
+  color: #fff;
+  transform: translateY(-1px);
 }
 
 .back-to-quran-button::before {
-  content: "←";
-  margin-right: 0.5rem;
+  content: none;
 }
 
 .manzil-info {
-  font-size: 1rem;
-  color: #4b5563;
-  margin-top: 1.5rem;
-  background-color: #f8fafc;
-  padding: 1rem;
-  border-radius: 0.5rem;
-  max-width: 800px;
-  margin-left: auto;
-  margin-right: auto;
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid rgba(245, 158, 11, 0.15);
+  padding-top: 1.25rem;
+  margin-top: 0;
 }
 
 .manzil-description {
-  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  color: rgba(253, 246, 237, 0.65);
+  margin-bottom: 0.25rem;
   font-weight: 500;
-  color: #334155;
 }
 
 .manzil-english-description {
+  font-size: 0.82rem;
+  color: rgba(245, 158, 11, 0.65);
   font-style: italic;
-  margin-bottom: 0.5rem;
-  color: #64748b;
+  margin-bottom: 0;
 }
 
 @media (max-width: 640px) {
-  .manzil-stats {
-    gap: 1.5rem;
-  }
-  
-  .manzil-actions {
-    flex-direction: column;
-    align-items: center;
-  }
-  
+  .manzil-arabic-title { font-size: 2.25rem; }
+  .manzil-english-title { font-size: 1.1rem; }
+  .manzil-stats { gap: 0.75rem; }
+  .stat-item { padding: 0.5rem 0.75rem; min-width: 72px; }
+  .manzil-actions { gap: 0.6rem; }
   .auto-play-button,
-  .back-to-quran-button {
-    width: 100%;
-    justify-content: center;
-  }
+  .back-to-quran-button { font-size: 0.82rem; padding: 0.6rem 1.1rem; }
 }

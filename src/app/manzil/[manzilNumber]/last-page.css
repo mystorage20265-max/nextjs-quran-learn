@@ -2,9 +2,9 @@
   text-align: center;
   margin: 2rem 0;
   padding: 1rem;
-  background-color: #f9fafb;
-  border-radius: 0.5rem;
-  color: #4b5563;
+  background: rgba(245, 158, 11, 0.06);
+  border-radius: 0.75rem;
+  color: rgba(253, 246, 237, 0.55);
   font-size: 0.9rem;
-  border: 1px solid #e5e7eb;
+  border: 1px solid rgba(245, 158, 11, 0.12);
 }

@@ -1,38 +1,41 @@
 ﻿.playing-button {
-  background: #38a169 !important;
+  background: linear-gradient(135deg, #d97706, #f59e0b) !important;
   color: #fff !important;
   font-weight: bold;
-  box-shadow: 0 0 0 3px #38a16955;
-  animation: pulse-green 1.2s infinite;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.4);
+  animation: pulse-amber 1.2s infinite;
   border: none;
 }
 
 .disabled-button {
-  background: #f8d7da !important;
-  color: #e53e3e !important;
+  background: rgba(239, 68, 68, 0.15) !important;
+  color: #fca5a5 !important;
   cursor: not-allowed !important;
   opacity: 0.7;
   position: relative;
 }
 
-@keyframes pulse-green {
-  0% { box-shadow: 0 0 0 3px #38a16955; }
-  50% { box-shadow: 0 0 0 8px #38a16933; }
-  100% { box-shadow: 0 0 0 3px #38a16955; }
+@keyframes pulse-amber {
+  0% { box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(245, 158, 11, 0.12); }
+  100% { box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.4); }
 }
 .verse-item {
   padding: 1.25rem 1rem;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid rgba(245, 158, 11, 0.08);
   position: relative;
   display: flex;
+  transition: background 0.2s ease;
 }
 
 .verse-item:last-child {
   border-bottom: none;
 }
 
-.verse-item.playing {
-  background-color: rgba(245, 158, 11, 0.05);
+.verse-item.active-verse {
+  background: rgba(245, 158, 11, 0.09);
+  border-left: 3px solid #f59e0b;
+  border-bottom-color: rgba(245, 158, 11, 0.15);
 }
 
 .verse-left-column {
@@ -55,11 +58,12 @@
   justify-content: center;
   width: 2rem;
   height: 2rem;
-  background-color: #d97706;
+  background: linear-gradient(135deg, #b45309, #d97706);
   color: white;
-  font-weight: 500;
+  font-weight: 600;
   border-radius: 50%;
-  font-size: 0.9rem;
+  font-size: 0.82rem;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.25);
 }
 
 .verse-content {
@@ -90,7 +94,7 @@
 }
 
 .verse-audio-btn {
-  background-color: #d97706;
+  background: linear-gradient(135deg, #d97706, #f59e0b);
   color: white;
   border: none;
   border-radius: 50%;
@@ -103,7 +107,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
 }
 
 .verse-audio-btn svg {
@@ -158,21 +162,21 @@
 
 .verse-text.arabic {
   font-family: 'Naskh IndoPak', serif;
-  font-size: 2rem;
+  font-size: 1.9rem;
   line-height: 2.5;
   text-align: right;
   direction: rtl;
-  color: #1e293b;
+  color: #fde68a;
   margin-bottom: 1rem;
   padding: 1rem 0;
 }
 
 .verse-translation {
-  font-size: 1rem;
-  line-height: 1.6;
-  color: #334155;
+  font-size: 0.97rem;
+  line-height: 1.7;
+  color: rgba(253, 246, 237, 0.6);
   padding: 0.5rem 0;
-  border-top: 1px solid #f1f5f9;
+  border-top: 1px solid rgba(245, 158, 11, 0.1);
 }
 
 .loading-spinner-small {
