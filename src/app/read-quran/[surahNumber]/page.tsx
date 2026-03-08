@@ -633,7 +633,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 .nq-audio-progress-track{width:100%;height:4px;background:#f1f5f9;border-radius:999px;overflow:hidden;cursor:pointer;position:relative}
                 .dark .nq-audio-progress-track{background:#1e293b}
                 .nq-audio-progress-fill{height:100%;background:#f59e0b;border-radius:999px;transition:width 0.3s}
-                .nq-audio-bar-inner{display:flex;align-items:center;justify-content:space-between;gap:8px}
+                .nq-audio-bar-inner{display:flex;align-items:center;justify-content:space-between;gap:8px;position:relative}
                 @media(min-width:640px){.nq-audio-bar-inner{gap:16px}}
                 @media(min-width:1024px){.nq-audio-bar-inner{gap:24px}}
                 .nq-reciter-info{display:none;align-items:center;gap:12px;flex:1;min-width:0}
@@ -644,9 +644,9 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 .nq-reciter-name{margin:0;font-size:12px;font-weight:700;color:#0f172a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
                 .dark .nq-reciter-name{color:#e2e8f0}
                 .nq-reciter-sub{margin:0;font-size:10px;color:#94a3b8}
-                .nq-audio-controls{display:flex;align-items:center;gap:10px;flex:1;justify-content:center}
+                .nq-audio-controls{display:flex;align-items:center;gap:10px;position:absolute;left:50%;transform:translateX(-50%)}
                 @media(min-width:480px){.nq-audio-controls{gap:16px}}
-                @media(min-width:640px){.nq-audio-controls{flex:none;justify-content:flex-start}}
+                @media(min-width:640px){.nq-audio-controls{position:static;transform:none;flex:none;justify-content:flex-start}}
                 @media(min-width:1024px){.nq-audio-controls{gap:24px}}
                 .nq-ctrl-btn{background:none;border:none;color:#64748b;cursor:pointer;display:flex;align-items:center;padding:0;transition:color 0.15s}
                 .nq-ctrl-btn:hover{color:#f59e0b}
