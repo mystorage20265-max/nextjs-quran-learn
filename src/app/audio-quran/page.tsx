@@ -744,7 +744,7 @@ export default function AudioQuranPage() {
           --aq-thead: #f8fafc;
           --aq-player-bg: rgba(255,255,255,0.95);
         }
-        .dark {
+        [data-theme="dark"] {
           --aq-bg: #221910;
           --aq-nav-bg: rgba(34,25,16,0.90);
           --aq-card: #2d1f13;
