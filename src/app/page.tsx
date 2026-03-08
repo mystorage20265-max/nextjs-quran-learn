@@ -305,23 +305,23 @@ export default function HomePage() {
           {/* Panel */}
           <div ref={navRef} style={{
             position: 'relative', zIndex: 1, width: '100%', maxWidth: 420,
-            background: dark ? '#0f0d0a' : 'white', borderRight: `1px solid ${dark ? '#241f1a' : '#e2e8f0'}`,
+            background: 'var(--bg-base)', borderRight: '1px solid var(--border-default)',
             display: 'flex', flexDirection: 'column', animation: 'navSlideIn 0.25s ease',
             boxShadow: '8px 0 40px rgba(0,0,0,0.15)',
           }}>
             {/* Panel Header */}
-            <div style={{ padding: '18px 20px 14px', borderBottom: `1px solid ${dark ? '#241f1a' : '#f1f5f9'}`, flexShrink: 0 }}>
+            <div style={{ padding: '18px 20px 14px', borderBottom: `1px solid ${'var(--bg-elevated)'}`, flexShrink: 0 }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
                 <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700, ...S.text, display: 'flex', alignItems: 'center', gap: 8 }}>
                   <span className="material-symbols-outlined" style={{ fontSize: 22, color: '#f59e0b' }}>menu_book</span>
                   Navigate Quran
                 </h2>
-                <button onClick={() => setShowNav(false)} style={{ background: dark ? '#241f1a' : '#f1f5f9', border: 'none', borderRadius: 8, width: 32, height: 32, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8' }}>
+                <button onClick={() => setShowNav(false)} style={{ background: 'var(--bg-elevated)', border: 'none', borderRadius: 8, width: 32, height: 32, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8' }}>
                   <span className="material-symbols-outlined" style={{ fontSize: 18 }}>close</span>
                 </button>
               </div>
               {/* Tabs */}
-              <div style={{ display: 'flex', background: dark ? '#1a1612' : '#f1f5f9', borderRadius: 10, padding: 3, gap: 2 }}>
+              <div style={{ display: 'flex', background: 'var(--bg-surface)', borderRadius: 10, padding: 3, gap: 2 }}>
                 {(['surah', 'juz', 'page'] as const).map(tab => (
                   <button key={tab} onClick={() => { setNavTab(tab); setNavSearch(''); }} style={{
                     flex: 1, padding: '8px 12px', borderRadius: 8, border: 'none', cursor: 'pointer',
@@ -338,7 +338,7 @@ export default function HomePage() {
                   <input
                     type="text" value={navSearch} onChange={e => setNavSearch(e.target.value)}
                     placeholder="Search Surah…"
-                    style={{ width: '100%', padding: '9px 12px 9px 36px', borderRadius: 10, border: `1px solid ${dark ? '#241f1a' : '#e2e8f0'}`, background: dark ? '#1a1612' : 'white', fontSize: 13, color: dark ? '#e2e8e5' : '#334155', outline: 'none', boxSizing: 'border-box' }}
+                    style={{ width: '100%', padding: '9px 12px 9px 36px', borderRadius: 10, border: '1px solid var(--border-default)', background: 'var(--bg-surface)', fontSize: 13, color: 'var(--text-secondary)', outline: 'none', boxSizing: 'border-box' }}
                     onFocus={e => e.target.style.boxShadow = '0 0 0 2px rgba(245,158,11,0.3)'}
                     onBlur={e => e.target.style.boxShadow = 'none'}
                     autoFocus
@@ -357,10 +357,10 @@ export default function HomePage() {
                   <Link key={s.num} href={`/read-quran/${s.num}?mode=reading`} onClick={() => { trackVisit(s); setShowNav(false); }} style={{ textDecoration: 'none', display: 'block' }}>
                     <div style={{
                       display: 'flex', alignItems: 'center', gap: 12, padding: '12px 20px',
-                      borderBottom: `1px solid ${dark ? '#1e3a2a12' : '#f8fafc'}`,
+                      borderBottom: '1px solid var(--border-subtle)',
                       transition: 'background 0.12s', cursor: 'pointer',
                     }}
-                      onMouseEnter={e => e.currentTarget.style.background = dark ? '#2a2420' : '#fffbeb'}
+                      onMouseEnter={e => e.currentTarget.style.background = 'var(--bg-card-hover)'}
                       onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                     >
                       <div style={{ width: 36, height: 36, borderRadius: 8, background: 'rgba(245,158,11,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 13, color: '#f59e0b', flexShrink: 0 }}>
@@ -389,7 +389,7 @@ export default function HomePage() {
                           display: 'flex', alignItems: 'center', gap: 12, padding: '14px 12px',
                           borderRadius: 10, marginBottom: 4, transition: 'background 0.12s', cursor: 'pointer',
                         }}
-                          onMouseEnter={e => e.currentTarget.style.background = dark ? '#2a2420' : '#fffbeb'}
+                          onMouseEnter={e => e.currentTarget.style.background = 'var(--bg-card-hover)'}
                           onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                         >
                           <div style={{ width: 40, height: 40, borderRadius: 10, background: 'linear-gradient(135deg, rgba(245,158,11,0.12), rgba(217,119,6,0.08))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: 15, color: '#f59e0b', flexShrink: 0 }}>
@@ -419,11 +419,11 @@ export default function HomePage() {
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                           padding: '9px 4px', borderRadius: 8, fontSize: 12, fontWeight: 600,
                           color: '#64748b', cursor: 'pointer', transition: 'all 0.12s',
-                          background: dark ? '#1a1612' : '#f8fafc',
-                          border: `1px solid ${dark ? '#241f1a' : '#f1f5f9'}`,
+                          background: 'var(--bg-surface)',
+                          border: `1px solid ${'var(--bg-elevated)'}`,
                         }}
                           onMouseEnter={e => { e.currentTarget.style.background = '#f59e0b'; e.currentTarget.style.color = 'white'; e.currentTarget.style.borderColor = '#f59e0b'; }}
-                          onMouseLeave={e => { e.currentTarget.style.background = dark ? '#1a1612' : '#f8fafc'; e.currentTarget.style.color = '#64748b'; e.currentTarget.style.borderColor = dark ? '#241f1a' : '#f1f5f9'; }}
+                          onMouseLeave={e => { e.currentTarget.style.background = 'var(--bg-surface)'; e.currentTarget.style.color = '#64748b'; e.currentTarget.style.borderColor = 'var(--bg-elevated)'; }}
                         >
                           {p}
                         </div>
@@ -434,7 +434,7 @@ export default function HomePage() {
               )}
             </div>
             {/* Panel Footer */}
-            <div style={{ padding: '12px 20px', borderTop: `1px solid ${dark ? '#241f1a' : '#f1f5f9'}`, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ padding: '12px 20px', borderTop: `1px solid ${'var(--bg-elevated)'}`, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <span style={{ fontSize: 11, ...S.muted }}>
                 {navTab === 'surah' ? '114 Surahs' : navTab === 'juz' ? '30 Juz' : '604 Pages'}
               </span>
@@ -487,7 +487,7 @@ export default function HomePage() {
 
       <div style={S.shell}>
         {/* Header — outside scroll container so dropdown isn't clipped */}
-        <header style={{ position: 'relative', zIndex: 200, background: dark ? 'rgba(15,13,10,0.97)' : 'rgba(255,255,255,0.97)', backdropFilter: 'blur(12px)', borderBottom: `1px solid ${dark ? 'rgba(36,31,26,0.6)' : 'rgba(226,232,240,0.6)'}`, flexShrink: 0 }}>
+        <header style={{ position: 'relative', zIndex: 200, background: 'var(--glass-bg-strong)', backdropFilter: 'blur(12px)', borderBottom: '1px solid var(--border-strong)', flexShrink: 0 }}>
           <div className="hp-header-inner" style={{ maxWidth: 860, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 12 }}>
             <div ref={searchRef} style={{ flex: 1, position: 'relative' }}>
               <span className="material-symbols-outlined" style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', fontSize: 20, pointerEvents: 'none', zIndex: 1 }}>search</span>
@@ -498,15 +498,15 @@ export default function HomePage() {
                 onFocus={e => { if (query.trim()) setShowDropdown(true); e.target.style.boxShadow = '0 0 0 2px rgba(245,158,11,0.4)'; }}
                 onKeyDown={e => { if (e.key === 'Escape') { setShowDropdown(false); } }}
                 placeholder="Search Surah name, number, or meaning…"
-                style={{ width: '100%', background: dark ? '#1a1612' : 'white', border: 'none', borderRadius: 12, padding: '10px 14px 10px 40px', fontSize: 13.5, color: dark ? '#e2e8e5' : '#334155', boxShadow: '0 1px 4px rgba(0,0,0,0.07)', outline: 'none' }}
+                style={{ width: '100%', background: 'var(--bg-surface)', border: 'none', borderRadius: 12, padding: '10px 14px 10px 40px', fontSize: 13.5, color: 'var(--text-secondary)', boxShadow: '0 1px 4px rgba(0,0,0,0.07)', outline: 'none' }}
                 onBlur={e => (e.target.style.boxShadow = '0 1px 4px rgba(0,0,0,0.07)')}
               />
               {/* Search Dropdown */}
               {showDropdown && dropdownResults.length > 0 && (
                 <div style={{
                   position: 'absolute', top: 'calc(100% + 8px)', left: 0, right: 0,
-                  background: dark ? '#1a1612' : 'white',
-                  border: `1px solid ${dark ? '#241f1a' : '#e2e8f0'}`,
+                  background: 'var(--bg-surface)',
+                  border: '1px solid var(--border-default)',
                   borderRadius: 14, boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
                   zIndex: 999, overflow: 'hidden',
                 }}>
@@ -520,28 +520,28 @@ export default function HomePage() {
                       <div style={{
                         display: 'flex', alignItems: 'center', gap: 12,
                         padding: '10px 16px',
-                        borderTop: i > 0 ? `1px solid ${dark ? '#241f1a' : '#f1f5f9'}` : 'none',
+                        borderTop: i > 0 ? `1px solid ${'var(--bg-elevated)'}` : 'none',
                         cursor: 'pointer', transition: 'background 0.12s',
                       }}
-                        onMouseEnter={e => (e.currentTarget.style.background = dark ? '#2a2420' : '#fffbeb')}
+                        onMouseEnter={e => (e.currentTarget.style.background = 'var(--bg-card-hover)')}
                         onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
                       >
                         <div style={{ width: 32, height: 32, borderRadius: 8, background: 'rgba(245,158,11,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: '#f59e0b', fontSize: 12, flexShrink: 0 }}>
                           {s.num}
                         </div>
                         <div style={{ flex: 1, minWidth: 0 }}>
-                          <p style={{ margin: 0, fontWeight: 600, fontSize: 13.5, color: dark ? '#e2e8e5' : '#0f172a', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{s.name}</p>
+                          <p style={{ margin: 0, fontWeight: 600, fontSize: 13.5, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{s.name}</p>
                           <p style={{ margin: 0, fontSize: 11, color: '#94a3b8' }}>{s.meaning} · {s.v} verses</p>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
                           <span style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: s.t === 'Meccan' ? '#f59e0b' : '#94a3b8' }}>{s.t}</span>
-                          <span style={{ fontFamily: "'Naskh IndoPak',serif", fontSize: 17, color: dark ? '#e2e8e5' : '#1e293b' }}>{s.ar}</span>
+                          <span style={{ fontFamily: "'Naskh IndoPak',serif", fontSize: 17, color: 'var(--text-primary)' }}>{s.ar}</span>
                         </div>
                       </div>
                     </Link>
                   ))}
                   {/* Footer hint */}
-                  <div style={{ padding: '8px 16px', borderTop: `1px solid ${dark ? '#241f1a' : '#f1f5f9'}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div style={{ padding: '8px 16px', borderTop: `1px solid ${'var(--bg-elevated)'}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <span style={{ fontSize: 11, color: '#94a3b8' }}>{SURAHS.filter(s => { const q = query.toLowerCase(); return s.name.toLowerCase().includes(q) || s.ar.includes(q) || s.meaning.toLowerCase().includes(q) || String(s.num) === q; }).length} results · scroll down for all</span>
                     <span style={{ fontSize: 11, color: '#94a3b8' }}>ESC to close</span>
                   </div>
@@ -550,11 +550,11 @@ export default function HomePage() {
             </div>
             {/* Dark mode toggle */}
             <button
-              onClick={toggleDark}
+              onClick={toggleTheme}
               aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
               style={{
                 width: 36, height: 36, borderRadius: 10, border: 'none', cursor: 'pointer',
-                background: dark ? '#241f1a' : '#f1f5f9',
+                background: 'var(--bg-elevated)',
                 color: dark ? '#f59e0b' : '#64748b',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 flexShrink: 0, transition: 'background 0.18s, color 0.18s',
@@ -571,10 +571,10 @@ export default function HomePage() {
             <button
               onClick={() => setShowNav(true)}
               style={{
-                background: dark ? '#241f1a' : '#f1f5f9', color: dark ? '#f59e0b' : '#475569',
+                background: 'var(--bg-elevated)', color: 'var(--brand-primary)',
                 borderRadius: 12, padding: '9px 14px', fontWeight: 600, fontSize: 13.5,
                 display: 'flex', alignItems: 'center', gap: 6,
-                border: `1px solid ${dark ? '#352e28' : '#e2e8f0'}`,
+                border: '1px solid var(--border-default)',
                 cursor: 'pointer', flexShrink: 0, transition: 'all 0.18s',
               }}
             >
@@ -584,7 +584,7 @@ export default function HomePage() {
           </div>
         </header>
         {/* MAIN — scrollable content only */}
-        <main className="hp-scroll hp-dot" style={{ flex: 1, overflowY: 'auto', minHeight: 0, background: dark ? '#0f0d0a' : 'white' }}>
+        <main className="hp-scroll hp-dot" style={{ flex: 1, overflowY: 'auto', minHeight: 0, background: 'var(--bg-base)' }}>
           <div className="hp-content" style={{ maxWidth: 860, margin: '0 auto' }}>
 
             {/* ── STATS BAR ── */}
@@ -610,7 +610,7 @@ export default function HomePage() {
                   <h3 style={{ margin: '0 0 3px', fontWeight: 700, fontSize: 15, ...S.text }}>{recent[0]?.name ?? 'Al-Fatihah'}</h3>
                   <p style={{ margin: '0 0 14px', fontSize: 12, ...S.muted }}>{recent[0] ? `Surah ${recent[0].num} · ${recent[0].v} verses` : 'Begin your journey'}</p>
                 </div>
-                <Link href={`/read-quran/${recent[0]?.num ?? 1}`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, background: dark ? '#241f1a' : '#f1f5f9', borderRadius: 8, padding: '7px 10px', fontWeight: 600, fontSize: 12, color: dark ? '#f59e0b' : '#475569', textDecoration: 'none' }}>
+                <Link href={`/read-quran/${recent[0]?.num ?? 1}`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, background: 'var(--bg-elevated)', borderRadius: 8, padding: '7px 10px', fontWeight: 600, fontSize: 12, color: 'var(--brand-primary)', textDecoration: 'none' }}>
                   <span className="material-symbols-outlined" style={{ fontSize: 14 }}>resume</span>{recent[0] ? 'Resume' : 'Start'}
                 </Link>
               </div>
@@ -625,7 +625,7 @@ export default function HomePage() {
                     <span style={{ fontSize: 30, fontWeight: 700, color: '#f59e0b', lineHeight: 1, fontVariantNumeric: 'tabular-nums' }}>{fmtTime(sessionTime)}</span>
                   </div>
                   <p style={{ margin: '0 0 10px', fontSize: 11, ...S.muted }}>This session on the app</p>
-                  <div style={{ width: '100%', height: 4, background: dark ? '#241f1a' : '#f1f5f9', borderRadius: 999, overflow: 'hidden', marginBottom: 8 }}>
+                  <div style={{ width: '100%', height: 4, background: 'var(--bg-elevated)', borderRadius: 999, overflow: 'hidden', marginBottom: 8 }}>
                     <div style={{ width: `${Math.min((sessionTime % 3600) / 36, 100)}%`, height: '100%', background: 'linear-gradient(90deg,#f59e0b,#d97706)', borderRadius: 999, transition: 'width 1s linear' }} />
                   </div>
                 </div>
@@ -739,7 +739,7 @@ export default function HomePage() {
                       style={{
                         padding: '6px 14px', borderRadius: 20, border: 'none', cursor: 'pointer',
                         fontSize: 12, fontWeight: 600,
-                        background: tasbeehIdx === i ? p.color : dark ? '#241f1a' : '#f1f5f9',
+                        background: tasbeehIdx === i ? p.color : 'var(--bg-elevated)',
                         color: tasbeehIdx === i ? 'white' : '#64748b',
                         transition: 'all 0.15s',
                       }}
@@ -752,7 +752,7 @@ export default function HomePage() {
                   <div style={{ position: 'relative', flexShrink: 0 }}>
                     <svg width={140} height={140} style={{ transform: 'rotate(-90deg)' }}>
                       {/* Track */}
-                      <circle cx={70} cy={70} r={58} fill="none" stroke={dark ? '#241f1a' : '#f1f5f9'} strokeWidth={10} />
+                      <circle cx={70} cy={70} r={58} fill="none" stroke={'var(--bg-elevated)'} strokeWidth={10} />
                       {/* Progress */}
                       <circle
                         cx={70} cy={70} r={58} fill="none"
@@ -813,7 +813,7 @@ export default function HomePage() {
                     {/* Reset */}
                     <button
                       onClick={() => { setTasbeehCount(0); setTasbeehTotal(0); localStorage.setItem('tasbeehTotal', '0'); }}
-                      style={{ background: 'none', border: `1px solid ${dark ? '#241f1a' : '#e2e8f0'}`, borderRadius: 8, padding: '6px 14px', fontSize: 12, color: '#94a3b8', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5 }}
+                      style={{ background: 'none', border: '1px solid var(--border-default)', borderRadius: 8, padding: '6px 14px', fontSize: 12, color: '#94a3b8', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5 }}
                     >
                       <span className="material-symbols-outlined" style={{ fontSize: 14 }}>restart_alt</span>
                       Reset all
@@ -852,13 +852,13 @@ export default function HomePage() {
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                   {/* Type filter */}
-                  <div style={{ display: 'flex', background: dark ? '#1a1612' : 'white', border: `1px solid ${dark ? '#241f1a' : '#f1f5f9'}`, borderRadius: 10, padding: 3, gap: 2 }}>
+                  <div style={{ display: 'flex', background: 'var(--bg-surface)', border: `1px solid ${'var(--bg-elevated)'}`, borderRadius: 10, padding: 3, gap: 2 }}>
                     {(['All', 'Meccan', 'Medinan'] as const).map(t => (
                       <button key={t} className="filter-btn" onClick={() => setTypeFilter(t)} style={{ background: typeFilter === t ? '#f59e0b' : 'transparent', color: typeFilter === t ? 'white' : '#94a3b8' }}>{t}</button>
                     ))}
                   </div>
                   {/* View toggle */}
-                  <div style={{ display: 'flex', background: dark ? '#1a1612' : 'white', border: `1px solid ${dark ? '#241f1a' : '#f1f5f9'}`, borderRadius: 10, padding: 3, gap: 2 }}>
+                  <div style={{ display: 'flex', background: 'var(--bg-surface)', border: `1px solid ${'var(--bg-elevated)'}`, borderRadius: 10, padding: 3, gap: 2 }}>
                     {(['grid', 'list'] as const).map(m => (
                       <button key={m} className="filter-btn" onClick={() => setViewMode(m)} style={{ background: viewMode === m ? '#f59e0b' : 'transparent', color: viewMode === m ? 'white' : '#94a3b8' }}>
                         <span className="material-symbols-outlined" style={{ fontSize: 16 }}>{m === 'grid' ? 'grid_view' : 'view_list'}</span>
@@ -908,7 +908,7 @@ export default function HomePage() {
 
               {/* Show more / less */}
               <div style={{ marginTop: 24, textAlign: 'center' }}>
-                <button onClick={() => setShowAll(v => !v)} style={{ background: dark ? '#1a1612' : 'white', border: `1px solid ${dark ? '#241f1a' : '#e2e8f0'}`, padding: '10px 28px', borderRadius: 12, fontWeight: 600, fontSize: 13.5, boxShadow: '0 1px 4px rgba(0,0,0,0.06)', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6, color: dark ? '#e2e8e5' : '#334155' }}>
+                <button onClick={() => setShowAll(v => !v)} style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-default)', padding: '10px 28px', borderRadius: 12, fontWeight: 600, fontSize: 13.5, boxShadow: '0 1px 4px rgba(0,0,0,0.06)', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6, color: 'var(--text-secondary)' }}>
                   {showAll ? `Show Top 12` : `Show All ${filtered.length} Surahs`}
                   <span className="material-symbols-outlined" style={{ fontSize: 18, transform: showAll ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}>expand_more</span>
                 </button>
@@ -938,7 +938,7 @@ export default function HomePage() {
                   <div style={{ width: 44, height: 44, borderRadius: 14, background: 'rgba(245,158,11,0.14)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 18 }}>
                     <span className="material-symbols-outlined" style={{ fontSize: 26, color: '#f59e0b' }}>auto_stories</span>
                   </div>
-                  <h2 style={{ margin: '0 0 12px', fontWeight: 800, fontSize: 'clamp(22px,4vw,30px)', lineHeight: 1.2, color: dark ? '#f1f5f9' : '#0f172a' }}>
+                  <h2 style={{ margin: '0 0 12px', fontWeight: 800, fontSize: 'clamp(22px,4vw,30px)', lineHeight: 1.2, color: 'var(--text-primary)' }}>
                     Let&apos;s get{' '}
                     <span style={{ color: '#f59e0b' }}>to learning</span>
                   </h2>
@@ -970,8 +970,8 @@ export default function HomePage() {
                           <span className="material-symbols-outlined" style={{ fontSize: 22, color: item.color }}>{item.icon}</span>
                         </div>
                         <div style={{ flex: 1, minWidth: 0 }}>
-                          <p style={{ margin: '0 0 2px', fontWeight: 700, fontSize: 14, color: dark ? '#e2e8e5' : '#0f172a' }}>{item.label}</p>
-                          <p style={{ margin: 0, fontSize: 12, color: dark ? '#64748b' : '#64748b', lineHeight: 1.5 }}>{item.sub}</p>
+                          <p style={{ margin: '0 0 2px', fontWeight: 700, fontSize: 14, color: 'var(--text-primary)' }}>{item.label}</p>
+                          <p style={{ margin: 0, fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.5 }}>{item.sub}</p>
                         </div>
                         <span className="material-symbols-outlined" style={{ fontSize: 18, color: dark ? '#334155' : '#cbd5e1', flexShrink: 0 }}>chevron_right</span>
                       </div>
