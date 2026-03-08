@@ -15,7 +15,6 @@ const NAV_SECTIONS = [
     items: [
       { href: '/read-quran',        label: 'Read Quran',      icon: 'menu_book',          desc: 'Full Arabic text'       },
       { href: '/audio-quran',       label: 'Audio Quran',     icon: 'headphones',         desc: 'Stream recitations'     },
-      { href: '/full-surah-reader', label: 'Surah Reader',    icon: 'chrome_reader_mode', desc: 'Immersive reading'      },
       { href: '/read-quran/1?mode=word-by-word', label: 'Word by Word', icon: 'text_fields', desc: 'Every word explained' },
       { href: '/tafseer',           label: 'Tafseer',         icon: 'lightbulb',          desc: 'Classical commentary'   },
     ],
@@ -26,7 +25,6 @@ const NAV_SECTIONS = [
     items: [
       { href: '/learn-quran',    label: 'Learn Quran',  icon: 'school',      desc: 'Structured lessons'  },
       { href: '/memorize-quran', label: 'Hifz Program', icon: 'psychology',  desc: 'Smart memorization'  },
-      { href: '/courses',        label: 'Courses',      icon: 'class',       desc: 'Topic-based learning' },
     ],
   },
   {
