@@ -458,7 +458,7 @@ export default function HomePage() {
         @keyframes navSlideIn{from{transform:translateX(-100%);opacity:0}to{transform:translateX(0);opacity:1}}
         /* ── Responsive ── */
         .hp-header-inner{padding:10px 16px !important}
-        .hp-content{padding:16px 16px 60px !important}
+        .hp-content{padding:16px 16px 16px !important}
         .hp-stats{grid-template-columns:repeat(2,1fr) !important}
         .hp-quick{grid-template-columns:1fr !important}
         .hp-features{grid-template-columns:repeat(3,1fr) !important}
@@ -466,14 +466,14 @@ export default function HomePage() {
         .hp-qs-hide{display:none !important}
         @media(min-width:640px){
           .hp-header-inner{padding:12px 24px !important}
-          .hp-content{padding:20px 24px 60px !important}
+          .hp-content{padding:20px 24px 16px !important}
           .hp-quick{grid-template-columns:repeat(2,1fr) !important}
           .hp-surah-grid{grid-template-columns:repeat(2,1fr) !important}
           .hp-qs-hide{display:flex !important}
         }
         @media(min-width:860px){
           .hp-header-inner{padding:12px 28px !important}
-          .hp-content{padding:24px 28px 60px !important}
+          .hp-content{padding:24px 28px 16px !important}
           .hp-stats{grid-template-columns:repeat(4,1fr) !important}
           .hp-quick{grid-template-columns:repeat(3,1fr) !important}
           .hp-features{grid-template-columns:repeat(auto-fill,minmax(130px,1fr)) !important}
@@ -917,7 +917,7 @@ export default function HomePage() {
 
             {/* ── GET STARTED SECTION ── */}
             <section style={{
-              marginBottom: 32,
+              marginBottom: 0,
               borderRadius: 20,
               background: dark
                 ? 'linear-gradient(135deg,#1a1612 0%,#0f0d0a 60%,#1a1612 100%)'
