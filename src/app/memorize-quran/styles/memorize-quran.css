@@ -329,7 +329,10 @@
 }
 
 .mq-header-info {
+    flex: 1;
+    min-width: 0;
     text-align: center;
+    overflow: hidden;
 }
 
 .mq-surah-title {
@@ -929,7 +932,7 @@
     position: fixed;
     inset: 0;
     background: linear-gradient(135deg, #f0fdf4 0%, #f8fafc 50%, #f0fdf4 100%);
-    z-index: 2000;
+    z-index: 10010;
     display: flex;
     flex-direction: column;
     font-family: 'Lexend', sans-serif;
@@ -980,6 +983,72 @@
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
+    .mq-view-toggle {
+        display: none;
+    }
+
+    .mq-player-header {
+        padding: 8px 12px;
+        gap: 6px;
+    }
+
+    .action-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 0.82rem;
+    }
+
+    .back-btn-icon {
+        width: 32px;
+        height: 32px;
+        flex-shrink: 0;
+    }
+
+    .mq-header-actions {
+        gap: 4px;
+        flex-shrink: 0;
+    }
+
+    /* Hide verbose label, show only the number to save space */
+    .mistake-label {
+        display: none;
+    }
+
+    .mistake-counter {
+        padding: 4px 8px;
+        gap: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .mq-player-header {
+        flex-wrap: wrap;
+        border-radius: 16px;
+        padding: 10px 14px 8px;
+        gap: 4px;
+    }
+
+    /* Row 1: back button + title */
+    .back-btn-icon {
+        order: 0;
+        flex-shrink: 0;
+    }
+
+    .mq-header-info {
+        order: 1;
+    }
+
+    /* Row 2: actions full width */
+    .mq-header-actions {
+        order: 2;
+        flex: 1 1 100%;
+        justify-content: flex-end;
+        border-top: 1px solid var(--mq-border);
+        padding-top: 6px;
+        margin-top: 2px;
+    }
+}
+
     .verse-arabic {
         font-size: 1.8rem;
     }
@@ -1004,7 +1073,7 @@
     position: fixed;
     inset: 0;
     background: linear-gradient(135deg, #f0fdf4 0%, #f8fafc 60%, #f0fdf4 100%);
-    z-index: 2000;
+    z-index: 10010;
     display: flex;
     flex-direction: column;
     font-family: 'Lexend', sans-serif;

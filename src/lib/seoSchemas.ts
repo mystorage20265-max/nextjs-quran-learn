@@ -12,18 +12,19 @@ export function getOrganizationSchema() {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: 'Learn Quran',
-    url: 'https://quraniclearn.com',
-    logo: 'https://quraniclearn.com/your-quran-logo.svg',
+    url: 'https://learnquran.app',
+    logo: 'https://learnquran.app/images/logo.png',
     description: 'Interactive Quranic learning platform for spiritual growth and understanding.',
     sameAs: [
-      'https://www.facebook.com/quraniclearn',
-      'https://twitter.com/quraniclearn',
-      'https://www.instagram.com/quraniclearn',
+      'https://www.facebook.com/learnquranapp',
+      'https://x.com/learnquranapp_',
+      'https://www.instagram.com/learnquranapp_/',
+      'https://www.youtube.com/@learnquranapp',
     ],
     contactPoint: {
       '@type': 'ContactPoint',
       contactType: 'Customer Support',
-      email: 'support@quraniclearn.com',
+      email: 'contact@learnquran.app',
     },
   };
 }
@@ -36,13 +37,13 @@ export function getWebsiteSchema() {
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: 'QuranicLearn',
-    url: 'https://quraniclearn.com',
+    name: 'Learn Quran',
+    url: 'https://learnquran.app',
     potentialAction: {
       '@type': 'SearchAction',
       target: {
         '@type': 'EntryPoint',
-        urlTemplate: 'https://quraniclearn.com/search?q={search_term_string}',
+        urlTemplate: 'https://learnquran.app/search?q={search_term_string}',
       },
       'query-input': 'required name=search_term_string',
     },
@@ -304,7 +305,7 @@ export function getOpenGraphTags({
     title,
     description,
     url,
-    siteName: 'Learn Quran',
+    siteName: 'Learn Quran | learnquran.app',
     images: [
       {
         url: image,
@@ -338,8 +339,8 @@ export function getTwitterCardTags({
     title,
     description,
     images: [image],
-    creator: '@quraniclearn',
-    site: '@quraniclearn',
+    creator: '@learnquranapp_',
+    site: '@learnquranapp_',
   };
 }
 
@@ -348,7 +349,7 @@ export function getTwitterCardTags({
  * Prevents duplicate content issues
  */
 export function getCanonicalUrl(path: string): string {
-  const baseUrl = 'https://quraniclearn.com';
+  const baseUrl = 'https://learnquran.app';
   return `${baseUrl}${path}`;
 }
 
@@ -360,7 +361,7 @@ export function getHrefLangTags(path: string, languages: string[] = ['en']) {
   return languages.map((lang) => ({
     rel: 'alternate',
     hrefLang: lang,
-    href: `https://quraniclearn.com/${lang}${path}`,
+    href: `https://learnquran.app/${lang}${path}`,
   }));
 }
 

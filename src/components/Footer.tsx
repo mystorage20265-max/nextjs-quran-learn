@@ -37,10 +37,10 @@ const Footer: React.FC = () => {
   ];
 
   const socials = [
-    { icon: <Facebook size={18} />, href: 'https://facebook.com', label: 'Facebook' },
-    { icon: <X size={18} />, href: 'https://x.com', label: 'X (Twitter)' },
-    { icon: <Instagram size={18} />, href: 'https://instagram.com', label: 'Instagram' },
-    { icon: <Youtube size={18} />, href: 'https://youtube.com', label: 'YouTube' },
+    { icon: <Facebook size={18} />, href: 'https://www.facebook.com/learnquranapp', label: 'Facebook' },
+    { icon: <X size={18} />, href: 'https://x.com/learnquranapp_', label: 'X (Twitter)' },
+    { icon: <Instagram size={18} />, href: 'https://www.instagram.com/learnquranapp_/', label: 'Instagram' },
+    { icon: <Youtube size={18} />, href: 'https://www.youtube.com/@learnquranapp', label: 'YouTube' },
   ];
 
 

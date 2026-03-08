@@ -197,9 +197,11 @@ export default function HomePage() {
 
   // ── Navigate Quran panel ──
   const [showNav, setShowNav] = useState(false);
+  const [navLoading, setNavLoading] = useState(false);
   const [navTab, setNavTab] = useState<'surah' | 'juz' | 'page'>('surah');
   const [navSearch, setNavSearch] = useState('');
   const navRef = useRef<HTMLDivElement>(null);
+  const openNav = () => { setShowNav(true); setNavLoading(true); setTimeout(() => setNavLoading(false), 600); };
 
   // ── Tasbeeh counter ──
   const TASBEEH_PRESETS = [
@@ -349,12 +351,28 @@ export default function HomePage() {
             </div>
             {/* Panel Body */}
             <div className="hp-scroll" style={{ flex: 1, overflowY: 'auto', padding: 0 }}>
-              {navTab === 'surah' && (() => {
+              {navLoading ? (
+                <div style={{ padding: '8px 0' }}>
+                  {Array.from({ length: 10 }).map((_, i) => (
+                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 20px', borderBottom: '1px solid var(--border-subtle)' }}>
+                      <div style={{ width: 36, height: 36, borderRadius: 8, background: 'var(--bg-elevated)', flexShrink: 0, animation: 'navSkel 1.2s ease-in-out infinite', animationDelay: `${i * 0.07}s` }} />
+                      <div style={{ flex: 1 }}>
+                        <div style={{ height: 12, borderRadius: 6, background: 'var(--bg-elevated)', marginBottom: 8, width: `${55 + (i % 4) * 10}%`, animation: 'navSkel 1.2s ease-in-out infinite', animationDelay: `${i * 0.07 + 0.1}s` }} />
+                        <div style={{ height: 10, borderRadius: 5, background: 'var(--bg-elevated)', width: `${35 + (i % 3) * 8}%`, animation: 'navSkel 1.2s ease-in-out infinite', animationDelay: `${i * 0.07 + 0.2}s` }} />
+                      </div>
+                      <div style={{ width: 32, textAlign: 'right' }}>
+                        <div style={{ height: 18, width: 32, borderRadius: 5, background: 'var(--bg-elevated)', marginBottom: 5, animation: 'navSkel 1.2s ease-in-out infinite', animationDelay: `${i * 0.07 + 0.15}s` }} />
+                        <div style={{ height: 8, width: 28, borderRadius: 4, background: 'var(--bg-elevated)', marginLeft: 'auto', animation: 'navSkel 1.2s ease-in-out infinite', animationDelay: `${i * 0.07 + 0.25}s` }} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : navTab === 'surah' ? (() => {
                 const q = navSearch.toLowerCase();
                 const list = q ? SURAHS.filter(s => s.name.toLowerCase().includes(q) || s.ar.includes(q) || s.meaning.toLowerCase().includes(q) || String(s.num) === q) : SURAHS;
                 return list.length === 0 ? (
                   <div style={{ padding: 32, textAlign: 'center', ...S.muted, fontSize: 13 }}>No surahs found</div>
-                ) : list.map((s, i) => (
+                ) : <>{list.map((s) => (
                   <Link key={s.num} href={`/read-quran/${s.num}?mode=reading`} onClick={() => { trackVisit(s); setShowNav(false); }} style={{ textDecoration: 'none', display: 'block' }}>
                     <div style={{
                       display: 'flex', alignItems: 'center', gap: 12, padding: '12px 20px',
@@ -377,10 +395,8 @@ export default function HomePage() {
                       </div>
                     </div>
                   </Link>
-                ));
-              })()}
-
-              {navTab === 'juz' && (
+                ))}</>;
+              })() : navTab === 'juz' ? (
                 <div style={{ padding: '8px 12px' }}>
                   {JUZ_DATA.map(j => {
                     const surahNum = parseInt(j.start.split(':')[0]);
@@ -408,9 +424,7 @@ export default function HomePage() {
                     );
                   })}
                 </div>
-              )}
-
-              {navTab === 'page' && (
+              ) : (
                 <div style={{ padding: '16px 16px' }}>
                   <p style={{ margin: '0 0 12px', fontSize: 12, ...S.muted }}>Go to a specific page (1–604)</p>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 6 }}>
@@ -457,6 +471,7 @@ export default function HomePage() {
         .tc-flash{animation:tc-pop 0.22s ease}
         @keyframes tc-pop{0%{transform:scale(1)}50%{transform:scale(1.13)}100%{transform:scale(1)}}
         @keyframes navSlideIn{from{transform:translateX(-100%);opacity:0}to{transform:translateX(0);opacity:1}}
+        @keyframes navSkel{0%,100%{opacity:0.5}50%{opacity:1}}
         /* ── Responsive ── */
         .hp-header-inner{padding:10px 16px !important}
         .hp-content{padding:16px 16px 16px !important}
@@ -570,7 +585,7 @@ export default function HomePage() {
               <span className="hp-qs-hide">Quick Start</span>
             </Link>
             <button
-              onClick={() => setShowNav(true)}
+              onClick={() => openNav()}
               style={{
                 background: 'var(--bg-elevated)', color: 'var(--brand-primary)',
                 borderRadius: 12, padding: '9px 14px', fontWeight: 600, fontSize: 13.5,
@@ -675,7 +690,7 @@ export default function HomePage() {
                       </div>
                     </div>
                   );
-                  if (isNav) return <div key={f.label} onClick={() => setShowNav(true)} style={{ textDecoration: 'none', cursor: 'pointer' }}>{inner}</div>;
+                  if (isNav) return <div key={f.label} onClick={() => openNav()} style={{ textDecoration: 'none', cursor: 'pointer' }}>{inner}</div>;
                   return <Link key={f.label} href={f.href} style={{ textDecoration: 'none' }}>{inner}</Link>;
                 })}
               </div>

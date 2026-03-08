@@ -591,6 +591,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 .nq-ayah-card.nq-playing .nq-translation-row{border-color:rgba(245,158,11,0.5)}
                 .nq-translation-text{color:#475569;font-size:15px;line-height:1.8}
                 @media(min-width:640px){.nq-translation-text{font-size:18px}}
+                @media(max-width:639px){.nq-translation-row{padding-left:0;border-left:none;padding-top:12px;border-top:1px solid #e2e8f0;margin-top:12px}.nq-translation-text{text-align:center}}
                 .dark .nq-translation-text{color:#94a3b8}
                 .nq-ayah-card.nq-playing .nq-translation-text{color:#1e293b;font-weight:500}
                 .dark .nq-ayah-card.nq-playing .nq-translation-text{color:#e2e8f0}
@@ -667,6 +668,13 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 .nq-sound-toggle-wrap{display:flex;align-items:center;gap:6px;padding:0 8px;border-left:1px solid #e2e8f0;margin-left:auto;flex-shrink:0}
                 .dark .nq-sound-toggle-wrap{border-left-color:#1e293b}
                 .nq-sound-toggle-label{font-size:11px;font-weight:600;color:#94a3b8;white-space:nowrap;font-family:'Lexend',sans-serif;display:inline}
+                /* On small screens, let the tabs row wrap to two lines */
+                @media(max-width:540px){
+                  .nq-tabs-row{flex-wrap:wrap;height:auto!important;padding-bottom:6px}
+                  .nq-mode-tabs{flex:1 1 100%;order:1;border-bottom:1px solid #e2e8f0;height:40px}
+                  .dark .nq-mode-tabs{border-bottom-color:#1e293b}
+                  .nq-sound-toggle-wrap{order:2;flex:1 1 100%;border-left:none;padding:6px 16px;margin-left:0}
+                }
                 .nq-sound-pill{position:relative;width:36px;height:20px;border-radius:10px;cursor:pointer;border:none;padding:0;transition:background 0.22s;flex-shrink:0}
                 .nq-sound-pill.on{background:#f59e0b}
                 .nq-sound-pill.off{background:#cbd5e1}
@@ -746,6 +754,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                     .nq-ayah-card.nq-playing .nq-translation-row{border-left-color:#f59e0b;background:rgba(245,158,11,0.05)}
                     .nq-translation-text{color:#334155;font-size:15px;line-height:1.9;margin:0}
                     @media(min-width:640px){.nq-translation-text{font-size:17px;line-height:2.0}}
+                    @media(max-width:639px){.nq-translation-row{padding:10px 0;border-left:none;border-top:1px solid rgba(245,158,11,0.2);border-radius:0;background:transparent}.nq-translation-text{text-align:center}}
                     .dark .nq-translation-text{color:#94a3b8}
                     .nq-actions-bar{display:flex;align-items:center;gap:6px;margin-top:16px;padding-top:12px;border-top:1px solid #f1f5f9;flex-wrap:wrap}
                     @media(min-width:640px){.nq-actions-bar{gap:8px;margin-top:20px;padding-top:14px}}
@@ -833,32 +842,15 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                 <span className="material-symbols-outlined">arrow_back</span>
                             </Link>
                             <div style={{ position: 'relative' }}>
-                                <button
-                                    onClick={() => setShowSurahPicker(!showSurahPicker)}
-                                    style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, padding: 0 }}
-                                >
                                     <h2 className="nq-header-title">
                                         {chapter.name_simple}
                                         <span className="nq-header-subtitle">
                                             {chapter.translated_name.name} • {chapter.verses_count} Verses
                                         </span>
                                     </h2>
-                                    <ChevronDown size={16} style={{ color: '#94a3b8', flexShrink: 0, marginTop: 1 }} />
-                                </button>
                             </div>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                            {/* Surah picker button */}
-                            <button
-                                ref={surahBtnRef}
-                                onClick={() => { setShowSurahPicker(!showSurahPicker); setShowVersePicker(false); }}
-                                className="nq-hdr-btn"
-                                style={{ gap: 6, display: 'flex', alignItems: 'center', padding: '6px 12px' }}
-                            >
-                                <span className="material-symbols-outlined" style={{ fontSize: 16 }}>menu_book</span>
-                                <span style={{ fontSize: 13, fontWeight: 500 }}>Surah</span>
-                                <ChevronDown size={14} />
-                            </button>
                             {/* Verse picker button */}
                             <button
                                 ref={verseBtnRef}
@@ -1602,8 +1594,8 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 );
             })()}
 
-            {/* Surah Picker — bottom sheet on mobile, dropdown on desktop */}
-            {showSurahPicker && (() => {
+            {/* Surah Picker removed */}
+            {false && (() => {
                 if (isMobile) {
                     // ── MOBILE: full bottom sheet ──
                     return (

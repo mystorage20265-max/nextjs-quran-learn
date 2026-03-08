@@ -791,7 +791,8 @@ export default function AudioQuranPage() {
           .aq-player-open .aq-main { padding-bottom: 200px !important; }
 
           /* Hero */
-          .aq-hero-inner { flex-direction: column !important; align-items: flex-start !important; gap: 16px !important; }
+          .aq-hero-inner { flex-direction: column !important; align-items: center !important; gap: 16px !important; text-align: center !important; }
+          .aq-hero-inner > div:last-child { align-items: center !important; }
 
           /* Table columns */
           .aq-hide-mobile { display: none !important; }
