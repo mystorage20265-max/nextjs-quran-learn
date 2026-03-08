@@ -2,7 +2,7 @@
 import type { Metadata } from 'next';
 
 import Footer from '@/components/Footer';
-// import GlobalSidebar from '@/components/GlobalSidebar'; // Sidebar hidden for now
+import GlobalSidebar from '@/components/GlobalSidebar';
 import Navbar from '@/components/Navbar/Navbar';
 import { getOrganizationSchema, getWebsiteSchema } from '@/lib/seoSchemas';
 import { ThemeProvider } from '@/components/ThemeProvider';
@@ -141,7 +141,7 @@ export default function RootLayout({
           <a href="#main-content" className="skip-link">Skip to main content</a>
           <Navbar />
           <div className="app-shell no-sidebar">
-            {/* <GlobalSidebar /> — hidden for now, code preserved */}
+            <GlobalSidebar />
             <ClientWrapper>
               <main id="main-content" style={{ flex: 1, minWidth: 0 }}>
                 {children}

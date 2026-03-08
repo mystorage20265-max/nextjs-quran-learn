@@ -924,13 +924,8 @@ textarea::placeholder {
 }
 
 /* ============ GLOBAL SIDEBAR ============ */
-/* Sidebar hidden for now — code preserved, display forced off */
+/* Desktop sidebar kept hidden — mobile bottom nav is active */
 .gsb-root {
-  display: none !important;
-}
-
-/* Mobile bottom nav: also hidden while sidebar is off */
-.gsb-mobile-nav {
   display: none !important;
 }
 
@@ -945,6 +940,13 @@ textarea::placeholder {
 /* Sidebar-less variant — top padding for fixed navbar */
 .app-shell.no-sidebar {
   padding-top: 66px;
+}
+
+/* Pad content on mobile so fixed bottom nav doesn't overlap */
+@media (max-width: 767px) {
+  .app-shell.no-sidebar > main {
+    padding-bottom: 68px;
+  }
 }
 
 .app-shell > main,
