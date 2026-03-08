@@ -481,6 +481,8 @@ export default function HomePage() {
         .hp-surah-grid{grid-template-columns:repeat(2,1fr) !important}
         .hp-qs-hide{display:none !important}
         .hp-dark-hide{display:none !important}
+        .hp-sr-meta{display:none !important}
+        @media(min-width:540px){.hp-sr-meta{display:flex !important}}
         @media(min-width:640px){
           .hp-header-inner{padding:12px 24px !important}
           .hp-content{padding:20px 24px 16px !important}
@@ -551,7 +553,7 @@ export default function HomePage() {
                           <p style={{ margin: 0, fontWeight: 600, fontSize: 13.5, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{s.name}</p>
                           <p style={{ margin: 0, fontSize: 11, color: '#94a3b8' }}>{s.meaning} · {s.v} verses</p>
                         </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+                        <div className="hp-sr-meta" style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
                           <span style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: s.t === 'Meccan' ? '#f59e0b' : '#94a3b8' }}>{s.t}</span>
                           <span style={{ fontFamily: "'Naskh IndoPak',serif", fontSize: 17, color: 'var(--text-primary)' }}>{s.ar}</span>
                         </div>
@@ -769,7 +771,12 @@ export default function HomePage() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 24, flexWrap: 'wrap' }}>
                   {/* Ring + tap button */}
                   <div style={{ position: 'relative', flexShrink: 0 }}>
-                    <svg width={140} height={140} style={{ transform: 'rotate(-90deg)' }}>
+                    {/* Circular shadow layer */}
+                    <div style={{
+                      position: 'absolute', inset: 0, borderRadius: '50%', pointerEvents: 'none', zIndex: 0,
+                      boxShadow: '0 8px 24px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.10), inset 0 -4px 10px rgba(0,0,0,0.07)',
+                    }} />
+                    <svg width={140} height={140} style={{ transform: 'rotate(-90deg)', position: 'relative', zIndex: 1 }}>
                       {/* Track */}
                       <circle cx={70} cy={70} r={58} fill="none" stroke={'var(--bg-elevated)'} strokeWidth={10} />
                       {/* Progress */}
@@ -786,7 +793,7 @@ export default function HomePage() {
                     {/* Count display + tap area */}
                     <button
                       className={`tc-btn${tasbeehFlash ? ' tc-flash' : ''}`}
-                      style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2 }}
+                      style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2, zIndex: 2 }}
                       onClick={() => {
                         const next = tasbeehCount + 1;
                         setTasbeehCount(next);
