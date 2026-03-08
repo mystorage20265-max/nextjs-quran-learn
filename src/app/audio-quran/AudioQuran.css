@@ -287,13 +287,10 @@
 	.surah-card { grid-template-columns: 48px 1fr 160px; }
 	.right-controls { gap:6px; }
 }
-@media(max-width:768px) {
-	.aq-layout { flex-direction: column !important; }
-	.aq-sidebar { width: 100% !important; position: static !important; }
-	.aq-main { padding: 16px 12px !important; }
-	.aq-hero-inner { flex-direction: column !important; align-items: flex-start !important; }
-	.aq-hide-mobile { display: none !important; }
-}
+/* Mobile reciter dropdown (hidden on desktop, shown ≤1024px) */
+.aq-mobile-reciter { display: none; }
+@media(max-width:1024px) { .aq-mobile-reciter { display: block; } }
+
 @media(max-width:640px) {
 	.controls-grid { grid-template-columns: 1fr; }
 	.surah-card { grid-template-columns: 44px 1fr 140px; padding:10px; }

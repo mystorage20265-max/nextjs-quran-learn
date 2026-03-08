@@ -295,12 +295,12 @@ export default function AudioQuranPage() {
   const topReciters = reciters.slice(0, 5);
 
   return (
-    <div className="audio-quran-root" style={{ minHeight: "100vh", background: "var(--aq-bg)", fontFamily: "'Inter', sans-serif" }}>
+    <div className={`audio-quran-root${nowPlayingSurah !== null ? ' aq-player-open' : ''}`} style={{ minHeight: "100vh", background: "var(--aq-bg)", fontFamily: "'Inter', sans-serif" }}>
 
 
 
       {/* ── MAIN ── */}
-      <main className="aq-main" style={{ maxWidth: 1280, margin: "0 auto", padding: "32px 24px", paddingBottom: 120 }}>
+      <main className="aq-main" style={{ maxWidth: 1280, margin: "0 auto", padding: "32px 24px", paddingBottom: nowPlayingSurah !== null ? 160 : 32 }}>
         <div className="aq-layout" style={{ display: "flex", gap: 32, alignItems: "flex-start" }}>
 
           {/* ── LEFT: Hero + Table ── */}
@@ -392,6 +392,23 @@ export default function AudioQuranPage() {
                 {globalError}
               </div>
             )}
+
+            {/* Mobile Reciter Selector */}
+            <div className="aq-mobile-reciter" style={{ marginBottom: 16, background: "var(--aq-card)", borderRadius: 12, border: "1px solid var(--aq-border)", padding: "14px 16px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+                <span className="material-symbols-outlined" style={{ color: "#f48c25", fontSize: 18 }}>mic</span>
+                <span style={{ fontSize: 12, fontWeight: 700, textTransform: "uppercase" as const, letterSpacing: "0.08em", color: "var(--aq-muted)" }}>Select Reciter</span>
+              </div>
+              <select
+                value={selectedReciter}
+                onChange={e => handleReciterChange(e.target.value)}
+                style={{ width: "100%", padding: "10px 12px", borderRadius: 8, border: "1px solid var(--aq-border)", background: "var(--aq-input-bg)", color: "var(--aq-text)", fontSize: 13, fontWeight: 500, outline: "none" }}
+              >
+                {reciters.map((r: any) => (
+                  <option key={r.identifier} value={r.identifier}>{r.englishName}</option>
+                ))}
+              </select>
+            </div>
 
             {/* Surah Table */}
             <div style={{ background: "var(--aq-card)", borderRadius: 16, border: "1px solid var(--aq-border)", overflow: "hidden", boxShadow: "0 2px 12px rgba(0,0,0,0.04)" }}>
@@ -769,8 +786,9 @@ export default function AudioQuranPage() {
           .aq-reciter-select { max-width: 120px !important; font-size: 11px !important; }
           .aq-join-btn { display: none !important; }
 
-          /* Main - extra bottom padding for player + mobile nav */
-          .aq-main { padding: 16px 12px 210px !important; }
+          /* Main padding — extra bottom only when player is open */
+          .aq-main { padding: 16px 12px 24px !important; }
+          .aq-player-open .aq-main { padding-bottom: 200px !important; }
 
           /* Hero */
           .aq-hero-inner { flex-direction: column !important; align-items: flex-start !important; gap: 16px !important; }
@@ -800,7 +818,8 @@ export default function AudioQuranPage() {
           .aq-search-box input { width: 70px !important; }
           .aq-reciter-select { display: none !important; }
 
-          .aq-main { padding: 12px 8px 220px !important; }
+          .aq-main { padding: 12px 8px 24px !important; }
+          .aq-player-open .aq-main { padding-bottom: 220px !important; }
 
           /* Table: tighter */
           .audio-quran-root table th,
