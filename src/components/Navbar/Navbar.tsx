@@ -45,7 +45,7 @@ const MEGA_SECTIONS = [
     icon: 'mosque',
     color: '#34d399',
     items: [
-      { href: '/duas',         label: 'Duas',            icon: 'volunteer_activism', desc: 'Supplications'          },
+      { href: '/dua',         label: 'Duas',            icon: 'volunteer_activism', desc: 'Supplications'          },
       { href: '/hadees',       label: 'Hadith',          icon: 'history_edu',        desc: "Prophet's sayings"      },
     ],
   },
