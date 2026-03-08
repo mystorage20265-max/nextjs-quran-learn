@@ -480,12 +480,14 @@ export default function HomePage() {
         .hp-features{grid-template-columns:repeat(3,1fr) !important}
         .hp-surah-grid{grid-template-columns:repeat(2,1fr) !important}
         .hp-qs-hide{display:none !important}
+        .hp-dark-hide{display:none !important}
         @media(min-width:640px){
           .hp-header-inner{padding:12px 24px !important}
           .hp-content{padding:20px 24px 16px !important}
           .hp-quick{grid-template-columns:repeat(2,1fr) !important}
           .hp-surah-grid{grid-template-columns:repeat(2,1fr) !important}
           .hp-qs-hide{display:flex !important}
+          .hp-dark-hide{display:flex !important}
         }
         @media(min-width:860px){
           .hp-header-inner{padding:12px 28px !important}
@@ -568,11 +570,12 @@ export default function HomePage() {
             <button
               onClick={toggleTheme}
               aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
+              className="hp-dark-hide"
               style={{
                 width: 36, height: 36, borderRadius: 10, border: 'none', cursor: 'pointer',
                 background: 'var(--bg-elevated)',
                 color: dark ? '#f59e0b' : '#64748b',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                alignItems: 'center', justifyContent: 'center',
                 flexShrink: 0, transition: 'background 0.18s, color 0.18s',
               }}
             >
