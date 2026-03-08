@@ -120,7 +120,7 @@ const SURAHS = [
 ];
 
 const FEATURES = [
-  { icon: 'menu_book', label: 'Read Quran', sub: '114 Surahs', href: '/read-quran/1', color: '#11d442' },
+  { icon: 'menu_book', label: 'Read Quran', sub: '114 Surahs', href: '/read-quran/1', color: '#f59e0b' },
   { icon: 'explore', label: 'Navigate', sub: 'Surah · Juz · Page', href: '#navigate', color: '#0ea5e9' },
   { icon: 'ads_click', label: 'Memorize', sub: 'Hifz Program', href: '/memorize-quran', color: '#a855f7' },
   { icon: 'music_note', label: 'Audio Quran', sub: 'Listen & Learn', href: '/audio-quran', color: '#f59e0b' },
@@ -200,7 +200,7 @@ export default function HomePage() {
 
   // ── Tasbeeh counter ──
   const TASBEEH_PRESETS = [
-    { label: 'SubhanAllah', ar: 'سُبْحَانَ ٱللَّٰهِ', color: '#11d442' },
+    { label: 'SubhanAllah', ar: 'سُبْحَانَ ٱللَّٰهِ', color: '#f59e0b' },
     { label: 'Alhamdulillah', ar: 'ٱلْحَمْدُ لِلَّٰهِ', color: '#a855f7' },
     { label: 'Allahu Akbar', ar: 'ٱللَّٰهُ أَكْبَرُ', color: '#f59e0b' },
   ];
@@ -299,11 +299,11 @@ export default function HomePage() {
   const todayAyah = AYAHS_OF_DAY[new Date().getDate() % AYAHS_OF_DAY.length];
 
   const S = {
-    shell: { display: 'flex', flexDirection: 'column' as const, flex: 1, minHeight: '100vh', background: dark ? '#0d1b12' : 'white', fontFamily: "'Figtree','Lexend',sans-serif" },
-    card: { background: dark ? '#111f16' : 'white', border: `1px solid ${dark ? '#1e3a2a' : '#f1f5f9'}`, borderRadius: 16, boxShadow: '0 1px 4px rgba(0,0,0,0.06)' },
+    shell: { display: 'flex', flexDirection: 'column' as const, flex: 1, minHeight: '100vh', background: dark ? '#0f0d0a' : 'white', fontFamily: "'Figtree','Lexend',sans-serif" },
+    card: { background: dark ? '#1a1612' : 'white', border: `1px solid ${dark ? '#241f1a' : '#f1f5f9'}`, borderRadius: 16, boxShadow: '0 1px 4px rgba(0,0,0,0.06)' },
     text: { color: dark ? '#e2e8e5' : '#0f172a' },
     muted: { color: '#94a3b8' },
-    tag: (t: string) => ({ fontSize: 9, fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: '0.12em', color: t === 'Meccan' ? '#11d442' : '#94a3b8' }),
+    tag: (t: string) => ({ fontSize: 9, fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: '0.12em', color: t === 'Meccan' ? '#f59e0b' : '#94a3b8' }),
   };
 
   return (
@@ -316,28 +316,28 @@ export default function HomePage() {
           {/* Panel */}
           <div ref={navRef} style={{
             position: 'relative', zIndex: 1, width: '100%', maxWidth: 420,
-            background: dark ? '#0d1b12' : 'white', borderRight: `1px solid ${dark ? '#1e3a2a' : '#e2e8f0'}`,
+            background: dark ? '#0f0d0a' : 'white', borderRight: `1px solid ${dark ? '#241f1a' : '#e2e8f0'}`,
             display: 'flex', flexDirection: 'column', animation: 'navSlideIn 0.25s ease',
             boxShadow: '8px 0 40px rgba(0,0,0,0.15)',
           }}>
             {/* Panel Header */}
-            <div style={{ padding: '18px 20px 14px', borderBottom: `1px solid ${dark ? '#1e3a2a' : '#f1f5f9'}`, flexShrink: 0 }}>
+            <div style={{ padding: '18px 20px 14px', borderBottom: `1px solid ${dark ? '#241f1a' : '#f1f5f9'}`, flexShrink: 0 }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
                 <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700, ...S.text, display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <span className="material-symbols-outlined" style={{ fontSize: 22, color: '#11d442' }}>menu_book</span>
+                  <span className="material-symbols-outlined" style={{ fontSize: 22, color: '#f59e0b' }}>menu_book</span>
                   Navigate Quran
                 </h2>
-                <button onClick={() => setShowNav(false)} style={{ background: dark ? '#1e3a2a' : '#f1f5f9', border: 'none', borderRadius: 8, width: 32, height: 32, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8' }}>
+                <button onClick={() => setShowNav(false)} style={{ background: dark ? '#241f1a' : '#f1f5f9', border: 'none', borderRadius: 8, width: 32, height: 32, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8' }}>
                   <span className="material-symbols-outlined" style={{ fontSize: 18 }}>close</span>
                 </button>
               </div>
               {/* Tabs */}
-              <div style={{ display: 'flex', background: dark ? '#111f16' : '#f1f5f9', borderRadius: 10, padding: 3, gap: 2 }}>
+              <div style={{ display: 'flex', background: dark ? '#1a1612' : '#f1f5f9', borderRadius: 10, padding: 3, gap: 2 }}>
                 {(['surah', 'juz', 'page'] as const).map(tab => (
                   <button key={tab} onClick={() => { setNavTab(tab); setNavSearch(''); }} style={{
                     flex: 1, padding: '8px 12px', borderRadius: 8, border: 'none', cursor: 'pointer',
                     fontSize: 13, fontWeight: 600, transition: 'all 0.15s',
-                    background: navTab === tab ? '#11d442' : 'transparent',
+                    background: navTab === tab ? '#f59e0b' : 'transparent',
                     color: navTab === tab ? 'white' : '#94a3b8',
                   }}>{tab.charAt(0).toUpperCase() + tab.slice(1)}</button>
                 ))}
@@ -349,8 +349,8 @@ export default function HomePage() {
                   <input
                     type="text" value={navSearch} onChange={e => setNavSearch(e.target.value)}
                     placeholder="Search Surah…"
-                    style={{ width: '100%', padding: '9px 12px 9px 36px', borderRadius: 10, border: `1px solid ${dark ? '#1e3a2a' : '#e2e8f0'}`, background: dark ? '#111f16' : 'white', fontSize: 13, color: dark ? '#e2e8e5' : '#334155', outline: 'none', boxSizing: 'border-box' }}
-                    onFocus={e => e.target.style.boxShadow = '0 0 0 2px rgba(17,212,66,0.3)'}
+                    style={{ width: '100%', padding: '9px 12px 9px 36px', borderRadius: 10, border: `1px solid ${dark ? '#241f1a' : '#e2e8f0'}`, background: dark ? '#1a1612' : 'white', fontSize: 13, color: dark ? '#e2e8e5' : '#334155', outline: 'none', boxSizing: 'border-box' }}
+                    onFocus={e => e.target.style.boxShadow = '0 0 0 2px rgba(245,158,11,0.3)'}
                     onBlur={e => e.target.style.boxShadow = 'none'}
                     autoFocus
                   />
@@ -371,10 +371,10 @@ export default function HomePage() {
                       borderBottom: `1px solid ${dark ? '#1e3a2a12' : '#f8fafc'}`,
                       transition: 'background 0.12s', cursor: 'pointer',
                     }}
-                      onMouseEnter={e => e.currentTarget.style.background = dark ? '#1a2f1f' : '#f0fdf4'}
+                      onMouseEnter={e => e.currentTarget.style.background = dark ? '#2a2420' : '#fffbeb'}
                       onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                     >
-                      <div style={{ width: 36, height: 36, borderRadius: 8, background: 'rgba(17,212,66,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 13, color: '#11d442', flexShrink: 0 }}>
+                      <div style={{ width: 36, height: 36, borderRadius: 8, background: 'rgba(245,158,11,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 13, color: '#f59e0b', flexShrink: 0 }}>
                         {s.num}
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
@@ -383,7 +383,7 @@ export default function HomePage() {
                       </div>
                       <div style={{ textAlign: 'right', flexShrink: 0 }}>
                         <span className="font-arabic" style={{ fontSize: 18, fontWeight: 700, ...S.text, display: 'block' }}>{s.ar}</span>
-                        <span style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: '0.1em', color: s.t === 'Meccan' ? '#11d442' : '#94a3b8' }}>{s.t}</span>
+                        <span style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: '0.1em', color: s.t === 'Meccan' ? '#f59e0b' : '#94a3b8' }}>{s.t}</span>
                       </div>
                     </div>
                   </Link>
@@ -400,10 +400,10 @@ export default function HomePage() {
                           display: 'flex', alignItems: 'center', gap: 12, padding: '14px 12px',
                           borderRadius: 10, marginBottom: 4, transition: 'background 0.12s', cursor: 'pointer',
                         }}
-                          onMouseEnter={e => e.currentTarget.style.background = dark ? '#1a2f1f' : '#f0fdf4'}
+                          onMouseEnter={e => e.currentTarget.style.background = dark ? '#2a2420' : '#fffbeb'}
                           onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                         >
-                          <div style={{ width: 40, height: 40, borderRadius: 10, background: 'linear-gradient(135deg, rgba(17,212,66,0.12), rgba(5,150,105,0.08))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: 15, color: '#11d442', flexShrink: 0 }}>
+                          <div style={{ width: 40, height: 40, borderRadius: 10, background: 'linear-gradient(135deg, rgba(245,158,11,0.12), rgba(217,119,6,0.08))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: 15, color: '#f59e0b', flexShrink: 0 }}>
                             {j.juz}
                           </div>
                           <div style={{ flex: 1 }}>
@@ -430,11 +430,11 @@ export default function HomePage() {
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                           padding: '9px 4px', borderRadius: 8, fontSize: 12, fontWeight: 600,
                           color: '#64748b', cursor: 'pointer', transition: 'all 0.12s',
-                          background: dark ? '#111f16' : '#f8fafc',
-                          border: `1px solid ${dark ? '#1e3a2a' : '#f1f5f9'}`,
+                          background: dark ? '#1a1612' : '#f8fafc',
+                          border: `1px solid ${dark ? '#241f1a' : '#f1f5f9'}`,
                         }}
-                          onMouseEnter={e => { e.currentTarget.style.background = '#11d442'; e.currentTarget.style.color = 'white'; e.currentTarget.style.borderColor = '#11d442'; }}
-                          onMouseLeave={e => { e.currentTarget.style.background = dark ? '#111f16' : '#f8fafc'; e.currentTarget.style.color = '#64748b'; e.currentTarget.style.borderColor = dark ? '#1e3a2a' : '#f1f5f9'; }}
+                          onMouseEnter={e => { e.currentTarget.style.background = '#f59e0b'; e.currentTarget.style.color = 'white'; e.currentTarget.style.borderColor = '#f59e0b'; }}
+                          onMouseLeave={e => { e.currentTarget.style.background = dark ? '#1a1612' : '#f8fafc'; e.currentTarget.style.color = '#64748b'; e.currentTarget.style.borderColor = dark ? '#241f1a' : '#f1f5f9'; }}
                         >
                           {p}
                         </div>
@@ -445,7 +445,7 @@ export default function HomePage() {
               )}
             </div>
             {/* Panel Footer */}
-            <div style={{ padding: '12px 20px', borderTop: `1px solid ${dark ? '#1e3a2a' : '#f1f5f9'}`, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ padding: '12px 20px', borderTop: `1px solid ${dark ? '#241f1a' : '#f1f5f9'}`, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <span style={{ fontSize: 11, ...S.muted }}>
                 {navTab === 'surah' ? '114 Surahs' : navTab === 'juz' ? '30 Juz' : '604 Pages'}
               </span>
@@ -456,10 +456,10 @@ export default function HomePage() {
       )}
 
       <style>{`
-        .hp-scroll::-webkit-scrollbar{width:5px}.hp-scroll::-webkit-scrollbar-track{background:transparent}.hp-scroll::-webkit-scrollbar-thumb{background:rgba(17,212,66,0.25);border-radius:3px}
-        .surah-card{transition:transform 0.18s ease,box-shadow 0.18s ease}.surah-card:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(17,212,66,0.12)}
+        .hp-scroll::-webkit-scrollbar{width:5px}.hp-scroll::-webkit-scrollbar-track{background:transparent}.hp-scroll::-webkit-scrollbar-thumb{background:rgba(245,158,11,0.25);border-radius:3px}
+        .surah-card{transition:transform 0.18s ease,box-shadow 0.18s ease}.surah-card:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(245,158,11,0.12)}
         .feat-card{transition:transform 0.18s ease,box-shadow 0.18s ease}.feat-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.10)}
-        .hp-dot{background-image:radial-gradient(circle at 2px 2px,rgba(17,212,66,0.06) 1px,transparent 0);background-size:24px 24px}
+        .hp-dot{background-image:radial-gradient(circle at 2px 2px,rgba(245,158,11,0.06) 1px,transparent 0);background-size:24px 24px}
         .font-arabic{font-family:'Naskh IndoPak',serif}
         .filter-btn{padding:6px 14px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:500;transition:all 0.15s}
         .tc-btn{cursor:pointer;border:none;outline:none;background:none;-webkit-tap-highlight-color:transparent;transition:transform 0.08s ease;user-select:none}
@@ -490,15 +490,15 @@ export default function HomePage() {
           .hp-features{grid-template-columns:repeat(auto-fill,minmax(130px,1fr)) !important}
           .hp-surah-grid{grid-template-columns:repeat(3,1fr) !important}
           .hp-getstarted-inner{grid-template-columns:1fr 1.4fr !important}
-          .hp-getstarted-right{border-left:1px solid rgba(17,212,66,0.12)}
+          .hp-getstarted-right{border-left:1px solid rgba(245,158,11,0.12)}
         }
         .hp-getstarted-inner{grid-template-columns:1fr}
-        .hp-getstarted-right{border-top:1px solid rgba(17,212,66,0.12)}
+        .hp-getstarted-right{border-top:1px solid rgba(245,158,11,0.12)}
       `}</style>
 
       <div style={S.shell}>
         {/* Header — outside scroll container so dropdown isn't clipped */}
-        <header style={{ position: 'relative', zIndex: 200, background: dark ? 'rgba(13,27,18,0.97)' : 'rgba(255,255,255,0.97)', backdropFilter: 'blur(12px)', borderBottom: `1px solid ${dark ? 'rgba(30,58,42,0.6)' : 'rgba(226,232,240,0.6)'}`, flexShrink: 0 }}>
+        <header style={{ position: 'relative', zIndex: 200, background: dark ? 'rgba(15,13,10,0.97)' : 'rgba(255,255,255,0.97)', backdropFilter: 'blur(12px)', borderBottom: `1px solid ${dark ? 'rgba(36,31,26,0.6)' : 'rgba(226,232,240,0.6)'}`, flexShrink: 0 }}>
           <div className="hp-header-inner" style={{ maxWidth: 860, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 12 }}>
             <div ref={searchRef} style={{ flex: 1, position: 'relative' }}>
               <span className="material-symbols-outlined" style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', fontSize: 20, pointerEvents: 'none', zIndex: 1 }}>search</span>
@@ -506,18 +506,18 @@ export default function HomePage() {
                 type="text"
                 value={query}
                 onChange={e => { setQuery(e.target.value); setShowAll(true); setShowDropdown(true); }}
-                onFocus={e => { if (query.trim()) setShowDropdown(true); e.target.style.boxShadow = '0 0 0 2px rgba(17,212,66,0.4)'; }}
+                onFocus={e => { if (query.trim()) setShowDropdown(true); e.target.style.boxShadow = '0 0 0 2px rgba(245,158,11,0.4)'; }}
                 onKeyDown={e => { if (e.key === 'Escape') { setShowDropdown(false); } }}
                 placeholder="Search Surah name, number, or meaning…"
-                style={{ width: '100%', background: dark ? '#111f16' : 'white', border: 'none', borderRadius: 12, padding: '10px 14px 10px 40px', fontSize: 13.5, color: dark ? '#e2e8e5' : '#334155', boxShadow: '0 1px 4px rgba(0,0,0,0.07)', outline: 'none' }}
+                style={{ width: '100%', background: dark ? '#1a1612' : 'white', border: 'none', borderRadius: 12, padding: '10px 14px 10px 40px', fontSize: 13.5, color: dark ? '#e2e8e5' : '#334155', boxShadow: '0 1px 4px rgba(0,0,0,0.07)', outline: 'none' }}
                 onBlur={e => (e.target.style.boxShadow = '0 1px 4px rgba(0,0,0,0.07)')}
               />
               {/* Search Dropdown */}
               {showDropdown && dropdownResults.length > 0 && (
                 <div style={{
                   position: 'absolute', top: 'calc(100% + 8px)', left: 0, right: 0,
-                  background: dark ? '#111f16' : 'white',
-                  border: `1px solid ${dark ? '#1e3a2a' : '#e2e8f0'}`,
+                  background: dark ? '#1a1612' : 'white',
+                  border: `1px solid ${dark ? '#241f1a' : '#e2e8f0'}`,
                   borderRadius: 14, boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
                   zIndex: 999, overflow: 'hidden',
                 }}>
@@ -531,13 +531,13 @@ export default function HomePage() {
                       <div style={{
                         display: 'flex', alignItems: 'center', gap: 12,
                         padding: '10px 16px',
-                        borderTop: i > 0 ? `1px solid ${dark ? '#1e3a2a' : '#f1f5f9'}` : 'none',
+                        borderTop: i > 0 ? `1px solid ${dark ? '#241f1a' : '#f1f5f9'}` : 'none',
                         cursor: 'pointer', transition: 'background 0.12s',
                       }}
-                        onMouseEnter={e => (e.currentTarget.style.background = dark ? '#1a2f1f' : '#f8fffe')}
+                        onMouseEnter={e => (e.currentTarget.style.background = dark ? '#2a2420' : '#fffbeb')}
                         onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
                       >
-                        <div style={{ width: 32, height: 32, borderRadius: 8, background: 'rgba(17,212,66,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: '#11d442', fontSize: 12, flexShrink: 0 }}>
+                        <div style={{ width: 32, height: 32, borderRadius: 8, background: 'rgba(245,158,11,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: '#f59e0b', fontSize: 12, flexShrink: 0 }}>
                           {s.num}
                         </div>
                         <div style={{ flex: 1, minWidth: 0 }}>
@@ -545,14 +545,14 @@ export default function HomePage() {
                           <p style={{ margin: 0, fontSize: 11, color: '#94a3b8' }}>{s.meaning} · {s.v} verses</p>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
-                          <span style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: s.t === 'Meccan' ? '#11d442' : '#94a3b8' }}>{s.t}</span>
+                          <span style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: s.t === 'Meccan' ? '#f59e0b' : '#94a3b8' }}>{s.t}</span>
                           <span style={{ fontFamily: "'Naskh IndoPak',serif", fontSize: 17, color: dark ? '#e2e8e5' : '#1e293b' }}>{s.ar}</span>
                         </div>
                       </div>
                     </Link>
                   ))}
                   {/* Footer hint */}
-                  <div style={{ padding: '8px 16px', borderTop: `1px solid ${dark ? '#1e3a2a' : '#f1f5f9'}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div style={{ padding: '8px 16px', borderTop: `1px solid ${dark ? '#241f1a' : '#f1f5f9'}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <span style={{ fontSize: 11, color: '#94a3b8' }}>{SURAHS.filter(s => { const q = query.toLowerCase(); return s.name.toLowerCase().includes(q) || s.ar.includes(q) || s.meaning.toLowerCase().includes(q) || String(s.num) === q; }).length} results · scroll down for all</span>
                     <span style={{ fontSize: 11, color: '#94a3b8' }}>ESC to close</span>
                   </div>
@@ -565,8 +565,8 @@ export default function HomePage() {
               aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
               style={{
                 width: 36, height: 36, borderRadius: 10, border: 'none', cursor: 'pointer',
-                background: dark ? '#1e3a2a' : '#f1f5f9',
-                color: dark ? '#11d442' : '#64748b',
+                background: dark ? '#241f1a' : '#f1f5f9',
+                color: dark ? '#f59e0b' : '#64748b',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 flexShrink: 0, transition: 'background 0.18s, color 0.18s',
               }}
@@ -575,17 +575,17 @@ export default function HomePage() {
                 {dark ? 'light_mode' : 'dark_mode'}
               </span>
             </button>
-            <Link href="/read-quran/1" style={{ background: '#11d442', color: 'white', borderRadius: 12, padding: '9px 14px', fontWeight: 600, fontSize: 13.5, display: 'flex', alignItems: 'center', gap: 6, boxShadow: '0 4px 14px rgba(17,212,66,0.3)', textDecoration: 'none', flexShrink: 0 }}>
+            <Link href="/read-quran/1" style={{ background: '#f59e0b', color: 'white', borderRadius: 12, padding: '9px 14px', fontWeight: 600, fontSize: 13.5, display: 'flex', alignItems: 'center', gap: 6, boxShadow: '0 4px 14px rgba(245,158,11,0.3)', textDecoration: 'none', flexShrink: 0 }}>
               <span className="material-symbols-outlined" style={{ fontSize: 18 }}>play_circle</span>
               <span className="hp-qs-hide">Quick Start</span>
             </Link>
             <button
               onClick={() => setShowNav(true)}
               style={{
-                background: dark ? '#1e3a2a' : '#f1f5f9', color: dark ? '#11d442' : '#475569',
+                background: dark ? '#241f1a' : '#f1f5f9', color: dark ? '#f59e0b' : '#475569',
                 borderRadius: 12, padding: '9px 14px', fontWeight: 600, fontSize: 13.5,
                 display: 'flex', alignItems: 'center', gap: 6,
-                border: `1px solid ${dark ? '#2d5a3e' : '#e2e8f0'}`,
+                border: `1px solid ${dark ? '#352e28' : '#e2e8f0'}`,
                 cursor: 'pointer', flexShrink: 0, transition: 'all 0.18s',
               }}
             >
@@ -595,15 +595,15 @@ export default function HomePage() {
           </div>
         </header>
         {/* MAIN — scrollable content only */}
-        <main className="hp-scroll hp-dot" style={{ flex: 1, overflowY: 'auto', minHeight: 0, background: dark ? '#0d1b12' : 'white' }}>
+        <main className="hp-scroll hp-dot" style={{ flex: 1, overflowY: 'auto', minHeight: 0, background: dark ? '#0f0d0a' : 'white' }}>
           <div className="hp-content" style={{ maxWidth: 860, margin: '0 auto' }}>
 
             {/* ── STATS BAR ── */}
             <div className="hp-stats" style={{ display: 'grid', gap: 12, marginBottom: 24 }}>
               {STATS.map(s => (
                 <div key={s.label} style={{ ...S.card, padding: '12px 16px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
-                  <span className="material-symbols-outlined" style={{ fontSize: 18, color: '#11d442', opacity: 0.8 }}>{s.icon}</span>
-                  <span style={{ fontSize: 20, fontWeight: 700, color: '#11d442', lineHeight: 1 }}>{s.num}</span>
+                  <span className="material-symbols-outlined" style={{ fontSize: 18, color: '#f59e0b', opacity: 0.8 }}>{s.icon}</span>
+                  <span style={{ fontSize: 20, fontWeight: 700, color: '#f59e0b', lineHeight: 1 }}>{s.num}</span>
                   <span style={{ fontSize: 10, ...S.muted, fontWeight: 500 }}>{s.label}</span>
                 </div>
               ))}
@@ -615,13 +615,13 @@ export default function HomePage() {
               <div style={{ ...S.card, padding: 18, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: 140 }}>
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-                    <span style={{ fontSize: 9, fontWeight: 700, color: '#11d442', textTransform: 'uppercase', letterSpacing: '0.14em' }}>Continue Reading</span>
+                    <span style={{ fontSize: 9, fontWeight: 700, color: '#f59e0b', textTransform: 'uppercase', letterSpacing: '0.14em' }}>Continue Reading</span>
                     <span className="material-symbols-outlined" style={{ color: '#cbd5e1', fontSize: 18 }}>bookmark</span>
                   </div>
                   <h3 style={{ margin: '0 0 3px', fontWeight: 700, fontSize: 15, ...S.text }}>{recent[0]?.name ?? 'Al-Fatihah'}</h3>
                   <p style={{ margin: '0 0 14px', fontSize: 12, ...S.muted }}>{recent[0] ? `Surah ${recent[0].num} · ${recent[0].v} verses` : 'Begin your journey'}</p>
                 </div>
-                <Link href={`/read-quran/${recent[0]?.num ?? 1}`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, background: dark ? '#1e3a2a' : '#f1f5f9', borderRadius: 8, padding: '7px 10px', fontWeight: 600, fontSize: 12, color: dark ? '#11d442' : '#475569', textDecoration: 'none' }}>
+                <Link href={`/read-quran/${recent[0]?.num ?? 1}`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, background: dark ? '#241f1a' : '#f1f5f9', borderRadius: 8, padding: '7px 10px', fontWeight: 600, fontSize: 12, color: dark ? '#f59e0b' : '#475569', textDecoration: 'none' }}>
                   <span className="material-symbols-outlined" style={{ fontSize: 14 }}>resume</span>{recent[0] ? 'Resume' : 'Start'}
                 </Link>
               </div>
@@ -629,19 +629,19 @@ export default function HomePage() {
               <div style={{ ...S.card, padding: 18, minHeight: 140, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-                    <span style={{ fontSize: 9, fontWeight: 700, color: '#11d442', textTransform: 'uppercase', letterSpacing: '0.14em' }}>Session Timer</span>
+                    <span style={{ fontSize: 9, fontWeight: 700, color: '#f59e0b', textTransform: 'uppercase', letterSpacing: '0.14em' }}>Session Timer</span>
                     <span className="material-symbols-outlined" style={{ color: '#cbd5e1', fontSize: 18 }}>timer</span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8, marginBottom: 6 }}>
-                    <span style={{ fontSize: 30, fontWeight: 700, color: '#11d442', lineHeight: 1, fontVariantNumeric: 'tabular-nums' }}>{fmtTime(sessionTime)}</span>
+                    <span style={{ fontSize: 30, fontWeight: 700, color: '#f59e0b', lineHeight: 1, fontVariantNumeric: 'tabular-nums' }}>{fmtTime(sessionTime)}</span>
                   </div>
                   <p style={{ margin: '0 0 10px', fontSize: 11, ...S.muted }}>This session on the app</p>
-                  <div style={{ width: '100%', height: 4, background: dark ? '#1e3a2a' : '#f1f5f9', borderRadius: 999, overflow: 'hidden', marginBottom: 8 }}>
-                    <div style={{ width: `${Math.min((sessionTime % 3600) / 36, 100)}%`, height: '100%', background: 'linear-gradient(90deg,#11d442,#059669)', borderRadius: 999, transition: 'width 1s linear' }} />
+                  <div style={{ width: '100%', height: 4, background: dark ? '#241f1a' : '#f1f5f9', borderRadius: 999, overflow: 'hidden', marginBottom: 8 }}>
+                    <div style={{ width: `${Math.min((sessionTime % 3600) / 36, 100)}%`, height: '100%', background: 'linear-gradient(90deg,#f59e0b,#d97706)', borderRadius: 999, transition: 'width 1s linear' }} />
                   </div>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: 11, ...S.muted }}>All time: <strong style={{ color: '#11d442' }}>{fmtTime(totalTime)}</strong></span>
+                  <span style={{ fontSize: 11, ...S.muted }}>All time: <strong style={{ color: '#f59e0b' }}>{fmtTime(totalTime)}</strong></span>
                   <button
                     title="Reset session &amp; all-time counter"
                     onClick={() => { setSessionTime(0); setTotalTime(0); localStorage.setItem('quranTotalTime', '0'); }}
@@ -653,9 +653,9 @@ export default function HomePage() {
               </div>
               {/* Ayah of the Day */}
               <Link href={todayAyah.href} style={{ textDecoration: 'none', display: 'block' }}>
-                <div style={{ background: 'linear-gradient(135deg,#11d442,#059669)', borderRadius: 16, padding: 18, boxShadow: '0 8px 24px rgba(17,212,66,0.25)', position: 'relative', overflow: 'hidden', minHeight: 140, cursor: 'pointer', transition: 'transform 0.18s ease, box-shadow 0.18s ease' }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-3px)'; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 12px 32px rgba(17,212,66,0.35)'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = ''; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 8px 24px rgba(17,212,66,0.25)'; }}
+                <div style={{ background: 'linear-gradient(135deg,#f59e0b,#d97706)', borderRadius: 16, padding: 18, boxShadow: '0 8px 24px rgba(245,158,11,0.25)', position: 'relative', overflow: 'hidden', minHeight: 140, cursor: 'pointer', transition: 'transform 0.18s ease, box-shadow 0.18s ease' }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-3px)'; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 12px 32px rgba(245,158,11,0.35)'; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = ''; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 8px 24px rgba(245,158,11,0.25)'; }}
                 >
                   <span className="material-symbols-outlined" style={{ position: 'absolute', top: -8, right: -14, fontSize: 90, color: 'white', opacity: 0.08, lineHeight: 1 }}>star_half</span>
                   <div style={{ position: 'relative', zIndex: 1 }}>
@@ -750,7 +750,7 @@ export default function HomePage() {
                       style={{
                         padding: '6px 14px', borderRadius: 20, border: 'none', cursor: 'pointer',
                         fontSize: 12, fontWeight: 600,
-                        background: tasbeehIdx === i ? p.color : dark ? '#1e3a2a' : '#f1f5f9',
+                        background: tasbeehIdx === i ? p.color : dark ? '#241f1a' : '#f1f5f9',
                         color: tasbeehIdx === i ? 'white' : '#64748b',
                         transition: 'all 0.15s',
                       }}
@@ -763,7 +763,7 @@ export default function HomePage() {
                   <div style={{ position: 'relative', flexShrink: 0 }}>
                     <svg width={140} height={140} style={{ transform: 'rotate(-90deg)' }}>
                       {/* Track */}
-                      <circle cx={70} cy={70} r={58} fill="none" stroke={dark ? '#1e3a2a' : '#f1f5f9'} strokeWidth={10} />
+                      <circle cx={70} cy={70} r={58} fill="none" stroke={dark ? '#241f1a' : '#f1f5f9'} strokeWidth={10} />
                       {/* Progress */}
                       <circle
                         cx={70} cy={70} r={58} fill="none"
@@ -824,7 +824,7 @@ export default function HomePage() {
                     {/* Reset */}
                     <button
                       onClick={() => { setTasbeehCount(0); setTasbeehTotal(0); localStorage.setItem('tasbeehTotal', '0'); }}
-                      style={{ background: 'none', border: `1px solid ${dark ? '#1e3a2a' : '#e2e8f0'}`, borderRadius: 8, padding: '6px 14px', fontSize: 12, color: '#94a3b8', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5 }}
+                      style={{ background: 'none', border: `1px solid ${dark ? '#241f1a' : '#e2e8f0'}`, borderRadius: 8, padding: '6px 14px', fontSize: 12, color: '#94a3b8', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5 }}
                     >
                       <span className="material-symbols-outlined" style={{ fontSize: 14 }}>restart_alt</span>
                       Reset all
@@ -841,7 +841,7 @@ export default function HomePage() {
                 <div className="hp-scroll" style={{ display: 'flex', gap: 10, overflowX: 'auto', paddingBottom: 6 }}>
                   {recent.map(s => (
                     <Link key={s.num} href={`/read-quran/${s.num}`} onClick={() => trackVisit(s)} style={{ textDecoration: 'none', flexShrink: 0 }}>
-                      <div className="surah-card" style={{ ...S.card, padding: '12px 14px', width: 130, cursor: 'pointer', borderTop: '3px solid #11d442' }}>
+                      <div className="surah-card" style={{ ...S.card, padding: '12px 14px', width: 130, cursor: 'pointer', borderTop: '3px solid #f59e0b' }}>
                         <span className="font-arabic" style={{ fontSize: 18, fontWeight: 700, ...S.text, display: 'block', marginBottom: 6 }}>{s.ar}</span>
                         <p style={{ margin: '0 0 2px', fontWeight: 600, fontSize: 12, ...S.text, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{s.name}</p>
                         <p style={{ margin: 0, fontSize: 10, ...S.muted }}>{s.v} verses</p>
@@ -863,15 +863,15 @@ export default function HomePage() {
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                   {/* Type filter */}
-                  <div style={{ display: 'flex', background: dark ? '#111f16' : 'white', border: `1px solid ${dark ? '#1e3a2a' : '#f1f5f9'}`, borderRadius: 10, padding: 3, gap: 2 }}>
+                  <div style={{ display: 'flex', background: dark ? '#1a1612' : 'white', border: `1px solid ${dark ? '#241f1a' : '#f1f5f9'}`, borderRadius: 10, padding: 3, gap: 2 }}>
                     {(['All', 'Meccan', 'Medinan'] as const).map(t => (
-                      <button key={t} className="filter-btn" onClick={() => setTypeFilter(t)} style={{ background: typeFilter === t ? '#11d442' : 'transparent', color: typeFilter === t ? 'white' : '#94a3b8' }}>{t}</button>
+                      <button key={t} className="filter-btn" onClick={() => setTypeFilter(t)} style={{ background: typeFilter === t ? '#f59e0b' : 'transparent', color: typeFilter === t ? 'white' : '#94a3b8' }}>{t}</button>
                     ))}
                   </div>
                   {/* View toggle */}
-                  <div style={{ display: 'flex', background: dark ? '#111f16' : 'white', border: `1px solid ${dark ? '#1e3a2a' : '#f1f5f9'}`, borderRadius: 10, padding: 3, gap: 2 }}>
+                  <div style={{ display: 'flex', background: dark ? '#1a1612' : 'white', border: `1px solid ${dark ? '#241f1a' : '#f1f5f9'}`, borderRadius: 10, padding: 3, gap: 2 }}>
                     {(['grid', 'list'] as const).map(m => (
-                      <button key={m} className="filter-btn" onClick={() => setViewMode(m)} style={{ background: viewMode === m ? '#11d442' : 'transparent', color: viewMode === m ? 'white' : '#94a3b8' }}>
+                      <button key={m} className="filter-btn" onClick={() => setViewMode(m)} style={{ background: viewMode === m ? '#f59e0b' : 'transparent', color: viewMode === m ? 'white' : '#94a3b8' }}>
                         <span className="material-symbols-outlined" style={{ fontSize: 16 }}>{m === 'grid' ? 'grid_view' : 'view_list'}</span>
                       </button>
                     ))}
@@ -886,7 +886,7 @@ export default function HomePage() {
                     <Link key={s.num} href={`/read-quran/${s.num}`} onClick={() => trackVisit(s)} style={{ textDecoration: 'none' }}>
                       <div className="surah-card" style={{ ...S.card, padding: 18, cursor: 'pointer' }}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-                          <div style={{ width: 36, height: 36, background: 'rgba(17,212,66,0.10)', borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: '#11d442', fontSize: 13 }}>{s.num}</div>
+                          <div style={{ width: 36, height: 36, background: 'rgba(245,158,11,0.10)', borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: '#f59e0b', fontSize: 13 }}>{s.num}</div>
                           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
                             <span className="font-arabic" style={{ fontSize: 20, fontWeight: 700, ...S.text }}>{s.ar}</span>
                             <span style={{ ...S.tag(s.t), marginTop: 2 }}>{s.t}</span>
@@ -903,7 +903,7 @@ export default function HomePage() {
                   {displayed.map(s => (
                     <Link key={s.num} href={`/read-quran/${s.num}`} onClick={() => trackVisit(s)} style={{ textDecoration: 'none' }}>
                       <div className="surah-card" style={{ ...S.card, padding: '12px 16px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 14 }}>
-                        <div style={{ width: 36, height: 36, background: 'rgba(17,212,66,0.10)', borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: '#11d442', fontSize: 13, flexShrink: 0 }}>{s.num}</div>
+                        <div style={{ width: 36, height: 36, background: 'rgba(245,158,11,0.10)', borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: '#f59e0b', fontSize: 13, flexShrink: 0 }}>{s.num}</div>
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <h3 style={{ margin: '0 0 2px', fontWeight: 700, fontSize: 13.5, ...S.text }}>{s.name}</h3>
                           <p style={{ margin: 0, fontSize: 11.5, ...S.muted }}>{s.meaning} · {s.v} Verses</p>
@@ -919,7 +919,7 @@ export default function HomePage() {
 
               {/* Show more / less */}
               <div style={{ marginTop: 24, textAlign: 'center' }}>
-                <button onClick={() => setShowAll(v => !v)} style={{ background: dark ? '#111f16' : 'white', border: `1px solid ${dark ? '#1e3a2a' : '#e2e8f0'}`, padding: '10px 28px', borderRadius: 12, fontWeight: 600, fontSize: 13.5, boxShadow: '0 1px 4px rgba(0,0,0,0.06)', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6, color: dark ? '#e2e8e5' : '#334155' }}>
+                <button onClick={() => setShowAll(v => !v)} style={{ background: dark ? '#1a1612' : 'white', border: `1px solid ${dark ? '#241f1a' : '#e2e8f0'}`, padding: '10px 28px', borderRadius: 12, fontWeight: 600, fontSize: 13.5, boxShadow: '0 1px 4px rgba(0,0,0,0.06)', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6, color: dark ? '#e2e8e5' : '#334155' }}>
                   {showAll ? `Show Top 12` : `Show All ${filtered.length} Surahs`}
                   <span className="material-symbols-outlined" style={{ fontSize: 18, transform: showAll ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}>expand_more</span>
                 </button>
@@ -931,27 +931,27 @@ export default function HomePage() {
               marginBottom: 32,
               borderRadius: 20,
               background: dark
-                ? 'linear-gradient(135deg,#0a1f10 0%,#0d2618 60%,#061a0e 100%)'
-                : 'linear-gradient(135deg,#f0fdf4 0%,#dcfce7 60%,#ecfdf5 100%)',
-              border: `1px solid ${dark ? 'rgba(17,212,66,0.15)' : 'rgba(17,212,66,0.2)'}`,
+                ? 'linear-gradient(135deg,#1a1612 0%,#0f0d0a 60%,#1a1612 100%)'
+                : 'linear-gradient(135deg,#fffbeb 0%,#fef3c7 60%,#fffbeb 100%)',
+              border: `1px solid ${dark ? 'rgba(245,158,11,0.15)' : 'rgba(245,158,11,0.2)'}`,
               overflow: 'hidden',
               position: 'relative',
             }}>
               {/* Background dot pattern */}
-              <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle at 2px 2px,rgba(17,212,66,0.06) 1px,transparent 0)', backgroundSize: '24px 24px', pointerEvents: 'none' }} />
+              <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle at 2px 2px,rgba(245,158,11,0.06) 1px,transparent 0)', backgroundSize: '24px 24px', pointerEvents: 'none' }} />
               {/* Decorative orbs */}
-              <div style={{ position: 'absolute', top: -40, right: -40, width: 180, height: 180, borderRadius: '50%', background: 'rgba(17,212,66,0.06)', pointerEvents: 'none' }} />
-              <div style={{ position: 'absolute', bottom: -30, left: -30, width: 120, height: 120, borderRadius: '50%', background: 'rgba(5,150,105,0.07)', pointerEvents: 'none' }} />
+              <div style={{ position: 'absolute', top: -40, right: -40, width: 180, height: 180, borderRadius: '50%', background: 'rgba(245,158,11,0.06)', pointerEvents: 'none' }} />
+              <div style={{ position: 'absolute', bottom: -30, left: -30, width: 120, height: 120, borderRadius: '50%', background: 'rgba(217,119,6,0.07)', pointerEvents: 'none' }} />
 
               <div className="hp-getstarted-inner" style={{ position: 'relative', zIndex: 1, display: 'grid', gap: 0 }}>
                 {/* Left — headline */}
                 <div className="hp-getstarted-left" style={{ padding: '32px 28px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                  <div style={{ width: 44, height: 44, borderRadius: 14, background: 'rgba(17,212,66,0.14)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 18 }}>
-                    <span className="material-symbols-outlined" style={{ fontSize: 26, color: '#11d442' }}>auto_stories</span>
+                  <div style={{ width: 44, height: 44, borderRadius: 14, background: 'rgba(245,158,11,0.14)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 18 }}>
+                    <span className="material-symbols-outlined" style={{ fontSize: 26, color: '#f59e0b' }}>auto_stories</span>
                   </div>
                   <h2 style={{ margin: '0 0 12px', fontWeight: 800, fontSize: 'clamp(22px,4vw,30px)', lineHeight: 1.2, color: dark ? '#f1f5f9' : '#0f172a' }}>
                     Let&apos;s get{' '}
-                    <span style={{ color: '#11d442' }}>to learning</span>
+                    <span style={{ color: '#f59e0b' }}>to learning</span>
                   </h2>
                   <p style={{ margin: 0, fontSize: 14, lineHeight: 1.7, color: dark ? '#94a3b8' : '#475569', maxWidth: 280 }}>
                     Explore all the ways QuranicLearn can support your spiritual journey — from reading to memorisation.
@@ -962,7 +962,7 @@ export default function HomePage() {
                 <div className="hp-getstarted-right" style={{ display: 'flex', flexDirection: 'column' }}>
                   {[
                     { icon: 'support_agent', label: 'Contact us', sub: 'Talk to an expert and see how our platform can meet your goals.', href: '/community', color: '#8b5cf6' },
-                    { icon: 'group', label: 'Join the community', sub: 'Learn, share, and connect with people doing work that matters.', href: '/community', color: '#11d442' },
+                    { icon: 'group', label: 'Join the community', sub: 'Learn, share, and connect with people doing work that matters.', href: '/community', color: '#f59e0b' },
                     { icon: 'school', label: 'Find a teacher', sub: 'Realize even more value with a certified Quran tutor.', href: '/learn-quran', color: '#f59e0b' },
                     { icon: 'view_module', label: 'Explore modules', sub: 'Get hands-on with the QuranicLearn platform.', href: '/courses', color: '#0ea5e9' },
                   ].map((item, i, arr) => (
@@ -971,10 +971,10 @@ export default function HomePage() {
                         style={{
                           display: 'flex', alignItems: 'center', gap: 16,
                           padding: '18px 24px',
-                          borderTop: i > 0 ? `1px solid ${dark ? 'rgba(30,58,42,0.6)' : 'rgba(17,212,66,0.1)'}` : 'none',
+                          borderTop: i > 0 ? `1px solid ${dark ? 'rgba(36,31,26,0.6)' : 'rgba(245,158,11,0.1)'}` : 'none',
                           transition: 'background 0.15s',
                         }}
-                        onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.background = dark ? 'rgba(17,212,66,0.06)' : 'rgba(17,212,66,0.05)'; }}
+                        onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.background = dark ? 'rgba(245,158,11,0.06)' : 'rgba(245,158,11,0.05)'; }}
                         onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.background = 'transparent'; }}
                       >
                         <div style={{ width: 44, height: 44, borderRadius: 12, background: `${item.color}18`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>

@@ -28,7 +28,6 @@ const MEGA_SECTIONS = [
       { href: '/full-surah-reader', label: 'Surah Reader',    icon: 'chrome_reader_mode', desc: 'Immersive reading'      },
       { href: '/word-by-word',      label: 'Word by Word',    icon: 'text_fields',        desc: 'Every word explained'   },
       { href: '/tafseer',           label: 'Tafseer',         icon: 'lightbulb',          desc: 'Classical commentary'   },
-      { href: '/verse-explorer',    label: 'Verse Explorer',  icon: 'explore',            desc: 'Discover verses'        },
     ],
   },
   {
@@ -38,11 +37,8 @@ const MEGA_SECTIONS = [
     items: [
       { href: '/learn-quran',    label: 'Learn Quran',  icon: 'school',                 desc: 'Structured lessons'     },
       { href: '/memorize-quran', label: 'Hifz Program', icon: 'psychology',             desc: 'Smart memorization'     },
-      { href: '/tajweed',        label: 'Tajweed',      icon: 'record_voice_over',      desc: 'Perfect recitation'     },
       { href: '/courses',        label: 'Courses',      icon: 'class',                  desc: 'Topic-based learning'   },
-      { href: '/hifz',           label: 'Hifz Tracker', icon: 'track_changes',          desc: 'Track your progress'    },
-      { href: '/ruku',           label: 'Ruku Study',   icon: 'format_list_numbered',   desc: 'Section-wise study'     },
-    ],
+         ],
   },
   {
     title: 'Spirituality',
@@ -51,10 +47,6 @@ const MEGA_SECTIONS = [
     items: [
       { href: '/duas',         label: 'Duas',            icon: 'volunteer_activism', desc: 'Supplications'          },
       { href: '/hadees',       label: 'Hadith',          icon: 'history_edu',        desc: "Prophet's sayings"      },
-      { href: '/prayer-times', label: 'Prayer Times',    icon: 'schedule',           desc: 'Daily salah times'      },
-      { href: '/tasbih',       label: 'Tasbih Counter',  icon: 'loop',               desc: 'Digital dhikr'          },
-      { href: '/quran-science',label: 'Quran & Science', icon: 'science',            desc: 'Modern discoveries'     },
-      { href: '/community',    label: 'Community',       icon: 'groups',             desc: 'Connect & share'        },
     ],
   },
   {
@@ -64,10 +56,6 @@ const MEGA_SECTIONS = [
     items: [
       { href: '/radio',        label: 'Quran Radio',   icon: 'radio',      desc: 'Live channels'          },
       { href: '/quran-player', label: 'Quran Player',  icon: 'play_circle', desc: 'Full-featured player'  },
-      { href: '/clock',        label: 'Islamic Clock', icon: 'watch',      desc: 'Hijri & prayer'         },
-      { href: '/hizb',         label: 'Hizb Nav',      icon: 'view_list',  desc: 'Navigate by Hizb'       },
-      { href: '/manzil',       label: 'Manzil',        icon: 'bookmark',   desc: '7-day reading cycle'    },
-      { href: '/seerah-audio', label: 'Seerah Audio',  icon: 'mic',        desc: "Prophet's biography"    },
     ],
   },
 ];
