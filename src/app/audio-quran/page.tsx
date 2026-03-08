@@ -80,6 +80,27 @@ export default function AudioQuranPage() {
     return () => { cancelled = true; };
   }, []);
 
+  // ── Prefetch first 5 surahs silently after reciter is ready ──
+  useEffect(() => {
+    if (!selectedReciter || surahs.length === 0) return;
+    let cancelled = false;
+    (async () => {
+      for (let i = 0; i < Math.min(5, surahs.length); i++) {
+        if (cancelled) return;
+        const surahNum = surahs[i].number;
+        try {
+          const res = await fetch(SURAH_AUDIO_API(surahNum, selectedReciter));
+          if (!res.ok || cancelled) continue;
+          const json = await res.json();
+          const urls = json.data?.ayahs?.map((a: any) => a.audio) || [];
+          setAyahLists((prev: any) => ({ ...prev, [surahNum]: urls }));
+        } catch { }
+        await new Promise(r => setTimeout(r, 200));
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [selectedReciter, surahs]);
+
   // ── Audio element setup ──
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -453,8 +474,9 @@ export default function AudioQuranPage() {
                               background: isNow ? "rgba(244,140,37,0.06)" : "transparent",
                               transition: "background 0.15s",
                             }}
-                            onMouseEnter={e => { if (!isNow) (e.currentTarget as HTMLElement).style.background = "var(--aq-hover)"; }}
+                            onMouseEnter={e => { if (!isNow) (e.currentTarget as HTMLElement).style.background = "var(--aq-hover)"; if (!ayahLists[s.number]) getAyahUrls(s.number); }}
                             onMouseLeave={e => { if (!isNow) (e.currentTarget as HTMLElement).style.background = "transparent"; }}
+                            onTouchStart={() => { if (!ayahLists[s.number]) getAyahUrls(s.number); }}
                           >
                             {/* Number */}
                             <td style={{ padding: "16px 24px", color: "var(--aq-muted)", fontWeight: 500, fontSize: 13 }}>
@@ -464,7 +486,7 @@ export default function AudioQuranPage() {
                             {/* Name */}
                             <td style={{ padding: "16px 24px" }}>
                               <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-                                <div style={{ width: 40, height: 40, borderRadius: 8, background: "var(--aq-input-bg)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Naskh IndoPak', serif", fontSize: 18, color: "var(--aq-text)", flexShrink: 0 }}>
+                                <div className="aq-numeral-box" style={{ width: 40, height: 40, borderRadius: 8, background: "var(--aq-input-bg)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Naskh IndoPak', serif", fontSize: 18, color: "var(--aq-text)", flexShrink: 0 }}>
                                   {toArabicNumeral(s.number)}
                                 </div>
                                 <div>
@@ -796,6 +818,8 @@ export default function AudioQuranPage() {
 
           /* Table columns */
           .aq-hide-mobile { display: none !important; }
+          /* Hide numeral icon box on mobile to give more room to surah name */
+          .aq-numeral-box { display: none !important; }
 
           /* Table cells padding */
           .audio-quran-root table th,
@@ -805,12 +829,23 @@ export default function AudioQuranPage() {
           .aq-sidebar { display: none !important; }
 
           /* Bottom Player - push above mobile nav */
-          .aq-player { padding: 10px 12px !important; bottom: 68px !important; }
-          .aq-player-inner { flex-direction: column !important; gap: 10px !important; }
-          .aq-player-track { width: 100% !important; }
+          .aq-player { padding: 10px 12px !important; bottom: 64px !important; position: fixed !important; background: var(--aq-bg) !important; backdrop-filter: none !important; border-top: 1px solid var(--aq-border) !important; }
+          .aq-player-inner { flex-direction: column !important; gap: 10px !important; position: relative !important; }
+          .aq-player-track { width: 100% !important; padding-right: 36px !important; }
           .aq-player-center { width: 100% !important; max-width: none !important; }
           .aq-player-center > div:first-child { gap: 12px !important; }
           .aq-player-volume { display: none !important; }
+          /* Move close button to top-right corner on mobile */
+          .aq-player-track > button:last-child {
+            position: absolute !important;
+            top: 0 !important;
+            right: 0 !important;
+            width: 28px !important;
+            height: 28px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+          }
         }
 
         /* Small mobile: <=480px */
@@ -827,7 +862,7 @@ export default function AudioQuranPage() {
           .audio-quran-root table td { padding: 10px 8px !important; }
 
           /* Bottom Player - minimal, above mobile nav */
-          .aq-player { padding: 8px 10px !important; bottom: 68px !important; }
+          .aq-player { padding: 8px 10px !important; bottom: 64px !important; }
           .aq-player-track { gap: 10px !important; }
           .aq-player-track > div:first-child { width: 36px !important; height: 36px !important; }
         }
