@@ -871,8 +871,10 @@
   margin: 12px 0 14px;
   direction: rtl;
   text-align: right;
+  position: relative;
+  overflow: hidden;
 }
-
+ 
 .hadees-card-arabic-text {
   font-size: clamp(1.1rem, 2.5vw, 1.4rem);
   line-height: 2;
@@ -880,13 +882,23 @@
   margin: 0;
 }
 
-/* ── Grade badges ── */
-.hadees-grade-badge {
-  display: inline-flex;
-  align-items: center;
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
+.hadees-card-arabic-text.arabic-collapsed {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.hadees-arabic-fade {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
+  background: linear-gradient(to bottom, transparent, var(--bg-elevated));
+  pointer-events: none;
+  border-radius: 0 0 12px 12px;
   letter-spacing: 0.08em;
   padding: 2px 8px;
   border-radius: 4px;

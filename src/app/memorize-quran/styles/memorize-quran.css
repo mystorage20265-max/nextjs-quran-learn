@@ -1049,6 +1049,7 @@
     }
 }
 
+@media (max-width: 768px) {
     .verse-arabic {
         font-size: 1.8rem;
     }

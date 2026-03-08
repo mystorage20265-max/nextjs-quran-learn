@@ -337,6 +337,8 @@ export default function HadeesPage() {
                 const isBookmarked = bookmarks.has(key);
                 const isCopied = copied === key;
                 const isLong = hadith.english.length > 380;
+                const isArabicLong = !!hadith.arabic && hadith.arabic.length > 100;
+                const showExpand = isLong || isArabicLong;
 
                 return (
                   <article
@@ -381,7 +383,8 @@ export default function HadeesPage() {
 
                     {hadith.arabic && (
                       <div className="hadees-card-arabic-block">
-                        <p className="hadees-card-arabic-text" style={{ fontFamily: ARABIC_FONT }}>{hadith.arabic}</p>
+                        <p className={`hadees-card-arabic-text ${isArabicLong && !isExpanded ? 'arabic-collapsed' : ''}`} style={{ fontFamily: ARABIC_FONT }}>{hadith.arabic}</p>
+                        {isArabicLong && !isExpanded && <div className="hadees-arabic-fade" />}
                       </div>
                     )}
 
@@ -393,7 +396,7 @@ export default function HadeesPage() {
                     </div>
 
                     <div className="hadees-card-footer">
-                      {isLong ? (
+                      {showExpand ? (
                         <button className="hadees-expand-btn" onClick={() => setExpandedId(isExpanded ? null : hadith.number)}>
                           <span className="material-symbols-outlined" style={{ fontSize: 18 }}>{isExpanded ? 'expand_less' : 'expand_more'}</span>
                           {isExpanded ? 'Show Less' : 'Read More'}
