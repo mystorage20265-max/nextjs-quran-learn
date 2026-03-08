@@ -5,7 +5,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import './styles/memorize-quran.css';
 import SurahCard from './components/SurahCard';
-import Navbar from '@/components/Navbar/Navbar';
 import BottomPlayer from './components/BottomPlayer';
 import FocusMode from './components/FocusMode';
 
@@ -474,7 +473,6 @@ export default function MemorizeQuranPage() {
     if (loading) {
         return (
             <main className="memorize-page">
-                <Navbar />
                 <div className="memorize-container">
                     <div className="loading-container">
                         <div className="loading-spinner"></div>
@@ -505,7 +503,6 @@ export default function MemorizeQuranPage() {
 
     return (
         <main className="memorize-page">
-            <Navbar />
             <div className="memorize-container">
                 {/* VIEW: SELECTION */}
                 {viewMode === 'selection' && (

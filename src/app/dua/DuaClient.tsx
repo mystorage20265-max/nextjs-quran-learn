@@ -196,7 +196,7 @@ export default function DuaClient() {
         </div>
       )}
 
-      {/* ── Main Layout ── */}}
+      {/* ── Main Layout ── */}
       <div className="duas-layout">
 
         {/* Mobile sidebar toggle */}
