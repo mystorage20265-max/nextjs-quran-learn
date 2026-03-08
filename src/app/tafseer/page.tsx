@@ -169,41 +169,6 @@ export default function TafseerIndexPage() {
     return (
       <div className="tafseer-page">
 
-        {/* ── Hero Banner ── */}
-        <div className="tafseer-hero">
-          <div className="tafseer-hero-pattern" />
-          <div className="tafseer-hero-glow" />
-          <div className="tafseer-hero-content">
-            <div className="tafseer-hero-badge">
-              <span className="material-symbols-outlined" style={{ fontSize: 14 }}>menu_book</span>
-              Ibn Kathir · Ma&apos;arif · Tazkirul Quran
-            </div>
-            <p className="tafseer-hero-arabic" style={{ fontFamily: ARABIC_FONT }}>
-              وَرَتِّلِ الْقُرْآنَ تَرْتِيلًا
-            </p>
-            <p className="tafseer-hero-transliteration">
-              Wa rattilil-Qur&apos;āna tartīlā
-            </p>
-            <p className="tafseer-hero-translation">
-              &ldquo;And recite the Quran with measured recitation.&rdquo;
-            </p>
-            <div className="tafseer-hero-ref">
-              <span className="material-symbols-outlined" style={{ fontSize: 14 }}>auto_stories</span>
-              Al-Muzzammil 73:4
-            </div>
-            <div className="tafseer-hero-actions">
-              <Link href="/tafseer/1" className="tafseer-hero-btn-primary">
-                <span className="material-symbols-outlined" style={{ fontSize: 18 }}>play_circle</span>
-                Start with Al-Fatihah
-              </Link>
-              <Link href="/tafseer/18" className="tafseer-hero-btn-secondary">
-                <span className="material-symbols-outlined" style={{ fontSize: 18 }}>star</span>
-                Al-Kahf (Friday Surah)
-              </Link>
-            </div>
-          </div>
-        </div>
-
         {/* ── Main Layout ── */}
         <div className="tafseer-layout">
 
