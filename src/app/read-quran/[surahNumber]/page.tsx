@@ -316,6 +316,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
     // Tooltip state for word meanings
     const [tooltip, setTooltip] = useState<{ meaning: string; x: number; y: number } | null>(null);
     const tooltipRef = useRef<HTMLDivElement | null>(null);
+    const verseToPageIndexRef = useRef<Map<number, number>>(new Map());
 
     // Mushaf page pagination for reading mode
     const [mushafPageIndex, setMushafPageIndex] = useState(0);
@@ -508,8 +509,19 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
 
     const jumpToVerse = useCallback((verseNumber: number) => {
         setShowVerseNav(false);
-        const el = document.getElementById(`verse-${verseNumber}`);
-        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // In reading mode, switch to the page containing this verse first
+        const pageIdx = verseToPageIndexRef.current.get(verseNumber);
+        if (pageIdx !== undefined) {
+            setMushafPageIndex(pageIdx);
+            // Scroll after page renders
+            setTimeout(() => {
+                const el = document.getElementById(`verse-${verseNumber}`);
+                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 80);
+        } else {
+            const el = document.getElementById(`verse-${verseNumber}`);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
     }, []);
 
     // Loading state
@@ -668,13 +680,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 .nq-sound-toggle-wrap{display:flex;align-items:center;gap:6px;padding:0 8px;border-left:1px solid #e2e8f0;margin-left:auto;flex-shrink:0}
                 .dark .nq-sound-toggle-wrap{border-left-color:#1e293b}
                 .nq-sound-toggle-label{font-size:11px;font-weight:600;color:#94a3b8;white-space:nowrap;font-family:'Lexend',sans-serif;display:inline}
-                /* On small screens, let the tabs row wrap to two lines */
-                @media(max-width:540px){
-                  .nq-tabs-row{flex-wrap:wrap;height:auto!important;padding-bottom:6px}
-                  .nq-mode-tabs{flex:1 1 100%;order:1;border-bottom:1px solid #e2e8f0;height:40px}
-                  .dark .nq-mode-tabs{border-bottom-color:#1e293b}
-                  .nq-sound-toggle-wrap{order:2;flex:1 1 100%;border-left:none;padding:6px 16px;margin-left:0}
-                }
+
                 .nq-sound-pill{position:relative;width:36px;height:20px;border-radius:10px;cursor:pointer;border:none;padding:0;transition:background 0.22s;flex-shrink:0}
                 .nq-sound-pill.on{background:#f59e0b}
                 .nq-sound-pill.off{background:#cbd5e1}
@@ -851,6 +857,17 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                             </div>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                            {/* Surah picker button */}
+                            <button
+                                ref={surahBtnRef}
+                                onClick={() => { setShowSurahPicker(!showSurahPicker); setShowVersePicker(false); }}
+                                className="nq-hdr-btn"
+                                style={{ gap: 6, display: 'flex', alignItems: 'center', padding: '6px 12px' }}
+                            >
+                                <span className="material-symbols-outlined" style={{ fontSize: 16 }}>menu_book</span>
+                                <span style={{ fontSize: 13, fontWeight: 500 }}>Surah</span>
+                                <ChevronDown size={14} />
+                            </button>
                             {/* Verse picker button */}
                             <button
                                 ref={verseBtnRef}
@@ -892,7 +909,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                         {/* Sound Toggle — always visible, same for mobile & desktop */}
                         <div className="nq-sound-toggle-wrap">
                             <span className="nq-sound-toggle-label" style={{ color: audioEnabled ? '#f59e0b' : '#94a3b8' }}>
-                                Play Audio
+                                Audio
                             </span>
                             <button
                                 className={`nq-sound-pill ${audioEnabled ? 'on' : 'off'}`}
@@ -983,6 +1000,11 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                         const safePageIndex = Math.max(0, Math.min(mushafPageIndex, totalPages - 1));
                                         const group = pageGroups[safePageIndex];
                                         const groupIdx = safePageIndex;
+
+                                        // Build verse→page map for jumpToVerse
+                                        const newMap = new Map<number, number>();
+                                        pageGroups.forEach((g, idx) => g.verses.forEach(v => newMap.set(v.verse_number, idx)));
+                                        verseToPageIndexRef.current = newMap;
 
                                         return (
                                             <div style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? 16 : 24 }}>
@@ -1594,8 +1616,8 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 );
             })()}
 
-            {/* Surah Picker removed */}
-            {false && (() => {
+            {/* Surah Picker */}
+            {showSurahPicker && (() => {
                 if (isMobile) {
                     // ── MOBILE: full bottom sheet ──
                     return (
