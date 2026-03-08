@@ -21,7 +21,7 @@ const MEGA_SECTIONS = [
   {
     title: 'Quran',
     icon: 'auto_stories',
-    color: '#10b981',
+    color: '#f59e0b',
     items: [
       { href: '/read-quran',        label: 'Read Quran',      icon: 'menu_book',          desc: 'Full Arabic text'       },
       { href: '/audio-quran',       label: 'Audio Quran',     icon: 'headphones',         desc: 'Stream recitations'     },
@@ -33,7 +33,7 @@ const MEGA_SECTIONS = [
   {
     title: 'Learn & Memorize',
     icon: 'school',
-    color: '#6ee7b7',
+    color: '#fbbf24',
     items: [
       { href: '/learn-quran',    label: 'Learn Quran',  icon: 'school',                 desc: 'Structured lessons'     },
       { href: '/memorize-quran', label: 'Hifz Program', icon: 'psychology',             desc: 'Smart memorization'     },
@@ -43,7 +43,7 @@ const MEGA_SECTIONS = [
   {
     title: 'Spirituality',
     icon: 'mosque',
-    color: '#34d399',
+    color: '#d97706',
     items: [
       { href: '/dua',         label: 'Duas',            icon: 'volunteer_activism', desc: 'Supplications'          },
       { href: '/hadees',       label: 'Hadith',          icon: 'history_edu',        desc: "Prophet's sayings"      },
@@ -52,7 +52,7 @@ const MEGA_SECTIONS = [
   {
     title: 'Tools',
     icon: 'tune',
-    color: '#a7f3d0',
+    color: '#fde68a',
     items: [
       { href: '/radio',        label: 'Quran Radio',   icon: 'radio',      desc: 'Live channels'          },
       { href: '/quran-player', label: 'Quran Player',  icon: 'play_circle', desc: 'Full-featured player'  },

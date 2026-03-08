@@ -38,7 +38,7 @@ body {
 button:focus,
 input:focus,
 .nav-link:focus {
-  outline: 2px solid #10b981;
+  outline: 2px solid var(--brand-primary);
   outline-offset: 2px;
 }
 
