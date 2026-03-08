@@ -287,6 +287,13 @@
 	.surah-card { grid-template-columns: 48px 1fr 160px; }
 	.right-controls { gap:6px; }
 }
+@media(max-width:768px) {
+	.aq-layout { flex-direction: column !important; }
+	.aq-sidebar { width: 100% !important; position: static !important; }
+	.aq-main { padding: 16px 12px !important; }
+	.aq-hero-inner { flex-direction: column !important; align-items: flex-start !important; }
+	.aq-hide-mobile { display: none !important; }
+}
 @media(max-width:640px) {
 	.controls-grid { grid-template-columns: 1fr; }
 	.surah-card { grid-template-columns: 44px 1fr 140px; padding:10px; }
