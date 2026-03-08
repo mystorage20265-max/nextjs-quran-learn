@@ -1,4 +1,4 @@
-// Utility function to parse and render translation text with footnotes
+﻿// Utility function to parse and render translation text with footnotes
 export function parseTranslationWithFootnotes(text: string): React.ReactNode {
     if (!text) return text;
 
@@ -28,7 +28,7 @@ export function parseTranslationWithFootnotes(text: string): React.ReactNode {
                     fontSize: '0.7em',
                     verticalAlign: 'super',
                     cursor: 'help',
-                    color: 'var(--rq-primary, #047857)',
+                    color: 'var(--rq-primary, #b45309)',
                     fontWeight: '600',
                     marginLeft: '2px'
                 }}

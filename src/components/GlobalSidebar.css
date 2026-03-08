@@ -59,7 +59,7 @@
 }
 
 .gsb-logo-icon {
-  background: rgba(17, 212, 66, 0.15);
+  background: rgba(245, 158, 11, 0.15);
   border-radius: 10px;
   padding: 7px;
 }
@@ -133,12 +133,12 @@
 }
 
 .gsb-link:hover {
-  background: rgba(17, 212, 66, 0.08);
+  background: rgba(245, 158, 11, 0.08);
   color: #f59e0b;
 }
 
 .gsb-link.active {
-  background: rgba(17, 212, 66, 0.12);
+  background: rgba(245, 158, 11, 0.12);
   color: #f59e0b;
   font-weight: 600;
 }
@@ -148,12 +148,12 @@
 }
 
 .dark .gsb-link:hover {
-  background: rgba(17, 212, 66, 0.08);
+  background: rgba(245, 158, 11, 0.08);
   color: #f59e0b;
 }
 
 .dark .gsb-link.active {
-  background: rgba(17, 212, 66, 0.14);
+  background: rgba(245, 158, 11, 0.14);
   color: #f59e0b;
 }
 
@@ -229,7 +229,7 @@
 .gsb-recent-num {
   width: 26px;
   height: 26px;
-  background: rgba(17, 212, 66, 0.12);
+  background: rgba(245, 158, 11, 0.12);
   border-radius: 6px;
   display: flex;
   align-items: center;
@@ -434,7 +434,7 @@
 }
 
 .gsb-mob-item.active .gsb-mob-icon {
-  background: rgba(17, 212, 66, 0.1);
+  background: rgba(245, 158, 11, 0.1);
 }
 
 /* Add padding to page content on mobile so it doesn't hide behind the nav */

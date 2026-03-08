@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useRef, useState } from "react";
 import Navbar from '../../../components/Navbar/Navbar';
@@ -214,10 +214,10 @@ export default function HizbViewerClient({ ayahs, hizb }: { ayahs: Ayah[]; hizb:
             gap: 18
           }}>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 56, marginRight: 12 }}>
-              <div style={{ width: 40, height: 40, borderRadius: 20, background: '#10b981', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 20, marginBottom: 8 }}>{ayah.numberInSurah}</div>
+              <div style={{ width: 40, height: 40, borderRadius: 20, background: '#f59e0b', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 20, marginBottom: 8 }}>{ayah.numberInSurah}</div>
               <button
                 onClick={() => togglePlayPause((page - 1) * pageSize + idx)}
-                style={{ width: 40, height: 40, border: 0, borderRadius: 8, background: '#10b981', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: 22 }}
+                style={{ width: 40, height: 40, border: 0, borderRadius: 8, background: '#f59e0b', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: 22 }}
                 aria-label={playing && currentIndex === (page - 1) * pageSize + idx ? 'Pause' : 'Play'}
               >
                 {playing && currentIndex === (page - 1) * pageSize + idx ? (
@@ -229,7 +229,7 @@ export default function HizbViewerClient({ ayahs, hizb }: { ayahs: Ayah[]; hizb:
             </div>
             <div style={{ flex: 1 }}>
               <div style={{ fontFamily: "'Naskh IndoPak', serif", fontSize: '1.7rem', color: '#222', marginBottom: 8, textAlign: 'right', direction: 'rtl' }}>{ayah.text}</div>
-              <div style={{ fontSize: '1.1rem', color: '#64748b', marginBottom: 4, textAlign: 'left', direction: 'ltr', borderLeft: '3px solid #10b981', paddingLeft: 12 }}>{ayah.translation}</div>
+              <div style={{ fontSize: '1.1rem', color: '#64748b', marginBottom: 4, textAlign: 'left', direction: 'ltr', borderLeft: '3px solid #f59e0b', paddingLeft: 12 }}>{ayah.translation}</div>
             </div>
           </div>
         ))}

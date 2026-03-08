@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 
@@ -70,9 +70,9 @@ function VerseAudioButton({ audioUrl, verseId, dark }: { audioUrl?: string; vers
         width: 38, height: 38, borderRadius: 10, border: 'none', cursor: audioUrl ? 'pointer' : 'not-allowed',
         display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16,
         transition: 'all 0.18s ease',
-        background: isPlaying ? '#0ea5e9' : '#11d442',
+        background: isPlaying ? '#0ea5e9' : '#f59e0b',
         color: '#fff',
-        boxShadow: isPlaying ? '0 0 12px rgba(14,165,233,0.35)' : '0 2px 8px rgba(17,212,66,0.25)',
+        boxShadow: isPlaying ? '0 0 12px rgba(14,165,233,0.35)' : '0 2px 8px rgba(245,158,11,0.25)',
         opacity: audioUrl ? 1 : 0.35,
       }}
     >
@@ -144,11 +144,11 @@ function ClientQuranPage({ pageNumber, translationEdition, audioEdition, ayahs }
     cardBorder: dark ? '#1e3a2a' : '#f1f5f9',
     text: dark ? '#e2e8e5' : '#0f172a',
     muted: '#94a3b8',
-    green: '#11d442',
-    greenSoft: 'rgba(17,212,66,0.08)',
-    greenBorder: 'rgba(17,212,66,0.18)',
-    greenGlow: '0 4px 14px rgba(17,212,66,0.3)',
-    greenGlowSm: '0 2px 8px rgba(17,212,66,0.2)',
+    green: '#f59e0b',
+    greenSoft: 'rgba(245,158,11,0.08)',
+    greenBorder: 'rgba(245,158,11,0.18)',
+    greenGlow: '0 4px 14px rgba(245,158,11,0.3)',
+    greenGlowSm: '0 2px 8px rgba(245,158,11,0.2)',
     hoverBg: dark ? '#1a2f1f' : '#f0fdf4',
     shadow: '0 1px 4px rgba(0,0,0,0.06)',
     font: "'Figtree','Lexend',sans-serif",
@@ -157,10 +157,10 @@ function ClientQuranPage({ pageNumber, translationEdition, audioEdition, ayahs }
   return (
     <>
       <style>{`
-        .qp-dot{background-image:radial-gradient(circle at 2px 2px,rgba(17,212,66,0.06) 1px,transparent 0);background-size:24px 24px}
-        .qp-scroll::-webkit-scrollbar{width:5px}.qp-scroll::-webkit-scrollbar-track{background:transparent}.qp-scroll::-webkit-scrollbar-thumb{background:rgba(17,212,66,0.25);border-radius:3px}
-        .verse-card{transition:transform 0.18s ease,box-shadow 0.18s ease}.verse-card:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(17,212,66,0.12) !important}
-        .page-btn{transition:all 0.15s ease}.page-btn:hover:not(:disabled){transform:scale(1.03);box-shadow:0 4px 14px rgba(17,212,66,0.25)}
+        .qp-dot{background-image:radial-gradient(circle at 2px 2px,rgba(245,158,11,0.06) 1px,transparent 0);background-size:24px 24px}
+        .qp-scroll::-webkit-scrollbar{width:5px}.qp-scroll::-webkit-scrollbar-track{background:transparent}.qp-scroll::-webkit-scrollbar-thumb{background:rgba(245,158,11,0.25);border-radius:3px}
+        .verse-card{transition:transform 0.18s ease,box-shadow 0.18s ease}.verse-card:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(245,158,11,0.12) !important}
+        .page-btn{transition:all 0.15s ease}.page-btn:hover:not(:disabled){transform:scale(1.03);box-shadow:0 4px 14px rgba(245,158,11,0.25)}
         .font-arabic{font-family:'Naskh IndoPak',serif!important}
         @media(max-width:640px){.qp-header-inner{padding:20px 16px !important}.qp-stats{flex-direction:row;gap:12px !important}.qp-stat-divider{display:none !important}.qp-btns{flex-direction:column !important;gap:10px !important}.qp-btn{width:100% !important;min-width:0 !important}}
       `}</style>
@@ -172,7 +172,7 @@ function ClientQuranPage({ pageNumber, translationEdition, audioEdition, ayahs }
             {/* ── Hero Header ── */}
             <div style={{ background: C.card, border: `1px solid ${C.cardBorder}`, borderRadius: 18, boxShadow: C.shadow, marginBottom: 24, overflow: 'hidden', position: 'relative' }}>
               {/* Top green accent bar */}
-              <div style={{ height: 3, background: `linear-gradient(90deg, transparent, ${C.green}, #059669, transparent)` }} />
+              <div style={{ height: 3, background: `linear-gradient(90deg, transparent, ${C.green}, #d97706, transparent)` }} />
 
               <div className="qp-header-inner" style={{ padding: '28px 28px 24px', textAlign: 'center' }}>
                 {/* Eyebrow badge */}
@@ -206,7 +206,7 @@ function ClientQuranPage({ pageNumber, translationEdition, audioEdition, ayahs }
                   </div>
                   <div className="qp-stat-divider" style={{ width: 1, height: 36, background: C.cardBorder }} />
                   <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: 24, fontWeight: 700, color: '#059669' }}>{surahGroups.length}</div>
+                    <div style={{ fontSize: 24, fontWeight: 700, color: '#d97706' }}>{surahGroups.length}</div>
                     <div style={{ fontSize: 11, color: C.muted, fontWeight: 500 }}>{surahGroups.length === 1 ? 'Surah' : 'Surahs'}</div>
                   </div>
                 </div>
@@ -218,7 +218,7 @@ function ClientQuranPage({ pageNumber, translationEdition, audioEdition, ayahs }
                     <span style={{ color: C.green }}>{progressPercent}%</span>
                   </div>
                   <div style={{ width: '100%', height: 5, borderRadius: 999, background: dark ? '#1e3a2a' : '#f1f5f9', overflow: 'hidden' }}>
-                    <div style={{ height: '100%', width: `${progressPercent}%`, borderRadius: 999, background: `linear-gradient(90deg, ${C.green}, #059669)`, boxShadow: '0 0 10px rgba(17,212,66,0.4)', transition: 'width 0.8s ease' }} />
+                    <div style={{ height: '100%', width: `${progressPercent}%`, borderRadius: 999, background: `linear-gradient(90deg, ${C.green}, #d97706)`, boxShadow: '0 0 10px rgba(245,158,11,0.4)', transition: 'width 0.8s ease' }} />
                   </div>
                 </div>
 
@@ -275,7 +275,7 @@ function ClientQuranPage({ pageNumber, translationEdition, audioEdition, ayahs }
                         background: active ? (dark ? '#1a2f1f' : '#f0fdf4') : C.card,
                         border: `1px solid ${active ? C.green : C.cardBorder}`,
                         borderRadius: 16,
-                        boxShadow: active ? `0 0 20px rgba(17,212,66,0.15), ${C.shadow}` : C.shadow,
+                        boxShadow: active ? `0 0 20px rgba(245,158,11,0.15), ${C.shadow}` : C.shadow,
                         marginBottom: 16,
                         overflow: 'hidden',
                         transition: 'all 0.25s ease',
@@ -285,7 +285,7 @@ function ClientQuranPage({ pageNumber, translationEdition, audioEdition, ayahs }
                       <div style={{
                         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                         padding: '10px 16px',
-                        background: dark ? 'rgba(17,212,66,0.03)' : 'rgba(17,212,66,0.02)',
+                        background: dark ? 'rgba(245,158,11,0.03)' : 'rgba(245,158,11,0.02)',
                         borderBottom: `1px solid ${dark ? '#1e3a2a44' : '#f1f5f9'}`,
                       }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -342,7 +342,7 @@ function ClientQuranPage({ pageNumber, translationEdition, audioEdition, ayahs }
             }}>
               {/* Progress bar top */}
               <div style={{ height: 3, background: dark ? '#1e3a2a' : '#f1f5f9' }}>
-                <div style={{ height: '100%', width: `${progressPercent}%`, background: `linear-gradient(90deg, ${C.green}, #059669)`, transition: 'width 0.5s ease' }} />
+                <div style={{ height: '100%', width: `${progressPercent}%`, background: `linear-gradient(90deg, ${C.green}, #d97706)`, transition: 'width 0.5s ease' }} />
               </div>
 
               <div style={{ padding: '18px 20px' }}>

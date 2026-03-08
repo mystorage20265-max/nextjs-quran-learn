@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -111,7 +111,7 @@ export default function GlobalSidebar() {
                     <div className="gsb-logo-row">
                         <Link href="/" className="gsb-logo-link" aria-label="Go to homepage">
                             <div className="gsb-logo-icon">
-                                <span className="material-symbols-outlined" style={{ color: '#11d442', fontSize: 24, display: 'block' }}>
+                                <span className="material-symbols-outlined" style={{ color: '#f59e0b', fontSize: 24, display: 'block' }}>
                                     auto_stories
                                 </span>
                             </div>
@@ -208,7 +208,7 @@ export default function GlobalSidebar() {
                             style={{
                                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5,
                                 width: '100%', padding: '7px 0', borderRadius: 8, textDecoration: 'none',
-                                background: 'linear-gradient(135deg,#11d442,#059669)',
+                                background: 'linear-gradient(135deg,#f59e0b,#d97706)',
                                 color: 'white', fontSize: 11.5, fontWeight: 700, letterSpacing: '0.03em',
                             }}
                         >

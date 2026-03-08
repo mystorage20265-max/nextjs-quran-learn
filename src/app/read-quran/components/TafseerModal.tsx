@@ -55,7 +55,7 @@ const SCHOLARS = [
         name: "Ma'arif Al-Qur'an",
         fullName: "Ma'arif ul-Quran",
         label: 'Contemporary • Mufti Shafi',
-        color: '#10b981',
+        color: '#f59e0b',
         icon: ScrollText,
         desc: "A comprehensive 8-volume commentary by Mufti Muhammad Shafi Usmani, combining classical and modern scholarship.",
     },

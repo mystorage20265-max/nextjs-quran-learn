@@ -81,7 +81,7 @@
 
 .play-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(5, 150, 105, 0.3);
+  box-shadow: 0 10px 25px rgba(245, 158, 11, 0.3);
 }
 
 .stop-button {

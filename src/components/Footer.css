@@ -19,7 +19,7 @@
   transform: translateX(-50%);
   width: 900px;
   height: 400px;
-  background: radial-gradient(ellipse, rgba(17, 212, 66, 0.10) 0%, transparent 65%);
+  background: radial-gradient(ellipse, rgba(245, 158, 11, 0.10) 0%, transparent 65%);
   pointer-events: none;
 }
 
@@ -98,7 +98,7 @@
 .ftr-logo-icon {
   font-size: 28px;
   color: #f59e0b;
-  filter: drop-shadow(0 0 10px rgba(17, 212, 66, 0.4));
+  filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.4));
 }
 
 .ftr-logo-text {
@@ -141,7 +141,7 @@
   border-color: #f59e0b;
   color: white;
   transform: translateY(-3px);
-  box-shadow: 0 6px 16px rgba(17, 212, 66, 0.3);
+  box-shadow: 0 6px 16px rgba(245, 158, 11, 0.3);
 }
 
 /* Nav columns */
@@ -286,12 +286,12 @@
   align-items: center;
   gap: 5px;
   padding: 4px 12px;
-  background: rgba(17, 212, 66, 0.08);
+  background: rgba(245, 158, 11, 0.08);
   border-radius: 999px;
   font-size: 11px;
   font-weight: 600;
   color: #f59e0b;
-  border: 1px solid rgba(17, 212, 66, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.15);
 }
 
 .ftr-legal-links {

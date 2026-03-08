@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import Link from "next/link";
@@ -310,10 +310,10 @@ export default function AudioQuranPage() {
             <div style={{
               position: "relative", overflow: "hidden",
               borderRadius: 20,
-              background: "linear-gradient(135deg, #059669 0%, #0f766e 100%)",
+              background: "linear-gradient(135deg, #d97706 0%, #b45309 100%)",
               padding: "36px 40px", marginBottom: 28,
               color: "white",
-              boxShadow: "0 8px 32px rgba(5,150,105,0.25)",
+              boxShadow: "0 8px 32px rgba(245,158,11,0.25)",
             }}>
               {/* Dot-grid overlay */}
               <div style={{ position: "absolute", inset: 0, opacity: 0.08, backgroundImage: "radial-gradient(circle at 2px 2px, white 1px, transparent 0)", backgroundSize: "24px 24px", pointerEvents: "none" }} />
@@ -369,7 +369,7 @@ export default function AudioQuranPage() {
                     </button>
                     <button
                       onClick={nowPlayingSurah ? (isPlaying ? handlePause : handleResume) : undefined}
-                      style={{ width: 48, height: 48, borderRadius: "50%", background: "white", border: "none", cursor: "pointer", color: "#059669", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 12px rgba(0,0,0,0.2)" }}
+                      style={{ width: 48, height: 48, borderRadius: "50%", background: "white", border: "none", cursor: "pointer", color: "#d97706", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 12px rgba(0,0,0,0.2)" }}
                     >
                       <span className="material-symbols-outlined" style={{ fontSize: 30 }}>
                         {isBuffering ? "hourglass_empty" : isPlaying ? "pause" : "play_arrow"}
@@ -475,7 +475,7 @@ export default function AudioQuranPage() {
                                   Meccan
                                 </span>
                               ) : (
-                                <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 10px", borderRadius: 999, background: "rgba(5,150,105,0.1)", color: "#059669", fontSize: 11, fontWeight: 600 }}>
+                                <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 10px", borderRadius: 999, background: "rgba(245,158,11,0.1)", color: "#d97706", fontSize: 11, fontWeight: 600 }}>
                                   <span className="material-symbols-outlined" style={{ fontSize: 12 }}>mosque</span>
                                   Medinan
                                 </span>
@@ -623,7 +623,7 @@ export default function AudioQuranPage() {
 
               {/* Left: Track info */}
               <div className="aq-player-track" style={{ display: "flex", alignItems: "center", gap: 14, width: 240, flexShrink: 0 }}>
-                <div style={{ width: 44, height: 44, borderRadius: 8, background: "#059669", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                <div style={{ width: 44, height: 44, borderRadius: 8, background: "#d97706", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                   <span className="material-symbols-outlined" style={{ color: "white", fontSize: 22 }}>music_note</span>
                 </div>
                 <div style={{ minWidth: 0 }}>

@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useCallback } from "react";
+﻿import React, { useRef, useState, useEffect, useCallback } from "react";
 
 function formatTime(sec = 0) {
   if (!isFinite(sec) || sec < 0) return "0:00";
@@ -238,7 +238,7 @@ export default function SurahAudioPlayer({ audioSrc, title = "", onEnded }) {
         >
           <div
             className="absolute left-0 top-0 bottom-0 rounded-full"
-            style={{ width: `${progressPercent}%`, background: "linear-gradient(90deg,#10b981,#06b6d4)" }}
+            style={{ width: `${progressPercent}%`, background: "linear-gradient(90deg,#f59e0b,#06b6d4)" }}
           />
           <div
             className="absolute -translate-y-1/2 top-1/2 w-3 h-3 rounded-full bg-white shadow"

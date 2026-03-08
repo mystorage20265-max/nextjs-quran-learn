@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useRef, useCallback, use } from 'react';
 import Link from 'next/link';
@@ -529,7 +529,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
             <div className="nq-shell">
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1, flexDirection: 'column', gap: 16 }}>
                     <p style={{ color: '#f85149' }}>{error || 'Surah not found'}</p>
-                    <Link href="/" style={{ color: '#11d442' }}>← Go Home</Link>
+                    <Link href="/" style={{ color: '#f59e0b' }}>← Go Home</Link>
                 </div>
             </div>
         );
@@ -563,32 +563,32 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 .nq-right{flex-shrink:0;border-left:1px solid #e2e8f0;background:white;display:none;flex-direction:column;overflow:hidden}
                 @media(min-width:1280px){.nq-right{display:flex;width:256px}}
                 .dark .nq-right{background:#0f172a;border-color:#1e293b}
-                .nq-islamic{background-image:radial-gradient(circle at 2px 2px,rgba(17,212,66,0.05) 1px,transparent 0);background-size:24px 24px}
+                .nq-islamic{background-image:radial-gradient(circle at 2px 2px,rgba(245,158,11,0.05) 1px,transparent 0);background-size:24px 24px}
                 /* Bismillah */
                 .nq-bismillah{display:flex;flex-direction:column;align-items:center;margin-bottom:48px}
                 .nq-bismillah-text{font-family:var(--rq-font-arabic);font-size:36px;color:#1e293b;padding:32px 0;opacity:0.9}
                 .dark .nq-bismillah-text{color:#e2e8f0}
-                .nq-bismillah-hr{width:128px;height:4px;background:linear-gradient(90deg,transparent,rgba(17,212,66,0.3),transparent);border:none;margin:0}
+                .nq-bismillah-hr{width:128px;height:4px;background:linear-gradient(90deg,transparent,rgba(245,158,11,0.3),transparent);border:none;margin:0}
                 /* Verse cards */
                 .nq-ayah-card{position:relative;padding:16px;border-radius:16px;border:1px solid transparent;transition:all 0.3s;margin-bottom:32px}
                 @media(min-width:640px){.nq-ayah-card{padding:24px;margin-bottom:48px}}
-                .nq-ayah-card:hover{background:rgba(17,212,66,0.05);border-color:rgba(17,212,66,0.1)}
-                .nq-ayah-card.nq-playing{background:rgba(17,212,66,0.05);border-color:rgba(17,212,66,0.25);box-shadow:0 2px 12px rgba(17,212,66,0.08)}
-                .nq-active-accent{position:absolute;left:-3px;top:32px;width:6px;height:48px;background:#11d442;border-radius:3px}
+                .nq-ayah-card:hover{background:rgba(245,158,11,0.05);border-color:rgba(245,158,11,0.1)}
+                .nq-ayah-card.nq-playing{background:rgba(245,158,11,0.05);border-color:rgba(245,158,11,0.25);box-shadow:0 2px 12px rgba(245,158,11,0.08)}
+                .nq-active-accent{position:absolute;left:-3px;top:32px;width:6px;height:48px;background:#f59e0b;border-radius:3px}
                 .nq-arabic-row{display:flex;flex-direction:row-reverse;align-items:flex-start;gap:12px;margin-bottom:0}
                 @media(min-width:640px){.nq-arabic-row{gap:24px}}
                 .nq-arabic-text{font-family:var(--rq-font-arabic);font-size:var(--nq-fs,26px);line-height:2;text-align:right;flex:1;color:#1e293b;direction:rtl}
                 @media(min-width:640px){.nq-arabic-text{font-size:var(--nq-fs,36px)}}
                 .dark .nq-arabic-text{color:#e2e8f0}
                 .nq-shell .word-arabic,.nq-shell .reader-verse-arabic,.nq-shell .reader-bismillah-text,.nq-shell .nq-bismillah-text,.nq-shell .nq-arabic-text{font-family:'Naskh IndoPak',serif!important}
-                .nq-verse-badge{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;border:1px solid rgba(17,212,66,0.4);font-size:12px;font-weight:700;color:#11d442;margin-right:6px;font-family:'Lexend',sans-serif;cursor:pointer;vertical-align:middle;transition:background 0.15s}
+                .nq-verse-badge{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;border:1px solid rgba(245,158,11,0.4);font-size:12px;font-weight:700;color:#f59e0b;margin-right:6px;font-family:'Lexend',sans-serif;cursor:pointer;vertical-align:middle;transition:background 0.15s}
                 @media(min-width:640px){.nq-verse-badge{width:40px;height:40px;font-size:14px;margin-right:8px}}
-                .nq-verse-badge:hover{background:rgba(17,212,66,0.1)}
-                .nq-playing .nq-verse-badge{border-color:#11d442;background:rgba(17,212,66,0.12)}
+                .nq-verse-badge:hover{background:rgba(245,158,11,0.1)}
+                .nq-playing .nq-verse-badge{border-color:#f59e0b;background:rgba(245,158,11,0.12)}
                 .nq-translation-row{margin-top:14px;padding-left:12px;border-left:2px solid #e2e8f0;transition:border-color 0.2s}
                 @media(min-width:640px){.nq-translation-row{margin-top:24px;padding-left:16px}}
-                .nq-ayah-card:hover .nq-translation-row{border-color:rgba(17,212,66,0.3)}
-                .nq-ayah-card.nq-playing .nq-translation-row{border-color:rgba(17,212,66,0.5)}
+                .nq-ayah-card:hover .nq-translation-row{border-color:rgba(245,158,11,0.3)}
+                .nq-ayah-card.nq-playing .nq-translation-row{border-color:rgba(245,158,11,0.5)}
                 .nq-translation-text{color:#475569;font-size:15px;line-height:1.8}
                 @media(min-width:640px){.nq-translation-text{font-size:18px}}
                 .dark .nq-translation-text{color:#94a3b8}
@@ -600,20 +600,20 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 .nq-ayah-card:hover .nq-actions{opacity:1}
                 .nq-action-btn{padding:8px;background:white;border:none;border-radius:8px;box-shadow:0 1px 4px rgba(0,0,0,0.08);color:#94a3b8;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:color 0.15s}
                 .dark .nq-action-btn{background:#1e293b}
-                .nq-action-btn:hover{color:#11d442}
-                .nq-bookmarked{color:#11d442!important}
-                .nq-active-btn{color:#11d442!important}
+                .nq-action-btn:hover{color:#f59e0b}
+                .nq-bookmarked{color:#f59e0b!important}
+                .nq-active-btn{color:#f59e0b!important}
                 /* Sidebar nav */
                 .nq-nav-link{display:flex;align-items:center;gap:12px;padding:12px;border-radius:12px;text-decoration:none;font-weight:500;font-size:14px;color:#64748b;transition:background 0.15s;white-space:nowrap}
                 .nq-nav-link:hover{background:#f8fafc}
                 .dark .nq-nav-link:hover{background:#1e293b}
-                .nq-nav-link.active{background:rgba(17,212,66,0.1);color:#11d442;font-weight:600}
+                .nq-nav-link.active{background:rgba(245,158,11,0.1);color:#f59e0b;font-weight:600}
                 @media(max-width:1023px){.nq-nav-label{display:none}}
                 /* Header buttons */
                 .nq-hdr-btn{padding:6px 8px;border:none;border-radius:8px;background:#f1f5f9;color:#64748b;cursor:pointer;display:flex;align-items:center;transition:all 0.15s;font-size:12px}
                 @media(min-width:640px){.nq-hdr-btn{padding:8px 12px;font-size:13px}}
                 .dark .nq-hdr-btn{background:#1e293b;color:#94a3b8}
-                .nq-hdr-btn:hover{color:#11d442}
+                .nq-hdr-btn:hover{color:#f59e0b}
                 .nq-hdr-toggle-group{display:none;align-items:center;background:#f1f5f9;border-radius:8px;padding:4px;gap:2px}
                 @media(min-width:600px){.nq-hdr-toggle-group{display:flex}}
                 .dark .nq-hdr-toggle-group{background:#1e293b}
@@ -621,7 +621,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 @media(min-width:768px){.nq-hdr-toggle{padding:4px 12px;font-size:12px}}
                 .nq-hdr-toggle.active{background:white;color:#0f172a;box-shadow:0 1px 3px rgba(0,0,0,0.1)}
                 .dark .nq-hdr-toggle.active{background:#0f172a;color:white}
-                .nq-bkmk-btn{width:34px;height:34px;background:#11d442;border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;cursor:pointer;box-shadow:0 4px 14px rgba(17,212,66,0.3);flex-shrink:0}
+                .nq-bkmk-btn{width:34px;height:34px;background:#f59e0b;border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;cursor:pointer;box-shadow:0 4px 14px rgba(245,158,11,0.3);flex-shrink:0}
                 @media(min-width:640px){.nq-bkmk-btn{width:40px;height:40px}}
                 /* Audio bar */
                 .nq-audio-bar{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);width:calc(100% - 24px);max-width:720px;background:rgba(255,255,255,0.97);backdrop-filter:blur(16px);border:1px solid #e2e8f0;border-radius:20px;box-shadow:0 8px 32px rgba(0,0,0,0.12);z-index:20;padding:10px 14px;animation:audioBarIn 0.22s ease-out}
@@ -632,7 +632,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 .nq-audio-progress-row{margin-bottom:8px}
                 .nq-audio-progress-track{width:100%;height:4px;background:#f1f5f9;border-radius:999px;overflow:hidden;cursor:pointer;position:relative}
                 .dark .nq-audio-progress-track{background:#1e293b}
-                .nq-audio-progress-fill{height:100%;background:#11d442;border-radius:999px;transition:width 0.3s}
+                .nq-audio-progress-fill{height:100%;background:#f59e0b;border-radius:999px;transition:width 0.3s}
                 .nq-audio-bar-inner{display:flex;align-items:center;justify-content:space-between;gap:8px}
                 @media(min-width:640px){.nq-audio-bar-inner{gap:16px}}
                 @media(min-width:1024px){.nq-audio-bar-inner{gap:24px}}
@@ -640,7 +640,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 @media(min-width:640px){.nq-reciter-info{display:flex}}
                 .nq-reciter-avatar{position:relative;width:40px;height:40px;border-radius:50%;background:#f1f5f9;display:flex;align-items:center;justify-content:center;flex-shrink:0}
                 .dark .nq-reciter-avatar{background:#1e293b}
-                .nq-reciter-badge{position:absolute;bottom:-4px;right:-4px;background:#11d442;color:white;font-size:8px;font-weight:700;padding:1px 4px;border-radius:999px;border:2px solid white;font-family:'Lexend',sans-serif}
+                .nq-reciter-badge{position:absolute;bottom:-4px;right:-4px;background:#f59e0b;color:white;font-size:8px;font-weight:700;padding:1px 4px;border-radius:999px;border:2px solid white;font-family:'Lexend',sans-serif}
                 .nq-reciter-name{margin:0;font-size:12px;font-weight:700;color:#0f172a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
                 .dark .nq-reciter-name{color:#e2e8f0}
                 .nq-reciter-sub{margin:0;font-size:10px;color:#94a3b8}
@@ -649,12 +649,12 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 @media(min-width:640px){.nq-audio-controls{flex:none;justify-content:flex-start}}
                 @media(min-width:1024px){.nq-audio-controls{gap:24px}}
                 .nq-ctrl-btn{background:none;border:none;color:#64748b;cursor:pointer;display:flex;align-items:center;padding:0;transition:color 0.15s}
-                .nq-ctrl-btn:hover{color:#11d442}
+                .nq-ctrl-btn:hover{color:#f59e0b}
                 .nq-ctrl-btn.lg{color:#334155}
                 .nq-ctrl-btn.hide-xs{display:none}
                 @media(min-width:480px){.nq-ctrl-btn.hide-xs{display:flex}}
                 .dark .nq-ctrl-btn.lg{color:#e2e8f0}
-                .nq-play-btn{width:42px;height:42px;background:#11d442;border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;cursor:pointer;box-shadow:0 4px 20px rgba(17,212,66,0.35);transition:transform 0.15s;flex-shrink:0}
+                .nq-play-btn{width:42px;height:42px;background:#f59e0b;border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;cursor:pointer;box-shadow:0 4px 20px rgba(245,158,11,0.35);transition:transform 0.15s;flex-shrink:0}
                 @media(min-width:640px){.nq-play-btn{width:48px;height:48px}}
                 .nq-play-btn:hover{transform:scale(1.05)}
                 .nq-audio-right{display:flex;align-items:center;gap:8px;flex-shrink:0;min-width:0}
@@ -668,7 +668,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 .dark .nq-sound-toggle-wrap{border-left-color:#1e293b}
                 .nq-sound-toggle-label{font-size:11px;font-weight:600;color:#94a3b8;white-space:nowrap;font-family:'Lexend',sans-serif;display:inline}
                 .nq-sound-pill{position:relative;width:36px;height:20px;border-radius:10px;cursor:pointer;border:none;padding:0;transition:background 0.22s;flex-shrink:0}
-                .nq-sound-pill.on{background:#11d442}
+                .nq-sound-pill.on{background:#f59e0b}
                 .nq-sound-pill.off{background:#cbd5e1}
                 .dark .nq-sound-pill.off{background:#334155}
                 .nq-sound-pill-thumb{position:absolute;top:2px;width:16px;height:16px;border-radius:50%;background:white;transition:left 0.22s;box-shadow:0 1px 3px rgba(0,0,0,0.2)}
@@ -691,7 +691,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 /* scrollbar */
                 .nq-scroll::-webkit-scrollbar{width:5px}
                 .nq-scroll::-webkit-scrollbar-track{background:transparent}
-                .nq-scroll::-webkit-scrollbar-thumb{background:rgba(17,212,66,0.2);border-radius:3px}
+                .nq-scroll::-webkit-scrollbar-thumb{background:rgba(245,158,11,0.2);border-radius:3px}
                 .nq-right::-webkit-scrollbar{width:4px}
                 .nq-right::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.08);border-radius:2px}
                 /* Mode tabs row */
@@ -704,7 +704,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 @media(min-width:1024px){.nq-mode-tabs{padding:0 8px 0 32px}}
                 .nq-mode-tab{padding:5px 12px;border-radius:8px;border:none;cursor:pointer;font-size:12px;font-weight:500;transition:all 0.15s;background:transparent;color:#64748b;font-family:'Lexend',sans-serif;white-space:nowrap;flex-shrink:0}
                 @media(min-width:640px){.nq-mode-tab{padding:6px 16px;font-size:13px}}
-                .nq-mode-tab.active{background:#11d442;color:white}
+                .nq-mode-tab.active{background:#f59e0b;color:white}
                     .nq-header-title{margin:0;font-size:14px;font-weight:700;color:#0f172a;display:flex;align-items:baseline;gap:5px;white-space:nowrap;overflow:hidden;min-width:0}
                     @media(min-width:640px){.nq-header-title{font-size:17px;gap:7px}}
                     @media(min-width:1024px){.nq-header-title{font-size:20px;gap:8px}}
@@ -715,35 +715,35 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                     .nq-audio-toggle{display:flex;align-items:center;gap:8px;flex-shrink:0}
                     .nq-audio-toggle-label{font-size:11px;font-weight:600;color:#94a3b8;white-space:nowrap;font-family:'Lexend',sans-serif;text-transform:uppercase;letter-spacing:0.06em}
                     .nq-audio-toggle-pill{position:relative;width:38px;height:22px;border-radius:11px;cursor:pointer;transition:background 0.22s;flex-shrink:0;border:none;padding:0}
-                    .nq-audio-toggle-pill.on{background:#11d442}
+                    .nq-audio-toggle-pill.on{background:#f59e0b}
                     .nq-audio-toggle-pill.off{background:#94a3b8}
                     .nq-audio-toggle-pill-thumb{position:absolute;top:3px;width:16px;height:16px;border-radius:50%;background:white;transition:left 0.22s;box-shadow:0 1px 3px rgba(0,0,0,0.2)}
                     .nq-audio-toggle-pill.on .nq-audio-toggle-pill-thumb{left:19px}
                     .nq-audio-toggle-pill.off .nq-audio-toggle-pill-thumb{left:3px}
                     /* Tafsir panel */
-                    .nq-tafsir-panel{margin-top:16px;border-radius:12px;border:1px solid rgba(17,212,66,0.2);background:rgba(17,212,66,0.03);overflow:hidden;animation:fadeIn 0.2s ease-out}
+                    .nq-tafsir-panel{margin-top:16px;border-radius:12px;border:1px solid rgba(245,158,11,0.2);background:rgba(245,158,11,0.03);overflow:hidden;animation:fadeIn 0.2s ease-out}
                     @keyframes fadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
-                    .nq-tafsir-header{display:flex;align-items:center;gap:8px;padding:10px 14px;background:rgba(17,212,66,0.08);border-bottom:1px solid rgba(17,212,66,0.15);font-size:12px;font-weight:700;color:#11d442;text-transform:uppercase;letter-spacing:0.06em;font-family:'Lexend',sans-serif}
+                    .nq-tafsir-header{display:flex;align-items:center;gap:8px;padding:10px 14px;background:rgba(245,158,11,0.08);border-bottom:1px solid rgba(245,158,11,0.15);font-size:12px;font-weight:700;color:#f59e0b;text-transform:uppercase;letter-spacing:0.06em;font-family:'Lexend',sans-serif}
                     .nq-tafsir-text{margin:0;padding:14px 16px;font-size:14px;line-height:1.85;color:#334155;max-height:320px;overflow-y:auto;font-family:'Inter','Lexend',sans-serif}
                     .dark .nq-tafsir-text{color:#94a3b8}
                     .nq-tafsir-loading{display:flex;align-items:center;gap:10px;padding:16px;font-size:13px;color:#64748b;font-family:'Lexend',sans-serif}
                     .nq-tafsir-text::-webkit-scrollbar{width:4px}
-                    .nq-tafsir-text::-webkit-scrollbar-thumb{background:rgba(17,212,66,0.3);border-radius:2px}
+                    .nq-tafsir-text::-webkit-scrollbar-thumb{background:rgba(245,158,11,0.3);border-radius:2px}
                     /* === IMPROVED TRANSLATION MODE === */
                     .nq-ayah-card{margin-bottom:0!important}
                     .nq-verse-meta-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
                     .nq-verse-ref-tag{font-size:11px;font-weight:700;color:#94a3b8;font-family:'Lexend','Inter',sans-serif;letter-spacing:0.05em;padding:3px 10px;background:#f1f5f9;border-radius:99px;border:1px solid #e2e8f0}
                     .dark .nq-verse-ref-tag{background:#1e293b;border-color:#334155;color:#64748b}
-                    .nq-inline-play-btn{display:inline-flex;align-items:center;gap:5px;padding:5px 13px;background:rgba(17,212,66,0.08);border:1.5px solid rgba(17,212,66,0.25);border-radius:99px;color:#11d442;cursor:pointer;font-size:11px;font-weight:700;font-family:'Lexend',sans-serif;transition:all 0.2s;letter-spacing:0.02em}
-                    .nq-inline-play-btn:hover{background:rgba(17,212,66,0.15);border-color:rgba(17,212,66,0.5);box-shadow:0 2px 8px rgba(17,212,66,0.15)}
-                    .nq-ayah-card.nq-playing .nq-inline-play-btn{background:rgba(17,212,66,0.15);border-color:#11d442}
+                    .nq-inline-play-btn{display:inline-flex;align-items:center;gap:5px;padding:5px 13px;background:rgba(245,158,11,0.08);border:1.5px solid rgba(245,158,11,0.25);border-radius:99px;color:#f59e0b;cursor:pointer;font-size:11px;font-weight:700;font-family:'Lexend',sans-serif;transition:all 0.2s;letter-spacing:0.02em}
+                    .nq-inline-play-btn:hover{background:rgba(245,158,11,0.15);border-color:rgba(245,158,11,0.5);box-shadow:0 2px 8px rgba(245,158,11,0.15)}
+                    .nq-ayah-card.nq-playing .nq-inline-play-btn{background:rgba(245,158,11,0.15);border-color:#f59e0b}
                     .nq-ayah-end-marker{cursor:pointer;display:inline-block;vertical-align:middle;margin:0 2px;transition:opacity 0.15s}
                     .nq-ayah-end-marker:hover{opacity:0.7}
-                    .nq-translation-row{margin-top:20px;padding:14px 18px;background:#f8fafc;border:1px solid #f1f5f9;border-left:3px solid rgba(17,212,66,0.5);border-radius:0 10px 10px 0;transition:border-left-color 0.2s,background 0.2s}
+                    .nq-translation-row{margin-top:20px;padding:14px 18px;background:#f8fafc;border:1px solid #f1f5f9;border-left:3px solid rgba(245,158,11,0.5);border-radius:0 10px 10px 0;transition:border-left-color 0.2s,background 0.2s}
                     @media(min-width:640px){.nq-translation-row{margin-top:24px;padding:16px 20px}}
-                    .dark .nq-translation-row{background:rgba(30,41,59,0.5);border-color:#1e293b;border-left-color:rgba(17,212,66,0.4)}
-                    .nq-ayah-card:hover .nq-translation-row{border-left-color:rgba(17,212,66,0.6);background:rgba(17,212,66,0.02)}
-                    .nq-ayah-card.nq-playing .nq-translation-row{border-left-color:#11d442;background:rgba(17,212,66,0.05)}
+                    .dark .nq-translation-row{background:rgba(30,41,59,0.5);border-color:#1e293b;border-left-color:rgba(245,158,11,0.4)}
+                    .nq-ayah-card:hover .nq-translation-row{border-left-color:rgba(245,158,11,0.6);background:rgba(245,158,11,0.02)}
+                    .nq-ayah-card.nq-playing .nq-translation-row{border-left-color:#f59e0b;background:rgba(245,158,11,0.05)}
                     .nq-translation-text{color:#334155;font-size:15px;line-height:1.9;margin:0}
                     @media(min-width:640px){.nq-translation-text{font-size:17px;line-height:2.0}}
                     .dark .nq-translation-text{color:#94a3b8}
@@ -753,12 +753,12 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                     .nq-bar-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 12px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;color:#64748b;cursor:pointer;font-size:12px;font-weight:500;transition:all 0.15s;font-family:'Lexend',sans-serif;white-space:nowrap}
                     @media(min-width:640px){.nq-bar-btn{padding:8px 14px}}
                     .dark .nq-bar-btn{background:#1e293b;border-color:#334155;color:#94a3b8}
-                    .nq-bar-btn:hover{background:rgba(17,212,66,0.08);border-color:rgba(17,212,66,0.3);color:#11d442}
-                    .nq-bar-btn.nq-bar-active{color:#11d442;background:rgba(17,212,66,0.08);border-color:rgba(17,212,66,0.3)}
+                    .nq-bar-btn:hover{background:rgba(245,158,11,0.08);border-color:rgba(245,158,11,0.3);color:#f59e0b}
+                    .nq-bar-btn.nq-bar-active{color:#f59e0b;background:rgba(245,158,11,0.08);border-color:rgba(245,158,11,0.3)}
                     .nq-ayah-sep{display:flex;align-items:center;gap:16px;padding:6px 0}
                     .nq-sep-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(100,116,139,0.15) 20%,rgba(100,116,139,0.2) 50%,rgba(100,116,139,0.15) 80%,transparent)}
-                    .nq-sep-icon{font-size:14px;color:rgba(17,212,66,0.45);flex-shrink:0;line-height:1;font-family:'Traditional Arabic','Scheherazade New','Amiri',serif;user-select:none}
-                    .nq-surah-header{text-align:center;margin-bottom:32px;padding:24px 16px 20px;border-bottom:1px solid rgba(17,212,66,0.1)}
+                    .nq-sep-icon{font-size:14px;color:rgba(245,158,11,0.45);flex-shrink:0;line-height:1;font-family:'Traditional Arabic','Scheherazade New','Amiri',serif;user-select:none}
+                    .nq-surah-header{text-align:center;margin-bottom:32px;padding:24px 16px 20px;border-bottom:1px solid rgba(245,158,11,0.1)}
                     .nq-surah-header-arabic{font-family:var(--rq-font-arabic);color:#1e293b;font-weight:700;line-height:1.6;display:block}
                     .dark .nq-surah-header-arabic{color:#e2e8f0}
                     .nq-surah-header-sub{font-size:13px;color:#64748b;margin-top:6px;font-weight:500;font-family:'Lexend',sans-serif}
@@ -773,12 +773,12 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 24, padding: '0 12px' }}>
                         {/* Logo */}
                         <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '0 4px' }}>
-                            <div style={{ background: 'rgba(17,212,66,0.15)', borderRadius: 10, padding: 8, flexShrink: 0 }}>
-                                <span className="material-symbols-outlined" style={{ color: '#11d442', fontSize: 26 }}>auto_stories</span>
+                            <div style={{ background: 'rgba(245,158,11,0.15)', borderRadius: 10, padding: 8, flexShrink: 0 }}>
+                                <span className="material-symbols-outlined" style={{ color: '#f59e0b', fontSize: 26 }}>auto_stories</span>
                             </div>
                             <div className="nq-nav-label">
                                 <p style={{ margin: 0, fontWeight: 700, fontSize: 15, color: '#0f172a', lineHeight: 1 }}>Learn Quran</p>
-                                <p style={{ margin: 0, color: '#11d442', fontSize: 9, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.12em' }}>Learning Hub</p>
+                                <p style={{ margin: 0, color: '#f59e0b', fontSize: 9, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.12em' }}>Learning Hub</p>
                             </div>
                         </div>
                         {/* Nav */}
@@ -818,7 +818,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                     <p style={{ margin: 0, fontSize: 10, color: '#94a3b8' }}>Guest User</p>
                                 </div>
                             </div>
-                            <Link href="/signup" className="nq-nav-label" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, width: '100%', padding: '7px 0', borderRadius: 8, textDecoration: 'none', background: 'linear-gradient(135deg,#11d442,#059669)', color: 'white', fontSize: 11.5, fontWeight: 700, letterSpacing: '0.03em' }}>
+                            <Link href="/signup" className="nq-nav-label" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, width: '100%', padding: '7px 0', borderRadius: 8, textDecoration: 'none', background: 'linear-gradient(135deg,#f59e0b,#d97706)', color: 'white', fontSize: 11.5, fontWeight: 700, letterSpacing: '0.03em' }}>
                                 <span className="material-symbols-outlined" style={{ fontSize: 14 }}>star</span>
                                 Subscribe Now
                             </Link>
@@ -832,7 +832,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                     <header className="nq-header">
                         <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
                             <Link href="/" style={{ color: '#94a3b8', display: 'flex', alignItems: 'center', transition: 'color 0.15s' }}
-                                onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = '#11d442'}
+                                onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = '#f59e0b'}
                                 onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = '#94a3b8'}>
                                 <span className="material-symbols-outlined">arrow_back</span>
                             </Link>
@@ -903,7 +903,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                         </div>
                         {/* Sound Toggle — always visible, same for mobile & desktop */}
                         <div className="nq-sound-toggle-wrap">
-                            <span className="nq-sound-toggle-label" style={{ color: audioEnabled ? '#11d442' : '#94a3b8' }}>
+                            <span className="nq-sound-toggle-label" style={{ color: audioEnabled ? '#f59e0b' : '#94a3b8' }}>
                                 Play Audio
                             </span>
                             <button
@@ -1021,7 +1021,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                         {/* ===== MUSHAF PAGE FRAME ===== */}
                                                         <div style={{
                                                             background: '#f6f8f6',
-                                                            border: '1.5px solid rgba(17,212,66,0.18)',
+                                                            border: '1.5px solid rgba(245,158,11,0.18)',
                                                             borderRadius: 8,
                                                             position: 'relative',
                                                             overflow: 'hidden',
@@ -1031,8 +1031,8 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                                 <div style={{
                                                                     textAlign: 'center',
                                                                     padding: isMobile ? '10px 8px' : '14px 16px',
-                                                                    borderBottom: '1.5px solid rgba(17,212,66,0.15)',
-                                                                    background: 'rgba(17,212,66,0.06)',
+                                                                    borderBottom: '1.5px solid rgba(245,158,11,0.15)',
+                                                                    background: 'rgba(245,158,11,0.06)',
                                                                 }}>
                                                                     <span style={{
                                                                         fontFamily: "'Naskh IndoPak', 'KFGQPC Uthmanic Script HAFS Regular', 'Scheherazade New', 'Amiri', 'Traditional Arabic', serif",
@@ -1051,8 +1051,8 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                                 <div style={{
                                                                     textAlign: 'center',
                                                                     padding: isMobile ? '14px 8px' : '18px 16px',
-                                                                    borderBottom: '1px solid rgba(17,212,66,0.12)',
-                                                                    background: 'rgba(17,212,66,0.03)',
+                                                                    borderBottom: '1px solid rgba(245,158,11,0.12)',
+                                                                    background: 'rgba(245,158,11,0.03)',
                                                                 }}>
                                                                     <div style={{
                                                                         fontFamily: "'Naskh IndoPak', 'KFGQPC Uthmanic Script HAFS Regular', 'Scheherazade New', 'Amiri', 'Traditional Arabic', serif",
@@ -1072,7 +1072,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                                 <div style={{
                                                                     textAlign: 'center',
                                                                     padding: isMobile ? '14px 12px' : '20px 24px',
-                                                                    borderBottom: '1px solid rgba(17,212,66,0.12)',
+                                                                    borderBottom: '1px solid rgba(245,158,11,0.12)',
                                                                 }}>
                                                                     <span style={{
                                                                         fontFamily: "'Naskh IndoPak', 'KFGQPC Uthmanic Script HAFS Regular', 'Scheherazade New', 'Amiri', 'Traditional Arabic', serif",
@@ -1120,12 +1120,12 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                                                                     padding: '0px 1px',
                                                                                                     borderRadius: 3,
                                                                                                     transition: 'background 0.15s',
-                                                                                                    background: currentVerse === verse.verse_number && hasVisibleText ? 'rgba(17,212,66,0.12)' : 'transparent',
+                                                                                                    background: currentVerse === verse.verse_number && hasVisibleText ? 'rgba(245,158,11,0.12)' : 'transparent',
                                                                                                 }}
                                                                                                 onClick={() => hasVisibleText && playVerse(verse.verse_number)}
                                                                                                 onMouseEnter={(e) => {
                                                                                                     if (!hasVisibleText) return;
-                                                                                                    (e.currentTarget as HTMLElement).style.background = 'rgba(17,212,66,0.15)';
+                                                                                                    (e.currentTarget as HTMLElement).style.background = 'rgba(245,158,11,0.15)';
                                                                                                     let meaningText = word.translation?.trim() || word.transliteration?.trim() || '';
                                                                                                     if (!meaningText && (word as any).wordObj) {
                                                                                                         meaningText = (word as any).wordObj.translation?.text?.trim() ||
@@ -1137,7 +1137,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                                                                     }
                                                                                                 }}
                                                                                                 onMouseLeave={(e) => {
-                                                                                                    (e.currentTarget as HTMLElement).style.background = currentVerse === verse.verse_number && hasVisibleText ? 'rgba(17,212,66,0.12)' : 'transparent';
+                                                                                                    (e.currentTarget as HTMLElement).style.background = currentVerse === verse.verse_number && hasVisibleText ? 'rgba(245,158,11,0.12)' : 'transparent';
                                                                                                     setTooltip(null);
                                                                                                 }}
                                                                                             >
@@ -1162,8 +1162,8 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                             <div style={{
                                                                 textAlign: 'center',
                                                                 padding: isMobile ? '10px 8px' : '14px 16px',
-                                                                borderTop: '1.5px solid rgba(17,212,66,0.15)',
-                                                                background: 'rgba(17,212,66,0.06)',
+                                                                borderTop: '1.5px solid rgba(245,158,11,0.15)',
+                                                                background: 'rgba(245,158,11,0.06)',
                                                                 fontFamily: "'Inter', 'Lexend', sans-serif",
                                                                 fontSize: isMobile ? 11 : 13,
                                                                 color: '#475569',
@@ -1190,13 +1190,13 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                             style={{
                                                                 display: 'flex', alignItems: 'center', gap: 8,
                                                                 padding: isMobile ? '12px 18px' : '14px 24px',
-                                                                background: 'white', border: '1.5px solid rgba(17,212,66,0.2)',
+                                                                background: 'white', border: '1.5px solid rgba(245,158,11,0.2)',
                                                                 borderRadius: 10, color: '#1e293b', fontSize: 14, fontWeight: 600,
                                                                 fontFamily: "'Inter', 'Lexend', sans-serif", cursor: 'pointer',
                                                                 transition: 'all 0.2s', boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
                                                             }}
-                                                            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(17,212,66,0.06)'; e.currentTarget.style.borderColor = 'rgba(17,212,66,0.4)'; }}
-                                                            onMouseLeave={e => { e.currentTarget.style.background = 'white'; e.currentTarget.style.borderColor = 'rgba(17,212,66,0.2)'; }}
+                                                            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(245,158,11,0.06)'; e.currentTarget.style.borderColor = 'rgba(245,158,11,0.4)'; }}
+                                                            onMouseLeave={e => { e.currentTarget.style.background = 'white'; e.currentTarget.style.borderColor = 'rgba(245,158,11,0.2)'; }}
                                                         >
                                                             <ChevronLeft size={18} />
                                                             <span>Previous Page</span>
@@ -1209,10 +1209,10 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                             style={{
                                                                 display: 'flex', alignItems: 'center', gap: 8,
                                                                 padding: isMobile ? '12px 18px' : '14px 24px',
-                                                                background: 'linear-gradient(135deg, #11d442, #10B981)', border: 'none',
+                                                                background: 'linear-gradient(135deg, #f59e0b, #f59e0b)', border: 'none',
                                                                 borderRadius: 10, color: 'white', fontSize: 14, fontWeight: 600,
                                                                 fontFamily: "'Inter', 'Lexend', sans-serif", cursor: 'pointer',
-                                                                transition: 'all 0.2s', boxShadow: '0 2px 8px rgba(17,212,66,0.25)',
+                                                                transition: 'all 0.2s', boxShadow: '0 2px 8px rgba(245,158,11,0.25)',
                                                             }}
                                                             onMouseEnter={e => { e.currentTarget.style.filter = 'brightness(1.1)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
                                                             onMouseLeave={e => { e.currentTarget.style.filter = 'none'; e.currentTarget.style.transform = 'none'; }}
@@ -1226,10 +1226,10 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                             <Link href={`/read-quran/${surahNumber + 1}?mode=reading`} style={{
                                                                 display: 'flex', alignItems: 'center', gap: 8,
                                                                 padding: isMobile ? '12px 18px' : '14px 24px',
-                                                                background: 'linear-gradient(135deg, #11d442, #10B981)', border: 'none',
+                                                                background: 'linear-gradient(135deg, #f59e0b, #f59e0b)', border: 'none',
                                                                 borderRadius: 10, color: 'white', fontSize: 14, fontWeight: 600,
                                                                 fontFamily: "'Inter', 'Lexend', sans-serif", textDecoration: 'none',
-                                                                transition: 'all 0.2s', boxShadow: '0 2px 8px rgba(17,212,66,0.25)',
+                                                                transition: 'all 0.2s', boxShadow: '0 2px 8px rgba(245,158,11,0.25)',
                                                             }}>
                                                                 <span>Next Surah</span>
                                                                 <ChevronRight size={18} />
@@ -1375,7 +1375,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                             <div className="nq-audio-bar-inner">
                                 <div className="nq-reciter-info">
                                     <div className="nq-reciter-avatar">
-                                        <span className="material-symbols-outlined" style={{ fontSize: 22, color: '#11d442' }}>person</span>
+                                        <span className="material-symbols-outlined" style={{ fontSize: 22, color: '#f59e0b' }}>person</span>
                                         <span className="nq-reciter-badge">HQ</span>
                                     </div>
                                     <div style={{ minWidth: 0 }}>
@@ -1542,9 +1542,9 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                 onClick={() => { setShowVersePicker(false); jumpToVerse(v.verse_number); }}
                                                 style={{
                                                     width: '100%', aspectRatio: '1', borderRadius: 10,
-                                                    border: isCurrent ? '2px solid #11d442' : isBookmarked ? '2px solid #f59e0b' : '1.5px solid #e2e8f0',
-                                                    background: isCurrent ? 'rgba(17,212,66,0.1)' : isBookmarked ? 'rgba(245,158,11,0.06)' : '#f8fafc',
-                                                    color: isCurrent ? '#11d442' : isBookmarked ? '#d97706' : '#475569',
+                                                    border: isCurrent ? '2px solid #f59e0b' : isBookmarked ? '2px solid #f59e0b' : '1.5px solid #e2e8f0',
+                                                    background: isCurrent ? 'rgba(245,158,11,0.1)' : isBookmarked ? 'rgba(245,158,11,0.06)' : '#f8fafc',
+                                                    color: isCurrent ? '#f59e0b' : isBookmarked ? '#d97706' : '#475569',
                                                     fontSize: 13, fontWeight: 700, cursor: 'pointer',
                                                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                                                     fontFamily: 'Lexend, sans-serif',
@@ -1588,9 +1588,9 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                             onClick={() => { setShowVersePicker(false); jumpToVerse(v.verse_number); }}
                                             style={{
                                                 width: '100%', aspectRatio: '1', borderRadius: 8,
-                                                border: isCurrent ? '2px solid #11d442' : isBookmarked ? '2px solid #f59e0b' : '1px solid #e2e8f0',
-                                                background: isCurrent ? 'rgba(17,212,66,0.1)' : isBookmarked ? 'rgba(245,158,11,0.06)' : '#f8fafc',
-                                                color: isCurrent ? '#11d442' : isBookmarked ? '#d97706' : '#475569',
+                                                border: isCurrent ? '2px solid #f59e0b' : isBookmarked ? '2px solid #f59e0b' : '1px solid #e2e8f0',
+                                                background: isCurrent ? 'rgba(245,158,11,0.1)' : isBookmarked ? 'rgba(245,158,11,0.06)' : '#f8fafc',
+                                                color: isCurrent ? '#f59e0b' : isBookmarked ? '#d97706' : '#475569',
                                                 fontSize: 11, fontWeight: 700, cursor: 'pointer',
                                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                                                 fontFamily: 'Lexend, sans-serif', transition: 'all 0.15s',
@@ -1644,17 +1644,17 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                             style={{
                                                 display: 'flex', alignItems: 'center', gap: 12,
                                                 padding: '11px 18px', textDecoration: 'none',
-                                                background: s.number === surahNumber ? 'rgba(17,212,66,0.08)' : 'transparent',
+                                                background: s.number === surahNumber ? 'rgba(245,158,11,0.08)' : 'transparent',
                                                 borderBottom: '1px solid #f8fafc',
-                                                color: s.number === surahNumber ? '#11d442' : '#1e293b',
+                                                color: s.number === surahNumber ? '#f59e0b' : '#1e293b',
                                             }}
                                         >
                                             <span style={{
                                                 width: 32, height: 32, borderRadius: '50%', flexShrink: 0,
-                                                background: s.number === surahNumber ? 'rgba(17,212,66,0.15)' : '#f1f5f9',
+                                                background: s.number === surahNumber ? 'rgba(245,158,11,0.15)' : '#f1f5f9',
                                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                                                 fontSize: 12, fontWeight: 700,
-                                                color: s.number === surahNumber ? '#11d442' : '#64748b',
+                                                color: s.number === surahNumber ? '#f59e0b' : '#64748b',
                                             }}>{s.number}</span>
                                             <span style={{ flex: 1, minWidth: 0 }}>
                                                 <span style={{ display: 'block', fontSize: 14, fontWeight: 600 }}>{s.name}</span>
@@ -1695,17 +1695,17 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                     style={{
                                         display: 'flex', alignItems: 'center', gap: 10,
                                         width: '100%', padding: '10px 14px', textDecoration: 'none',
-                                        background: s.number === surahNumber ? 'rgba(17,212,66,0.08)' : 'transparent',
+                                        background: s.number === surahNumber ? 'rgba(245,158,11,0.08)' : 'transparent',
                                         cursor: 'pointer', textAlign: 'left', borderBottom: '1px solid #f8fafc',
-                                        color: s.number === surahNumber ? '#11d442' : '#1e293b',
+                                        color: s.number === surahNumber ? '#f59e0b' : '#1e293b',
                                     }}
                                 >
                                     <span style={{
                                         width: 28, height: 28, borderRadius: '50%',
-                                        background: s.number === surahNumber ? 'rgba(17,212,66,0.15)' : '#f1f5f9',
+                                        background: s.number === surahNumber ? 'rgba(245,158,11,0.15)' : '#f1f5f9',
                                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                                         fontSize: 11, fontWeight: 700, flexShrink: 0,
-                                        color: s.number === surahNumber ? '#11d442' : '#64748b',
+                                        color: s.number === surahNumber ? '#f59e0b' : '#64748b',
                                     }}>{s.number}</span>
                                     <span style={{ flex: 1, minWidth: 0 }}>
                                         <span style={{ display: 'block', fontSize: 13, fontWeight: 600 }}>{s.name}</span>

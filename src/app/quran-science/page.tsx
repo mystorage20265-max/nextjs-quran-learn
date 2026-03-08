@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -46,7 +46,7 @@ export default function QuranSciencePage() {
     return () => obs.disconnect();
   }, []);
 
-  const G = '#11d442';
+  const G = '#f59e0b';
   const C = {
     bg: dark ? '#0d1b12' : '#ffffff',
     card: dark ? '#111f16' : '#ffffff',
@@ -55,9 +55,9 @@ export default function QuranSciencePage() {
     muted: '#94a3b8',
     sub: dark ? '#64748b' : '#64748b',
     green: G,
-    greenSoft: 'rgba(17,212,66,0.08)',
-    greenBorder: 'rgba(17,212,66,0.18)',
-    greenGlow: '0 4px 14px rgba(17,212,66,0.3)',
+    greenSoft: 'rgba(245,158,11,0.08)',
+    greenBorder: 'rgba(245,158,11,0.18)',
+    greenGlow: '0 4px 14px rgba(245,158,11,0.3)',
     shadow: '0 1px 4px rgba(0,0,0,0.06)',
     font: "'Figtree','Lexend',sans-serif",
     surface: dark ? '#0f2317' : '#f8fafc',
@@ -66,8 +66,8 @@ export default function QuranSciencePage() {
   return (
     <div style={{ minHeight: '100vh', background: C.bg, fontFamily: C.font }}>
       <style>{`
-        .qs-dot{background-image:radial-gradient(circle at 2px 2px,rgba(17,212,66,0.06) 1px,transparent 0);background-size:24px 24px}
-        .qs-card{transition:transform 0.25s ease,box-shadow 0.25s ease}.qs-card:hover{transform:translateY(-5px);box-shadow:0 12px 36px rgba(17,212,66,0.12) !important}
+        .qs-dot{background-image:radial-gradient(circle at 2px 2px,rgba(245,158,11,0.06) 1px,transparent 0);background-size:24px 24px}
+        .qs-card{transition:transform 0.25s ease,box-shadow 0.25s ease}.qs-card:hover{transform:translateY(-5px);box-shadow:0 12px 36px rgba(245,158,11,0.12) !important}
         .qs-icon-float{animation:qs-float 3s ease-in-out infinite}.qs-icon-float-d{animation:qs-float 3s ease-in-out 0.3s infinite}
         @keyframes qs-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
         .font-arabic{font-family:'Naskh IndoPak',serif}
@@ -86,7 +86,7 @@ export default function QuranSciencePage() {
           }}
         >
           {/* Top accent */}
-          <div style={{ height: 3, background: `linear-gradient(90deg, transparent, ${G}, #059669, transparent)` }} />
+          <div style={{ height: 3, background: `linear-gradient(90deg, transparent, ${G}, #d97706, transparent)` }} />
 
           <div style={{ padding: 'clamp(24px,5vw,40px)' }}>
             {/* Eyebrow badge */}
@@ -144,7 +144,7 @@ export default function QuranSciencePage() {
               <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <div className="qs-icon-float" style={{
                   width: 120, height: 120, borderRadius: 24,
-                  background: `linear-gradient(135deg, rgba(17,212,66,0.12), rgba(5,150,105,0.08))`,
+                  background: `linear-gradient(135deg, rgba(245,158,11,0.12), rgba(245,158,11,0.08))`,
                   border: `1px solid ${C.greenBorder}`,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                 }}>
@@ -206,7 +206,7 @@ export default function QuranSciencePage() {
                   }}
                 >
                   {/* Top color bar */}
-                  <div style={{ height: 3, background: t.ready ? `linear-gradient(90deg, ${G}, #059669)` : (dark ? '#1e3a2a' : '#e2e8f0') }} />
+                  <div style={{ height: 3, background: t.ready ? `linear-gradient(90deg, ${G}, #d97706)` : (dark ? '#1e3a2a' : '#e2e8f0') }} />
 
                   <div style={{ padding: '20px 20px 18px' }}>
                     <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14 }}>
@@ -254,7 +254,7 @@ export default function QuranSciencePage() {
           {/* Header bar */}
           <div style={{
             padding: '14px 20px', display: 'flex', alignItems: 'center', gap: 10,
-            background: dark ? 'rgba(17,212,66,0.03)' : 'rgba(17,212,66,0.02)',
+            background: dark ? 'rgba(245,158,11,0.03)' : 'rgba(245,158,11,0.02)',
             borderBottom: `1px solid ${C.cardBorder}`,
           }}>
             <div style={{ width: 32, height: 32, borderRadius: 8, background: C.greenSoft, border: `1px solid ${C.greenBorder}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -281,7 +281,7 @@ export default function QuranSciencePage() {
                 "Then We made the sperm-drop into a clinging clot, and We made the clot into a lump of flesh, and We made from the lump, bones, and We covered the bones with flesh…"
               </p>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <div style={{ height: 1, width: 24, background: `rgba(17,212,66,0.3)` }} />
+                <div style={{ height: 1, width: 24, background: `rgba(245,158,11,0.3)` }} />
                 <span style={{ fontSize: 11, fontWeight: 700, color: G }}>Surah Al-Mu'minun 23:14</span>
               </div>
             </div>
@@ -352,7 +352,7 @@ export default function QuranSciencePage() {
             initial={{ opacity: 0, x: 16 }} whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }} transition={{ duration: 0.45 }}
             style={{
-              background: `linear-gradient(135deg, ${G}, #059669, #047857)`,
+              background: `linear-gradient(135deg, ${G}, #d97706, #b45309)`,
               borderRadius: 16, padding: '22px 20px', position: 'relative', overflow: 'hidden',
             }}
           >
@@ -376,7 +376,7 @@ export default function QuranSciencePage() {
                   }}
                 />
                 <button style={{
-                  background: '#fff', color: '#047857', border: 'none', borderRadius: 10,
+                  background: '#fff', color: '#b45309', border: 'none', borderRadius: 10,
                   padding: '10px 20px', fontWeight: 700, fontSize: 12, letterSpacing: '0.06em',
                   textTransform: 'uppercase', cursor: 'pointer',
                 }}>
