@@ -8,7 +8,6 @@ const DirectNav = () => {
     { title: 'Read Quran', href: '/read-quran', icon: '📖' },
     { title: 'Learn Tajweed', href: '/tajweed', icon: '🎯' },
     { title: 'Audio Quran', href: '/audio-quran', icon: '🔊' },
-    { title: 'Prayer Times', href: '/prayer-time', icon: '🕌' }
   ];
 
   return (

@@ -14,7 +14,6 @@ const NAV_LINKS = [
     { icon: 'radio', label: 'Radio', href: '/radio' },
     { icon: 'music_note', label: 'Audio', href: '/audio-quran' },
     null, // divider
-    { icon: 'calculate', label: 'Prayer Times', href: '/prayer-times' },
     { icon: 'star', label: 'Duas', href: '/dua' },
     { icon: 'science', label: 'Quran & Science', href: '/quran-science' },
     null, // divider
@@ -27,7 +26,7 @@ const MOBILE_TABS = [
     { icon: 'menu_book', label: 'Quran', href: '/read-quran/1' },
     { icon: 'ads_click', label: 'Memorize', href: '/memorize-quran' },
     { icon: 'radio', label: 'Radio', href: '/radio' },
-    { icon: 'calculate', label: 'Prayer', href: '/prayer-times' },
+    { icon: 'star', label: 'Duas', href: '/dua' },
 ];
 
 /** Human-readable relative time label */

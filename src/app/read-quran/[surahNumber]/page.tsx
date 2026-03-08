@@ -796,10 +796,6 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                 <span className="nq-nav-label">Memorization</span>
                             </Link>
                             <div style={{ margin: '8px 0', borderTop: '1px solid #f1f5f9' }} />
-                            <Link href="/prayer-times" className="nq-nav-link">
-                                <span className="material-symbols-outlined" style={{ fontSize: 22, flexShrink: 0 }}>calculate</span>
-                                <span className="nq-nav-label">Prayer Times</span>
-                            </Link>
                             <button onClick={() => setShowSettings(true)} className="nq-nav-link" style={{ border: 'none', background: 'transparent', cursor: 'pointer', textAlign: 'left' }}>
                                 <span className="material-symbols-outlined" style={{ fontSize: 22, flexShrink: 0 }}>settings</span>
                                 <span className="nq-nav-label">Settings</span>

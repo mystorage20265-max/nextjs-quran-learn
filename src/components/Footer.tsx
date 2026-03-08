@@ -30,7 +30,6 @@ const Footer: React.FC = () => {
     {
       heading: 'Tools',
       links: [
-        { name: 'Prayer Times', href: '/prayer-time' },
         { name: 'Manzil', href: '/manzil/1' },
         { name: 'Coming Soon', href: '/coming-soon' },
       ],
