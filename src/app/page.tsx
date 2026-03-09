@@ -195,6 +195,15 @@ export default function HomePage() {
   const [sessionTime, setSessionTime] = useState(0); // seconds this session
   const [totalTime, setTotalTime] = useState(0);     // cumulative seconds all sessions
 
+  // ── Prefetch Dua data after 3 s so the /dua page loads instantly ──
+  useEffect(() => {
+    const t = setTimeout(() => {
+      const slugs = ['categories','rabbana','morning-evening','daily','salah','protection','forgiveness','family','travel','health','success','anxiety','ramadan','quran'];
+      slugs.forEach(s => fetch(`/data/duas/${s}.json`, { priority: 'low' } as RequestInit).catch(() => {}));
+    }, 3000);
+    return () => clearTimeout(t);
+  }, []);
+
   // ── Verse Search ──
   const [verseQuery, setVerseQuery] = useState('');
   const [verseResults, setVerseResults] = useState<{ number: number; text: string; surah: { number: number; name: string; englishName: string }; numberInSurah: number }[]>([]);

@@ -104,18 +104,19 @@ export default function DuaClient() {
       .catch(() => setLoading(false));
   }, []);
 
-  /* Fetch ALL duas on first load */
+  /* Fetch ALL duas on first load — parallel */
   useEffect(() => {
     if (categories.length === 0) return;
     const fetchAll = async () => {
-      const all: Dua[] = [];
-      for (const cat of categories) {
-        try {
-          const res = await fetch(`/data/duas/${cat.slug}.json`);
-          const data = await res.json();
-          if (data.duas) all.push(...data.duas);
-        } catch { /* skip */ }
-      }
+      const results = await Promise.all(
+        categories.map(cat =>
+          fetch(`/data/duas/${cat.slug}.json`)
+            .then(r => r.json())
+            .then(d => (d.duas as Dua[]) || [])
+            .catch(() => [] as Dua[])
+        )
+      );
+      const all = results.flat();
       setAllDuas(all);
       setDuas(all);
     };
