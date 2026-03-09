@@ -672,20 +672,18 @@
 
 /* Hadith Text Body */
 .hadees-card-body-wrapper {
-  padding: 20px 24px;
-  background: var(--bg-surface);
-  border-radius: 16px;
-  border: 1px solid var(--border-subtle);
-  margin-bottom: 16px;
+  padding: 16px 0;
+  margin-bottom: 4px;
   position: relative;
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .hadees-card-quote-icon {
   position: absolute;
-  right: 16px;
-  top: 12px;
-  font-size: 48px;
-  opacity: 0.06;
+  right: 0;
+  top: 8px;
+  font-size: 40px;
+  opacity: 0.05;
   line-height: 1;
   pointer-events: none;
 }
@@ -698,15 +696,6 @@
   font-style: italic;
   position: relative;
   z-index: 1;
-}
-
-/* Collapsed state: show only 4 lines */
-.hadees-card-text.collapsed {
-  display: -webkit-box;
-  -webkit-line-clamp: 4;
-  line-clamp: 4;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 
 /* Card Footer */
@@ -864,17 +853,17 @@
 
 /* ── Arabic text block ── */
 .hadees-card-arabic-block {
-  padding: 16px 20px;
+  padding: 14px 18px 10px;
   background: var(--bg-elevated);
   border-radius: 12px;
   border: 1px solid var(--border-subtle);
-  margin: 12px 0 14px;
+  margin: 14px 0 0;
   direction: rtl;
   text-align: right;
   position: relative;
   overflow: hidden;
 }
- 
+
 .hadees-card-arabic-text {
   font-size: clamp(1.1rem, 2.5vw, 1.4rem);
   line-height: 2;
@@ -882,27 +871,54 @@
   margin: 0;
 }
 
-.hadees-card-arabic-text.arabic-collapsed {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+/* Arabic collapse only on mobile */
+@media (max-width: 768px) {
+  .hadees-card-arabic-text.arabic-collapsed {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
 }
 
 .hadees-arabic-fade {
   position: absolute;
-  bottom: 0;
+  bottom: 32px;
   left: 0;
   right: 0;
-  height: 56px;
+  height: 48px;
   background: linear-gradient(to bottom, transparent, var(--bg-elevated));
   pointer-events: none;
   border-radius: 0 0 12px 12px;
-  letter-spacing: 0.08em;
-  padding: 2px 8px;
-  border-radius: 4px;
-  white-space: nowrap;
+}
+
+/* Read more button inside arabic block — mobile only */
+.hadees-arabic-read-more {
+  display: none;
+  align-items: center;
+  gap: 4px;
+  margin-top: 6px;
+  padding: 4px 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand-primary, #f59e0b);
+  font-family: inherit;
+  direction: ltr;
+  transition: opacity 0.15s;
+}
+
+.hadees-arabic-read-more:hover {
+  opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+  .hadees-arabic-read-more {
+    display: inline-flex;
+  }
 }
 
 .hadees-grade-badge.grade-sahih {

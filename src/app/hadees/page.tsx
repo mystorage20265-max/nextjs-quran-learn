@@ -50,7 +50,7 @@ export default function HadeesPage() {
   const [error, setError]           = useState('');
   const [searchInput, setSearchInput] = useState('');
   const [search, setSearch]           = useState('');
-  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [expandedArabicIds, setExpandedArabicIds] = useState<Set<string>>(new Set());
   const [bookmarks, setBookmarks] = useState<Set<string>>(new Set());
   const [copied, setCopied] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -127,6 +127,9 @@ export default function HadeesPage() {
   /* Actions */
   const toggleBookmark = (key: string) =>
     setBookmarks(prev => { const s = new Set(prev); s.has(key) ? s.delete(key) : s.add(key); return s; });
+
+  const toggleArabicExpand = (key: string) =>
+    setExpandedArabicIds(prev => { const s = new Set(prev); s.has(key) ? s.delete(key) : s.add(key); return s; });
 
   const copyHadith = (key: string, hadith: Hadith) => {
     const text = `Hadith #${hadith.number} — ${activeCollection.name}\n\n${hadith.arabic ? hadith.arabic + '\n\n' : ''}${hadith.english}`;
@@ -333,17 +336,15 @@ export default function HadeesPage() {
             <div className="hadees-list">
               {hadiths.map((hadith, idx) => {
                 const key = `${activeCollection.id}-${hadith.number}`;
-                const isExpanded = expandedId === hadith.number;
                 const isBookmarked = bookmarks.has(key);
                 const isCopied = copied === key;
-                const isLong = hadith.english.length > 380;
                 const isArabicLong = !!hadith.arabic && hadith.arabic.length > 100;
-                const showExpand = isLong || isArabicLong;
+                const isArabicExpanded = expandedArabicIds.has(key);
 
                 return (
                   <article
                     key={key}
-                    className={`hadees-card ${isExpanded ? 'expanded' : ''}`}
+                    className="hadees-card"
                     style={{ animationDelay: `${Math.min(idx * 40, 300)}ms` }}
                   >
                     <div className="hadees-card-accent" style={{ background: activeCollection.color }} />
@@ -381,32 +382,36 @@ export default function HadeesPage() {
                       </div>
                     </div>
 
-                    {hadith.arabic && (
-                      <div className="hadees-card-arabic-block">
-                        <p className={`hadees-card-arabic-text ${isArabicLong && !isExpanded ? 'arabic-collapsed' : ''}`} style={{ fontFamily: ARABIC_FONT }}>{hadith.arabic}</p>
-                        {isArabicLong && !isExpanded && <div className="hadees-arabic-fade" />}
-                      </div>
-                    )}
-
+                    {/* English — always full */}
                     <div className="hadees-card-body-wrapper">
                       <span className="material-symbols-outlined hadees-card-quote-icon">format_quote</span>
-                      <p className={`hadees-card-text ${isLong && !isExpanded ? 'collapsed' : ''}`}>
+                      <p className="hadees-card-text">
                         &ldquo;{hadith.english}&rdquo;
                       </p>
                     </div>
 
+                    {/* Arabic — collapses to 3 lines on mobile */}
+                    {hadith.arabic && (
+                      <div className="hadees-card-arabic-block">
+                        <p
+                          className={`hadees-card-arabic-text${isArabicLong && !isArabicExpanded ? ' arabic-collapsed' : ''}`}
+                          style={{ fontFamily: ARABIC_FONT }}
+                        >{hadith.arabic}</p>
+                        {isArabicLong && !isArabicExpanded && <div className="hadees-arabic-fade" />}
+                        {isArabicLong && (
+                          <button className="hadees-arabic-read-more" onClick={() => toggleArabicExpand(key)}>
+                            {isArabicExpanded ? 'Show less' : 'Read more'}
+                            <span className="material-symbols-outlined" style={{ fontSize: 14 }}>{isArabicExpanded ? 'expand_less' : 'expand_more'}</span>
+                          </button>
+                        )}
+                      </div>
+                    )}
+
                     <div className="hadees-card-footer">
-                      {showExpand ? (
-                        <button className="hadees-expand-btn" onClick={() => setExpandedId(isExpanded ? null : hadith.number)}>
-                          <span className="material-symbols-outlined" style={{ fontSize: 18 }}>{isExpanded ? 'expand_less' : 'expand_more'}</span>
-                          {isExpanded ? 'Show Less' : 'Read More'}
-                        </button>
-                      ) : (
-                        <span style={{ fontSize: 12, color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: 6 }}>
-                          <span className="material-symbols-outlined" style={{ fontSize: 14 }}>auto_stories</span>
-                          {activeCollection.name}
-                        </span>
-                      )}
+                      <span style={{ fontSize: 12, color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <span className="material-symbols-outlined" style={{ fontSize: 14 }}>auto_stories</span>
+                        {activeCollection.name}
+                      </span>
                       <div className="hadees-card-actions">
                         <button className="hadees-icon-btn" onClick={() => copyHadith(key, hadith)} title="Copy">
                           <span className="material-symbols-outlined" style={{ fontSize: 18, color: isCopied ? 'var(--brand-primary)' : undefined }}>
