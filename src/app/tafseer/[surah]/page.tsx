@@ -141,21 +141,31 @@ export default function TafseerSurahPage({ params }: PageProps) {
     const [searchQuery, setSearchQuery] = useState('');
 
     // Fetch verses (Arabic + translation)
+    // Strip the Bismillah prefix from verse 1 text for surahs that have it shown separately
+    const stripBismillah = (text: string): string => {
+        const bare = (s: string) => s.replace(/[\u064B-\u065F\u0610-\u061A\u06D6-\u06FF]/g, '');
+        if (/^بسم\s+[اٱ]لله\s+[اٱ]لرحمن\s+[اٱ]لرحيم/.test(bare(text.trimStart()))) {
+            return text.split(/\s+/).slice(4).join(' ').trim();
+        }
+        return text;
+    };
+
     useEffect(() => {
         if (!surahNum || surahNum < 1 || surahNum > 114) return;
         setLoading(true);
         setVerses([]);
         setModalVerseNum(null);
 
-        fetch(`https://api.alquran.cloud/v1/surah/${surahNum}/editions/quran-simple-enhanced,en.sahih`)
+        fetch(`https://api.alquran.cloud/v1/surah/${surahNum}/editions/quran-uthmani,en.sahih`)
             .then(r => r.json())
             .then(json => {
                 if (json.code !== 200) throw new Error('API error');
                 const ar = json.data[0].ayahs;
                 const en = json.data[1].ayahs;
+                const hasBismillah = surahNum !== 1 && surahNum !== 9;
                 setVerses(ar.map((a: any, i: number) => ({
                     num: a.numberInSurah,
-                    arabic: a.text,
+                    arabic: hasBismillah && a.numberInSurah === 1 ? stripBismillah(a.text) : a.text,
                     translation: en[i]?.text || '',
                     key: `${surahNum}:${a.numberInSurah}`,
                 })));
