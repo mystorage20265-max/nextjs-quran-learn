@@ -122,7 +122,7 @@ const SURAHS = [
 
 const FEATURES = [
   { icon: 'menu_book', label: 'Read Quran', sub: '114 Surahs', href: '/read-quran/1', color: '#f59e0b' },
-  { icon: 'auto_stories', label: 'Turn the pages of Quran', sub: '604 Pages', href: '/quran-pages', color: '#10b981' },
+  { icon: 'auto_stories', label: 'Turn the pages of Quran', sub: '28 Pages', href: '/quran-pages', color: '#10b981' },
   { icon: 'explore', label: 'Navigate', sub: 'Surah · Juz · Page', href: '#navigate', color: '#0ea5e9' },
   { icon: 'ads_click', label: 'Memorize', sub: 'Hifz Program', href: '/memorize-quran', color: '#a855f7' },
   { icon: 'music_note', label: 'Audio Quran', sub: 'Listen & Learn', href: '/audio-quran', color: '#f59e0b' },

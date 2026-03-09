@@ -20,11 +20,10 @@ import {
 import './page-reader.css';
 
 // ── Constants ────────────────────────────────────────────────────
-const TOTAL_PAGES = 604;
-const CDN_BASE = 'https://cdn.islamic.network/quran/images/high-resolution';
+const TOTAL_PAGES = 28;
 
 function getPageImageUrl(page: number): string {
-  return `${CDN_BASE}/${page}.png`;
+  return `/api/quran-page/${page}`;
 }
 
 // ── Web Audio paper-rustle sound ─────────────────────────────────
