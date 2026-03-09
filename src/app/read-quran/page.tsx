@@ -179,6 +179,49 @@ export default function ReadQuranPage() {
                     </div>
                 )}
 
+                {/* Mushaf Page Reader Banner */}
+                <Link
+                    href="/quran-pages"
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 16,
+                        padding: '18px 24px',
+                        background: 'linear-gradient(135deg, var(--reader-primary-soft) 0%, var(--reader-gold-soft) 100%)',
+                        border: '1px solid var(--reader-primary)',
+                        borderRadius: 16,
+                        textDecoration: 'none',
+                        marginBottom: 24,
+                        transition: 'all 0.25s ease',
+                    }}
+                    className="hover-lift"
+                >
+                    <div style={{
+                        width: 48,
+                        height: 48,
+                        background: 'var(--reader-primary)',
+                        borderRadius: 12,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0,
+                    }}>
+                        <BookOpen size={22} color="#fff" />
+                    </div>
+                    <div style={{ flex: 1 }}>
+                        <div style={{ fontSize: 13, color: 'var(--reader-text-muted)', marginBottom: 3 }}>
+                            NEW — Distraction-free reading
+                        </div>
+                        <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--reader-text)', marginBottom: 3 }}>
+                            Mushaf Page Reader
+                        </div>
+                        <div style={{ fontSize: 13, color: 'var(--reader-text-secondary)' }}>
+                            Flip through 604 high-resolution Quran pages with page-turn animations
+                        </div>
+                    </div>
+                    <ArrowRight size={20} color="var(--reader-primary)" style={{ flexShrink: 0 }} />
+                </Link>
+
                 {/* Search */}
                 <div style={{
                     display: 'flex',

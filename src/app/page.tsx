@@ -122,6 +122,7 @@ const SURAHS = [
 
 const FEATURES = [
   { icon: 'menu_book', label: 'Read Quran', sub: '114 Surahs', href: '/read-quran/1', color: '#f59e0b' },
+  { icon: 'auto_stories', label: 'Turn the pages of Quran', sub: '604 Pages', href: '/quran-pages', color: '#10b981' },
   { icon: 'explore', label: 'Navigate', sub: 'Surah · Juz · Page', href: '#navigate', color: '#0ea5e9' },
   { icon: 'ads_click', label: 'Memorize', sub: 'Hifz Program', href: '/memorize-quran', color: '#a855f7' },
   { icon: 'music_note', label: 'Audio Quran', sub: 'Listen & Learn', href: '/audio-quran', color: '#f59e0b' },
@@ -198,8 +199,8 @@ export default function HomePage() {
   // ── Prefetch Dua data after 3 s so the /dua page loads instantly ──
   useEffect(() => {
     const t = setTimeout(() => {
-      const slugs = ['categories','rabbana','morning-evening','daily','salah','protection','forgiveness','family','travel','health','success','anxiety','ramadan','quran'];
-      slugs.forEach(s => fetch(`/data/duas/${s}.json`, { priority: 'low' } as RequestInit).catch(() => {}));
+      const slugs = ['categories', 'rabbana', 'morning-evening', 'daily', 'salah', 'protection', 'forgiveness', 'family', 'travel', 'health', 'success', 'anxiety', 'ramadan', 'quran'];
+      slugs.forEach(s => fetch(`/data/duas/${s}.json`, { priority: 'low' } as RequestInit).catch(() => { }));
     }, 3000);
     return () => clearTimeout(t);
   }, []);
@@ -719,9 +720,9 @@ export default function HomePage() {
                   <span className="material-symbols-outlined" style={{ position: 'absolute', top: -8, right: -14, fontSize: 90, color: 'white', opacity: 0.08, lineHeight: 1 }}>star_half</span>
                   <div style={{ position: 'relative', zIndex: 1 }}>
                     <span style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.18em', color: 'rgba(255,255,255,0.8)' }}>Ayah of the Day</span>
-                      <p className="font-arabic" dir="rtl" style={{ margin: '8px 0 6px', fontSize: 16, lineHeight: 1.9, textAlign: 'right', color: 'white', fontWeight: 700 }}>{todayAyah.ar}</p>
-                      <p style={{ margin: '0 0 4px', fontSize: 11, fontStyle: 'italic', color: 'rgba(255,255,255,0.88)', lineHeight: 1.5 }}>{todayAyah.en}</p>
-                      <p style={{ margin: 0, fontSize: 10, fontWeight: 700, color: 'white' }}>{todayAyah.ref} →</p>
+                    <p className="font-arabic" dir="rtl" style={{ margin: '8px 0 6px', fontSize: 16, lineHeight: 1.9, textAlign: 'right', color: 'white', fontWeight: 700 }}>{todayAyah.ar}</p>
+                    <p style={{ margin: '0 0 4px', fontSize: 11, fontStyle: 'italic', color: 'rgba(255,255,255,0.88)', lineHeight: 1.5 }}>{todayAyah.en}</p>
+                    <p style={{ margin: 0, fontSize: 10, fontWeight: 700, color: 'white' }}>{todayAyah.ref} →</p>
                   </div>
                 </div>
               </Link>
