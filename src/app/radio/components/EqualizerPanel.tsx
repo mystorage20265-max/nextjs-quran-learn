@@ -82,15 +82,15 @@ export default function EqualizerPanel({
             <div
                 onClick={onClose}
                 style={{
-                    position: 'fixed', inset: 0, zIndex: 1000,
+                    position: 'fixed', inset: 0, zIndex: 10050,
                     background: 'rgba(0,0,0,0.65)',
                     backdropFilter: 'blur(6px)',
                 }}
             />
 
             {/* Panel */}
-            <div style={{
-                position: 'fixed', zIndex: 1001,
+            <div className="eq-panel" style={{
+                position: 'fixed', zIndex: 10051,
                 top: '50%', left: '50%',
                 transform: 'translate(-50%, -50%)',
                 width: 'min(96vw, 680px)',
@@ -103,7 +103,7 @@ export default function EqualizerPanel({
             }}>
 
                 {/* Header */}
-                <div style={{
+                <div className="eq-panel-header" style={{
                     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                     padding: '20px 24px 16px',
                     borderBottom: '1px solid rgba(245,158,11,0.12)',
@@ -145,7 +145,7 @@ export default function EqualizerPanel({
                 </div>
 
                 {/* Body */}
-                <div style={{ padding: '20px 24px 24px', display: 'flex', flexDirection: 'column', gap: 20 }}>
+                <div className="eq-panel-body" style={{ padding: '20px 24px 24px', display: 'flex', flexDirection: 'column', gap: 20 }}>
 
                     {/* Presets */}
                     <div>
@@ -228,11 +228,11 @@ export default function EqualizerPanel({
                             <span style={{ fontSize: 9, color: 'rgba(245,158,11,0.6)', fontWeight: 700 }}>−12dB</span>
                         </div>
 
-                        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 6 }}>
+                        <div className="eq-sliders-row" style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 6 }}>
                             {localBands.map((value, index) => (
-                                <div key={index} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, flex: 1 }}>
+                                <div key={index} className="eq-slider-col" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, flex: 1 }}>
                                     {/* Slider wrapper keeps vertical range consistent */}
-                                    <div style={{ position: 'relative', height: 120, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <div className="eq-slider-wrap" style={{ position: 'relative', height: 120, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                         <input
                                             type="range"
                                             min="-12"
@@ -244,7 +244,7 @@ export default function EqualizerPanel({
                                         />
                                     </div>
                                     {/* Value pill */}
-                                    <div style={{
+                                    <div className="eq-value-pill" style={{
                                         fontSize: 10, fontWeight: 700, minWidth: 28, textAlign: 'center',
                                         padding: '2px 5px', borderRadius: 6,
                                         background: value !== 0 ? 'rgba(245,158,11,0.15)' : 'rgba(255,255,255,0.05)',
@@ -264,7 +264,7 @@ export default function EqualizerPanel({
                     </div>
 
                     {/* Footer actions */}
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
+                    <div className="eq-footer" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
                         <p style={{ margin: 0, fontSize: 11, color: 'rgba(255,255,255,0.3)', flex: 1 }}>
                             Drag sliders to sculpt the sound.
                         </p>
@@ -344,8 +344,25 @@ export default function EqualizerPanel({
                     box-shadow: 0 2px 10px rgba(245,158,11,0.6);
                     cursor: grab;
                 }
-                @media (max-width: 480px) {
-                    .eq-slider { height: 80px; }
+                @media (max-width: 520px) {
+                    .eq-panel { border-radius: 20px !important; }
+                    .eq-panel-header { padding: 14px 16px 12px !important; border-radius: 20px 20px 0 0 !important; }
+                    .eq-panel-body { padding: 14px 12px 16px !important; gap: 14px !important; }
+                    .eq-sliders-row { gap: 2px !important; }
+                    .eq-slider-col { gap: 5px !important; }
+                    .eq-slider-wrap { height: 80px !important; }
+                    .eq-slider { height: 70px; }
+                    .eq-value-pill { min-width: 20px !important; font-size: 9px !important; padding: 1px 3px !important; }
+                    .eq-footer { gap: 8px !important; }
+                    .eq-footer p { font-size: 10px !important; }
+                }
+                @media (max-width: 380px) {
+                    .eq-panel-header { padding: 12px 12px 10px !important; }
+                    .eq-panel-body { padding: 10px 8px 14px !important; }
+                    .eq-sliders-row { gap: 1px !important; }
+                    .eq-slider { height: 60px; }
+                    .eq-slider-wrap { height: 68px !important; }
+                    .eq-value-pill { min-width: 16px !important; font-size: 8px !important; }
                 }
             `}</style>
         </>
