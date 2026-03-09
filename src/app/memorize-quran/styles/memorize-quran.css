@@ -288,24 +288,27 @@
 .memorize-player-view {
     display: flex;
     flex-direction: column;
-    margin-top: -12px;
+    padding-top: 70px; /* space for fixed header */
 }
 
 .mq-player-header {
-    position: sticky;
-    top: 80px;
-    z-index: 100;
-    background: rgba(255, 255, 255, 0.92);
+    position: fixed;
+    top: 64px; /* directly below fixed navbar */
+    left: 0;
+    right: 0;
+    z-index: 500;
+    background: var(--mq-card-bg);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border: 1.5px solid var(--mq-border);
-    border-radius: 100px;
-    padding: 10px 20px;
+    border: none;
+    border-bottom: 1.5px solid var(--mq-border);
+    border-radius: 0;
+    padding: 10px 24px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-    margin-bottom: 20px;
+    margin-bottom: 0;
     animation: slideDown 0.4s ease;
 }
 
