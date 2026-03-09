@@ -1093,9 +1093,11 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                                 }}>
                                                                     {group.verses.map((verse) => {
                                                                         const rawText = verse.text_indopak || verse.text_uthmani || '';
-                                                                        const displayText = verse.verse_number === 1 && chapter.bismillah_pre && surahNumber !== 1
-                                                                            ? removeBismillah(rawText)
-                                                                            : rawText;
+                                                                        const displayText = cleanIndopakText(
+                                                                            verse.verse_number === 1 && chapter.bismillah_pre && surahNumber !== 1
+                                                                                ? removeBismillah(rawText)
+                                                                                : rawText
+                                                                        );
                                                                         if (!displayText.trim()) return null;
                                                                         const isActive = currentVerse === verse.verse_number;
                                                                         return (
