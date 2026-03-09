@@ -24,8 +24,8 @@
   --nr-text-muted:     #94a3b8;
 
   display: flex;
-  height: 100dvh;
-  overflow: hidden;
+  min-height: 100dvh;
+  overflow-x: hidden;
   background: var(--nr-bg);
   color: var(--nr-text);
   font-family: 'Inter', sans-serif;
@@ -201,8 +201,7 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
-  height: 100%;
-  overflow: hidden;
+  overflow: visible;
 }
 
 /* ── Header ── */
@@ -282,18 +281,10 @@
 
 /* ── Scroll area ── */
 .nr-scroll-area {
-  flex: 1;
-  overflow-y: auto;
+  flex: none;
+  overflow-y: visible;
+  overflow-x: visible;
   padding: 22px 24px 120px;
-  scrollbar-width: thin;
-  scrollbar-color: var(--nr-primary-faint) transparent;
-}
-
-.nr-scroll-area::-webkit-scrollbar { width: 5px; }
-.nr-scroll-area::-webkit-scrollbar-track { background: transparent; }
-.nr-scroll-area::-webkit-scrollbar-thumb {
-  background: var(--nr-primary-faint);
-  border-radius: 9999px;
 }
 
 /* ════════════════════════════════
