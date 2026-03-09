@@ -1092,47 +1092,27 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                                     WebkitFontSmoothing: 'antialiased',
                                                                 }}>
                                                                     {group.verses.map((verse) => {
-                                                                        const words = renderVerseWords(verse);
-                                                                        if (words.length === 0) return null;
+                                                                        const rawText = verse.text_indopak || verse.text_uthmani || '';
+                                                                        const displayText = verse.verse_number === 1 && chapter.bismillah_pre && surahNumber !== 1
+                                                                            ? removeBismillah(rawText)
+                                                                            : rawText;
+                                                                        if (!displayText.trim()) return null;
+                                                                        const isActive = currentVerse === verse.verse_number;
                                                                         return (
                                                                             <span key={verse.id}>
-                                                                                {words.map((word, wordIdx) => {
-                                                                                    const hasVisibleText = hasVisibleContent(word.text);
-                                                                                    return (
-                                                                                        <span key={word.key}>
-                                                                                            <span
-                                                                                                style={{
-                                                                                                    cursor: hasVisibleText ? 'pointer' : 'default',
-                                                                                                    padding: '0px 1px',
-                                                                                                    borderRadius: 3,
-                                                                                                    transition: 'background 0.15s',
-                                                                                                    background: currentVerse === verse.verse_number && hasVisibleText ? 'rgba(245,158,11,0.12)' : 'transparent',
-                                                                                                }}
-                                                                                                onClick={() => hasVisibleText && playVerse(verse.verse_number)}
-                                                                                                onMouseEnter={(e) => {
-                                                                                                    if (!hasVisibleText) return;
-                                                                                                    (e.currentTarget as HTMLElement).style.background = 'rgba(245,158,11,0.15)';
-                                                                                                    let meaningText = word.translation?.trim() || word.transliteration?.trim() || '';
-                                                                                                    if (!meaningText && (word as any).wordObj) {
-                                                                                                        meaningText = (word as any).wordObj.translation?.text?.trim() ||
-                                                                                                            (word as any).wordObj.transliteration?.text?.trim() || '';
-                                                                                                    }
-                                                                                                    if (meaningText && meaningText.trim().length > 0 && hasVisibleContent(meaningText)) {
-                                                                                                        const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-                                                                                                        setTooltip({ meaning: meaningText.trim(), x: rect.left + rect.width / 2, y: rect.top - 8 });
-                                                                                                    }
-                                                                                                }}
-                                                                                                onMouseLeave={(e) => {
-                                                                                                    (e.currentTarget as HTMLElement).style.background = currentVerse === verse.verse_number && hasVisibleText ? 'rgba(245,158,11,0.12)' : 'transparent';
-                                                                                                    setTooltip(null);
-                                                                                                }}
-                                                                                            >
-                                                                                                {word.text}
-                                                                                            </span>
-                                                                                            {wordIdx < words.length - 1 && ' '}
-                                                                                        </span>
-                                                                                    );
-                                                                                })}
+                                                                                <span
+                                                                                    style={{
+                                                                                        cursor: 'pointer',
+                                                                                        borderRadius: 3,
+                                                                                        transition: 'background 0.15s',
+                                                                                        background: isActive ? 'rgba(245,158,11,0.12)' : 'transparent',
+                                                                                    }}
+                                                                                    onClick={() => playVerse(verse.verse_number)}
+                                                                                    onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = isActive ? 'rgba(245,158,11,0.15)' : 'rgba(245,158,11,0.06)'; }}
+                                                                                    onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = isActive ? 'rgba(245,158,11,0.12)' : 'transparent'; }}
+                                                                                >
+                                                                                    {displayText}
+                                                                                </span>
                                                                                 {' '}
                                                                                 <span style={{ cursor: 'pointer', verticalAlign: 'middle' }} onClick={() => playVerse(verse.verse_number)}>
                                                                                     <AyahMarker number={verse.verse_number} size={ayahSize} />
