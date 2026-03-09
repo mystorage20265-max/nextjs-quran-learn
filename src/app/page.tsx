@@ -120,17 +120,20 @@ const SURAHS = [
   { num: 114, ar: 'الناس', name: 'An-Nas', meaning: 'The Mankind', v: 6, t: 'Meccan' },
 ];
 
+const FEATURED_ACTIONS = [
+  { icon: 'auto_stories', label: 'Turn the Pages of Quran', sub: 'Read the Mushaf page by page', href: '/quran-pages', gradient: 'linear-gradient(135deg,#10b981,#059669)', shadow: 'rgba(16,185,129,0.3)' },
+  { icon: 'music_note', label: 'Audio Quran', sub: 'Listen with beautiful recitations', href: '/audio-quran', gradient: 'linear-gradient(135deg,#f59e0b,#d97706)', shadow: 'rgba(245,158,11,0.3)' },
+  { icon: 'volunteer_activism', label: 'Dua', sub: 'Daily supplications & prayers', href: '/dua', gradient: 'linear-gradient(135deg,#8b5cf6,#7c3aed)', shadow: 'rgba(139,92,246,0.3)' },
+  { icon: 'format_quote', label: 'Hadees', sub: "Sayings of the Prophet ﷺ", href: '/hadees', gradient: 'linear-gradient(135deg,#0ea5e9,#0284c7)', shadow: 'rgba(14,165,233,0.3)' },
+];
+
 const FEATURES = [
   { icon: 'menu_book', label: 'Read Quran', sub: '114 Surahs', href: '/read-quran/1', color: '#f59e0b' },
-  { icon: 'auto_stories', label: 'Turn the pages of Quran', sub: '28 Pages', href: '/quran-pages', color: '#10b981' },
   { icon: 'explore', label: 'Navigate', sub: 'Surah · Juz · Page', href: '#navigate', color: '#0ea5e9' },
   { icon: 'ads_click', label: 'Memorize', sub: 'Hifz Program', href: '/memorize-quran', color: '#a855f7' },
-  { icon: 'music_note', label: 'Audio Quran', sub: 'Listen & Learn', href: '/audio-quran', color: '#f59e0b' },
   { icon: 'radio', label: 'Quran Radio', sub: '24/7 Recitation', href: '/radio', color: '#ef4444' },
   { icon: 'translate', label: 'Word by Word', sub: 'Arabic Learning', href: '/read-quran/1?mode=word-by-word', color: '#06b6d4' },
   { icon: 'book_2', label: 'Tafseer', sub: 'Verse Explanations', href: '/tafseer', color: '#8b5cf6' },
-  { icon: 'format_quote', label: 'Hadees', sub: "Prophet's Sayings", href: '/hadees', color: '#f59e0b' },
-  { icon: 'volunteer_activism', label: 'Dua', sub: 'Supplications', href: '/dua', color: '#10b981' },
 ];
 
 const AYAHS_OF_DAY = [
@@ -726,6 +729,31 @@ export default function HomePage() {
                   </div>
                 </div>
               </Link>
+            </section>
+
+            {/* ── FEATURED ACTIONS ── */}
+            <section style={{ marginBottom: 28 }}>
+              <h2 style={{ margin: '0 0 14px', fontWeight: 700, fontSize: 17, ...S.text }}>Explore</h2>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 12 }}>
+                {FEATURED_ACTIONS.map(f => (
+                  <Link key={f.label} href={f.href} style={{ textDecoration: 'none' }}>
+                    <div
+                      style={{ background: f.gradient, borderRadius: 18, padding: '18px 16px', boxShadow: `0 8px 24px ${f.shadow}`, position: 'relative', overflow: 'hidden', minHeight: 110, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', cursor: 'pointer', transition: 'transform 0.18s ease, box-shadow 0.18s ease' }}
+                      onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-3px) scale(1.02)'; (e.currentTarget as HTMLDivElement).style.boxShadow = `0 14px 32px ${f.shadow}`; }}
+                      onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = ''; (e.currentTarget as HTMLDivElement).style.boxShadow = `0 8px 24px ${f.shadow}`; }}
+                    >
+                      <span className="material-symbols-outlined" style={{ position: 'absolute', bottom: -10, right: -8, fontSize: 80, color: 'white', opacity: 0.1, lineHeight: 1 }}>{f.icon}</span>
+                      <div style={{ position: 'relative', zIndex: 1 }}>
+                        <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 10 }}>
+                          <span className="material-symbols-outlined" style={{ fontSize: 20, color: 'white' }}>{f.icon}</span>
+                        </div>
+                        <p style={{ margin: '0 0 3px', fontWeight: 700, fontSize: 13, color: 'white', lineHeight: 1.2 }}>{f.label}</p>
+                        <p style={{ margin: 0, fontSize: 10.5, color: 'rgba(255,255,255,0.78)', lineHeight: 1.3 }}>{f.sub}</p>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
             </section>
 
             {/* ── FEATURE SHORTCUTS ── */}
