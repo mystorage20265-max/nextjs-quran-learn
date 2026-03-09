@@ -140,7 +140,19 @@ export default function TafseerSurahPage({ params }: PageProps) {
     const [showSurahPicker, setShowSurahPicker] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
 
-    // Fetch verses (Arabic + translation)
+    // Same text cleaner as read-quran — strips annotation marks unsupported by Naskh IndoPak font
+    const cleanIndopakText = (text: string): string => {
+        if (!text) return '';
+        return text
+            .replace(/[\n\r\t]+/g, ' ')
+            .replace(/[\u0610-\u061A]/g, '')
+            .replace(/\u06E1/g, '\u0652')
+            .replace(/[\u06D6-\u06FF]/g, '')
+            .replace(/[\uFBB2-\uFBC2]/g, '')
+            .replace(/\s{2,}/g, ' ')
+            .trim();
+    };
+
     // Strip the Bismillah prefix from verse 1 text for surahs that have it shown separately
     const stripBismillah = (text: string): string => {
         const bare = (s: string) => s.replace(/[\u064B-\u065F\u0610-\u061A\u06D6-\u06FF]/g, '');
@@ -156,19 +168,30 @@ export default function TafseerSurahPage({ params }: PageProps) {
         setVerses([]);
         setModalVerseNum(null);
 
-        fetch(`https://api.alquran.cloud/v1/surah/${surahNum}/editions/quran-uthmani,en.sahih`)
-            .then(r => r.json())
-            .then(json => {
-                if (json.code !== 200) throw new Error('API error');
-                const ar = json.data[0].ayahs;
-                const en = json.data[1].ayahs;
+        // Fetch IndoPak text from QuranCDN (same source as read-quran) + translation from alquran.cloud in parallel
+        Promise.all([
+            fetch(`https://api.qurancdn.com/api/v4/quran/verses/indopak?chapter_number=${surahNum}&per_page=300`).then(r => r.json()),
+            fetch(`https://api.alquran.cloud/v1/surah/${surahNum}/en.sahih`).then(r => r.json()),
+        ])
+            .then(([indopakJson, enJson]) => {
+                if (enJson.code !== 200) throw new Error('API error');
+                const arVerses: any[] = indopakJson?.verses || [];
+                const enAyahs: any[] = enJson.data?.ayahs || [];
                 const hasBismillah = surahNum !== 1 && surahNum !== 9;
-                setVerses(ar.map((a: any, i: number) => ({
-                    num: a.numberInSurah,
-                    arabic: hasBismillah && a.numberInSurah === 1 ? stripBismillah(a.text) : a.text,
-                    translation: en[i]?.text || '',
-                    key: `${surahNum}:${a.numberInSurah}`,
-                })));
+                const enMap = new Map(enAyahs.map((a: any) => [a.numberInSurah, a.text]));
+                setVerses(arVerses.map((a: any) => {
+                    const rawText = a.text_indopak || '';
+                    const verseNum: number = a.verse_number ?? a.numberInSurah ?? 0;
+                    const cleaned = cleanIndopakText(
+                        hasBismillah && verseNum === 1 ? stripBismillah(rawText) : rawText
+                    );
+                    return {
+                        num: verseNum,
+                        arabic: cleaned,
+                        translation: enMap.get(verseNum) || '',
+                        key: `${surahNum}:${verseNum}`,
+                    };
+                }));
             })
             .catch(console.error)
             .finally(() => setLoading(false));
