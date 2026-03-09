@@ -195,6 +195,13 @@ export default function HomePage() {
   const [sessionTime, setSessionTime] = useState(0); // seconds this session
   const [totalTime, setTotalTime] = useState(0);     // cumulative seconds all sessions
 
+  // ── Verse Search ──
+  const [verseQuery, setVerseQuery] = useState('');
+  const [verseResults, setVerseResults] = useState<{ number: number; text: string; surah: { number: number; name: string; englishName: string }; numberInSurah: number }[]>([]);
+  const [verseCount, setVerseCount] = useState<number | null>(null);
+  const [verseLoading, setVerseLoading] = useState(false);
+  const verseSearchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   // ── Navigate Quran panel ──
   const [showNav, setShowNav] = useState(false);
   const [navLoading, setNavLoading] = useState(false);
@@ -264,6 +271,36 @@ export default function HomePage() {
     }, 1000);
     return () => clearInterval(interval);
   }, []);
+
+  // Debounced verse search
+  useEffect(() => {
+    if (verseSearchTimer.current) clearTimeout(verseSearchTimer.current);
+    if (verseQuery.trim().length < 3) {
+      setVerseResults([]);
+      setVerseCount(null);
+      return;
+    }
+    verseSearchTimer.current = setTimeout(async () => {
+      setVerseLoading(true);
+      try {
+        const res = await fetch(`/api/quran-search?q=${encodeURIComponent(verseQuery.trim())}`);
+        const json = await res.json();
+        if (json?.data?.matches) {
+          setVerseResults(json.data.matches.slice(0, 30));
+          setVerseCount(json.data.count);
+        } else {
+          setVerseResults([]);
+          setVerseCount(0);
+        }
+      } catch {
+        setVerseResults([]);
+        setVerseCount(null);
+      } finally {
+        setVerseLoading(false);
+      }
+    }, 500);
+    return () => { if (verseSearchTimer.current) clearTimeout(verseSearchTimer.current); };
+  }, [verseQuery]);
 
   const fmtTime = (secs: number) => {
     const h = Math.floor(secs / 3600);
@@ -472,6 +509,7 @@ export default function HomePage() {
         @keyframes tc-pop{0%{transform:scale(1)}50%{transform:scale(1.13)}100%{transform:scale(1)}}
         @keyframes navSlideIn{from{transform:translateX(-100%);opacity:0}to{transform:translateX(0);opacity:1}}
         @keyframes navSkel{0%,100%{opacity:0.5}50%{opacity:1}}
+        @keyframes spin{to{transform:translateY(-50%) rotate(360deg)}}
         /* ── Responsive ── */
         .hp-header-inner{padding:10px 16px !important}
         .hp-content{padding:16px 16px 16px !important}
@@ -699,6 +737,96 @@ export default function HomePage() {
                   return <Link key={f.label} href={f.href} style={{ textDecoration: 'none' }}>{inner}</Link>;
                 })}
               </div>
+            </section>
+
+            {/* ── SEARCH QURAN ── */}
+            <section style={{ marginBottom: 32 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
+                <span className="material-symbols-outlined" style={{ fontSize: 22, color: '#f59e0b' }}>search</span>
+                <h2 style={{ margin: 0, fontWeight: 700, fontSize: 19, ...S.text }}>Search Quran</h2>
+              </div>
+              <p style={{ margin: '0 0 16px', fontSize: 13, ...S.muted }}>Search through English translations · type at least 3 characters</p>
+              {/* Input */}
+              <div style={{ position: 'relative', marginBottom: 16 }}>
+                <span className="material-symbols-outlined" style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', fontSize: 20, color: '#94a3b8', pointerEvents: 'none' }}>search</span>
+                <input
+                  type="text"
+                  value={verseQuery}
+                  onChange={e => setVerseQuery(e.target.value)}
+                  placeholder="e.g. patience, mercy, truth…"
+                  style={{
+                    width: '100%', padding: '13px 16px 13px 44px', borderRadius: 14,
+                    border: '1px solid var(--border-default)',
+                    background: 'var(--bg-surface)',
+                    fontSize: 14, color: 'var(--text-secondary)',
+                    outline: 'none', boxSizing: 'border-box',
+                    transition: 'box-shadow 0.15s',
+                  }}
+                  onFocus={e => (e.target.style.boxShadow = '0 0 0 2px rgba(245,158,11,0.35)')}
+                  onBlur={e => (e.target.style.boxShadow = 'none')}
+                />
+                {verseLoading && (
+                  <span className="material-symbols-outlined" style={{ position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)', fontSize: 18, color: '#f59e0b', animation: 'spin 1s linear infinite' }}>progress_activity</span>
+                )}
+              </div>
+
+              {/* Result count */}
+              {verseCount !== null && verseQuery.trim().length >= 3 && (
+                <p style={{ margin: '0 0 14px', fontSize: 13, ...S.muted }}>
+                  <strong style={{ color: 'var(--text-primary)' }}>{verseCount.toLocaleString()}</strong> results for &ldquo;<span style={{ color: '#f59e0b' }}>{verseQuery}</span>&rdquo;
+                </p>
+              )}
+
+              {/* Results */}
+              {verseResults.length > 0 && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  {verseResults.map(v => {
+                    // Highlight the search term in the text
+                    const re = new RegExp(`(${verseQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+                    const parts = v.text.split(re);
+                    return (
+                      <Link
+                        key={`${v.surah.number}:${v.numberInSurah}`}
+                        href={`/read-quran/${v.surah.number}`}
+                        style={{ textDecoration: 'none', display: 'block' }}
+                      >
+                        <div
+                          style={{ ...S.card, padding: '18px 20px', cursor: 'pointer', transition: 'transform 0.18s, box-shadow 0.18s' }}
+                          className="surah-card"
+                        >
+                          {/* Badges row */}
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                              <span style={{
+                                background: 'rgba(245,158,11,0.15)', color: '#f59e0b',
+                                fontSize: 11.5, fontWeight: 700, borderRadius: 20,
+                                padding: '3px 10px', border: '1px solid rgba(245,158,11,0.2)',
+                              }}>{v.surah.englishName}</span>
+                              <span style={{ fontSize: 12, ...S.muted }}>Ayah {v.numberInSurah}</span>
+                            </div>
+                            <span className="font-arabic" dir="rtl" style={{ fontSize: 16, fontWeight: 700, ...S.text, opacity: 0.7 }}>{v.surah.name}</span>
+                          </div>
+                          {/* Verse text with highlight */}
+                          <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.85, ...S.text }}>
+                            {parts.map((part, i) =>
+                              re.test(part)
+                                ? <mark key={i} style={{ background: 'rgba(245,158,11,0.22)', color: '#d97706', borderRadius: 3, padding: '0 2px', fontWeight: 600 }}>{part}</mark>
+                                : part
+                            )}
+                          </p>
+                        </div>
+                      </Link>
+                    );
+                  })}
+                  {verseCount !== null && verseCount > 30 && (
+                    <p style={{ textAlign: 'center', fontSize: 12, ...S.muted, marginTop: 4 }}>Showing first 30 of {verseCount.toLocaleString()} results</p>
+                  )}
+                </div>
+              )}
+
+              {verseQuery.trim().length >= 3 && !verseLoading && verseResults.length === 0 && verseCount === 0 && (
+                <p style={{ ...S.muted, fontSize: 13, textAlign: 'center', padding: '24px 0' }}>No verses found for &ldquo;{verseQuery}&rdquo;</p>
+              )}
             </section>
 
             {/* ── HADEES OF THE DAY ── */}
