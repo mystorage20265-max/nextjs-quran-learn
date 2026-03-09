@@ -793,7 +793,7 @@ export default function HomePage() {
                     {/* Count display + tap area */}
                     <button
                       className={`tc-btn${tasbeehFlash ? ' tc-flash' : ''}`}
-                      style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2, zIndex: 2 }}
+                      style={{ position: 'absolute', inset: 0, borderRadius: '50%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2, zIndex: 2 }}
                       onClick={() => {
                         const next = tasbeehCount + 1;
                         setTasbeehCount(next);
@@ -933,7 +933,7 @@ export default function HomePage() {
               )}
 
               {/* Show more / less */}
-              <div style={{ marginTop: 24, textAlign: 'center' }}>
+              <div style={{ marginTop: 24, marginBottom: 48, textAlign: 'center' }}>
                 <button onClick={() => setShowAll(v => !v)} style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-default)', padding: '10px 28px', borderRadius: 12, fontWeight: 600, fontSize: 13.5, boxShadow: '0 1px 4px rgba(0,0,0,0.06)', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6, color: 'var(--text-secondary)' }}>
                   {showAll ? `Show Top 12` : `Show All ${filtered.length} Surahs`}
                   <span className="material-symbols-outlined" style={{ fontSize: 18, transform: showAll ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}>expand_more</span>

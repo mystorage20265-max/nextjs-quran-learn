@@ -7,18 +7,18 @@
    CSS Variables - Design Tokens
    ======================================== */
 :root {
-    --radio-primary: 129 181 50;
-    --radio-secondary: 0 245 212;
-    --radio-accent: 0 200 240;
-    --radio-bg-dark: 0 32 46;
-    --radio-bg-medium: 0 24 34;
+    --radio-primary: 245 158 11;
+    --radio-secondary: 251 191 36;
+    --radio-accent: 217 119 6;
+    --radio-bg-dark: 28 8 0;
+    --radio-bg-medium: 20 5 0;
     --radio-surface: 0 0% 100%;
-    --radio-green: #81b532;
-    --radio-green-hover: #95ce3a;
-    --radio-cyan: #00f5d4;
-    --radio-blue: #00c8f0;
-    --radio-glow-green: 0 100px 100px -50px rgba(129, 181, 50, 0.4);
-    --radio-glow-cyan: 0 100px 100px -50px rgba(0, 245, 212, 0.4);
+    --radio-green: #f59e0b;
+    --radio-green-hover: #fbbf24;
+    --radio-cyan: #fbbf24;
+    --radio-blue: #d97706;
+    --radio-glow-green: 0 100px 100px -50px rgba(245, 158, 11, 0.4);
+    --radio-glow-cyan: 0 100px 100px -50px rgba(245, 158, 11, 0.4);
 }
 
 /* ========================================
@@ -27,11 +27,11 @@
 .radio-page {
     min-height: 100vh;
     background: linear-gradient(135deg,
-            #00202e 0%,
-            #001f2b 25%,
-            #0a1628 50%,
-            #001f2b 75%,
-            #00202e 100%);
+            #1c0800 0%,
+            #1a0800 25%,
+            #200900 50%,
+            #1a0800 75%,
+            #1c0800 100%);
     position: relative;
     overflow-x: hidden;
 }
@@ -51,7 +51,7 @@
 .radio-page::before {
     width: 600px;
     height: 600px;
-    background: linear-gradient(135deg, #81b532 0%, #00f5d4 100%);
+    background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
     top: -200px;
     right: -200px;
     animation: float-orb 20s ease-in-out infinite;
@@ -60,7 +60,7 @@
 .radio-page::after {
     width: 800px;
     height: 800px;
-    background: linear-gradient(135deg, #00f5d4 0%, #00c8f0 100%);
+    background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
     bottom: -300px;
     left: -300px;
     animation: float-orb 25s ease-in-out infinite reverse;
@@ -117,13 +117,13 @@
 .radio-logo-icon {
     width: 48px;
     height: 48px;
-    background: linear-gradient(135deg, #81b532 0%, #95ce3a 100%);
+    background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
     border-radius: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1.5rem;
-    box-shadow: 0 8px 32px rgba(129, 181, 50, 0.4);
+    box-shadow: 0 8px 32px rgba(245, 158, 11, 0.4);
     position: relative;
     overflow: hidden;
 }
@@ -179,8 +179,8 @@
 .radio-search-input:focus {
     outline: none;
     background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(129, 181, 50, 0.5);
-    box-shadow: 0 0 0 4px rgba(129, 181, 50, 0.15);
+    border-color: rgba(245, 158, 11, 0.5);
+    box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.15);
 }
 
 .radio-search-input::placeholder {
@@ -222,8 +222,8 @@
 
 .radio-tab.active {
     color: white;
-    background: linear-gradient(135deg, #81b532 0%, #95ce3a 100%);
-    box-shadow: 0 4px 20px rgba(129, 181, 50, 0.4);
+    background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+    box-shadow: 0 4px 20px rgba(245, 158, 11, 0.4);
 }
 
 .radio-tab-count {
@@ -256,25 +256,25 @@
 
 .station-card:hover {
     transform: translateY(-8px) scale(1.02);
-    border-color: rgba(129, 181, 50, 0.3);
+    border-color: rgba(245, 158, 11, 0.3);
     box-shadow:
         0 20px 40px rgba(0, 0, 0, 0.4),
-        0 0 60px rgba(129, 181, 50, 0.15);
+        0 0 60px rgba(245, 158, 11, 0.15);
 }
 
 .station-card.playing {
-    border-color: rgba(129, 181, 50, 0.5);
+    border-color: rgba(245, 158, 11, 0.5);
     box-shadow:
-        0 0 0 2px rgba(129, 181, 50, 0.3),
+        0 0 0 2px rgba(245, 158, 11, 0.3),
         0 20px 40px rgba(0, 0, 0, 0.4),
-        0 0 80px rgba(129, 181, 50, 0.2);
+        0 0 80px rgba(245, 158, 11, 0.2);
 }
 
 .station-card-image {
     position: relative;
     aspect-ratio: 3 / 4;
     overflow: hidden;
-    background: linear-gradient(135deg, #001f2b 0%, #0a1628 100%);
+    background: linear-gradient(135deg, #1a0800 0%, #200900 100%);
     border-radius: 1.5rem 1.5rem 0 0;
 }
 
@@ -427,7 +427,7 @@
 
 .music-bar {
     width: 4px;
-    background: linear-gradient(to top, #81b532, #95ce3a);
+    background: linear-gradient(to top, #f59e0b, #fbbf24);
     border-radius: 2px;
     animation: music-bar 0.6s ease-in-out infinite;
 }
@@ -460,8 +460,8 @@
 .buffering-spinner {
     width: 24px;
     height: 24px;
-    border: 3px solid rgba(129, 181, 50, 0.3);
-    border-top-color: #81b532;
+    border: 3px solid rgba(245, 158, 11, 0.3);
+    border-top-color: #f59e0b;
     border-radius: 50%;
     animation: spinner-rotate 0.8s linear infinite;
 }
@@ -489,7 +489,7 @@
 }
 
 .station-card:hover .station-card-title {
-    color: #95ce3a;
+    color: #fbbf24;
 }
 
 .station-card-subtitle {
@@ -511,14 +511,14 @@
     display: flex;
     align-items: center;
     gap: 0.375rem;
-    color: #81b532;
+    color: #f59e0b;
     font-weight: 600;
 }
 
 .status-dot {
     width: 8px;
     height: 8px;
-    background: #81b532;
+    background: #f59e0b;
     border-radius: 50%;
     animation: pulse-dot 2s ease-in-out infinite;
 }
@@ -556,15 +556,15 @@
 .reciter-card:hover .reciter-avatar {
     transform: scale(1.08);
     box-shadow:
-        0 0 0 4px rgba(129, 181, 50, 0.3),
+        0 0 0 4px rgba(245, 158, 11, 0.3),
         0 20px 40px rgba(0, 0, 0, 0.4),
-        0 0 60px rgba(129, 181, 50, 0.2);
+        0 0 60px rgba(245, 158, 11, 0.2);
 }
 
 .reciter-card.playing .reciter-avatar {
     box-shadow:
-        0 0 0 4px rgba(129, 181, 50, 0.5),
-        0 0 80px rgba(129, 181, 50, 0.3);
+        0 0 0 4px rgba(245, 158, 11, 0.5),
+        0 0 80px rgba(245, 158, 11, 0.3);
 }
 
 .reciter-avatar img {
@@ -616,7 +616,7 @@
 }
 
 .reciter-card:hover .reciter-name {
-    color: #95ce3a;
+    color: #fbbf24;
 }
 
 .reciter-style {
@@ -675,11 +675,11 @@
 
     0%,
     100% {
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), 0 0 0 0 rgba(129, 181, 50, 0.4);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), 0 0 0 0 rgba(245, 158, 11, 0.4);
     }
 
     50% {
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), 0 0 0 8px rgba(129, 181, 50, 0);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), 0 0 0 8px rgba(245, 158, 11, 0);
     }
 }
 
@@ -736,15 +736,15 @@
 .control-btn.primary {
     width: 56px;
     height: 56px;
-    background: #81b532;
-    color: #001f2b;
-    box-shadow: 0 4px 20px rgba(129, 181, 50, 0.4);
+    background: #f59e0b;
+    color: #1c0800;
+    box-shadow: 0 4px 20px rgba(245, 158, 11, 0.4);
 }
 
 .control-btn.primary:hover {
     transform: scale(1.08);
-    background: #95ce3a;
-    box-shadow: 0 8px 30px rgba(129, 181, 50, 0.5);
+    background: #fbbf24;
+    box-shadow: 0 8px 30px rgba(245, 158, 11, 0.5);
 }
 
 .volume-control {
