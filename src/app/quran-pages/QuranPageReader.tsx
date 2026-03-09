@@ -23,7 +23,7 @@ import './page-reader.css';
 const TOTAL_PAGES = 28;
 
 function getPageImageUrl(page: number): string {
-  return `/api/quran-page/${page}`;
+  return `/quran-images/page-${page}.jpg`;
 }
 
 // ── Web Audio paper-rustle sound ─────────────────────────────────
