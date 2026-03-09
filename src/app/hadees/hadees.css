@@ -574,197 +574,242 @@
 
 /* ── Hadith Card ── */
 .hadees-card {
-  position: relative;
   background: var(--bg-card);
   border: 1px solid var(--border-default);
-  border-radius: 20px;
-  padding: 28px 28px 20px;
-  transition: all 0.25s ease;
-  overflow: hidden;
+  border-radius: 12px;
+  padding: 22px 24px 16px;
+  transition: box-shadow 0.2s ease;
   animation: hadees-fadeInUp 0.4s ease forwards;
   opacity: 0;
 }
 
 .hadees-card:hover {
-  border-color: var(--border-strong);
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.07);
 }
 
-.hadees-card-accent {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 4px;
-  height: 100%;
-  opacity: 0;
-  transition: opacity 0.2s ease;
-}
-
-.hadees-card:hover .hadees-card-accent,
-.hadees-card.expanded .hadees-card-accent {
-  opacity: 1;
-}
-
-/* Card Header */
-.hadees-card-header {
+/* Top row: #number + chapter + bookmark */
+.hadees-card-toprow {
   display: flex;
-  align-items: flex-start;
+  align-items: baseline;
   justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 20px;
+  gap: 12px;
+  margin-bottom: 14px;
 }
 
-.hadees-card-header-left {
+.hadees-card-toprow-left {
   display: flex;
-  align-items: center;
-  gap: 14px;
+  align-items: baseline;
+  gap: 10px;
+  flex: 1;
   min-width: 0;
 }
 
-.hadees-card-number {
-  width: 38px;
-  height: 38px;
-  border-radius: 11px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.hadees-card-num-label {
   font-size: 13px;
-  font-weight: 800;
-  flex-shrink: 0;
-}
-
-.hadees-card-collection {
-  font-size: 15px;
   font-weight: 700;
-  color: var(--text-primary);
-  margin: 0 0 3px;
-  line-height: 1.3;
-}
-
-.hadees-card-meta {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.hadees-card-num-badge {
-  font-size: 11px;
   color: var(--text-muted);
-  font-weight: 500;
-}
-
-.hadees-card-authentic {
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  padding: 2px 8px;
-  border-radius: 4px;
-}
-
-.hadees-card-header-right {
-  display: flex;
-  gap: 4px;
   flex-shrink: 0;
 }
 
-/* Hadith Text Body */
-.hadees-card-body-wrapper {
-  padding: 16px 0;
-  margin-bottom: 4px;
-  position: relative;
+.hadees-card-chapter-inline {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-style: italic;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Body: 2 columns on desktop */
+.hadees-card-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  padding-bottom: 16px;
   border-bottom: 1px solid var(--border-subtle);
 }
 
-.hadees-card-quote-icon {
-  position: absolute;
-  right: 0;
-  top: 8px;
-  font-size: 40px;
-  opacity: 0.05;
-  line-height: 1;
-  pointer-events: none;
+.hadees-card-english {
+  font-size: 14.5px;
+  line-height: 1.85;
+  color: var(--text-primary);
 }
 
 .hadees-card-text {
-  font-size: 14.5px;
-  line-height: 1.9;
+  margin: 0;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+}
+
+/* Arabic column */
+.hadees-card-arabic-col {
+  direction: rtl;
+  text-align: right;
+  position: relative;
+  overflow: hidden;
+  border-left: 1px solid var(--border-subtle);
+  padding-left: 24px;
+}
+
+.hadees-card-arabic-text {
+  font-size: clamp(1.1rem, 2.2vw, 1.35rem);
+  line-height: 2.1;
   color: var(--text-primary);
   margin: 0;
-  font-style: italic;
-  position: relative;
-  z-index: 1;
 }
 
-/* Card Footer */
-.hadees-card-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 16px;
-  padding-top: 16px;
-  border-top: 1px solid var(--border-subtle);
-  flex-wrap: wrap;
-  gap: 12px;
+/* Arabic collapse only on mobile */
+@media (max-width: 768px) {
+  .hadees-card-arabic-text.arabic-collapsed {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
 }
 
-.hadees-expand-btn {
-  display: inline-flex;
+.hadees-arabic-fade {
+  position: absolute;
+  bottom: 24px;
+  left: 0;
+  right: 0;
+  height: 48px;
+  background: linear-gradient(to bottom, transparent, var(--bg-card));
+  pointer-events: none;
+}
+
+.hadees-arabic-read-more {
+  display: none;
   align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
-  border-radius: 10px;
-  font-size: 12.5px;
-  font-weight: 600;
-  color: var(--text-muted);
-  background: var(--interactive-hover);
+  gap: 4px;
+  margin-top: 4px;
+  padding: 2px 0;
+  background: none;
   border: none;
   cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand-primary, #f59e0b);
   font-family: inherit;
-  transition: all 0.2s;
+  direction: ltr;
+  transition: opacity 0.15s;
 }
 
-.hadees-expand-btn:hover {
-  color: var(--brand-primary);
-  background: var(--brand-primary-soft);
+.hadees-arabic-read-more:hover { opacity: 0.75; }
+
+@media (max-width: 768px) {
+  .hadees-arabic-read-more { display: inline-flex; }
 }
 
+/* Footer: grade + ref + actions */
+.hadees-card-footer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+.hadees-card-footer-left {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.hadees-card-grade {
+  font-size: 13px;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.hadees-card-grade strong {
+  color: #16a34a;
+}
+
+.hadees-card-ref {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin: 0;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.hadees-ref-sep {
+  color: var(--text-muted);
+}
+
+/* Text-link action buttons */
 .hadees-card-actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+  flex-shrink: 0;
 }
 
+.hadees-action-link {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--brand-primary, #f59e0b);
+  font-family: inherit;
+  padding: 0;
+  transition: opacity 0.15s;
+}
+
+.hadees-action-link:hover { opacity: 0.7; }
+
+.hadees-action-sep {
+  font-size: 12px;
+  color: var(--text-muted);
+  user-select: none;
+}
+
+/* Bookmark icon button */
 .hadees-icon-btn {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--interactive-hover);
-  border: 1px solid var(--border-default);
+  background: transparent;
+  border: none;
   cursor: pointer;
   color: var(--text-muted);
-  transition: all 0.2s;
+  transition: all 0.15s;
   font-family: inherit;
+  flex-shrink: 0;
 }
 
 .hadees-icon-btn:hover {
   color: var(--text-primary);
   background: var(--bg-elevated);
-  border-color: var(--border-strong);
 }
 
 .hadees-icon-btn.bookmark-active {
   color: #f59e0b;
-  background: rgba(245, 158, 11, 0.1);
-  border-color: rgba(245, 158, 11, 0.3);
 }
 
-/* ── Error state ── */
+/* Stacked on mobile */
+@media (max-width: 640px) {
+  .hadees-card-body {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .hadees-card-arabic-col {
+    border-left: none;
+    padding-left: 0;
+    border-top: 1px solid var(--border-subtle);
+    padding-top: 14px;
+  }
+}
 .hadees-error {
   display: flex;
   align-items: center;
@@ -880,68 +925,4 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
-}
-
-.hadees-arabic-fade {
-  position: absolute;
-  bottom: 32px;
-  left: 0;
-  right: 0;
-  height: 48px;
-  background: linear-gradient(to bottom, transparent, var(--bg-elevated));
-  pointer-events: none;
-  border-radius: 0 0 12px 12px;
-}
-
-/* Read more button inside arabic block — mobile only */
-.hadees-arabic-read-more {
-  display: none;
-  align-items: center;
-  gap: 4px;
-  margin-top: 6px;
-  padding: 4px 0;
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--brand-primary, #f59e0b);
-  font-family: inherit;
-  direction: ltr;
-  transition: opacity 0.15s;
-}
-
-.hadees-arabic-read-more:hover {
-  opacity: 0.8;
-}
-
-@media (max-width: 768px) {
-  .hadees-arabic-read-more {
-    display: inline-flex;
-  }
-}
-
-.hadees-grade-badge.grade-sahih {
-  background: rgba(34, 197, 94, 0.12);
-  color: #16a34a;
-}
-
-.hadees-grade-badge.grade-hasan {
-  background: var(--brand-primary-soft, rgba(245,158,11,0.1));
-  color: var(--brand-primary, #f59e0b);
-}
-
-.hadees-grade-badge.grade-da-if,
-.hadees-grade-badge.grade-daif {
-  background: rgba(239, 68, 68, 0.1);
-  color: #dc2626;
-}
-
-/* Chapter title under hadith number badge */
-.hadees-card-chapter {
-  font-size: 11px;
-  color: var(--text-muted);
-  margin: 4px 0 0;
-  font-style: italic;
-  line-height: 1.4;
 }

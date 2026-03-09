@@ -347,80 +347,63 @@ export default function HadeesPage() {
                     className="hadees-card"
                     style={{ animationDelay: `${Math.min(idx * 40, 300)}ms` }}
                   >
-                    <div className="hadees-card-accent" style={{ background: activeCollection.color }} />
+                    {/* Top row: number + chapter + bookmark */}
+                    <div className="hadees-card-toprow">
+                      <div className="hadees-card-toprow-left">
+                        <span className="hadees-card-num-label">#{hadith.number}</span>
+                        {hadith.chapter && <span className="hadees-card-chapter-inline">{hadith.chapter}</span>}
+                      </div>
+                      <button
+                        className={`hadees-icon-btn ${isBookmarked ? 'bookmark-active' : ''}`}
+                        onClick={() => toggleBookmark(key)}
+                        title={isBookmarked ? 'Remove bookmark' : 'Bookmark'}
+                      >
+                        <span className="material-symbols-outlined" style={{ fontSize: 18, fontVariationSettings: isBookmarked ? "'FILL' 1" : "'FILL' 0" }}>bookmark</span>
+                      </button>
+                    </div>
 
-                    <div className="hadees-card-header">
-                      <div className="hadees-card-header-left">
-                        <div className="hadees-card-number" style={{ background: `${activeCollection.color}18`, color: activeCollection.color }}>
-                          {hadith.number}
-                        </div>
-                        <div>
-                          <p className="hadees-card-collection" style={{ color: activeCollection.color }}>
-                            {activeCollection.name}
-                          </p>
-                          <div className="hadees-card-meta">
-                            <span className="hadees-card-num-badge">Hadith #{hadith.number}</span>
-                            {hadith.grade && (
-                              <span className={`hadees-grade-badge grade-${hadith.grade.toLowerCase().replace(/[^a-z]/g, '-')}`}>
-                                {hadith.grade}
-                              </span>
-                            )}
-                          </div>
-                          {hadith.chapter && (
-                            <p className="hadees-card-chapter">{hadith.chapter}</p>
+                    {/* Body: English + Arabic side by side */}
+                    <div className="hadees-card-body">
+                      <div className="hadees-card-english">
+                        <p className="hadees-card-text">{hadith.english}</p>
+                      </div>
+                      {hadith.arabic && (
+                        <div className="hadees-card-arabic-col">
+                          <p
+                            className={`hadees-card-arabic-text${isArabicLong && !isArabicExpanded ? ' arabic-collapsed' : ''}`}
+                            style={{ fontFamily: ARABIC_FONT }}
+                          >{hadith.arabic}</p>
+                          {isArabicLong && !isArabicExpanded && <div className="hadees-arabic-fade" />}
+                          {isArabicLong && (
+                            <button className="hadees-arabic-read-more" onClick={() => toggleArabicExpand(key)}>
+                              {isArabicExpanded ? 'Show less' : 'Read more'}
+                              <span className="material-symbols-outlined" style={{ fontSize: 14 }}>{isArabicExpanded ? 'expand_less' : 'expand_more'}</span>
+                            </button>
                           )}
                         </div>
-                      </div>
-                      <div className="hadees-card-header-right">
-                        <button
-                          className={`hadees-icon-btn ${isBookmarked ? 'bookmark-active' : ''}`}
-                          onClick={() => toggleBookmark(key)}
-                          title={isBookmarked ? 'Remove bookmark' : 'Bookmark'}
-                        >
-                          <span className="material-symbols-outlined" style={{ fontSize: 20, fontVariationSettings: isBookmarked ? "'FILL' 1" : "'FILL' 0" }}>bookmark</span>
-                        </button>
-                      </div>
+                      )}
                     </div>
 
-                    {/* English — always full */}
-                    <div className="hadees-card-body-wrapper">
-                      <span className="material-symbols-outlined hadees-card-quote-icon">format_quote</span>
-                      <p className="hadees-card-text">
-                        &ldquo;{hadith.english}&rdquo;
-                      </p>
-                    </div>
-
-                    {/* Arabic — collapses to 3 lines on mobile */}
-                    {hadith.arabic && (
-                      <div className="hadees-card-arabic-block">
-                        <p
-                          className={`hadees-card-arabic-text${isArabicLong && !isArabicExpanded ? ' arabic-collapsed' : ''}`}
-                          style={{ fontFamily: ARABIC_FONT }}
-                        >{hadith.arabic}</p>
-                        {isArabicLong && !isArabicExpanded && <div className="hadees-arabic-fade" />}
-                        {isArabicLong && (
-                          <button className="hadees-arabic-read-more" onClick={() => toggleArabicExpand(key)}>
-                            {isArabicExpanded ? 'Show less' : 'Read more'}
-                            <span className="material-symbols-outlined" style={{ fontSize: 14 }}>{isArabicExpanded ? 'expand_less' : 'expand_more'}</span>
-                          </button>
-                        )}
-                      </div>
-                    )}
-
+                    {/* Footer: grade + reference + actions */}
                     <div className="hadees-card-footer">
-                      <span style={{ fontSize: 12, color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: 6 }}>
-                        <span className="material-symbols-outlined" style={{ fontSize: 14 }}>auto_stories</span>
-                        {activeCollection.name}
-                      </span>
+                      <div className="hadees-card-footer-left">
+                        {hadith.grade && (
+                          <p className="hadees-card-grade">
+                            Grade: <strong>{hadith.grade}</strong>
+                          </p>
+                        )}
+                        <p className="hadees-card-ref">
+                          <span>Reference</span>
+                          <span className="hadees-ref-sep">:</span>
+                          <span>{activeCollection.name} {hadith.number}</span>
+                        </p>
+                      </div>
                       <div className="hadees-card-actions">
-                        <button className="hadees-icon-btn" onClick={() => copyHadith(key, hadith)} title="Copy">
-                          <span className="material-symbols-outlined" style={{ fontSize: 18, color: isCopied ? 'var(--brand-primary)' : undefined }}>
-                            {isCopied ? 'check' : 'content_copy'}
-                          </span>
+                        <button className="hadees-action-link" onClick={() => copyHadith(key, hadith)}>
+                          {isCopied ? 'Copied!' : 'Copy'}
                         </button>
-                        <button className="hadees-icon-btn" onClick={() => shareHadith(hadith)} title="Share">
-                          <span className="material-symbols-outlined" style={{ fontSize: 18 }}>share</span>
-                        </button>
+                        <span className="hadees-action-sep">|</span>
+                        <button className="hadees-action-link" onClick={() => shareHadith(hadith)}>Share</button>
                       </div>
                     </div>
                   </article>
