@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect, useRef, useCallback, use } from 'react';
 import Link from 'next/link';
@@ -569,9 +569,9 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 .nq-scroll{flex:1;overflow-y:auto;padding:16px 16px 32px}
                 @media(min-width:640px){.nq-scroll{padding:24px 24px 32px}}
                 @media(min-width:1024px){.nq-scroll{padding:32px 48px 32px}}
-                .nq-scroll.audio-on{padding-bottom:160px!important}
-                @media(min-width:640px){.nq-scroll.audio-on{padding-bottom:160px!important}}
-                @media(min-width:1024px){.nq-scroll.audio-on{padding-bottom:140px!important}}
+                .nq-scroll.audio-on{padding-bottom:80px!important}
+                @media(min-width:640px){.nq-scroll.audio-on{padding-bottom:80px!important}}
+                @media(min-width:1024px){.nq-scroll.audio-on{padding-bottom:80px!important}}
                 .nq-right{flex-shrink:0;border-left:1px solid #e2e8f0;background:white;display:none;flex-direction:column;overflow:hidden}
                 @media(min-width:1280px){.nq-right{display:flex;width:256px}}
                 .dark .nq-right{background:#0f172a;border-color:#1e293b}
@@ -637,45 +637,21 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 .nq-bkmk-btn{width:34px;height:34px;background:#f59e0b;border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;cursor:pointer;box-shadow:0 4px 14px rgba(245,158,11,0.3);flex-shrink:0}
                 @media(min-width:640px){.nq-bkmk-btn{width:40px;height:40px}}
                 /* Audio bar */
-                .nq-audio-bar{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);width:calc(100% - 24px);max-width:720px;background:rgba(255,255,255,0.97);backdrop-filter:blur(16px);border:1px solid #e2e8f0;border-radius:20px;box-shadow:0 8px 32px rgba(0,0,0,0.12);z-index:20;padding:10px 14px;animation:audioBarIn 0.22s ease-out}
-                @keyframes audioBarIn{from{opacity:0;transform:translateX(-50%) translateY(12px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
-                @media(min-width:640px){.nq-audio-bar{bottom:20px;padding:13px 18px;border-radius:22px;width:calc(100% - 40px);max-width:760px}}
-                @media(min-width:1024px){.nq-audio-bar{bottom:24px;padding:16px;border-radius:24px;width:calc(100% - 64px);max-width:800px}}
-                .dark .nq-audio-bar{background:rgba(15,23,42,0.97);border-color:#1e293b}
-                .nq-audio-progress-row{margin-bottom:8px}
-                .nq-audio-progress-track{width:100%;height:4px;background:#f1f5f9;border-radius:999px;overflow:hidden;cursor:pointer;position:relative}
+                .nq-audio-bar{position:fixed;bottom:0;left:0;right:0;background:#ffffff;border-top:1px solid #e2e8f0;z-index:20;animation:audioBarIn 0.2s ease-out}
+                @keyframes audioBarIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+                .dark .nq-audio-bar{background:#0f172a;border-top-color:#1e293b}
+                .nq-audio-progress-track{width:100%;height:3px;background:#e2e8f0;cursor:pointer;position:relative}
                 .dark .nq-audio-progress-track{background:#1e293b}
-                .nq-audio-progress-fill{height:100%;background:#f59e0b;border-radius:999px;transition:width 0.3s}
-                .nq-audio-bar-inner{display:flex;align-items:center;justify-content:space-between;gap:8px;position:relative}
-                @media(min-width:640px){.nq-audio-bar-inner{gap:16px}}
-                @media(min-width:1024px){.nq-audio-bar-inner{gap:24px}}
-                .nq-reciter-info{display:none;align-items:center;gap:12px;flex:1;min-width:0}
-                @media(min-width:640px){.nq-reciter-info{display:flex}}
-                .nq-reciter-avatar{position:relative;width:40px;height:40px;border-radius:50%;background:#f1f5f9;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-                .dark .nq-reciter-avatar{background:#1e293b}
-                .nq-reciter-badge{position:absolute;bottom:-4px;right:-4px;background:#f59e0b;color:white;font-size:8px;font-weight:700;padding:1px 4px;border-radius:999px;border:2px solid white;font-family:'Lexend',sans-serif}
-                .nq-reciter-name{margin:0;font-size:12px;font-weight:700;color:#0f172a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-                .dark .nq-reciter-name{color:#e2e8f0}
-                .nq-reciter-sub{margin:0;font-size:10px;color:#94a3b8}
-                .nq-audio-controls{display:flex;align-items:center;gap:10px;position:absolute;left:50%;transform:translateX(-50%)}
-                @media(min-width:480px){.nq-audio-controls{gap:16px}}
-                @media(min-width:640px){.nq-audio-controls{position:static;transform:none;flex:none;justify-content:flex-start}}
-                @media(min-width:1024px){.nq-audio-controls{gap:24px}}
-                .nq-ctrl-btn{background:none;border:none;color:#64748b;cursor:pointer;display:flex;align-items:center;padding:0;transition:color 0.15s}
+                .nq-audio-progress-fill{height:100%;background:#f59e0b;transition:width 0.4s linear}
+                .nq-audio-bar-inner{display:flex;align-items:center;justify-content:space-between;padding:10px 20px 12px;max-width:760px;margin:0 auto;gap:12px}
+                @media(min-width:640px){.nq-audio-bar-inner{padding:12px 28px 14px}}
+                .nq-ctrl-btn{background:none;border:none;color:#64748b;cursor:pointer;display:flex;align-items:center;padding:4px;transition:color 0.15s}
                 .nq-ctrl-btn:hover{color:#f59e0b}
-                .nq-ctrl-btn.lg{color:#334155}
-                .nq-ctrl-btn.hide-xs{display:none}
-                @media(min-width:480px){.nq-ctrl-btn.hide-xs{display:flex}}
-                .dark .nq-ctrl-btn.lg{color:#e2e8f0}
-                .nq-play-btn{width:42px;height:42px;background:#f59e0b;border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;cursor:pointer;box-shadow:0 4px 20px rgba(245,158,11,0.35);transition:transform 0.15s;flex-shrink:0}
-                @media(min-width:640px){.nq-play-btn{width:48px;height:48px}}
-                .nq-play-btn:hover{transform:scale(1.05)}
-                .nq-audio-right{display:flex;align-items:center;gap:8px;flex-shrink:0;min-width:0}
-                @media(min-width:640px){.nq-audio-right{gap:12px}}
-                .nq-volume-track{width:60px;height:4px;background:#f1f5f9;border-radius:999px;overflow:hidden;display:none}
-                @media(min-width:640px){.nq-volume-track{display:block;width:80px}}
-                .dark .nq-volume-track{background:#1e293b}
-                .nq-volume-fill{height:100%;background:#94a3b8;border-radius:999px}
+                .dark .nq-ctrl-btn{color:#94a3b8}
+                .dark .nq-ctrl-btn:hover{color:#f59e0b}
+                .nq-vol-icon{color:#94a3b8;flex-shrink:0}
+                .nq-play-btn{width:40px;height:40px;background:#f59e0b;border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;cursor:pointer;transition:background 0.15s,transform 0.12s;flex-shrink:0;padding:0}
+                .nq-play-btn:hover{background:#d97706;transform:scale(1.05)}
                 /* Sound toggle in tabs */
                 .nq-sound-toggle-wrap{display:flex;align-items:center;gap:6px;padding:0 8px;border-left:1px solid #e2e8f0;margin-left:auto;flex-shrink:0}
                 .dark .nq-sound-toggle-wrap{border-left-color:#1e293b}
@@ -689,7 +665,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 .nq-sound-pill.on .nq-sound-pill-thumb{left:18px}
                 .nq-sound-pill.off .nq-sound-pill-thumb{left:2px}
                 /* scroll padding when audio bar visible */
-                .nq-scroll.audio-on{padding-bottom:160px}
+                .nq-scroll.audio-on{padding-bottom:80px}
                 .nq-scroll.audio-off{padding-bottom:32px}
                 /* Right panel */
                 .nq-panel-section{padding:24px;border-bottom:1px solid #f1f5f9}
@@ -1377,36 +1353,20 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                     {/* AUDIO BAR — Only visible when sound is ON */}
                     {audioEnabled && (
                         <div className="nq-audio-bar">
-                            <div className="nq-audio-progress-row">
-                                <div className="nq-audio-progress-track">
-                                    <div className="nq-audio-progress-fill" style={{ width: currentVerse && verses.length ? `${(currentVerse / verses.length) * 100}%` : '0%' }} />
-                                </div>
+                            <div className="nq-audio-progress-track">
+                                <div className="nq-audio-progress-fill" style={{ width: currentVerse && verses.length ? `${(currentVerse / verses.length) * 100}%` : '0%' }} />
                             </div>
                             <div className="nq-audio-bar-inner">
-                                <div className="nq-reciter-info">
-                                    <div className="nq-reciter-avatar">
-                                        <span className="material-symbols-outlined" style={{ fontSize: 22, color: '#f59e0b' }}>person</span>
-                                        <span className="nq-reciter-badge">HQ</span>
-                                    </div>
-                                    <div style={{ minWidth: 0 }}>
-                                        <p className="nq-reciter-name">{currentReciter?.name || 'Mishary Alafasy'}</p>
-                                        <p className="nq-reciter-sub">{currentVerse ? `Reciting: Ayah ${currentVerse}` : 'Ready to play'}</p>
-                                    </div>
-                                </div>
-                                <div className="nq-audio-controls">
-                                    <button className="nq-ctrl-btn hide-xs" title="Repeat"><span className="material-symbols-outlined" style={{ fontSize: 22 }}>repeat_one</span></button>
-                                    <button className="nq-ctrl-btn lg" onClick={playPrev} title="Previous (←)"><SkipBack size={26} /></button>
-                                    <button className="nq-play-btn" onClick={() => { isPlaying ? stopAudio() : playVerse(currentVerse || 1, true); }} title={isPlaying ? 'Pause (Space)' : 'Play (Space)'}>
-                                        {isPlaying ? <Pause size={24} /> : <Play size={24} />}
-                                    </button>
-                                    <button className="nq-ctrl-btn lg" onClick={playNext} title="Next (→)"><SkipForward size={26} /></button>
-                                    <button className="nq-ctrl-btn hide-xs" title="Shuffle"><span className="material-symbols-outlined" style={{ fontSize: 22 }}>shuffle</span></button>
-                                </div>
-                                <div className="nq-audio-right">
-                                    <Volume2 size={16} style={{ color: '#94a3b8', flexShrink: 0 }} />
-                                    <div className="nq-volume-track"><div className="nq-volume-fill" style={{ width: '75%' }} /></div>
-                                    <button className="nq-ctrl-btn" onClick={() => setShowSettings(true)} title="Settings"><span className="material-symbols-outlined" style={{ fontSize: 22 }}>more_vert</span></button>
-                                </div>
+                                <button className="nq-ctrl-btn" onClick={() => setShowSettings(true)} title="Settings">
+                                    <span className="material-symbols-outlined" style={{ fontSize: 20 }}>more_horiz</span>
+                                </button>
+                                <Volume2 size={18} className="nq-vol-icon" />
+                                <button className="nq-ctrl-btn" onClick={playPrev} title="Previous (←)"><SkipBack size={22} /></button>
+                                <button className="nq-play-btn" onClick={() => { isPlaying ? stopAudio() : playVerse(currentVerse || 1, true); }} title={isPlaying ? 'Pause (Space)' : 'Play (Space)'}>
+                                    {isPlaying ? <Pause size={22} /> : <Play size={22} />}
+                                </button>
+                                <button className="nq-ctrl-btn" onClick={playNext} title="Next (→)"><SkipForward size={22} /></button>
+                                <button className="nq-ctrl-btn" onClick={stopAudio} title="Close"><X size={20} /></button>
                             </div>
                         </div>
                     )}
