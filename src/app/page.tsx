@@ -121,10 +121,10 @@ const SURAHS = [
 ];
 
 const FEATURED_ACTIONS = [
-  { icon: 'auto_stories', label: 'Turn the Pages of Quran', sub: 'Read the Mushaf page by page', href: '/quran-pages', gradient: 'linear-gradient(135deg,#10b981,#059669)', shadow: 'rgba(16,185,129,0.3)' },
-  { icon: 'music_note', label: 'Audio Quran', sub: 'Listen with beautiful recitations', href: '/audio-quran', gradient: 'linear-gradient(135deg,#f59e0b,#d97706)', shadow: 'rgba(245,158,11,0.3)' },
-  { icon: 'volunteer_activism', label: 'Dua', sub: 'Daily supplications & prayers', href: '/dua', gradient: 'linear-gradient(135deg,#8b5cf6,#7c3aed)', shadow: 'rgba(139,92,246,0.3)' },
-  { icon: 'format_quote', label: 'Hadees', sub: "Sayings of the Prophet ﷺ", href: '/hadees', gradient: 'linear-gradient(135deg,#0ea5e9,#0284c7)', shadow: 'rgba(14,165,233,0.3)' },
+  { icon: 'auto_stories', label: 'Turn the Pages of Quran', sub: 'Read the Mushaf page by page', href: '/quran-pages' },
+  { icon: 'music_note', label: 'Audio Quran', sub: 'Listen with beautiful recitations', href: '/audio-quran' },
+  { icon: 'volunteer_activism', label: 'Dua', sub: 'Daily supplications & prayers', href: '/dua' },
+  { icon: 'format_quote', label: 'Hadees', sub: "Sayings of the Prophet ﷺ", href: '/hadees' },
 ];
 
 const FEATURES = [
@@ -665,18 +665,14 @@ export default function HomePage() {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 12, marginBottom: 24 }}>
               {FEATURED_ACTIONS.map(f => (
                 <Link key={f.label} href={f.href} style={{ textDecoration: 'none' }}>
-                  <div
-                    style={{ background: f.gradient, borderRadius: 18, padding: '18px 16px', boxShadow: `0 8px 24px ${f.shadow}`, position: 'relative', overflow: 'hidden', minHeight: 110, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', cursor: 'pointer', transition: 'transform 0.18s ease, box-shadow 0.18s ease' }}
-                    onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-3px) scale(1.02)'; (e.currentTarget as HTMLDivElement).style.boxShadow = `0 14px 32px ${f.shadow}`; }}
-                    onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = ''; (e.currentTarget as HTMLDivElement).style.boxShadow = `0 8px 24px ${f.shadow}`; }}
+                  <div style={{ ...S.card, padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer', transition: 'box-shadow 0.15s ease' }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = '0 4px 16px rgba(0,0,0,0.12)'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = ''; }}
                   >
-                    <span className="material-symbols-outlined" style={{ position: 'absolute', bottom: -10, right: -8, fontSize: 80, color: 'white', opacity: 0.1, lineHeight: 1 }}>{f.icon}</span>
-                    <div style={{ position: 'relative', zIndex: 1 }}>
-                      <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 10 }}>
-                        <span className="material-symbols-outlined" style={{ fontSize: 20, color: 'white' }}>{f.icon}</span>
-                      </div>
-                      <p style={{ margin: '0 0 3px', fontWeight: 700, fontSize: 13, color: 'white', lineHeight: 1.2 }}>{f.label}</p>
-                      <p style={{ margin: 0, fontSize: 10.5, color: 'rgba(255,255,255,0.78)', lineHeight: 1.3 }}>{f.sub}</p>
+                    <span className="material-symbols-outlined" style={{ fontSize: 22, color: 'var(--brand-primary)', flexShrink: 0 }}>{f.icon}</span>
+                    <div>
+                      <p style={{ margin: '0 0 2px', fontWeight: 600, fontSize: 13, ...S.text, lineHeight: 1.2 }}>{f.label}</p>
+                      <p style={{ margin: 0, fontSize: 11, ...S.muted, lineHeight: 1.3 }}>{f.sub}</p>
                     </div>
                   </div>
                 </Link>
