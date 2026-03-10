@@ -661,14 +661,25 @@ export default function HomePage() {
         <main className="hp-scroll hp-dot" style={{ background: dark ? 'var(--bg-base)' : '#ffffff' }}>
           <div className="hp-content" style={{ maxWidth: 860, margin: '0 auto' }}>
 
-            {/* ── STATS BAR ── */}
-            <div className="hp-stats" style={{ display: 'grid', gap: 12, marginBottom: 24 }}>
-              {STATS.map(s => (
-                <div key={s.label} style={{ ...S.card, padding: '12px 16px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
-                  <span className="material-symbols-outlined" style={{ fontSize: 18, color: '#f59e0b', opacity: 0.8 }}>{s.icon}</span>
-                  <span style={{ fontSize: 20, fontWeight: 700, color: '#f59e0b', lineHeight: 1 }}>{s.num}</span>
-                  <span style={{ fontSize: 10, ...S.muted, fontWeight: 500 }}>{s.label}</span>
-                </div>
+            {/* ── TOP FEATURED ACTIONS ── */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 12, marginBottom: 24 }}>
+              {FEATURED_ACTIONS.map(f => (
+                <Link key={f.label} href={f.href} style={{ textDecoration: 'none' }}>
+                  <div
+                    style={{ background: f.gradient, borderRadius: 18, padding: '18px 16px', boxShadow: `0 8px 24px ${f.shadow}`, position: 'relative', overflow: 'hidden', minHeight: 110, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', cursor: 'pointer', transition: 'transform 0.18s ease, box-shadow 0.18s ease' }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-3px) scale(1.02)'; (e.currentTarget as HTMLDivElement).style.boxShadow = `0 14px 32px ${f.shadow}`; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = ''; (e.currentTarget as HTMLDivElement).style.boxShadow = `0 8px 24px ${f.shadow}`; }}
+                  >
+                    <span className="material-symbols-outlined" style={{ position: 'absolute', bottom: -10, right: -8, fontSize: 80, color: 'white', opacity: 0.1, lineHeight: 1 }}>{f.icon}</span>
+                    <div style={{ position: 'relative', zIndex: 1 }}>
+                      <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 10 }}>
+                        <span className="material-symbols-outlined" style={{ fontSize: 20, color: 'white' }}>{f.icon}</span>
+                      </div>
+                      <p style={{ margin: '0 0 3px', fontWeight: 700, fontSize: 13, color: 'white', lineHeight: 1.2 }}>{f.label}</p>
+                      <p style={{ margin: 0, fontSize: 10.5, color: 'rgba(255,255,255,0.78)', lineHeight: 1.3 }}>{f.sub}</p>
+                    </div>
+                  </div>
+                </Link>
               ))}
             </div>
 
@@ -729,31 +740,6 @@ export default function HomePage() {
                   </div>
                 </div>
               </Link>
-            </section>
-
-            {/* ── FEATURED ACTIONS ── */}
-            <section style={{ marginBottom: 28 }}>
-              <h2 style={{ margin: '0 0 14px', fontWeight: 700, fontSize: 17, ...S.text }}>Explore</h2>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 12 }}>
-                {FEATURED_ACTIONS.map(f => (
-                  <Link key={f.label} href={f.href} style={{ textDecoration: 'none' }}>
-                    <div
-                      style={{ background: f.gradient, borderRadius: 18, padding: '18px 16px', boxShadow: `0 8px 24px ${f.shadow}`, position: 'relative', overflow: 'hidden', minHeight: 110, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', cursor: 'pointer', transition: 'transform 0.18s ease, box-shadow 0.18s ease' }}
-                      onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-3px) scale(1.02)'; (e.currentTarget as HTMLDivElement).style.boxShadow = `0 14px 32px ${f.shadow}`; }}
-                      onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = ''; (e.currentTarget as HTMLDivElement).style.boxShadow = `0 8px 24px ${f.shadow}`; }}
-                    >
-                      <span className="material-symbols-outlined" style={{ position: 'absolute', bottom: -10, right: -8, fontSize: 80, color: 'white', opacity: 0.1, lineHeight: 1 }}>{f.icon}</span>
-                      <div style={{ position: 'relative', zIndex: 1 }}>
-                        <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 10 }}>
-                          <span className="material-symbols-outlined" style={{ fontSize: 20, color: 'white' }}>{f.icon}</span>
-                        </div>
-                        <p style={{ margin: '0 0 3px', fontWeight: 700, fontSize: 13, color: 'white', lineHeight: 1.2 }}>{f.label}</p>
-                        <p style={{ margin: 0, fontSize: 10.5, color: 'rgba(255,255,255,0.78)', lineHeight: 1.3 }}>{f.sub}</p>
-                      </div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
             </section>
 
             {/* ── FEATURE SHORTCUTS ── */}
