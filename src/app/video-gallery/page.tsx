@@ -101,6 +101,19 @@ const PROPHET_STORIES: VideoItem[] = [
     { id: 'companions', title: 'Stories of Companions', subtitle: 'Sahaba RA', poster: '/images/video-posters/quran-recitation.png', badgeType: 'new', badge: 'New', category: 'story', episodes: 20, year: '2025', genre: 'Stories, Sahaba, History', description: 'Newly released! Inspiring stories of the companions of Prophet Muhammad ﷺ – their sacrifices, bravery, and devotion.' },
 ];
 
+const FEATURED_RECITERS = [
+    { id: 'mishary-r', name: 'Mishary Rashid', label: 'Quran Reciter', poster: '/images/video-posters/quran-recitation.png' },
+    { id: 'sudais-r', name: 'Al-Sudais', label: 'Imam · Makkah', poster: '/images/video-posters/islamic-lectures.png' },
+    { id: 'shuraim-r', name: 'Al-Shuraim', label: 'Quran Reciter', poster: '/images/video-posters/prophet-stories.png' },
+    { id: 'minshawi-r', name: 'Al-Minshawi', label: 'Murattal Style', poster: '/images/video-posters/arabic-calligraphy.png' },
+    { id: 'husary-r', name: 'Al-Husary', label: 'Tajweed Master', poster: '/images/video-posters/islamic-history.png' },
+    { id: 'ajmy-r', name: 'Ahmad Al-Ajmy', label: 'Emotional', poster: '/images/video-posters/quran-recitation.png' },
+    { id: 'ghamdi-r', name: 'Saad Al-Ghamdi', label: 'Melodious', poster: '/images/video-posters/islamic-lectures.png' },
+    { id: 'dosari-r', name: 'Al-Dosari', label: 'Quran Reciter', poster: '/images/video-posters/prophet-stories.png' },
+    { id: 'maher-r', name: 'Maher Al-Muaiqly', label: 'Imam · Makkah', poster: '/images/video-posters/arabic-calligraphy.png' },
+    { id: 'basfar-r', name: 'Abdullah Basfar', label: 'Peaceful', poster: '/images/video-posters/islamic-history.png' },
+];
+
 /* ================================================================
    CAROUSEL COMPONENT
    ================================================================ */
@@ -490,6 +503,71 @@ export default function VideoGalleryPage() {
                         </div>
                     ))}
                 </div>
+            </section>
+
+            {/* ── Spotlight Banner (TIDAL-inspired) ── */}
+            <section className="vg-spotlight vg-animate-in">
+                <div className="vg-spotlight-inner">
+                    <div className="vg-spotlight-text">
+                        <h2 className="vg-spotlight-badge">
+                            Spotlight
+                            <span className="vg-spotlight-badge-icon">
+                                <span className="material-symbols-outlined" style={{ fontSize: 20 }}>arrow_upward</span>
+                            </span>
+                        </h2>
+                        <p className="vg-spotlight-subtitle">Where sacred knowledge finds its voice</p>
+                    </div>
+                    <div className="vg-spotlight-visual">
+                        <img src="/images/video-posters/islamic-lectures.png" alt="Featured Reciter" />
+                    </div>
+                    <div className="vg-spotlight-info">
+                        <p className="vg-spotlight-desc">
+                            Spotlight highlights exceptional Quran recitations and Islamic
+                            lectures, handpicked by our editorial team. Featured content
+                            is added to curated collections and each featured scholar
+                            reaches millions of learners worldwide.
+                        </p>
+                        <button className="vg-spotlight-cta">Listen Now</button>
+                    </div>
+                </div>
+            </section>
+
+            {/* ── Popular Reciters (Circular Row — Amazon/TIDAL-style) ── */}
+            <section className="vg-section vg-animate-in vg-animate-in-delay-1">
+                <div className="vg-section-header">
+                    <h2 className="vg-section-title" style={{ fontWeight: 800 }}>Popular Reciters</h2>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <button className="vg-circle-nav-arrow" aria-label="Previous">
+                            <span className="material-symbols-outlined" style={{ fontSize: 18 }}>chevron_left</span>
+                        </button>
+                        <button className="vg-circle-nav-arrow" aria-label="Next">
+                            <span className="material-symbols-outlined" style={{ fontSize: 18 }}>chevron_right</span>
+                        </button>
+                        <button className="vg-see-all-btn">SEE ALL</button>
+                    </div>
+                </div>
+                {loading ? (
+                    <div className="vg-reciters-row">
+                        {Array.from({ length: 8 }).map((_, i) => (
+                            <div key={i} className="vg-reciter-card" style={{ pointerEvents: 'none' }}>
+                                <div className="vg-skeleton vg-reciter-avatar" />
+                                <div className="vg-skeleton" style={{ width: '70%', height: 12, marginTop: 12, borderRadius: 6 }} />
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="vg-reciters-row">
+                        {FEATURED_RECITERS.map(reciter => (
+                            <div key={reciter.id} className="vg-reciter-card">
+                                <div className="vg-reciter-avatar">
+                                    <img src={reciter.poster} alt={reciter.name} />
+                                </div>
+                                <p className="vg-reciter-name">{reciter.name}</p>
+                                <p className="vg-reciter-label">{reciter.label}</p>
+                            </div>
+                        ))}
+                    </div>
+                )}
             </section>
 
             {/* ── Live TV Channels ── */}

@@ -1236,6 +1236,270 @@
     font-weight: 600;
 }
 
+/* ── Spotlight Banner (TIDAL-inspired) ── */
+.vg-spotlight {
+    padding: 0 48px;
+    margin: 32px 0 8px;
+}
+
+.vg-spotlight-inner {
+    position: relative;
+    display: flex;
+    align-items: center;
+    border-radius: var(--vg-radius-xl);
+    overflow: hidden;
+    background: linear-gradient(135deg, #0d6b3a 0%, #0a8f4f 25%, #08a54a 50%, #0d6b3a 100%);
+    min-height: 280px;
+}
+
+.vg-spotlight-inner::before {
+    content: '';
+    position: absolute;
+    top: -40%;
+    left: 20%;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.06) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.vg-spotlight-text {
+    flex: 0 0 260px;
+    padding: 40px 36px;
+    position: relative;
+    z-index: 2;
+}
+
+.vg-spotlight-badge {
+    font-size: 38px;
+    font-weight: 900;
+    color: #fff;
+    margin: 0 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    line-height: 1;
+}
+
+.vg-spotlight-badge-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    backdrop-filter: blur(4px);
+}
+
+.vg-spotlight-subtitle {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.75);
+    margin: 0;
+    font-weight: 500;
+}
+
+.vg-spotlight-visual {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    position: relative;
+    z-index: 1;
+    min-height: 280px;
+    overflow: hidden;
+}
+
+.vg-spotlight-visual img {
+    height: 100%;
+    max-height: 300px;
+    width: auto;
+    object-fit: cover;
+    filter: drop-shadow(0 10px 40px rgba(0, 0, 0, 0.35));
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.vg-spotlight-inner:hover .vg-spotlight-visual img {
+    transform: scale(1.04);
+}
+
+.vg-spotlight-info {
+    flex: 0 0 320px;
+    padding: 40px 36px;
+    position: relative;
+    z-index: 2;
+}
+
+.vg-spotlight-desc {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.82);
+    line-height: 1.65;
+    margin: 0 0 24px;
+}
+
+.vg-spotlight-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 36px;
+    background: #fff;
+    color: #000;
+    font-size: 14px;
+    font-weight: 700;
+    border: none;
+    border-radius: var(--vg-radius-full);
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+    font-family: inherit;
+    letter-spacing: 0.01em;
+}
+
+.vg-spotlight-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+    background: #f0f0f0;
+}
+
+/* ── Circular Reciters Row (Amazon Music-inspired) ── */
+.vg-reciters-row {
+    display: flex;
+    gap: 36px;
+    overflow-x: auto;
+    padding-bottom: 12px;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.vg-reciters-row::-webkit-scrollbar {
+    display: none;
+}
+
+.vg-reciter-card {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 120px;
+}
+
+.vg-reciter-card:hover {
+    transform: translateY(-5px);
+}
+
+.vg-reciter-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: var(--vg-bg-surface);
+    border: 3px solid transparent;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    position: relative;
+}
+
+.vg-reciter-avatar::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.25) 0%, transparent 50%);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.vg-reciter-card:hover .vg-reciter-avatar::after {
+    opacity: 1;
+}
+
+.vg-reciter-card:hover .vg-reciter-avatar {
+    border-color: var(--vg-accent);
+    box-shadow: 0 0 24px var(--vg-accent-glow), 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.vg-reciter-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.vg-reciter-card:hover .vg-reciter-avatar img {
+    transform: scale(1.1);
+}
+
+.vg-reciter-name {
+    margin: 12px 0 2px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--vg-text);
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 120px;
+    transition: color 0.2s;
+}
+
+.vg-reciter-card:hover .vg-reciter-name {
+    color: var(--vg-accent);
+}
+
+.vg-reciter-label {
+    margin: 0;
+    font-size: 11px;
+    color: var(--vg-text-muted);
+    text-align: center;
+}
+
+/* ── Circle Nav Arrows ── */
+.vg-circle-nav-arrow {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid var(--vg-border-strong);
+    background: var(--vg-bg-surface);
+    color: var(--vg-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.2s;
+    font-family: inherit;
+}
+
+.vg-circle-nav-arrow:hover {
+    background: var(--vg-accent);
+    color: #000;
+    border-color: var(--vg-accent);
+    transform: scale(1.08);
+}
+
+/* ── SEE ALL Button ── */
+.vg-see-all-btn {
+    padding: 6px 18px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--vg-text);
+    border: 1px solid var(--vg-border-strong);
+    border-radius: var(--vg-radius-full);
+    background: transparent;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+    font-family: inherit;
+    margin-left: 4px;
+}
+
+.vg-see-all-btn:hover {
+    background: var(--vg-text);
+    color: var(--vg-bg);
+    border-color: var(--vg-text);
+}
+
 /* ============ RESPONSIVE ============ */
 
 @media (max-width: 1100px) {
@@ -1363,6 +1627,59 @@
         width: 200px;
     }
 
+    /* Spotlight responsive */
+    .vg-spotlight {
+        padding: 0 20px;
+    }
+
+    .vg-spotlight-inner {
+        flex-direction: column;
+        min-height: auto;
+        text-align: center;
+    }
+
+    .vg-spotlight-text {
+        flex: none;
+        padding: 28px 24px 0;
+    }
+
+    .vg-spotlight-badge {
+        justify-content: center;
+        font-size: 30px;
+    }
+
+    .vg-spotlight-visual {
+        min-height: 200px;
+    }
+
+    .vg-spotlight-visual img {
+        max-height: 200px;
+    }
+
+    .vg-spotlight-info {
+        flex: none;
+        padding: 0 24px 28px;
+    }
+
+    /* Reciters responsive */
+    .vg-reciters-row {
+        gap: 24px;
+    }
+
+    .vg-reciter-card {
+        width: 100px;
+    }
+
+    .vg-reciter-avatar {
+        width: 100px;
+        height: 100px;
+    }
+
+    .vg-reciter-name {
+        font-size: 12px;
+        max-width: 100px;
+    }
+
     .vg-bottom-bar {
         padding: 12px 20px;
         gap: 14px;
@@ -1397,6 +1714,42 @@
 
     .vg-card-landscape {
         width: 180px;
+    }
+
+    .vg-spotlight {
+        padding: 0 16px;
+        margin: 20px 0 4px;
+    }
+
+    .vg-spotlight-badge {
+        font-size: 24px;
+    }
+
+    .vg-spotlight-desc {
+        font-size: 12px;
+    }
+
+    .vg-reciters-row {
+        gap: 18px;
+    }
+
+    .vg-reciter-card {
+        width: 85px;
+    }
+
+    .vg-reciter-avatar {
+        width: 85px;
+        height: 85px;
+        border-width: 2px;
+    }
+
+    .vg-reciter-name {
+        font-size: 11px;
+        max-width: 85px;
+    }
+
+    .vg-reciter-label {
+        font-size: 10px;
     }
 
     .vg-promo {
