@@ -924,7 +924,7 @@ export default function HomePage() {
 
                 <div style={{ display: 'flex', alignItems: 'center', gap: 24, flexWrap: 'wrap' }}>
                   {/* Ring + tap button */}
-                  <div style={{ position: 'relative', flexShrink: 0 }}>
+                  <div style={{ position: 'relative', flexShrink: 0, width: 140, height: 140 }}>
                     {/* Circular shadow layer */}
                     <div style={{
                       position: 'absolute', inset: 0, borderRadius: '50%', pointerEvents: 'none', zIndex: 0,
