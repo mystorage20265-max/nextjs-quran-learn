@@ -663,24 +663,24 @@
 }
 
 .vg-hover-popup {
-    position: absolute;
-    top: -20px;
-    left: 50%;
-    transform: translateX(-50%) scale(0.92);
+    position: fixed;
     width: 320px;
-    z-index: 500;
-    border-radius: var(--vg-radius-lg);
+    z-index: 9999;
+    border-radius: 16px;
     background: #1a1a24;
     box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.08);
     overflow: hidden;
     opacity: 0;
     pointer-events: none;
+    transform: scale(0.92);
     transition: opacity 0.22s ease, transform 0.22s ease;
+    font-family: 'Figtree', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: #ffffff;
 }
 
 .vg-hover-popup.visible {
     opacity: 1;
-    transform: translateX(-50%) scale(1);
+    transform: scale(1);
     pointer-events: auto;
 }
 
@@ -689,7 +689,7 @@
     width: 100%;
     aspect-ratio: 16 / 9;
     overflow: hidden;
-    background: var(--vg-bg-surface);
+    background: #1a1a24;
 }
 
 .vg-hover-popup-poster img {
@@ -724,7 +724,7 @@
 .vg-hover-popup-title {
     font-size: 16px;
     font-weight: 700;
-    color: var(--vg-text);
+    color: #ffffff;
     margin: 0;
     line-height: 1.2;
     flex: 1;
@@ -737,7 +737,7 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: var(--vg-accent);
+    background: #f5c518;
     border: none;
     color: #000;
     display: flex;
@@ -750,7 +750,7 @@
 
 .vg-hover-popup-play:hover {
     transform: scale(1.1);
-    box-shadow: 0 0 16px var(--vg-accent-glow);
+    box-shadow: 0 0 16px rgba(245, 197, 24, 0.25);
 }
 
 .vg-hover-popup-play .material-symbols-outlined {
@@ -759,7 +759,7 @@
 
 .vg-hover-popup-meta {
     font-size: 12px;
-    color: var(--vg-text-secondary);
+    color: #a0a0b0;
     margin: 0 0 10px;
     display: flex;
     flex-wrap: wrap;
@@ -769,13 +769,13 @@
 }
 
 .vg-hover-popup-meta .dot {
-    color: var(--vg-text-muted);
+    color: #6b6b7b;
     margin: 0 2px;
 }
 
 .vg-hover-popup-desc {
     font-size: 13px;
-    color: var(--vg-text-muted);
+    color: #a0a0b0;
     margin: 0;
     line-height: 1.5;
     display: -webkit-box;

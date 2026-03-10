@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import './video-gallery.css';
 
@@ -146,17 +147,37 @@ function Carousel({ children, id }: { children: React.ReactNode; id: string }) {
 function PosterCard({ item }: { item: VideoItem }) {
     const [hovered, setHovered] = useState(false);
     const [popupVisible, setPopupVisible] = useState(false);
+    const [popupPos, setPopupPos] = useState<{ top: number; left: number } | null>(null);
     const hoverTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const cardRef = useRef<HTMLDivElement>(null);
+    const popupWidth = 320;
+
+    const calcPosition = useCallback(() => {
+        if (!cardRef.current) return;
+        const rect = cardRef.current.getBoundingClientRect();
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+        // Center popup horizontally on the card
+        let left = rect.left + rect.width / 2 - popupWidth / 2;
+        // Clamp to viewport edges with 12px margin
+        if (left < 12) left = 12;
+        if (left + popupWidth > vw - 12) left = vw - popupWidth - 12;
+        // Position above the card, or below if not enough room
+        let top = rect.top - 10;
+        // If popup would go above viewport, position it below the card
+        if (top < 60) top = rect.bottom + 10;
+        setPopupPos({ top, left });
+    }, []);
 
     const showPopup = useCallback(() => {
         if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
         hoverTimerRef.current = setTimeout(() => {
+            calcPosition();
             setHovered(true);
             requestAnimationFrame(() => setPopupVisible(true));
         }, 400);
-    }, []);
+    }, [calcPosition]);
 
     const hidePopup = useCallback(() => {
         if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
@@ -170,6 +191,19 @@ function PosterCard({ item }: { item: VideoItem }) {
             if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
         };
     }, []);
+
+    // Dismiss popup on scroll so it doesn't float away from the card
+    useEffect(() => {
+        if (!hovered) return;
+        const onScroll = () => {
+            setPopupVisible(false);
+            setHovered(false);
+            if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
+            if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+        };
+        window.addEventListener('scroll', onScroll, { passive: true, capture: true });
+        return () => window.removeEventListener('scroll', onScroll, true);
+    }, [hovered]);
 
     return (
         <div
@@ -194,10 +228,11 @@ function PosterCard({ item }: { item: VideoItem }) {
             <p className="vg-card-title">{item.title}</p>
             {item.subtitle && <p className="vg-card-sub">{item.subtitle}</p>}
 
-            {/* Hover Popup */}
-            {hovered && (
+            {/* Hover Popup – rendered as portal to body with fixed positioning */}
+            {hovered && popupPos && typeof document !== 'undefined' && createPortal(
                 <div
                     className={`vg-hover-popup ${popupVisible ? 'visible' : ''}`}
+                    style={{ top: popupPos.top, left: popupPos.left }}
                     onMouseEnter={showPopup}
                     onMouseLeave={hidePopup}
                 >
@@ -220,7 +255,8 @@ function PosterCard({ item }: { item: VideoItem }) {
                             <p className="vg-hover-popup-desc">{item.description}</p>
                         )}
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
         </div>
     );
