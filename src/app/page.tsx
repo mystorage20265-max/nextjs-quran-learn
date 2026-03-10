@@ -121,10 +121,10 @@ const SURAHS = [
 ];
 
 const FEATURED_ACTIONS = [
-  { icon: 'auto_stories', label: 'Turn the Pages of Quran', sub: 'Read the Mushaf page by page', href: '/quran-pages' },
-  { icon: 'music_note', label: 'Audio Quran', sub: 'Listen with beautiful recitations', href: '/audio-quran' },
-  { icon: 'volunteer_activism', label: 'Dua', sub: 'Daily supplications & prayers', href: '/dua' },
-  { icon: 'format_quote', label: 'Hadees', sub: "Sayings of the Prophet ﷺ", href: '/hadees' },
+  { icon: 'auto_stories', label: 'Mushaf Reader', sub: 'Read page by page', href: '/quran-pages' },
+  { icon: 'music_note', label: 'Audio Quran', sub: 'Listen & recite', href: '/audio-quran' },
+  { icon: 'volunteer_activism', label: 'Dua', sub: 'Daily supplications', href: '/dua' },
+  { icon: 'format_quote', label: 'Hadees', sub: "Prophet's sayings ﷺ", href: '/hadees' },
 ];
 
 const FEATURES = [
@@ -918,7 +918,7 @@ export default function HomePage() {
                   ))}
                 </div>
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: 24, flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 24, flexWrap: 'wrap', justifyContent: typeof window !== 'undefined' && window.innerWidth <= 600 ? 'center' : 'flex-start', width: '100%' }}>
                   {/* Ring + tap button */}
                   <div style={{ position: 'relative', flexShrink: 0, width: 140, height: 140 }}>
                     {/* Circular shadow layer */}
