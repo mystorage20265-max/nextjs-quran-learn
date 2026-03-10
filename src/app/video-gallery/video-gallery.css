@@ -504,12 +504,14 @@
 /* ── Horizontal Carousel ── */
 .vg-carousel-container {
     position: relative;
+    overflow: visible;
 }
 
 .vg-carousel {
     display: flex;
     gap: 14px;
     overflow-x: auto;
+    overflow-y: visible;
     scroll-behavior: smooth;
     padding-bottom: 8px;
     -ms-overflow-style: none;
@@ -571,6 +573,7 @@
 
 .vg-card:hover {
     transform: translateY(-6px);
+    z-index: 200;
 }
 
 .vg-card-poster {
@@ -652,6 +655,142 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+/* ── Hover Popup (tvplus style) ── */
+.vg-card {
+    position: relative;
+}
+
+.vg-hover-popup {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%) scale(0.92);
+    width: 320px;
+    z-index: 500;
+    border-radius: var(--vg-radius-lg);
+    background: #1a1a24;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.22s ease, transform 0.22s ease;
+}
+
+.vg-hover-popup.visible {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+    pointer-events: auto;
+}
+
+.vg-hover-popup-poster {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: var(--vg-bg-surface);
+}
+
+.vg-hover-popup-poster img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.vg-hover-popup-poster::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: linear-gradient(to top, #1a1a24 0%, transparent 100%);
+    pointer-events: none;
+}
+
+.vg-hover-popup-body {
+    padding: 14px 18px 18px;
+}
+
+.vg-hover-popup-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.vg-hover-popup-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--vg-text);
+    margin: 0;
+    line-height: 1.2;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.vg-hover-popup-play {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--vg-accent);
+    border: none;
+    color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.vg-hover-popup-play:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 16px var(--vg-accent-glow);
+}
+
+.vg-hover-popup-play .material-symbols-outlined {
+    font-size: 24px;
+}
+
+.vg-hover-popup-meta {
+    font-size: 12px;
+    color: var(--vg-text-secondary);
+    margin: 0 0 10px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+    line-height: 1.5;
+}
+
+.vg-hover-popup-meta .dot {
+    color: var(--vg-text-muted);
+    margin: 0 2px;
+}
+
+.vg-hover-popup-desc {
+    font-size: 13px;
+    color: var(--vg-text-muted);
+    margin: 0;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Hide popup on touch devices and small screens */
+@media (hover: none),
+(max-width: 860px) {
+    .vg-hover-popup {
+        display: none !important;
+    }
 }
 
 /* ── Landscape Card (for Live TV row) ── */
