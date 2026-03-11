@@ -2048,29 +2048,47 @@ body:has(.quranfy-player-page) .skip-link {
   width: 100%;
   height: 100%;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-end;
+  justify-content: flex-start;
   font-size: 1.5rem;
   font-weight: 700;
-  color: rgba(255,255,255,0.8);
+  color: rgba(255,255,255,0.95);
   position: relative;
   overflow: hidden;
+  padding: 14px;
+}
+
+.sp-surah-art-placeholder::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, 
+    rgba(0,0,0,0) 0%, 
+    rgba(0,0,0,0.1) 40%,
+    rgba(0,0,0,0.35) 100%);
+  pointer-events: none;
 }
 
 .sp-surah-art-placeholder .sp-art-number {
-  font-size: 2.5rem;
+  font-size: 4.5rem;
   font-weight: 900;
-  opacity: 0.3;
+  opacity: 0.15;
   position: absolute;
+  right: 8px;
+  bottom: 0;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: rgba(255,255,255,1);
 }
 
 .sp-surah-art-placeholder .sp-art-name {
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 1.05rem;
+  font-weight: 700;
   z-index: 1;
-  text-align: center;
-  padding: 8px;
+  text-align: left;
   line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.4);
 }
 
 /* ============ RECITER AVATAR ============ */

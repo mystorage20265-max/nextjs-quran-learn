@@ -166,11 +166,27 @@ const Icons = {
 };
 
 /* ─── Surah Art Placeholder ─── */
+const RICH_GRADIENTS = [
+  "linear-gradient(135deg, #0d7377 0%, #14a085 50%, #0b5345 100%)",
+  "linear-gradient(135deg, #2c3e50 0%, #3498db 50%, #1a252f 100%)",
+  "linear-gradient(135deg, #8e44ad 0%, #c0392b 50%, #6c3483 100%)",
+  "linear-gradient(135deg, #16a085 0%, #f4d03f 50%, #1abc9c 100%)",
+  "linear-gradient(135deg, #e74c3c 0%, #c0392b 50%, #922b21 100%)",
+  "linear-gradient(135deg, #2980b9 0%, #6dd5fa 50%, #1a5276 100%)",
+  "linear-gradient(135deg, #8e44ad 0%, #3498db 50%, #6c3483 100%)",
+  "linear-gradient(135deg, #d4a373 0%, #bc6c25 50%, #a0522d 100%)",
+  "linear-gradient(135deg, #1d8348 0%, #239b56 50%, #145a32 100%)",
+  "linear-gradient(135deg, #6c3483 0%, #a569bd 50%, #512e5f 100%)",
+  "linear-gradient(135deg, #1a5276 0%, #2e86c1 50%, #154360 100%)",
+  "linear-gradient(135deg, #b03a2e 0%, #e74c3c 50%, #78281f 100%)",
+];
+
 function SurahArt({ number, name, gradient, size = "normal" }: { number: number; name: string; gradient: string; size?: string; }) {
+  const richGrad = RICH_GRADIENTS[(number - 1) % RICH_GRADIENTS.length];
   return (
-    <div className={`sp-surah-art-placeholder ${gradient}`}>
+    <div className={`sp-surah-art-placeholder`} style={{ background: richGrad }}>
       <span className="sp-art-number">{number}</span>
-      <span className="sp-art-name" style={{ fontSize: size === "small" ? "0.7rem" : "1rem" }}>{name}</span>
+      <span className="sp-art-name" style={{ fontSize: size === "small" ? "0.75rem" : "1.05rem" }}>{name}</span>
     </div>
   );
 }
