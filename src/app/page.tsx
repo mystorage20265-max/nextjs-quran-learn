@@ -122,7 +122,7 @@ const SURAHS = [
 
 const FEATURED_ACTIONS = [
   { icon: 'auto_stories', label: 'Mushaf Reader', sub: 'Read page by page', href: '/quran-pages' },
-  { icon: 'music_note', label: 'Audio Quran', sub: 'Listen & recite', href: '/audio-quran' },
+  { icon: 'music_note', label: 'Quran Player', sub: 'Listen & recite', href: '/quran-player' },
   { icon: 'volunteer_activism', label: 'Dua', sub: 'Daily supplications', href: '/dua' },
   { icon: 'format_quote', label: 'Hadees', sub: "Prophet's sayings ﷺ", href: '/hadees' },
 ];
