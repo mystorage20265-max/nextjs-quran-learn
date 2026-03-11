@@ -1,34 +1,48 @@
 /* =====================================================
-   SPOTIFY-STYLE QURAN PLAYER - Design System
+   QURANFY-STYLE QURAN PLAYER - Design System
    ===================================================== */
 
 /* ─── Hide parent app shell (Navbar, Sidebar, Footer) ─── */
-.spotify-player-page ~ footer,
-body:has(.spotify-player-page) > .app-shell > .global-sidebar,
-body:has(.spotify-player-page) nav.navbar,
-body:has(.spotify-player-page) .navbar-wrapper,
-body:has(.spotify-player-page) header,
-body:has(.spotify-player-page) footer {
+.quranfy-player-page ~ footer,
+body:has(.quranfy-player-page) > .app-shell > .global-sidebar,
+body:has(.quranfy-player-page) nav.navbar,
+body:has(.quranfy-player-page) .navbar-wrapper,
+body:has(.quranfy-player-page) header,
+body:has(.quranfy-player-page) footer {
   display: none !important;
 }
 
-body:has(.spotify-player-page) {
+body:has(.quranfy-player-page) {
   overflow: hidden !important;
   background: #000 !important;
+  scrollbar-width: none !important;
 }
 
-body:has(.spotify-player-page)::before,
-body:has(.spotify-player-page)::after {
+body:has(.quranfy-player-page)::-webkit-scrollbar {
   display: none !important;
 }
 
-body:has(.spotify-player-page) .app-shell {
+html:has(.quranfy-player-page) {
+  overflow: hidden !important;
+  scrollbar-width: none !important;
+}
+
+html:has(.quranfy-player-page)::-webkit-scrollbar {
+  display: none !important;
+}
+
+body:has(.quranfy-player-page)::before,
+body:has(.quranfy-player-page)::after {
+  display: none !important;
+}
+
+body:has(.quranfy-player-page) .app-shell {
   display: block !important;
   height: 100vh !important;
   overflow: hidden !important;
 }
 
-body:has(.spotify-player-page) .app-shell > main {
+body:has(.quranfy-player-page) .app-shell > main {
   padding: 0 !important;
   margin: 0 !important;
   min-height: 100vh !important;
@@ -36,17 +50,17 @@ body:has(.spotify-player-page) .app-shell > main {
   overflow: hidden !important;
 }
 
-body:has(.spotify-player-page) .page-transition-wrapper {
+body:has(.quranfy-player-page) .page-transition-wrapper {
   height: 100vh !important;
   overflow: hidden !important;
 }
 
-body:has(.spotify-player-page) .skip-link {
+body:has(.quranfy-player-page) .skip-link {
   display: none !important;
 }
 
-/* ============ SPOTIFY COLOR OVERRIDES ============ */
-.spotify-player-page {
+/* ============ QURANFY COLOR OVERRIDES ============ */
+.quranfy-player-page {
   --sp-black: #000000;
   --sp-bg-base: #121212;
   --sp-bg-surface: #181818;
@@ -70,14 +84,20 @@ body:has(.spotify-player-page) .skip-link {
   font-family: 'Figtree', 'Inter', 'Circular Std', system-ui, -apple-system, sans-serif;
   background: var(--sp-black);
   color: var(--sp-text-primary);
-  min-height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
   overflow: hidden;
-  position: relative;
+  z-index: 9000;
 }
 
 /* Override parent body styles for this page */
-.spotify-player-page,
-.spotify-player-page * {
+.quranfy-player-page,
+.quranfy-player-page * {
   box-sizing: border-box;
 }
 
@@ -86,7 +106,7 @@ body:has(.spotify-player-page) .skip-link {
   display: grid;
   grid-template-columns: var(--sp-sidebar-width) 1fr;
   grid-template-rows: 1fr var(--sp-player-height);
-  height: 100vh;
+  height: 100%;
   overflow: hidden;
   background: var(--sp-black);
 }
@@ -381,20 +401,11 @@ body:has(.spotify-player-page) .skip-link {
   border-radius: 8px;
   margin: 8px 8px 8px 0;
   position: relative;
+  scrollbar-width: none;
 }
 
 .sp-main::-webkit-scrollbar {
-  width: 12px;
-}
-
-.sp-main::-webkit-scrollbar-thumb {
-  background: transparent;
-  border-radius: 6px;
-  border: 3px solid transparent;
-}
-
-.sp-main:hover::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.2);
+  display: none;
 }
 
 /* ============ TOP BAR ============ */
@@ -908,7 +919,7 @@ body:has(.spotify-player-page) .skip-link {
   background: var(--sp-black);
   border-top: 1px solid rgba(255,255,255,0.07);
   display: grid;
-  grid-template-columns: 1fr 2fr 1fr;
+  grid-template-columns: minmax(200px, 1fr) 2fr minmax(200px, 1fr);
   align-items: center;
   padding: 0 16px;
   z-index: 200;
@@ -924,14 +935,15 @@ body:has(.spotify-player-page) .skip-link {
 }
 
 .sp-player-art {
-  width: 56px;
-  height: 56px;
-  border-radius: 4px;
+  width: 64px;
+  height: 64px;
+  border-radius: 6px;
   overflow: hidden;
   flex-shrink: 0;
   position: relative;
   cursor: pointer;
   transition: all 200ms ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .sp-player-art img {
@@ -961,17 +973,19 @@ body:has(.spotify-player-page) .skip-link {
 
 .sp-player-track-info {
   min-width: 0;
+  max-width: 240px;
 }
 
 .sp-player-track-name {
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 15px;
+  font-weight: 600;
   color: var(--sp-text-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   cursor: pointer;
   transition: text-decoration 200ms ease;
+  letter-spacing: -0.01em;
 }
 
 .sp-player-track-name:hover {
@@ -979,12 +993,12 @@ body:has(.spotify-player-page) .skip-link {
 }
 
 .sp-player-track-artist {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--sp-text-secondary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin-top: 2px;
+  margin-top: 3px;
   cursor: pointer;
 }
 
@@ -1366,6 +1380,127 @@ body:has(.spotify-player-page) .skip-link {
   margin-left: 2px;
 }
 
+/* ============ RECITER PLAYLIST VIEW ============ */
+.sp-rp-hero {
+  position: relative;
+  padding: 80px 32px 32px;
+  min-height: 340px;
+  display: flex;
+  align-items: flex-end;
+}
+
+.sp-rp-hero-inner {
+  display: flex;
+  align-items: flex-end;
+  gap: 24px;
+  max-width: 100%;
+  width: 100%;
+}
+
+.sp-rp-cover {
+  width: 232px;
+  height: 232px;
+  border-radius: 4px;
+  overflow: hidden;
+  flex-shrink: 0;
+  box-shadow: 0 4px 60px rgba(0,0,0,0.5);
+}
+
+.sp-rp-cover .sp-surah-art-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sp-rp-info {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.sp-rp-type {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--sp-text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.sp-rp-title {
+  font-size: clamp(2rem, 5vw, 6rem);
+  font-weight: 900;
+  color: var(--sp-text-primary);
+  letter-spacing: -0.04em;
+  line-height: 1;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sp-rp-desc {
+  font-size: 14px;
+  color: rgba(255,255,255,0.7);
+  margin: 4px 0 0;
+  line-height: 1.4;
+}
+
+.sp-rp-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--sp-text-primary);
+  margin-top: 6px;
+  flex-wrap: wrap;
+}
+
+.sp-rp-meta-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.sp-rp-meta-avatar .sp-surah-art-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sp-rp-meta-name {
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.sp-rp-meta-name:hover {
+  text-decoration: underline;
+}
+
+.sp-rp-meta-dot {
+  color: var(--sp-text-secondary);
+  font-size: 8px;
+}
+
+.sp-rp-meta-count {
+  color: var(--sp-text-secondary);
+  font-weight: 400;
+}
+
+.sp-rp-controls {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 24px 24px 8px;
+}
+
 /* ============ SEARCH BAR ============ */
 .sp-search-container {
   position: relative;
@@ -1745,6 +1880,41 @@ body:has(.spotify-player-page) .skip-link {
 
   .sp-playlist-meta {
     justify-content: center;
+  }
+
+  /* Reciter playlist responsive */
+  .sp-rp-hero {
+    padding: 80px 24px 24px;
+    min-height: 280px;
+  }
+
+  .sp-rp-hero-inner {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .sp-rp-cover {
+    width: 200px;
+    height: 200px;
+  }
+
+  .sp-rp-info {
+    align-items: center;
+  }
+
+  .sp-rp-title {
+    font-size: clamp(1.5rem, 4vw, 3rem);
+    white-space: normal;
+    text-align: center;
+  }
+
+  .sp-rp-meta {
+    justify-content: center;
+  }
+
+  .sp-rp-desc {
+    text-align: center;
   }
 }
 

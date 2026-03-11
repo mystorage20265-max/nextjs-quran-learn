@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import "./spotify-player.css";
+import "./quranfy-player.css";
 
 /* ─── Types ─── */
 interface Track {
@@ -23,16 +23,18 @@ interface Reciter {
   name: string;
   arabicName: string;
   identifier: string;
+  server: string; // mp3quran.net CDN path
+  image: string;  // AI-generated cover art
 }
 
 /* ─── Constants ─── */
 const RECITERS: Reciter[] = [
-  { id: 1, name: "Mishary Rashid Alafasy", arabicName: "مشاري العفاسي", identifier: "ar.alafasy" },
-  { id: 2, name: "Abdul Basit", arabicName: "عبد الباسط", identifier: "ar.abdulbasitmurattal" },
-  { id: 3, name: "AbdulRahman Al-Sudais", arabicName: "عبد الرحمن السديس", identifier: "ar.abdurrahmaansudais" },
-  { id: 5, name: "Maher Al-Muaiqly", arabicName: "ماهر المعيقلي", identifier: "ar.maaboralmueaqly" },
-  { id: 6, name: "Saad Al-Ghamdi", arabicName: "سعد الغامدي", identifier: "ar.saaboralghamdi" },
-  { id: 7, name: "Ahmad Al-Ajmi", arabicName: "أحمد العجمي", identifier: "ar.ahmedajamy" },
+  { id: 1, name: "Mishary Rashid Alafasy", arabicName: "مشاري العفاسي", identifier: "ar.alafasy", server: "https://server8.mp3quran.net/afs", image: "/images/reciters/alafasy.png" },
+  { id: 2, name: "Abdul Basit", arabicName: "عبد الباسط", identifier: "ar.abdulbasitmurattal", server: "https://server7.mp3quran.net/basit", image: "/images/reciters/abdulbasit.png" },
+  { id: 3, name: "AbdulRahman Al-Sudais", arabicName: "عبد الرحمن السديس", identifier: "ar.abdurrahmaansudais", server: "https://server11.mp3quran.net/sds", image: "/images/reciters/sudais.png" },
+  { id: 5, name: "Maher Al-Muaiqly", arabicName: "ماهر المعيقلي", identifier: "ar.maaboralmueaqly", server: "https://server12.mp3quran.net/maher", image: "/images/reciters/maher.png" },
+  { id: 6, name: "Saad Al-Ghamdi", arabicName: "سعد الغامدي", identifier: "ar.saaboralghamdi", server: "https://server7.mp3quran.net/s_gmd", image: "/images/reciters/ghamdi.png" },
+  { id: 7, name: "Ahmad Al-Ajmi", arabicName: "أحمد العجمي", identifier: "ar.ahmedajamy", server: "https://server8.mp3quran.net/ajm", image: "/images/reciters/ajmi.png" },
 ];
 
 const GRADIENTS = [
@@ -85,8 +87,9 @@ const QUICK_PLAY_SURAHS = [
   { number: 112, name: "Al-Ikhlas" },
 ];
 
-function getAudioUrl(surahNumber: number, reciterIdentifier: string): string {
-  return `https://cdn.islamic.network/quran/audio-surah/128/${reciterIdentifier}/${surahNumber}.mp3`;
+function getAudioUrl(surahNumber: number, reciterServer: string): string {
+  const paddedNumber = surahNumber.toString().padStart(3, "0");
+  return `${reciterServer}/${paddedNumber}.mp3`;
 }
 
 function estimateDuration(ayahs: number): { display: string; seconds: number } {
@@ -188,6 +191,9 @@ export default function QuranPlayerPage() {
   const [scrolled, setScrolled] = useState(false);
   const [activeFilter, setActiveFilter] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [audioError, setAudioError] = useState<string | null>(null);
+  const [selectedReciterPlaylist, setSelectedReciterPlaylist] = useState<Reciter | null>(null);
 
   const audioRef = useRef<HTMLAudioElement>(null);
   const mainRef = useRef<HTMLDivElement>(null);
@@ -205,7 +211,7 @@ export default function QuranPlayerPage() {
       ayahs: s.ayahs,
       reciter: currentReciter.name,
       reciterId: currentReciter.id,
-      audioUrl: getAudioUrl(s.number, currentReciter.identifier),
+      audioUrl: getAudioUrl(s.number, currentReciter.server),
       duration: est.display,
       durationSeconds: est.seconds,
       gradient: GRADIENTS[i % GRADIENTS.length],
@@ -219,6 +225,43 @@ export default function QuranPlayerPage() {
     }
     return true;
   });
+
+  // Build tracks for a specific reciter
+  const buildReciterTracks = (reciter: Reciter): Track[] => {
+    return SURAHS_DATA.map((s, i) => {
+      const est = estimateDuration(s.ayahs);
+      return {
+        id: s.number,
+        name: `Surah ${s.name}`,
+        englishName: s.name,
+        translation: s.translation,
+        ayahs: s.ayahs,
+        reciter: reciter.name,
+        reciterId: reciter.id,
+        audioUrl: getAudioUrl(s.number, reciter.server),
+        duration: est.display,
+        durationSeconds: est.seconds,
+        gradient: GRADIENTS[i % GRADIENTS.length],
+      };
+    });
+  };
+
+  // Compute total duration for a track list
+  const getTotalDuration = (trackList: Track[]) => {
+    const totalSec = trackList.reduce((acc, t) => acc + t.durationSeconds, 0);
+    const hours = Math.floor(totalSec / 3600);
+    const mins = Math.floor((totalSec % 3600) / 60);
+    if (hours > 0) return `about ${hours} hr ${mins} min`;
+    return `about ${mins} min`;
+  };
+
+  // Open reciter playlist
+  const openReciterPlaylist = (reciter: Reciter) => {
+    setSelectedReciterPlaylist(reciter);
+    setCurrentReciter(reciter);
+    // Scroll main content to top
+    if (mainRef.current) mainRef.current.scrollTop = 0;
+  };
 
   // Get greeting based on hour
   const getGreeting = () => {
@@ -243,7 +286,10 @@ export default function QuranPlayerPage() {
     if (!audio) return;
 
     const onTimeUpdate = () => setCurrentTime(audio.currentTime);
-    const onDurationChange = () => setDuration(audio.duration);
+    const onDurationChange = () => {
+      setDuration(audio.duration);
+      setIsLoading(false);
+    };
     const onEnded = () => {
       if (isRepeating) {
         audio.currentTime = 0;
@@ -252,14 +298,32 @@ export default function QuranPlayerPage() {
         playNext();
       }
     };
-    const onPlay = () => setIsPlaying(true);
+    const onPlay = () => {
+      setIsPlaying(true);
+      setIsLoading(false);
+      setAudioError(null);
+    };
     const onPause = () => setIsPlaying(false);
+    const onError = () => {
+      setIsLoading(false);
+      setIsPlaying(false);
+      setAudioError("Failed to load audio. Please try another reciter or surah.");
+      console.error("Audio load error:", audio.error, "src:", audio.src);
+    };
+    const onCanPlay = () => {
+      setIsLoading(false);
+      setAudioError(null);
+    };
+    const onWaiting = () => setIsLoading(true);
 
     audio.addEventListener("timeupdate", onTimeUpdate);
     audio.addEventListener("durationchange", onDurationChange);
     audio.addEventListener("ended", onEnded);
     audio.addEventListener("play", onPlay);
     audio.addEventListener("pause", onPause);
+    audio.addEventListener("error", onError);
+    audio.addEventListener("canplay", onCanPlay);
+    audio.addEventListener("waiting", onWaiting);
 
     return () => {
       audio.removeEventListener("timeupdate", onTimeUpdate);
@@ -267,6 +331,9 @@ export default function QuranPlayerPage() {
       audio.removeEventListener("ended", onEnded);
       audio.removeEventListener("play", onPlay);
       audio.removeEventListener("pause", onPause);
+      audio.removeEventListener("error", onError);
+      audio.removeEventListener("canplay", onCanPlay);
+      audio.removeEventListener("waiting", onWaiting);
     };
   }, [isRepeating, currentTrack]);
 
@@ -282,23 +349,55 @@ export default function QuranPlayerPage() {
     if (!audio) return;
 
     if (currentTrack?.id === track.id && currentTrack?.reciterId === track.reciterId) {
-      // Toggle play/pause
+      // Toggle play/pause for the same track
       if (isPlaying) {
         audio.pause();
       } else {
-        await audio.play().catch(() => {});
+        setIsLoading(true);
+        await audio.play().catch((err) => {
+          console.error("Play error (toggle):", err);
+          setIsLoading(false);
+        });
       }
       return;
     }
 
+    // New track or different reciter — load fresh
+    setAudioError(null);
+    setIsLoading(true);
     setCurrentTrack(track);
+    setCurrentTime(0);
+    setDuration(0);
+
+    // Stop any current playback first
+    audio.pause();
+    audio.currentTime = 0;
+
     audio.src = track.audioUrl;
     audio.load();
-    try {
-      await audio.play();
-    } catch {
-      // User interaction required
-    }
+
+    // Wait for enough data to play
+    const onCanPlayOnce = async () => {
+      audio.removeEventListener("canplaythrough", onCanPlayOnce);
+      try {
+        await audio.play();
+        setIsLoading(false);
+      } catch (err) {
+        console.error("Play error (new track):", err);
+        setIsLoading(false);
+      }
+    };
+
+    const onErrorOnce = () => {
+      audio.removeEventListener("error", onErrorOnce);
+      audio.removeEventListener("canplaythrough", onCanPlayOnce);
+      setIsLoading(false);
+      setIsPlaying(false);
+      setAudioError("Failed to load audio. Try another reciter.");
+    };
+
+    audio.addEventListener("canplaythrough", onCanPlayOnce, { once: true });
+    audio.addEventListener("error", onErrorOnce, { once: true });
   }, [currentTrack, isPlaying]);
 
   const togglePlay = () => {
@@ -354,8 +453,37 @@ export default function QuranPlayerPage() {
   const isTrackPlaying = (trackId: number) => currentTrack?.id === trackId && isPlaying;
 
   return (
-    <div className="spotify-player-page">
+    <div className="quranfy-player-page">
       <audio ref={audioRef} preload="auto" />
+
+      {/* Audio Error Toast */}
+      {audioError && (
+        <div style={{
+          position: 'fixed', bottom: 100, left: '50%', transform: 'translateX(-50%)',
+          background: '#e74c3c', color: '#fff', padding: '10px 24px', borderRadius: 8,
+          fontSize: 13, fontWeight: 600, zIndex: 9999, boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
+          display: 'flex', alignItems: 'center', gap: 10, maxWidth: '90vw'
+        }}>
+          <span>⚠️ {audioError}</span>
+          <button onClick={() => setAudioError(null)} style={{
+            background: 'rgba(255,255,255,0.2)', border: 'none', color: '#fff',
+            borderRadius: 4, padding: '4px 10px', cursor: 'pointer', fontSize: 12
+          }}>✕</button>
+        </div>
+      )}
+
+      {/* Loading Indicator */}
+      {isLoading && currentTrack && (
+        <div style={{
+          position: 'fixed', bottom: 100, left: '50%', transform: 'translateX(-50%)',
+          background: 'rgba(29, 185, 84, 0.9)', color: '#fff', padding: '8px 20px',
+          borderRadius: 8, fontSize: 13, fontWeight: 600, zIndex: 9998,
+          boxShadow: '0 4px 16px rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', gap: 8
+        }}>
+          <div className="spinner" style={{ width: 14, height: 14, borderWidth: 2, borderTopColor: '#fff' }} />
+          Loading audio...
+        </div>
+      )}
 
       <div className="sp-shell">
         {/* ═══ SIDEBAR ═══ */}
@@ -406,12 +534,10 @@ export default function QuranPlayerPage() {
                 <div
                   key={r.id}
                   className={`sp-library-item${currentReciter.id === r.id ? " active" : ""}`}
-                  onClick={() => setCurrentReciter(r)}
+                  onClick={() => openReciterPlaylist(r)}
                 >
                   <div className="sp-library-item-art circle">
-                    <div className={`sp-surah-art-placeholder ${GRADIENTS[r.id % GRADIENTS.length]}`}>
-                      <span className="sp-art-name" style={{ fontSize: "0.6rem" }}>{r.arabicName}</span>
-                    </div>
+                    <img src={r.image} alt={r.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
                   </div>
                   <div className="sp-library-item-info">
                     <div className={`sp-library-item-name${currentReciter.id === r.id ? " playing" : ""}`}>{r.name}</div>
@@ -452,7 +578,11 @@ export default function QuranPlayerPage() {
           {/* Top Bar */}
           <div className={`sp-topbar${scrolled ? " scrolled" : ""}`}>
             <div className="sp-topbar-left">
-              <button className="sp-topbar-nav-btn" disabled>
+              <button
+                className="sp-topbar-nav-btn"
+                disabled={!selectedReciterPlaylist}
+                onClick={() => setSelectedReciterPlaylist(null)}
+              >
                 <Icons.ChevronLeft />
               </button>
               <button className="sp-topbar-nav-btn" disabled>
@@ -475,186 +605,247 @@ export default function QuranPlayerPage() {
             </div>
           </div>
 
-          {/* Hero Gradient */}
-          <div className="sp-hero-gradient">
-            <h1 className="sp-hero-greeting">{getGreeting()}</h1>
-          </div>
+          {/* ═══ RECITER PLAYLIST VIEW ═══ */}
+          {selectedReciterPlaylist ? (() => {
+            const plReciter = selectedReciterPlaylist;
+            const plTracks = buildReciterTracks(plReciter);
+            const plFiltered = searchQuery
+              ? plTracks.filter(t => t.name.toLowerCase().includes(searchQuery.toLowerCase()) || t.translation.toLowerCase().includes(searchQuery.toLowerCase()))
+              : plTracks;
+            const totalDur = getTotalDuration(plFiltered);
+            const gradientClass = GRADIENTS[plReciter.id % GRADIENTS.length];
+            // extract gradient colors for background
+            const gradientBgMap: Record<string, string> = {
+              'sp-gradient-1': 'rgba(30, 130, 76, 0.6)',
+              'sp-gradient-2': 'rgba(22, 115, 166, 0.6)',
+              'sp-gradient-3': 'rgba(142, 68, 173, 0.6)',
+              'sp-gradient-4': 'rgba(192, 57, 43, 0.6)',
+              'sp-gradient-5': 'rgba(39, 60, 117, 0.6)',
+              'sp-gradient-6': 'rgba(30, 130, 76, 0.5)',
+              'sp-gradient-7': 'rgba(211, 84, 0, 0.6)',
+              'sp-gradient-8': 'rgba(44, 62, 80, 0.6)',
+            };
+            const heroBg = gradientBgMap[gradientClass] || 'rgba(30, 130, 76, 0.6)';
 
-          {/* Quick Play Grid */}
-          <div className="sp-quickplay-grid">
-            {QUICK_PLAY_SURAHS.map((s, i) => {
-              const track = tracks.find(t => t.id === s.number);
-              if (!track) return null;
-              return (
-                <div key={s.number} className="sp-quickplay-card" onClick={() => playTrack(track)}>
-                  <div className="sp-quickplay-art">
-                    <SurahArt number={s.number} name={s.name} gradient={GRADIENTS[i % GRADIENTS.length]} size="small" />
+            return (
+              <>
+                {/* Playlist Hero Banner */}
+                <div className="sp-rp-hero" style={{ background: `linear-gradient(180deg, ${heroBg} 0%, rgba(18,18,18,1) 100%)` }}>
+                  <div className="sp-rp-hero-inner">
+                    <div className="sp-rp-cover">
+                      <img src={plReciter.image} alt={plReciter.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 4 }} />
+                    </div>
+                    <div className="sp-rp-info">
+                      <span className="sp-rp-type">Playlist</span>
+                      <h1 className="sp-rp-title">{plReciter.name}</h1>
+                      <p className="sp-rp-desc">
+                        Complete Quran recitation by {plReciter.name}. Listen to all 114 surahs with beautiful tilawah.
+                      </p>
+                      <div className="sp-rp-meta">
+                        <div className="sp-rp-meta-avatar">
+                          <img src={plReciter.image} alt={plReciter.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
+                        </div>
+                        <span className="sp-rp-meta-name">{plReciter.name}</span>
+                        <span className="sp-rp-meta-dot">•</span>
+                        <span className="sp-rp-meta-count">{plFiltered.length} surahs, {totalDur}</span>
+                      </div>
+                    </div>
                   </div>
-                  <span className="sp-quickplay-name">Surah {s.name}</span>
-                  <button className="sp-quickplay-play" onClick={e => { e.stopPropagation(); playTrack(track); }}>
-                    {isTrackPlaying(s.number) ? <Icons.Pause /> : <Icons.Play />}
+                </div>
+
+                {/* Playlist Controls */}
+                <div className="sp-rp-controls">
+                  <button
+                    className="sp-big-play-btn"
+                    onClick={() => {
+                      if (currentTrack && currentTrack.reciterId === plReciter.id && isPlaying) {
+                        togglePlay();
+                      } else if (plFiltered.length > 0) {
+                        playTrack(plFiltered[0]);
+                      }
+                    }}
+                  >
+                    {(isPlaying && currentTrack?.reciterId === plReciter.id) ? <Icons.Pause /> : <Icons.Play />}
+                  </button>
+                  <button
+                    className={`sp-control-btn${isShuffled ? " active" : ""}`}
+                    onClick={() => setIsShuffled(!isShuffled)}
+                    style={{ width: 32, height: 32 }}
+                  >
+                    <Icons.Shuffle />
                   </button>
                 </div>
-              );
-            })}
-          </div>
 
-          {/* Popular Reciters Section */}
-          <div className="sp-section">
-            <div className="sp-section-header">
-              <h2 className="sp-section-title">Popular Reciters</h2>
-              <button className="sp-section-show-all">Show all</button>
-            </div>
-            <div className="sp-reciter-row">
-              {RECITERS.map((r, i) => (
-                <div key={r.id} className="sp-reciter-item" onClick={() => setCurrentReciter(r)}>
-                  <div className="sp-reciter-avatar">
-                    <div className={`sp-surah-art-placeholder ${GRADIENTS[r.id % GRADIENTS.length]}`}>
-                      <span className="sp-art-name" style={{ fontSize: "0.85rem" }}>{r.arabicName}</span>
-                    </div>
+                {/* Playlist Track List */}
+                <div className="sp-tracklist" style={{ padding: '0 24px 24px' }}>
+                  <div className="sp-tracklist-header">
+                    <span>#</span>
+                    <span>Title</span>
+                    <span className="sp-th-album">Ayahs</span>
+                    <span className="sp-th-duration" style={{ textAlign: 'right' }}>
+                      <svg viewBox="0 0 16 16" fill="currentColor" width="16" height="16"><path d="M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13zM0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8z"/><path d="M8 3.25a.75.75 0 0 1 .75.75v3.25H11a.75.75 0 0 1 0 1.5H7.25V4A.75.75 0 0 1 8 3.25z"/></svg>
+                    </span>
                   </div>
-                  <span className="sp-reciter-name">{r.name}</span>
-                  <span className="sp-reciter-role" style={{ fontSize: 11, color: "var(--sp-text-secondary)" }}>Reciter</span>
-                </div>
-              ))}
-            </div>
-          </div>
 
-          {/* Featured Surahs (Card Grid) */}
-          <div className="sp-section">
-            <div className="sp-section-header">
-              <h2 className="sp-section-title">Featured Surahs</h2>
-              <button className="sp-section-show-all">Show all</button>
-            </div>
-            <div className="sp-card-grid">
-              {filteredTracks.slice(0, 8).map(track => (
-                <div key={track.id} className="sp-card" onClick={() => playTrack(track)}>
-                  <div className="sp-card-art-container">
-                    <SurahArt number={track.id} name={track.englishName} gradient={track.gradient} />
-                    <button className="sp-card-play-btn" onClick={e => { e.stopPropagation(); playTrack(track); }}>
-                      {isTrackPlaying(track.id) ? <Icons.Pause /> : <Icons.Play />}
-                    </button>
-                  </div>
-                  <div className="sp-card-title">{track.name}</div>
-                  <div className="sp-card-subtitle">{track.translation} · {track.ayahs} ayahs</div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Short Surahs */}
-          <div className="sp-section">
-            <div className="sp-section-header">
-              <h2 className="sp-section-title">Short Surahs for Daily Recitation</h2>
-              <button className="sp-section-show-all">Show all</button>
-            </div>
-            <div className="sp-card-grid">
-              {filteredTracks.filter(t => t.ayahs <= 20).slice(0, 8).map(track => (
-                <div key={track.id} className="sp-card" onClick={() => playTrack(track)}>
-                  <div className="sp-card-art-container">
-                    <SurahArt number={track.id} name={track.englishName} gradient={track.gradient} />
-                    <button className="sp-card-play-btn" onClick={e => { e.stopPropagation(); playTrack(track); }}>
-                      {isTrackPlaying(track.id) ? <Icons.Pause /> : <Icons.Play />}
-                    </button>
-                  </div>
-                  <div className="sp-card-title">{track.name}</div>
-                  <div className="sp-card-subtitle">{track.translation} · {track.ayahs} ayahs</div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Playlist / Track List */}
-          <div className="sp-section">
-            <div className="sp-playlist-hero">
-              <div className="sp-playlist-cover">
-                <SurahArt number={0} name="القرآن الكريم" gradient="sp-gradient-2" />
-              </div>
-              <div className="sp-playlist-info">
-                <span className="sp-playlist-type">Playlist</span>
-                <h2 className="sp-playlist-name">All Surahs</h2>
-                <p className="sp-playlist-desc">Complete collection of Quran recitations by {currentReciter.name}</p>
-                <div className="sp-playlist-meta">
-                  <span style={{ fontWeight: 700 }}>{currentReciter.name}</span>
-                  <span className="dot">•</span>
-                  <span>{filteredTracks.length} surahs</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Controls */}
-            <div className="sp-playlist-controls">
-              <button
-                className="sp-big-play-btn"
-                onClick={() => {
-                  if (currentTrack && isPlaying) {
-                    togglePlay();
-                  } else if (currentTrack) {
-                    togglePlay();
-                  } else if (filteredTracks.length > 0) {
-                    playTrack(filteredTracks[0]);
-                  }
-                }}
-              >
-                {isPlaying ? <Icons.Pause /> : <Icons.Play />}
-              </button>
-              <button
-                className={`sp-control-btn${isShuffled ? " active" : ""}`}
-                onClick={() => setIsShuffled(!isShuffled)}
-                style={{ width: 32, height: 32, position: "relative" }}
-              >
-                <Icons.Shuffle />
-              </button>
-            </div>
-
-            {/* Track List Table Header */}
-            <div className="sp-tracklist">
-              <div className="sp-tracklist-header">
-                <span>#</span>
-                <span>Title</span>
-                <span className="sp-th-album">Reciter</span>
-                <span className="sp-th-duration" style={{ textAlign: "right" }}>
-                  <svg viewBox="0 0 16 16" fill="currentColor" width="16" height="16"><path d="M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13zM0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8z"/><path d="M8 3.25a.75.75 0 0 1 .75.75v3.25H11a.75.75 0 0 1 0 1.5H7.25V4A.75.75 0 0 1 8 3.25z"/></svg>
-                </span>
-              </div>
-
-              {filteredTracks.map((track, index) => {
-                const playing = currentTrack?.id === track.id;
-                return (
-                  <div
-                    key={track.id}
-                    className={`sp-track-row${playing ? " playing" : ""}`}
-                    onClick={() => playTrack(track)}
-                  >
-                    <div className="sp-track-index">
-                      <span className="sp-track-number">{index + 1}</span>
-                      <span className="sp-track-play-icon">
-                        {playing && isPlaying ? <Icons.Pause /> : <Icons.Play />}
-                      </span>
-                      {playing && isPlaying && (
-                        <div className="sp-track-eq">
-                          <span /><span /><span /><span />
+                  {plFiltered.map((track, index) => {
+                    const playing = currentTrack?.id === track.id && currentTrack?.reciterId === track.reciterId;
+                    return (
+                      <div
+                        key={track.id}
+                        className={`sp-track-row${playing ? " playing" : ""}`}
+                        onClick={() => playTrack(track)}
+                      >
+                        <div className="sp-track-index">
+                          <span className="sp-track-number">{index + 1}</span>
+                          <span className="sp-track-play-icon">
+                            {playing && isPlaying ? <Icons.Pause /> : <Icons.Play />}
+                          </span>
+                          {playing && isPlaying && (
+                            <div className="sp-track-eq">
+                              <span /><span /><span /><span />
+                            </div>
+                          )}
                         </div>
-                      )}
-                    </div>
-                    <div className="sp-track-info">
-                      <div className="sp-track-art">
-                        <SurahArt number={track.id} name={track.englishName} gradient={track.gradient} size="small" />
+                        <div className="sp-track-info">
+                          <div className="sp-track-art">
+                            <SurahArt number={track.id} name={track.englishName} gradient={track.gradient} size="small" />
+                          </div>
+                          <div className="sp-track-text">
+                            <div className={`sp-track-name${playing ? " playing" : ""}`}>{track.name}</div>
+                            <div className="sp-track-artist">{track.translation}</div>
+                          </div>
+                        </div>
+                        <div className="sp-track-album">{track.ayahs} ayahs</div>
+                        <div className="sp-track-duration">{track.duration}</div>
                       </div>
-                      <div className="sp-track-text">
-                        <div className={`sp-track-name${playing ? " playing" : ""}`}>{track.name}</div>
-                        <div className="sp-track-artist">{track.translation}</div>
-                      </div>
-                    </div>
-                    <div className="sp-track-album">{track.reciter}</div>
-                    <div className="sp-track-duration">{track.duration}</div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+                    );
+                  })}
+                </div>
 
-          <div className="sp-footer-spacer" />
+                <div className="sp-footer-spacer" />
+              </>
+            );
+          })() : (
+            /* ═══ HOME VIEW ═══ */
+            <>
+              {/* Hero Gradient */}
+              <div className="sp-hero-gradient">
+                <h1 className="sp-hero-greeting">{getGreeting()}</h1>
+              </div>
+
+              {/* Quick Play Grid */}
+              <div className="sp-quickplay-grid">
+                {QUICK_PLAY_SURAHS.map((s, i) => {
+                  const track = tracks.find(t => t.id === s.number);
+                  if (!track) return null;
+                  return (
+                    <div key={s.number} className="sp-quickplay-card" onClick={() => playTrack(track)}>
+                      <div className="sp-quickplay-art">
+                        <SurahArt number={s.number} name={s.name} gradient={GRADIENTS[i % GRADIENTS.length]} size="small" />
+                      </div>
+                      <span className="sp-quickplay-name">Surah {s.name}</span>
+                      <button className="sp-quickplay-play" onClick={e => { e.stopPropagation(); playTrack(track); }}>
+                        {isTrackPlaying(s.number) ? <Icons.Pause /> : <Icons.Play />}
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Popular Reciters Section */}
+              <div className="sp-section">
+                <div className="sp-section-header">
+                  <h2 className="sp-section-title">Popular Reciters</h2>
+                  <button className="sp-section-show-all">Show all</button>
+                </div>
+                <div className="sp-reciter-row">
+                  {RECITERS.map((r) => (
+                    <div key={r.id} className="sp-reciter-item" onClick={() => openReciterPlaylist(r)}>
+                      <div className="sp-reciter-avatar">
+                        <img src={r.image} alt={r.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
+                      </div>
+                      <span className="sp-reciter-name">{r.name}</span>
+                      <span className="sp-reciter-role" style={{ fontSize: 11, color: "var(--sp-text-secondary)" }}>Reciter</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Featured Surahs (Card Grid) */}
+              <div className="sp-section">
+                <div className="sp-section-header">
+                  <h2 className="sp-section-title">Featured Surahs</h2>
+                  <button className="sp-section-show-all">Show all</button>
+                </div>
+                <div className="sp-card-grid">
+                  {filteredTracks.slice(0, 8).map(track => (
+                    <div key={track.id} className="sp-card" onClick={() => playTrack(track)}>
+                      <div className="sp-card-art-container">
+                        <SurahArt number={track.id} name={track.englishName} gradient={track.gradient} />
+                        <button className="sp-card-play-btn" onClick={e => { e.stopPropagation(); playTrack(track); }}>
+                          {isTrackPlaying(track.id) ? <Icons.Pause /> : <Icons.Play />}
+                        </button>
+                      </div>
+                      <div className="sp-card-title">{track.name}</div>
+                      <div className="sp-card-subtitle">{track.translation} · {track.ayahs} ayahs</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Short Surahs */}
+              <div className="sp-section">
+                <div className="sp-section-header">
+                  <h2 className="sp-section-title">Short Surahs for Daily Recitation</h2>
+                  <button className="sp-section-show-all">Show all</button>
+                </div>
+                <div className="sp-card-grid">
+                  {filteredTracks.filter(t => t.ayahs <= 20).slice(0, 8).map(track => (
+                    <div key={track.id} className="sp-card" onClick={() => playTrack(track)}>
+                      <div className="sp-card-art-container">
+                        <SurahArt number={track.id} name={track.englishName} gradient={track.gradient} />
+                        <button className="sp-card-play-btn" onClick={e => { e.stopPropagation(); playTrack(track); }}>
+                          {isTrackPlaying(track.id) ? <Icons.Pause /> : <Icons.Play />}
+                        </button>
+                      </div>
+                      <div className="sp-card-title">{track.name}</div>
+                      <div className="sp-card-subtitle">{track.translation} · {track.ayahs} ayahs</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Reciter Playlists Grid */}
+              <div className="sp-section">
+                <div className="sp-section-header">
+                  <h2 className="sp-section-title">Reciter Playlists</h2>
+                </div>
+                <div className="sp-card-grid">
+                  {RECITERS.map((r) => (
+                    <div key={r.id} className="sp-card" onClick={() => openReciterPlaylist(r)}>
+                      <div className="sp-card-art-container">
+                        <img src={r.image} alt={r.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 8 }} />
+                        <button className="sp-card-play-btn" onClick={e => {
+                          e.stopPropagation();
+                          const rTracks = buildReciterTracks(r);
+                          if (rTracks.length > 0) {
+                            setCurrentReciter(r);
+                            playTrack(rTracks[0]);
+                          }
+                        }}>
+                          <Icons.Play />
+                        </button>
+                      </div>
+                      <div className="sp-card-title">{r.name}</div>
+                      <div className="sp-card-subtitle">Quran Recitation · {SURAHS_DATA.length} surahs</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="sp-footer-spacer" />
+            </>
+          )}
         </main>
 
         {/* ═══ BOTTOM PLAYER BAR (Desktop) ═══ */}
