@@ -73,11 +73,11 @@ function playPageFlipSound(enabled: boolean) {
   }
 }
 
-// ── Animation variants (3-D page-flip feel) ──────────────────────
+// ── Animation variants (3-D page-flip feel — RTL direction) ──────
 const pageVariants = {
   enter: (dir: number) => ({
-    x: dir > 0 ? '75%' : '-75%',
-    rotateY: dir > 0 ? 22 : -22,
+    x: dir > 0 ? '-75%' : '75%',
+    rotateY: dir > 0 ? -22 : 22,
     opacity: 0,
     scale: 0.93,
   }),
@@ -88,8 +88,8 @@ const pageVariants = {
     scale: 1,
   },
   exit: (dir: number) => ({
-    x: dir > 0 ? '-75%' : '75%',
-    rotateY: dir > 0 ? -22 : 22,
+    x: dir > 0 ? '75%' : '-75%',
+    rotateY: dir > 0 ? 22 : -22,
     opacity: 0,
     scale: 0.93,
   }),
@@ -221,8 +221,9 @@ export default function QuranPageReader() {
   // ── Keyboard navigation ─────────────────────────────────────────
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowRight') goNext();
-      else if (e.key === 'ArrowLeft') goPrev();
+      // RTL: ArrowLeft = next page, ArrowRight = previous page
+      if (e.key === 'ArrowLeft') goNext();
+      else if (e.key === 'ArrowRight') goPrev();
       else if (e.key === 'Escape') {
         setShowPageJump(false);
         setJumpValue('');
@@ -234,7 +235,16 @@ export default function QuranPageReader() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [goNext, goPrev]);
 
-  // ── Preload adjacent pages ───────────────────────────────────────
+  // ── Preload first page eagerly + adjacent pages ─────────────────
+  useEffect(() => {
+    // Eagerly preload page 1 on mount for instant first render
+    const firstImg = new window.Image();
+    firstImg.src = getPageImageUrl(1);
+    // Also preload page 2
+    const secondImg = new window.Image();
+    secondImg.src = getPageImageUrl(2);
+  }, []);
+
   useEffect(() => {
     [currentPage - 1, currentPage + 1]
       .filter((p) => p >= 1 && p <= TOTAL_PAGES)
@@ -245,10 +255,10 @@ export default function QuranPageReader() {
   }, [currentPage]);
 
   // ── Swipe gestures ───────────────────────────────────────────────
-  // In Quran (Arabic) convention: swipe LEFT → advance to next page
+  // RTL Quran convention: swipe RIGHT → next page, swipe LEFT → previous page
   const swipeHandlers = useSwipeable({
-    onSwipedLeft: goNext,
-    onSwipedRight: goPrev,
+    onSwipedLeft: goPrev,
+    onSwipedRight: goNext,
     preventScrollOnSwipe: true,
     trackMouse: false,
     delta: 40,
@@ -461,7 +471,7 @@ export default function QuranPageReader() {
 
       {/* ── PAGE STAGE ──────────────────────────────────────────── */}
       <div className="qpr-stage" {...swipeHandlers}>
-        {/* Left nav button */}
+        {/* Left nav button — RTL: left = NEXT page */}
         <AnimatePresence>
           {showUI && (
             <motion.button
@@ -472,15 +482,15 @@ export default function QuranPageReader() {
                 color: t.text,
               }}
               initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: currentPage > 1 ? 1 : 0.25, x: 0 }}
+              animate={{ opacity: currentPage < TOTAL_PAGES ? 1 : 0.25, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.25 }}
               onClick={(e) => {
                 e.stopPropagation();
-                goPrev();
+                goNext();
               }}
-              disabled={currentPage <= 1}
-              aria-label="Previous page"
+              disabled={currentPage >= TOTAL_PAGES}
+              aria-label="Next page"
               onMouseEnter={(e) =>
                 ((e.currentTarget as HTMLButtonElement).style.background = t.buttonHover)
               }
@@ -589,7 +599,7 @@ export default function QuranPageReader() {
           <div className="qpr-corner-triangle-right" />
         </div>
 
-        {/* Right nav button */}
+        {/* Right nav button — RTL: right = PREVIOUS page */}
         <AnimatePresence>
           {showUI && (
             <motion.button
@@ -597,15 +607,15 @@ export default function QuranPageReader() {
               className="qpr-nav-btn right"
               style={{ background: t.buttonBg, color: t.text }}
               initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: currentPage < TOTAL_PAGES ? 1 : 0.25, x: 0 }}
+              animate={{ opacity: currentPage > 1 ? 1 : 0.25, x: 0 }}
               exit={{ opacity: 0, x: 20 }}
               transition={{ duration: 0.25 }}
               onClick={(e) => {
                 e.stopPropagation();
-                goNext();
+                goPrev();
               }}
-              disabled={currentPage >= TOTAL_PAGES}
-              aria-label="Next page"
+              disabled={currentPage <= 1}
+              aria-label="Previous page"
               onMouseEnter={(e) =>
                 ((e.currentTarget as HTMLButtonElement).style.background = t.buttonHover)
               }
