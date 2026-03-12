@@ -203,7 +203,7 @@ export default function QuranPageReader() {
       setImageError(false);
       setCurrentPage(newPage);
       playPageFlipSound(soundEnabled);
-      setTimeout(() => setIsFlipping(false), 600);
+      setTimeout(() => setIsFlipping(false), 450);
       resetUiTimer();
     },
     [isFlipping, soundEnabled, resetUiTimer]
@@ -246,12 +246,26 @@ export default function QuranPageReader() {
   }, []);
 
   useEffect(() => {
+    // 1. Prioritize immediate neighbors for quick interaction
     [currentPage - 1, currentPage + 1]
       .filter((p) => p >= 1 && p <= TOTAL_PAGES)
       .forEach((p) => {
         const img = new window.Image();
         img.src = getPageImageUrl(p);
       });
+
+    // 2. Aggressively preload ALL pages in the background after a short delay
+    // This ensures that once the user starts reading, most pages are already cached.
+    const idleTimeout = setTimeout(() => {
+      for (let i = 1; i <= TOTAL_PAGES; i++) {
+        // Skip current and neighbors as they are already handled or being handled
+        if (i === currentPage || i === currentPage - 1 || i === currentPage + 1) continue;
+        const img = new window.Image();
+        img.src = getPageImageUrl(i);
+      }
+    }, 2000); // Wait 2s of "idle" before flooding the network
+
+    return () => clearTimeout(idleTimeout);
   }, [currentPage]);
 
   // ── Swipe gestures ───────────────────────────────────────────────
@@ -504,7 +518,7 @@ export default function QuranPageReader() {
         </AnimatePresence>
 
         {/* ── Animated page card ─────────────────────────────── */}
-        <AnimatePresence custom={direction} mode="wait">
+        <AnimatePresence custom={direction} mode="popLayout">
           <motion.div
             key={currentPage}
             className="qpr-page-card"
@@ -738,7 +752,7 @@ export default function QuranPageReader() {
                     setJumpValue('');
                   }
                 }}
-                placeholder="1–604"
+                placeholder={`1–${TOTAL_PAGES}`}
               />
               <button className="qpr-jump-btn" onClick={handleJump}>
                 Go

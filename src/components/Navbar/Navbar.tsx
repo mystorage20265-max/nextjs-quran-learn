@@ -39,7 +39,7 @@ const NAV_SECTIONS = [
     label: 'Tools',
     icon: 'tune',
     items: [
-      { href: '/radio',        label: 'Quran Radio',  icon: 'radio',       desc: 'Live channels'         },
+      { href: '/quran-player', label: 'Quran Radio',  icon: 'radio',       desc: 'Live channels'         },
       { href: '/quran-player', label: 'Quran Player', icon: 'play_circle', desc: 'Full-featured player'  },
     ],
   },

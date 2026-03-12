@@ -5,8 +5,10 @@ const CDN = 'https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions';
 
 const VALID_COLLECTIONS = new Set(['bukhari', 'muslim', 'abudawud', 'tirmidhi', 'nasai', 'ibnmajah']);
 
-// In-memory cache: bookId → merged hadith array (cleared on cold start)
-const cache = new Map<string, { number: number; english: string; arabic: string; chapter: string }[]>();
+const cache = new Map<string, { 
+  metadata: any;
+  hadiths: { number: number; english: string; arabic: string; chapter: string; sectionId: string }[] 
+}>();
 
 async function loadBook(book: string) {
   if (cache.has(book)) return cache.get(book)!;
@@ -37,10 +39,12 @@ async function loadBook(book: string) {
     english: String(h.text ?? '').trim(),
     arabic:  araMap.get(Number(h.hadithnumber)) ?? '',
     chapter: String(h.reference?.book ?? '').trim(),
+    sectionId: String(h.reference?.book ?? '0'),
   })).filter(h => h.english.length > 0);
 
-  cache.set(book, merged);
-  return merged;
+  const result = { metadata: engData.metadata, hadiths: merged };
+  cache.set(book, result);
+  return result;
 }
 
 export async function GET(request: Request) {
@@ -55,7 +59,13 @@ export async function GET(request: Request) {
   }
 
   try {
-    let hadiths = await loadBook(collection);
+    const { metadata, hadiths: allHadiths } = await loadBook(collection);
+    let hadiths = allHadiths;
+
+    const section = searchParams.get('section');
+    if (section) {
+      hadiths = hadiths.filter(h => h.sectionId === section);
+    }
 
     // Search filter
     if (query) {
@@ -78,8 +88,13 @@ export async function GET(request: Request) {
         english: h.english,
         arabic:  h.arabic,
         grade:   '',
-        chapter: h.chapter ? `Book ${h.chapter}` : '',
+        chapter: h.chapter ? (metadata.sections[h.chapter] || `Book ${h.chapter}`) : '',
       })),
+      metadata: {
+        name: metadata.name,
+        sections: metadata.sections,
+        section_details: metadata.section_details
+      },
       total,
       page,
       limit,

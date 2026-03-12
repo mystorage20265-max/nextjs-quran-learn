@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useTheme } from '@/components/ThemeProvider';
+import { trackSurahVisit, getRecentSurahs } from '@/lib/recentSurahs';
 
 const SURAHS = [
   { num: 1, ar: 'الفاتحة', name: 'Al-Fatihah', meaning: 'The Opening', v: 7, t: 'Meccan' },
@@ -235,16 +236,30 @@ export default function HomePage() {
   const [tasbeehTotal, setTasbeehTotal] = useState(0);
   const [tasbeehFlash, setTasbeehFlash] = useState(false);
 
-  useEffect(() => {
-    const saved = localStorage.getItem('recentSurahs');
-    if (saved) setRecent(JSON.parse(saved));
-    // Load cumulative time
-    const savedTotal = parseInt(localStorage.getItem('quranTotalTime') || '0', 10);
-    setTotalTime(savedTotal);
-    // Load tasbeeh total
-    const savedTasbeehTotal = parseInt(localStorage.getItem('tasbeehTotal') || '0', 10);
-    setTasbeehTotal(savedTasbeehTotal);
-  }, []);
+    useEffect(() => {
+        const loadRecent = () => {
+            const saved = getRecentSurahs();
+            // Map to local structure if needed, but our RecentSurah interface now matches what the UI expects (mostly)
+            // The UI expects properties that might be missing if we only saved num/name/ar/v
+            // However, SURAHS constant has the full data.
+            setRecent(saved.map(s => {
+                const full = SURAHS.find(f => f.num === s.num);
+                return full || { ...s, t: 'Meccan' as const }; // Fallback
+            }));
+        };
+
+        loadRecent();
+        window.addEventListener('recentSurahsUpdated', loadRecent);
+
+        // Load cumulative time
+        const savedTotal = parseInt(localStorage.getItem('quranTotalTime') || '0', 10);
+        setTotalTime(savedTotal);
+        // Load tasbeeh total
+        const savedTasbeehTotal = parseInt(localStorage.getItem('tasbeehTotal') || '0', 10);
+        setTasbeehTotal(savedTasbeehTotal);
+
+        return () => window.removeEventListener('recentSurahsUpdated', loadRecent);
+    }, []);
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -326,9 +341,12 @@ export default function HomePage() {
 
 
   const trackVisit = (s: typeof SURAHS[0]) => {
-    const updated = [s, ...recent.filter(r => r.num !== s.num)].slice(0, 5);
-    setRecent(updated);
-    localStorage.setItem('recentSurahs', JSON.stringify(updated));
+    trackSurahVisit({
+      num: s.num,
+      name: s.name,
+      ar: s.ar,
+      v: s.v
+    });
   };
 
   const filtered = SURAHS.filter(s => {

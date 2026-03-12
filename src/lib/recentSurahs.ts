@@ -7,6 +7,7 @@ export interface RecentSurah {
     num: number;
     name: string;
     ar: string;
+    v: number;       // verses count
     timestamp: number; // Unix ms
 }
 

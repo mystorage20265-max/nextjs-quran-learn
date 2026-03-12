@@ -10,6 +10,7 @@ import {
     Pause,
     SkipBack,
     SkipForward,
+    Settings,
     X,
     Bookmark,
     Copy,
@@ -138,6 +139,30 @@ const AyahMarker = ({ number, size = 30 }: { number: number; size?: number }) =>
         </svg>
     );
 };
+
+/**
+ * ع Ruku End Marker — displayed after the last verse of each Ruku.
+ * Traditional Islamic notation: the letter ع marks the boundary where
+ * a Ruku (section for bowing in prayer) ends in a printed Mushaf.
+ */
+const RukuEndMarker = ({ ruküNumber }: { ruküNumber: number }) => (
+    <span className="ruku-end-marker" title={`End of Rukuʿ ${ruküNumber}`} aria-label={`End of Rukuʿ ${ruküNumber}`}>
+        <span className="ruku-marker-ain">ع</span>
+        <span className="ruku-marker-num">{ruküNumber}</span>
+    </span>
+);
+
+/**
+ * Returns true if `verse` is the last verse of its Ruku.
+ * verses should be the full sorted list for the surah.
+ */
+const isRukuEnd = (verse: { verse_number: number; ruku_number: number }, verses: Array<{ verse_number: number; ruku_number: number }>): boolean => {
+    const idx = verses.findIndex(v => v.verse_number === verse.verse_number);
+    if (idx === -1) return false;
+    // last verse overall OR next verse has a different ruku_number
+    return idx === verses.length - 1 || verses[idx + 1].ruku_number !== verse.ruku_number;
+};
+
 
 interface SurahPageProps {
     params: Promise<{ surahNumber: string }>;
@@ -316,7 +341,16 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
     // Tooltip state for word meanings
     const [tooltip, setTooltip] = useState<{ meaning: string; x: number; y: number } | null>(null);
     const tooltipRef = useRef<HTMLDivElement | null>(null);
-    const verseToPageIndexRef = useRef<Map<number, number>>(new Map());
+    const verseToPageIndexRef = useRef<Map<number, number>>(new Map());    const [audioVolume, setAudioVolume] = useState(100);  // 0-100
+    const [isAudioMuted, setIsAudioMuted] = useState(false);
+    const [isShuffled, setIsShuffled] = useState(false);
+    const [isRepeating, setIsRepeating] = useState(false);
+    const [audioProgress, setAudioProgress] = useState(0);    // 0-100%
+    const [audioDuration, setAudioDuration] = useState(0);    // seconds
+    const [audioCurrentTime, setAudioCurrentTime] = useState(0); // seconds
+    const audioProgressRef = useRef<HTMLDivElement | null>(null);
+    const audioVolumeRef = useRef<HTMLDivElement | null>(null);
+
 
     // Mushaf page pagination for reading mode
     const [mushafPageIndex, setMushafPageIndex] = useState(0);
@@ -380,6 +414,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
             num: surahNumber,
             name: chapter.name_simple,
             ar: meta?.arabic ?? '',
+            v: chapter.verses_count,
         });
     }, [chapter, surahNumber]);
 
@@ -487,7 +522,18 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
         if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; }
         const audio = new Audio(audioUrl);
         audioRef.current = audio;
+        // Reset progress display for new verse
+        setAudioProgress(0);
+        setAudioCurrentTime(0);
+        setAudioDuration(0);
         audio.onplay = () => { if (isMountedRef.current && myPlaybackId === playbackIdRef.current) { setIsPlaying(true); setCurrentVerse(verseNumber); } };
+        audio.onloadedmetadata = () => { if (isMountedRef.current && myPlaybackId === playbackIdRef.current) setAudioDuration(audio.duration || 0); };
+        audio.ontimeupdate = () => {
+            if (isMountedRef.current && myPlaybackId === playbackIdRef.current && audio.duration) {
+                setAudioCurrentTime(audio.currentTime);
+                setAudioProgress((audio.currentTime / audio.duration) * 100);
+            }
+        };
         audio.onended = () => {
             if (!isMountedRef.current || myPlaybackId !== playbackIdRef.current) return;
             if (verseNumber < verses.length) playVerse(verseNumber + 1);
@@ -636,36 +682,94 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 .dark .nq-hdr-toggle.active{background:#0f172a;color:white}
                 .nq-bkmk-btn{width:34px;height:34px;background:#f59e0b;border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;cursor:pointer;box-shadow:0 4px 14px rgba(245,158,11,0.3);flex-shrink:0}
                 @media(min-width:640px){.nq-bkmk-btn{width:40px;height:40px}}
-                /* Audio bar */
-                .nq-audio-bar{position:fixed;bottom:0;left:0;right:0;background:#ffffff;border-top:1px solid #e2e8f0;z-index:20;animation:audioBarIn 0.2s ease-out}
-                @keyframes audioBarIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-                .dark .nq-audio-bar{background:#0f172a;border-top-color:#1e293b}
-                .nq-audio-progress-track{width:100%;height:3px;background:#e2e8f0;cursor:pointer;position:relative}
-                .dark .nq-audio-progress-track{background:#1e293b}
-                .nq-audio-progress-fill{height:100%;background:#f59e0b;transition:width 0.4s linear}
-                .nq-audio-bar-inner{display:flex;align-items:center;justify-content:space-between;padding:10px 20px 12px;max-width:760px;margin:0 auto;gap:12px}
-                @media(min-width:640px){.nq-audio-bar-inner{padding:12px 28px 14px}}
-                .nq-ctrl-btn{background:none;border:none;color:#64748b;cursor:pointer;display:flex;align-items:center;padding:4px;transition:color 0.15s}
-                .nq-ctrl-btn:hover{color:#f59e0b}
-                .dark .nq-ctrl-btn{color:#94a3b8}
-                .dark .nq-ctrl-btn:hover{color:#f59e0b}
-                .nq-vol-icon{color:#94a3b8;flex-shrink:0}
-                .nq-play-btn{width:40px;height:40px;background:#f59e0b;border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;cursor:pointer;transition:background 0.15s,transform 0.12s;flex-shrink:0;padding:0}
-                .nq-play-btn:hover{background:#d97706;transform:scale(1.05)}
-                /* Sound toggle in tabs */
-                .nq-sound-toggle-wrap{display:flex;align-items:center;gap:6px;padding:0 8px;border-left:1px solid #e2e8f0;margin-left:auto;flex-shrink:0}
-                .dark .nq-sound-toggle-wrap{border-left-color:#1e293b}
-                .nq-sound-toggle-label{font-size:11px;font-weight:600;color:#94a3b8;white-space:nowrap;font-family:'Lexend',sans-serif;display:inline}
+                /* Audio bar - Spotify-style dark 3-column bar */
+                .nq-audio-bar{
+                  position:fixed;bottom:0;left:0;right:0;
+                  height:72px;
+                  background:#121212;
+                  border-top:1px solid rgba(255,255,255,0.08);
+                  z-index:9990;
+                  display:grid;
+                  grid-template-columns:1fr 2fr 1fr;
+                  align-items:center;
+                  padding:0 16px;
+                  gap:8px;
+                  animation:audioBarIn 0.25s ease-out;
+                  font-family:'Figtree','Inter',sans-serif;
+                }
+                @keyframes audioBarIn{from{opacity:0;transform:translateY(100%)}to{opacity:1;transform:translateY(0)}}
+                @media(max-width:520px){
+                  .nq-audio-bar{grid-template-columns:auto 1fr auto;height:64px;padding:0 10px}
+                }
 
-                .nq-sound-pill{position:relative;width:36px;height:20px;border-radius:10px;cursor:pointer;border:none;padding:0;transition:background 0.22s;flex-shrink:0}
-                .nq-sound-pill.on{background:#f59e0b}
-                .nq-sound-pill.off{background:#cbd5e1}
-                .dark .nq-sound-pill.off{background:#334155}
-                .nq-sound-pill-thumb{position:absolute;top:2px;width:16px;height:16px;border-radius:50%;background:white;transition:left 0.22s;box-shadow:0 1px 3px rgba(0,0,0,0.2)}
-                .nq-sound-pill.on .nq-sound-pill-thumb{left:18px}
-                .nq-sound-pill.off .nq-sound-pill-thumb{left:2px}
-                /* scroll padding when audio bar visible */
-                .nq-scroll.audio-on{padding-bottom:80px}
+                /* Left column */
+                .nq-ab-left{display:flex;align-items:center;gap:12px;min-width:0;overflow:hidden}
+                .nq-ab-art{
+                  width:48px;height:48px;flex-shrink:0;border-radius:6px;
+                  background:linear-gradient(135deg,#f59e0b,#d97706);
+                  display:flex;align-items:center;justify-content:center;
+                  box-shadow:0 4px 12px rgba(245,158,11,0.25);
+                  font-family:'Naskh IndoPak',serif;font-size:20px;color:white;font-weight:700;
+                }
+                .nq-ab-art-num{font-family:'Figtree','Inter',sans-serif;font-size:14px;font-weight:700;color:rgba(255,255,255,0.9)}
+                .nq-ab-track{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+                .nq-ab-track-name{font-size:13px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+                .nq-ab-track-artist{font-size:11px;color:#b3b3b3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+                .nq-ab-like-btn{
+                  width:28px;height:28px;background:none;border:none;cursor:pointer;
+                  color:#b3b3b3;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+                  transition:color 0.15s;
+                }
+                .nq-ab-like-btn.liked{color:#f59e0b}
+                .nq-ab-like-btn:hover{color:#fff}
+
+                /* Center column */
+                .nq-ab-center{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0}
+                .nq-ab-controls{display:flex;align-items:center;gap:8px}
+                .nq-ab-ctrl{
+                  background:none;border:none;cursor:pointer;
+                  color:#b3b3b3;display:flex;align-items:center;justify-content:center;
+                  width:28px;height:28px;border-radius:50%;
+                  transition:color 0.15s;position:relative;
+                }
+                .nq-ab-ctrl:hover{color:#fff}
+                .nq-ab-ctrl.active{color:#f59e0b}
+                .nq-ab-ctrl.active::after{content:'';position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:#f59e0b}
+                .nq-ab-play{
+                  width:32px;height:32px;border-radius:50%;border:none;cursor:pointer;
+                  background:#ffffff;
+                  display:flex;align-items:center;justify-content:center;
+                  transition:transform 0.1s,background 0.15s;
+                  flex-shrink:0;
+                }
+                .nq-ab-play svg{fill:#000;width:16px;height:16px}
+                .nq-ab-play:hover{transform:scale(1.06);background:#e0e0e0}
+                .nq-ab-play:active{transform:scale(0.95)}
+                /* Progress bar row */
+                .nq-ab-progress{display:flex;align-items:center;gap:6px;width:100%}
+                .nq-ab-time{font-size:10px;color:#6a6a6a;min-width:36px;font-variant-numeric:tabular-nums;white-space:nowrap}
+                .nq-ab-time:first-child{text-align:right}
+                .nq-ab-bar-wrap{flex:1;height:12px;display:flex;align-items:center;cursor:pointer;position:relative}
+                .nq-ab-bar{width:100%;height:4px;background:rgba(255,255,255,0.12);border-radius:2px;position:relative;overflow:visible}
+                .nq-ab-bar-wrap:hover .nq-ab-bar{height:5px}
+                .nq-ab-fill{height:100%;background:#fff;border-radius:2px;position:relative;transition:width 100ms linear}
+                .nq-ab-bar-wrap:hover .nq-ab-fill{background:#f59e0b}
+                .nq-ab-knob{width:12px;height:12px;border-radius:50%;background:#fff;position:absolute;right:-6px;top:50%;transform:translateY(-50%);opacity:0;box-shadow:0 2px 4px rgba(0,0,0,0.5);transition:opacity 0.1s}
+                .nq-ab-bar-wrap:hover .nq-ab-knob{opacity:1}
+
+                /* Right column */
+                .nq-ab-right{display:flex;align-items:center;gap:4px;justify-content:flex-end}
+                .nq-ab-vol-wrap{width:80px;height:12px;display:flex;align-items:center;cursor:pointer;position:relative}
+                .nq-ab-vol-bar{width:100%;height:4px;background:rgba(255,255,255,0.12);border-radius:2px;position:relative;overflow:visible}
+                .nq-ab-vol-fill{height:100%;background:#fff;border-radius:2px;position:relative;transition:width 100ms ease}
+                .nq-ab-vol-wrap:hover .nq-ab-vol-fill{background:#f59e0b}
+                .nq-ab-vol-knob{width:12px;height:12px;border-radius:50%;background:#fff;position:absolute;right:-6px;top:50%;transform:translateY(-50%);opacity:0;box-shadow:0 2px 4px rgba(0,0,0,0.5)}
+                .nq-ab-vol-wrap:hover .nq-ab-vol-knob{opacity:1}
+                .nq-ab-close{width:26px;height:26px;background:rgba(255,255,255,0.08);border:none;border-radius:50%;cursor:pointer;color:#b3b3b3;display:flex;align-items:center;justify-content:center;transition:background 0.15s,color 0.15s;flex-shrink:0}
+                .nq-ab-close:hover{background:rgba(239,68,68,0.2);color:#ef4444}
+
+                /* Use larger padding to clear the bar */
+                .nq-scroll.audio-on{padding-bottom:90px!important}
                 .nq-scroll.audio-off{padding-bottom:32px}
                 /* Right panel */
                 .nq-panel-section{padding:24px;border-bottom:1px solid #f1f5f9}
@@ -1100,6 +1204,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                                         );
                                                                         if (!displayText.trim()) return null;
                                                                         const isActive = currentVerse === verse.verse_number;
+                                                                        const showRuku = isRukuEnd(verse, displayVerses);
                                                                         return (
                                                                             <span key={verse.id}>
                                                                                 <span
@@ -1116,8 +1221,13 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                                                     {displayText}
                                                                                 </span>
                                                                                 {' '}
-                                                                                <span style={{ cursor: 'pointer', verticalAlign: 'middle' }} onClick={() => playVerse(verse.verse_number)}>
-                                                                                    <AyahMarker number={verse.verse_number} size={ayahSize} />
+                                                                                <span style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', verticalAlign: 'middle', gap: 2 }}>
+                                                                                    {showRuku && (
+                                                                                        <RukuEndMarker ruküNumber={verse.ruku_number} />
+                                                                                    )}
+                                                                                    <span style={{ cursor: 'pointer', lineHeight: 1 }} onClick={() => playVerse(verse.verse_number)}>
+                                                                                        <AyahMarker number={verse.verse_number} size={ayahSize} />
+                                                                                    </span>
                                                                                 </span>
                                                                                 {' '}
                                                                             </span>
@@ -1251,6 +1361,16 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                     <button className="verse-action-btn" onClick={() => shareVerse(verse)}><Share2 size={14} /><span>Share</span></button>
                                                     <button className={`verse-tafsir-toggle ${tafseerModalVerse === verse.verse_number ? 'active' : ''}`} onClick={() => openTafseer(verse.verse_number)}><BookOpen size={14} /><span>Tafsir</span></button>
                                                 </div>
+                                                {isRukuEnd(verse, displayVerses) && (
+                                                    <div className="ruku-sep ruku-sep--wbw">
+                                                        <div className="ruku-sep-line" />
+                                                        <div className="ruku-sep-badge">
+                                                            <span className="ruku-sep-ain">ع</span>
+                                                            <span className="ruku-sep-label">Rukuʿ {verse.ruku_number} ends · Rukuʿ {verse.ruku_number + 1} begins</span>
+                                                        </div>
+                                                        <div className="ruku-sep-line" />
+                                                    </div>
+                                                )}
                                             </div>
                                         ))}
                                         {/* Surah navigation */}
@@ -1293,6 +1413,11 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                             <span className="nq-ayah-end-marker" onClick={() => playVerse(verse.verse_number)}>
                                                                 <AyahMarker number={verse.verse_number} size={isMobile ? 26 : 32} />
                                                             </span>
+                                                            {isRukuEnd(verse, verses) && (
+                                                                <span style={{ verticalAlign: 'middle', display: 'inline-block' }}>
+                                                                    <RukuEndMarker ruküNumber={verse.ruku_number} />
+                                                                </span>
+                                                            )}
                                                         </span>
                                                     </div>
                                                     {/* Translation */}
@@ -1309,13 +1434,24 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                         <button className={`nq-bar-btn ${tafseerModalVerse === verse.verse_number ? 'nq-bar-active' : ''}`} onClick={() => openTafseer(verse.verse_number)} title="Tafsir"><BookOpen size={13} /><span>Tafsir</span></button>
                                                     </div>
                                                 </div>
-                                                {/* Decorative separator between verses */}
+                                                {/* After the card: Ruku separator OR decorative separator */}
                                                 {idx < verses.length - 1 && (
-                                                    <div className="nq-ayah-sep">
-                                                        <div className="nq-sep-line" />
-                                                        <span className="nq-sep-icon">۞</span>
-                                                        <div className="nq-sep-line" />
-                                                    </div>
+                                                    isRukuEnd(verse, verses) ? (
+                                                        <div className="ruku-sep">
+                                                            <div className="ruku-sep-line" />
+                                                            <div className="ruku-sep-badge">
+                                                                <span className="ruku-sep-ain">ع</span>
+                                                                <span className="ruku-sep-label">Rukuʿ {verse.ruku_number} ends · Rukuʿ {verse.ruku_number + 1} begins</span>
+                                                            </div>
+                                                            <div className="ruku-sep-line" />
+                                                        </div>
+                                                    ) : (
+                                                        <div className="nq-ayah-sep">
+                                                            <div className="nq-sep-line" />
+                                                            <span className="nq-sep-icon">۞</span>
+                                                            <div className="nq-sep-line" />
+                                                        </div>
+                                                    )
                                                 )}
                                             </div>
                                         ))}
@@ -1332,23 +1468,131 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
 
                     </div>
 
-                    {/* AUDIO BAR — Only visible when sound is ON */}
+                    {/* AUDIO BAR — Spotify-style 3-column premium bar */}
                     {audioEnabled && (
                         <div className="nq-audio-bar">
-                            <div className="nq-audio-progress-track">
-                                <div className="nq-audio-progress-fill" style={{ width: currentVerse && verses.length ? `${(currentVerse / verses.length) * 100}%` : '0%' }} />
+                            {/* LEFT — Surah Art + Track Info + Like */}
+                            <div className="nq-ab-left">
+                                {/* Surah Art Tile */}
+                                <div className="nq-ab-art">
+                                    <span className="nq-ab-art-num">{surahNumber}</span>
+                                </div>
+                                {/* Info */}
+                                <div className="nq-ab-track">
+                                    <span className="nq-ab-track-name">{chapter.name_simple}</span>
+                                    <span className="nq-ab-track-artist">
+                                        {POPULAR_RECITERS.find(r => r.id === selectedReciter)?.name ?? 'Reciter'}
+                                        {currentVerse ? ` · Verse ${currentVerse}` : ''}
+                                    </span>
+                                </div>
+                                {/* Like (bookmark current verse) */}
+                                {currentVerse && (
+                                    <button
+                                        className={`nq-ab-like-btn${verses[currentVerse - 1] && bookmarks.includes(verses[currentVerse - 1]?.verse_key ?? '') ? ' liked' : ''}`}
+                                        onClick={() => currentVerse && verses[currentVerse - 1] && toggleBookmark(verses[currentVerse - 1].verse_key)}
+                                        title="Save verse"
+                                    >
+                                        <svg viewBox="0 0 24 24" fill={currentVerse && bookmarks.includes(verses[currentVerse - 1]?.verse_key ?? '') ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="1.5" width="16" height="16"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                                    </button>
+                                )}
                             </div>
-                            <div className="nq-audio-bar-inner">
-                                <button className="nq-ctrl-btn" onClick={() => setShowSettings(true)} title="Settings">
-                                    <span className="material-symbols-outlined" style={{ fontSize: 20 }}>more_horiz</span>
+
+                            {/* CENTER — Controls + Progress */}
+                            <div className="nq-ab-center">
+                                {/* Playback Controls Row */}
+                                <div className="nq-ab-controls">
+                                    <button
+                                        className={`nq-ab-ctrl${isShuffled ? ' active' : ''}`}
+                                        onClick={() => setIsShuffled(!isShuffled)}
+                                        title="Shuffle"
+                                    >
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" width="16" height="16"><path d="M16 3h5v5M4 20 20.2 3.8M21 16v5h-5M15 15l6 6M4 4l5 5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                                    </button>
+                                    <button className="nq-ab-ctrl" onClick={playPrev} title="Previous">
+                                        <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M5 4h2v16H5V4zm3 8 11 8V4L8 12z"/></svg>
+                                    </button>
+                                    <button
+                                        className="nq-ab-play"
+                                        onClick={() => { isPlaying ? stopAudio() : playVerse(currentVerse || 1, true); }}
+                                        title={isPlaying ? 'Pause' : 'Play'}
+                                    >
+                                        {isPlaying
+                                            ? <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                                            : <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16" style={{marginLeft:2}}><path d="M8 5v14l11-7z"/></svg>
+                                        }
+                                    </button>
+                                    <button className="nq-ab-ctrl" onClick={playNext} title="Next">
+                                        <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M17 4h2v16h-2V4zM5 4l11 8-11 8V4z"/></svg>
+                                    </button>
+                                    <button
+                                        className={`nq-ab-ctrl${isRepeating ? ' active' : ''}`}
+                                        onClick={() => setIsRepeating(!isRepeating)}
+                                        title="Repeat"
+                                    >
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" width="16" height="16"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                                    </button>
+                                </div>
+                                {/* Progress Bar Row */}
+                                <div className="nq-ab-progress">
+                                    <span className="nq-ab-time">{`${Math.floor(audioCurrentTime / 60)}:${String(Math.floor(audioCurrentTime % 60)).padStart(2,'0')}`}</span>
+                                    <div
+                                        className="nq-ab-bar-wrap"
+                                        ref={audioProgressRef}
+                                        onClick={(e) => {
+                                            if (!audioProgressRef.current || !audioRef.current || !audioDuration) return;
+                                            const rect = audioProgressRef.current.getBoundingClientRect();
+                                            const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+                                            audioRef.current.currentTime = pct * audioDuration;
+                                        }}
+                                    >
+                                        <div className="nq-ab-bar">
+                                            <div className="nq-ab-fill" style={{ width: `${audioProgress}%` }}>
+                                                <div className="nq-ab-knob" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <span className="nq-ab-time">{`${Math.floor(audioDuration / 60)}:${String(Math.floor(audioDuration % 60)).padStart(2,'0')}`}</span>
+                                </div>
+                            </div>
+
+                            {/* RIGHT — Volume + Close */}
+                            <div className="nq-ab-right">
+                                <button
+                                    className="nq-ab-ctrl"
+                                    onClick={() => {
+                                        setIsAudioMuted(!isAudioMuted);
+                                        if (audioRef.current) audioRef.current.muted = !isAudioMuted;
+                                    }}
+                                    title={isAudioMuted ? 'Unmute' : 'Mute'}
+                                >
+                                    {isAudioMuted || audioVolume === 0
+                                        ? <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+                                        : <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                                    }
                                 </button>
-                                <Volume2 size={18} className="nq-vol-icon" />
-                                <button className="nq-ctrl-btn" onClick={playPrev} title="Previous (←)"><SkipBack size={22} /></button>
-                                <button className="nq-play-btn" onClick={() => { isPlaying ? stopAudio() : playVerse(currentVerse || 1, true); }} title={isPlaying ? 'Pause (Space)' : 'Play (Space)'}>
-                                    {isPlaying ? <Pause size={22} /> : <Play size={22} />}
+                                <div
+                                    className="nq-ab-vol-wrap"
+                                    ref={audioVolumeRef}
+                                    onClick={(e) => {
+                                        if (!audioVolumeRef.current || !audioRef.current) return;
+                                        const rect = audioVolumeRef.current.getBoundingClientRect();
+                                        const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+                                        const vol = Math.round(pct * 100);
+                                        setAudioVolume(vol);
+                                        setIsAudioMuted(vol === 0);
+                                        audioRef.current.volume = pct;
+                                        audioRef.current.muted = vol === 0;
+                                    }}
+                                >
+                                    <div className="nq-ab-vol-bar">
+                                        <div className="nq-ab-vol-fill" style={{ width: `${isAudioMuted ? 0 : audioVolume}%` }}>
+                                            <div className="nq-ab-vol-knob" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <button className="nq-ab-close" onClick={stopAudio} title="Close Player">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="14" height="14"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                                 </button>
-                                <button className="nq-ctrl-btn" onClick={playNext} title="Next (→)"><SkipForward size={22} /></button>
-                                <button className="nq-ctrl-btn" onClick={stopAudio} title="Close"><X size={20} /></button>
                             </div>
                         </div>
                     )}

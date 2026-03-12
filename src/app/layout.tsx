@@ -1,4 +1,4 @@
-﻿// app/layout.tsx
+// app/layout.tsx
 import type { Metadata } from 'next';
 
 import Footer from '@/components/Footer';
@@ -66,7 +66,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link
@@ -118,7 +118,7 @@ export default function RootLayout({
         {/* ✅ Theme init – runs before first paint to prevent flash */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var s=localStorage.getItem('quran-learn-theme');var sys=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';var t=s&&s!=='system'?s:sys;document.documentElement.setAttribute('data-theme',t);}catch(e){}})();`,
+            __html: `(function(){try{var s=localStorage.getItem('quran-learn-theme');var sys=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';var t=s&&s!=='system'?s:sys;var r=document.documentElement;r.setAttribute('data-theme',t);if(t==='dark'){r.classList.add('dark');}else{r.classList.remove('dark');}}catch(e){}})();`,
           }}
         />
 

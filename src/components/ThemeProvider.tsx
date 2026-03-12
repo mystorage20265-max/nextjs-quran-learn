@@ -43,7 +43,14 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     
     // Set theme attribute
     root.setAttribute('data-theme', resolved);
-    
+
+    // Toggle .dark class for compatibility
+    if (resolved === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+
     // Update meta theme-color for mobile browsers
     const metaThemeColor = document.querySelector('meta[name="theme-color"]');
     if (metaThemeColor) {

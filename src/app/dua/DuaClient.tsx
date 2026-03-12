@@ -339,10 +339,9 @@ export default function DuaClient() {
             </div>
           </div>
 
-          {/* Dua List */}
-          {duasLoading ? (
+          {isAnyLoading ? (
             <div className="duas-loading-list">
-              {[1, 2, 3].map(i => (
+              {[1, 2, 3, 4, 5, 6].map(i => (
                 <div key={i} className="duas-card-skeleton">
                   <div className="skel-line skel-title" />
                   <div className="skel-line skel-arabic" />

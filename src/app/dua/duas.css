@@ -533,43 +533,62 @@
   flex-direction: column;
   gap: 20px;
 }
-
+/* ─── Skeleton Loader ───────────────────────────────────────── */
 .duas-card-skeleton {
   background: var(--bg-card);
-  border: 1px solid var(--border-default);
+  padding: 24px;
   border-radius: 20px;
-  padding: 32px;
+  margin-bottom: 20px;
+  border: 1px solid var(--border-subtle);
+  position: relative;
+  overflow: hidden;
+}
+
+.duas-card-skeleton::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(var(--brand-primary-rgb), 0.05), transparent);
+  animation: skeleton-shimmer 1.6s infinite;
+}
+
+@keyframes skeleton-shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }
 
 .skel-line {
-  border-radius: 8px;
-  background: linear-gradient(90deg, var(--bg-elevated) 25%, var(--bg-card-hover) 50%, var(--bg-elevated) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s ease-in-out infinite;
-}
-
-.skel-title {
-  width: 40%;
-  height: 20px;
-  margin-bottom: 24px;
-}
-
-.skel-arabic {
-  width: 80%;
-  height: 36px;
-  margin-bottom: 16px;
-  margin-left: auto;
-}
-
-.skel-trans {
-  width: 90%;
-  height: 16px;
+  background: rgba(var(--text-primary-rgb), 0.05);
+  border-radius: 4px;
   margin-bottom: 12px;
 }
 
-.skel-ref {
-  width: 30%;
-  height: 14px;
+.skel-title { width: 40%; height: 20px; margin-bottom: 24px; }
+.skel-arabic { width: 100%; height: 80px; margin: 20px 0; border-radius: 12px; }
+.skel-trans  { width: 90%; height: 16px; opacity: 0.7; }
+.skel-ref    { width: 30%; height: 14px; margin-top: 24px; opacity: 0.5; }
+
+.duas-cat-skeleton {
+  height: 60px;
+  background: rgba(var(--text-primary-rgb), 0.03);
+  border-radius: 12px;
+  margin-bottom: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.duas-cat-skeleton::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(var(--text-primary-rgb), 0.03), transparent);
+  animation: skeleton-shimmer 1.6s infinite;
 }
 
 /* ── Empty State ── */

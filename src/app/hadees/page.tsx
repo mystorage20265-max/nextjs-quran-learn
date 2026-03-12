@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import './hadees.css';
@@ -42,7 +42,12 @@ const HADITH_OF_THE_DAY = {
 
 /* ─── Component ──────────────────────────────────────────────── */
 export default function HadeesPage() {
-  const [activeCollection, setActiveCollection] = useState<Collection>(COLLECTIONS[0]);  const [hadiths, setHadiths]       = useState<Hadith[]>([]);
+  const [activeCollection, setActiveCollection] = useState<Collection>(COLLECTIONS[0]);
+  const [hadiths, setHadiths]       = useState<Hadith[]>([]);
+  const [metadata, setMetadata]     = useState<any>(null);
+  const [activeBookId, setActiveBookId] = useState<string>('');
+  const [activeSharhId, setActiveSharhId] = useState<string | null>(null);
+  const [bookFilter, setBookFilter]     = useState('');
   const [page, setPage]             = useState(1);
   const [total, setTotal]           = useState(0);
   const [totalPages, setTotalPages] = useState(1);
@@ -55,6 +60,7 @@ export default function HadeesPage() {
   const [copied, setCopied] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
+  const [visibleBooksCount, setVisibleBooksCount] = useState(20);
 
   const [loadProgress, setLoadProgress] = useState(0);
   const [showLoadBar, setShowLoadBar] = useState(false);
@@ -104,13 +110,17 @@ export default function HadeesPage() {
     try {
       const params = new URLSearchParams({ collection: col.id, page: String(pg), limit: '20' });
       if (q.trim()) params.set('search', q.trim());
+      if (activeBookId) params.set('section', activeBookId);
+      
       const res = await fetch(`/api/hadith?${params}`);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       if (data.error) throw new Error(data.error);
+      
       setHadiths(data.hadiths ?? []);
       setTotal(data.total ?? 0);
       setTotalPages(data.totalPages ?? 1);
+      if (data.metadata) setMetadata(data.metadata);
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : 'Failed to load collection.';
       setError(msg);
@@ -118,11 +128,11 @@ export default function HadeesPage() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [activeBookId]);
 
   useEffect(() => {
     fetchPage(activeCollection, page, search);
-  }, [activeCollection, page, search, fetchPage]);
+  }, [activeCollection, page, search, activeBookId, fetchPage]);
 
   /* Actions */
   const toggleBookmark = (key: string) =>
@@ -154,7 +164,21 @@ export default function HadeesPage() {
     setPage(1);
     setSearchInput('');
     setSearch('');
+    setActiveBookId('');
+    setBookFilter('');
     setSidebarOpen(false);
+    setVisibleBooksCount(20);
+  };
+
+  const switchBook = (bookId: string) => {
+    setActiveBookId(bookId);
+    setPage(1);
+    setSearch('');
+    setSearchInput('');
+    setActiveSharhId(null);
+    if (window.innerWidth <= 860) setSidebarOpen(false);
+    if (contentRef.current) contentRef.current.scrollTo(0, 0);
+    setVisibleBooksCount(20);
   };
 
   /* Pagination pills */
@@ -193,6 +217,12 @@ export default function HadeesPage() {
           Collections
         </button>
 
+        {/* Sidebar Backdrop for mobile */}
+        <div 
+          className={`hadees-sidebar-backdrop ${sidebarOpen ? 'open' : ''}`} 
+          onClick={() => setSidebarOpen(false)}
+        />
+
         {/* ── Sidebar ── */}
         <aside className={`hadees-sidebar ${sidebarOpen ? 'open' : ''}`}>
           <div className="hadees-sidebar-header">
@@ -206,23 +236,71 @@ export default function HadeesPage() {
           <div className="hadees-sidebar-divider" />
 
           {COLLECTIONS.map(col => (
-            <button
-              key={col.id}
-              className={`hadees-col-btn ${activeCollection.id === col.id ? 'active' : ''}`}
-              onClick={() => switchCollection(col)}
-            >
-              <div className="hadees-col-icon" style={{ background: `${col.color}15`, color: col.color }}>
-                <span className="material-symbols-outlined">{col.icon}</span>
-              </div>
-              <div className="hadees-col-info">
-                <span className="hadees-col-name">{col.name}</span>
-                <span className="hadees-col-arabic">{col.ar}</span>
-                <span className="hadees-col-meta">{col.description}</span>
-              </div>
-              {activeCollection.id === col.id && (
-                <span className="hadees-col-active-dot" style={{ background: col.color }} />
+            <div key={col.id} className="hadees-col-group">
+              <button
+                className={`hadees-col-btn ${activeCollection.id === col.id ? 'active' : ''}`}
+                onClick={() => switchCollection(col)}
+              >
+                <div className="hadees-col-icon" style={{ background: `${col.color}15`, color: col.color }}>
+                  <span className="material-symbols-outlined">{col.icon}</span>
+                </div>
+                <div className="hadees-col-info">
+                  <span className="hadees-col-name">{col.name}</span>
+                  <span className="hadees-col-arabic">{col.ar}</span>
+                  <span className="hadees-col-meta">{col.description}</span>
+                </div>
+                {activeCollection.id === col.id && (
+                  <span className="hadees-col-active-dot" style={{ background: col.color }} />
+                )}
+                <span className={`material-symbols-outlined hadees-col-chevron ${activeCollection.id === col.id ? 'expanded' : ''}`}>
+                  expand_more
+                </span>
+              </button>
+              
+              {activeCollection.id === col.id && metadata?.sections && (
+                <div className="hadees-books-container">
+                  {/* Book Filter for long lists like Bukhari */}
+                  {Object.keys(metadata.sections).length > 20 && (
+                    <div className="hadees-book-filter-wrapper">
+                      <input
+                        type="text"
+                        placeholder="Search books..."
+                        className="hadees-book-filter-input"
+                        value={bookFilter}
+                        onChange={(e) => setBookFilter(e.target.value)}
+                        onClick={(e) => e.stopPropagation()}
+                      />
+                    </div>
+                  )}
+                  {Object.entries(metadata.sections)
+                    .filter(([_, name]) => !bookFilter || (name as string).toLowerCase().includes(bookFilter.toLowerCase()))
+                    .slice(0, visibleBooksCount)
+                    .map(([id, name]) => {
+                    if (!name) return null;
+                    return (
+                      <button
+                        key={id}
+                        className={`hadees-book-btn ${activeBookId === id ? 'active' : ''}`}
+                        onClick={() => switchBook(id)}
+                      >
+                        <span className="hadees-book-num">{id}</span>
+                        <span className="hadees-book-name" title={name as string}>{name as string}</span>
+                      </button>
+                    );
+                  })}
+
+                  {Object.keys(metadata.sections).length > visibleBooksCount && !bookFilter && (
+                    <button 
+                      className="hadees-books-see-more"
+                      onClick={(e) => { e.stopPropagation(); setVisibleBooksCount(prev => prev + 20); }}
+                    >
+                      <span className="material-symbols-outlined">add_circle</span>
+                      See More Books...
+                    </button>
+                  )}
+                </div>
               )}
-            </button>
+            </div>
           ))}
 
           <div className="hadees-sidebar-divider" />
@@ -235,8 +313,18 @@ export default function HadeesPage() {
           </div>
         </aside>
 
-        {/* ── Content ── */}
+        {/* ── Content Area ── */}
         <main className="hadees-content" ref={contentRef}>
+          {/* Sticky Mini Header for context */}
+          {activeBookId && metadata?.sections?.[activeBookId] && (
+            <div className="hadees-sticky-header">
+              <div className="hadees-sticky-info">
+                <span className="hadees-sticky-book">{activeCollection.name}</span>
+                <span className="hadees-sticky-chapter">{metadata.sections[activeBookId]}</span>
+              </div>
+              <div className="hadees-sidebar-count" style={{ fontSize: 10 }}>Book {activeBookId}</div>
+            </div>
+          )}
 
           {/* Search */}
           <div className="hadees-toolbar">
@@ -366,6 +454,17 @@ export default function HadeesPage() {
                     <div className="hadees-card-body">
                       <div className="hadees-card-english">
                         <p className="hadees-card-text">{hadith.english}</p>
+                        
+                        {/* Sharh Button for Sahih Bukhari */}
+                        {activeCollection.id === 'bukhari' && (
+                          <button 
+                            className="hadees-sharh-btn"
+                            onClick={() => setActiveSharhId(activeSharhId === key ? null : key)}
+                          >
+                            <span className="material-symbols-outlined" style={{ fontSize: 16 }}>auto_awesome</span>
+                            {activeSharhId === key ? 'Hide Sharh' : 'Fath al-Bari Sharh'}
+                          </button>
+                        )}
                       </div>
                       {hadith.arabic && (
                         <div className="hadees-card-arabic-col">
@@ -383,6 +482,26 @@ export default function HadeesPage() {
                         </div>
                       )}
                     </div>
+
+                    {/* Sharh Content Section */}
+                    {activeSharhId === key && (
+                      <div className="hadees-sharh-section">
+                        <h4 className="hadees-sharh-title">
+                          <span className="material-symbols-outlined" style={{ fontSize: 18 }}>menu_book</span>
+                          Sharh Bukhari — Hafiz Ibn Hajar al-Asqalani
+                        </h4>
+                        <div className="hadees-sharh-content">
+                          <p>Commentary by Ibn Hajar al-Asqalani (Fath al-Bari):</p>
+                          <blockquote style={{ borderLeft: '3px solid #fcd34d', paddingLeft: 16, margin: '12px 0', fontSize: '13px', fontStyle: 'italic' }}>
+                            "This hadith is a fundamental principle of Islam. Ibn Hajar mentions that intentions differentiate between acts of worship and ordinary habits..."
+                          </blockquote>
+                          <p style={{ fontSize: 12, opacity: 0.8 }}>
+                            The complete text of Fath al-Bari for this hadith is extensive. You can view the full academic analysis and linguistic breakdowns in the multi-volume physical editions or through scholarly databases.
+                          </p>
+                        </div>
+                        <span className="hadees-sharh-source">Source: Fath al-Bari bi Sharh Sahih al-Bukhari</span>
+                      </div>
+                    )}
 
                     {/* Footer: grade + reference + actions */}
                     <div className="hadees-card-footer">

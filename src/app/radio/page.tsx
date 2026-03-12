@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { fetchReciters, fetchStations, fetchAudio } from './lib/api';
 import { liveRadioAPI, LiveStation } from './lib/api/live-radio-api';
+import { useRouter } from 'next/navigation';
 import { Station, Reciter } from './lib/types';
 import EqualizerPanel, { EqualizerSettings } from './components/EqualizerPanel';
 import './styles/radio-redesign.css';
@@ -33,6 +34,13 @@ const SIDEBAR_NAV: { id: string; label: string; icon: string }[] = [
 ];
 
 export default function AdvancedRadioPage() {
+  const router = useRouter();
+  
+  // Redirect to new Quran Player
+  useEffect(() => {
+    router.replace('/quran-player');
+  }, [router]);
+
   // Audio refs
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);

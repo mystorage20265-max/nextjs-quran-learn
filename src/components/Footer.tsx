@@ -15,7 +15,7 @@ const Footer: React.FC = () => {
         { name: 'Home', href: '/' },
         { name: 'Read Quran', href: '/read-quran/1' },
         { name: 'Audio Quran', href: '/audio-quran' },
-        { name: 'Quran Radio', href: '/radio' },
+        { name: 'Quran Radio', href: '/quran-player' },
       ],
     },
     {
@@ -24,14 +24,6 @@ const Footer: React.FC = () => {
         { name: 'Memorize (Hifz)', href: '/memorize-quran' },
         { name: 'Word by Word', href: '/read-quran/1?mode=word-by-word' },
         { name: 'Juz / Para', href: '/juz/1' },
-        { name: 'Quran & Science', href: '/quran-science' },
-      ],
-    },
-    {
-      heading: 'Tools',
-      links: [
-        { name: 'Manzil', href: '/manzil/1' },
-        { name: 'Coming Soon', href: '/coming-soon' },
       ],
     },
   ];

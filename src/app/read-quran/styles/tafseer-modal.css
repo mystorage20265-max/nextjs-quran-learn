@@ -1,4 +1,4 @@
-﻿/* =====================================================
+/* =====================================================
    TAFSEER MODAL — Centered Popup Design
    ===================================================== */
 
@@ -718,3 +718,132 @@
     .tsm-footer-copy-btn { padding: 7px 13px; font-size: 11px; }
     .tsm-footer-nav-btn { padding: 7px 10px; font-size: 11px; }
 }
+
+/* ── DARK MODE SUPPORT ── */
+.dark .tsm-backdrop {
+    background: var(--bg-overlay);
+}
+
+.dark .tsm-modal {
+    background: var(--bg-card);
+    box-shadow: 0 24px 80px rgba(0,0,0,0.5), 0 4px 16px rgba(0,0,0,0.3);
+}
+
+.dark .tsm-header {
+    background: var(--bg-card);
+    border-bottom-color: var(--border-subtle);
+}
+
+.dark .tsm-header-arabic {
+    color: var(--text-primary);
+}
+
+.dark .tsm-nav-btn,
+.dark .tsm-close-btn {
+    background: var(--bg-surface);
+    border-color: var(--border-default);
+    color: var(--text-muted);
+}
+
+.dark .tsm-nav-btn:hover:not(:disabled),
+.dark .tsm-close-btn:hover {
+    background: var(--interactive-hover);
+    color: var(--brand-primary);
+}
+
+.dark .tsm-nav-pill {
+    background: var(--bg-surface);
+    color: var(--text-muted);
+}
+
+.dark .tsm-verse-card {
+    background: var(--bg-surface);
+    border-color: var(--border-default);
+}
+
+.dark .tsm-arabic-text {
+    color: var(--text-arabic);
+}
+
+.dark .tsm-translation-wrap {
+    border-top-color: var(--border-subtle);
+}
+
+.dark .tsm-translation-text {
+    color: var(--text-secondary);
+}
+
+.dark .tsm-scholar-card {
+    background: var(--bg-surface);
+    border-color: var(--border-default);
+}
+
+.dark .tsm-scholar-card:hover {
+    background: var(--bg-elevated);
+    border-color: var(--border-strong);
+}
+
+.dark .tsm-scholar-card--active {
+    background: var(--brand-primary-soft);
+}
+
+.dark .tsm-sc-icon {
+    background: var(--bg-elevated);
+    border-color: var(--border-default);
+}
+
+.dark .tsm-sc-name {
+    color: var(--text-primary);
+}
+
+.dark .tsm-scholar-info-bar {
+    background: var(--brand-primary-soft);
+    border-left-color: var(--brand-primary);
+}
+
+.dark .tsm-scholar-info-desc {
+    color: var(--text-muted);
+}
+
+.dark .tsm-section-heading {
+    color: var(--text-primary);
+    border-bottom-color: var(--border-subtle);
+}
+
+.dark .tsm-para {
+    color: var(--text-secondary);
+}
+
+.dark .tsm-para strong,
+.dark .tsm-para b {
+    color: var(--text-primary);
+}
+
+.dark .tsm-list li {
+    background: var(--bg-surface);
+    border-left-color: var(--brand-primary-soft);
+    color: var(--text-secondary);
+}
+
+.dark .tsm-skeleton {
+    background: linear-gradient(90deg, var(--bg-surface) 25%, var(--bg-elevated) 50%, var(--bg-surface) 75%);
+}
+
+.dark .tsm-footer {
+    background: var(--bg-surface);
+    border-top-color: var(--border-subtle);
+}
+
+.dark .tsm-footer-nav-btn,
+.dark .tsm-footer-action-btn {
+    background: var(--bg-card);
+    border-color: var(--border-default);
+    color: var(--text-secondary);
+}
+
+.dark .tsm-footer-nav-btn:hover:not(:disabled),
+.dark .tsm-footer-action-btn:hover {
+    background: var(--bg-card-hover);
+    color: var(--brand-primary);
+}
+

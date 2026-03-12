@@ -55,13 +55,83 @@
   --reader-bg-verse: var(--bg-surface);
 }
 
-/* ============ BASE LAYOUT ============ */
-.quran-reader {
+/* ============ PREMIUM READER LAYOUT ============ */
+:root {
+  --nq-sidebar-width: 256px;
+  --nq-sidebar-width-mobile: 0px;
+  --nq-player-z: 3000;
+  --nq-sidebar-z: 2000;
+  --nq-orange: #f59e0b;
+  --nq-orange-glow: rgba(245, 158, 11, 0.4);
+}
+
+.nq-shell {
+  display: flex;
   min-height: 100vh;
   background: var(--reader-bg);
-  color: var(--reader-text);
-  font-family: var(--font-ui);
-  padding-top: 70px;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.nq-sidebar {
+  width: var(--nq-sidebar-width);
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: white;
+  border-right: 1px solid #e2e8f0;
+  z-index: var(--nq-sidebar-z);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nq-main {
+  flex: 1;
+  margin-left: var(--nq-sidebar-width);
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 100;
+  background: var(--reader-bg);
+}
+
+.quran-reader {
+  width: 100%;
+  min-height: 100vh;
+  position: relative;
+  /* Ensure content is never hidden under the fixed audio bar (~90px tall).
+     120px = 90px bar + 30px breathing room */
+  padding-bottom: 120px;
+}
+
+/* Slightly more room on mobile where the bar is taller */
+@media (max-width: 768px) {
+  .quran-reader {
+    padding-bottom: 140px;
+  }
+}
+
+@media (max-width: 1024px) {
+  :root {
+    --nq-sidebar-width: 240px;
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --nq-sidebar-width: 0px;
+  }
+  .nq-sidebar {
+    transform: translateX(-100%);
+    pointer-events: none;
+    visibility: hidden;
+  }
+  .nq-main {
+    margin-left: 0;
+  }
 }
 
 .reader-container {
@@ -652,157 +722,418 @@
   color: var(--reader-text-secondary);
 }
 
-/* ============ FLOATING AUDIO PLAYER ============ */
-.reader-audio-player {
+/* ============ PREMIUM FLOATING AUDIO PLAYER ============ */
+.nq-audio-bar {
   position: fixed;
   bottom: 24px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: calc(100% - 32px);
-  max-width: 640px;
-  background: var(--reader-bg-elevated);
-  border: 1px solid var(--reader-border-light);
-  border-radius: 20px;
-  padding: 16px 24px;
+  /* span from sidebar edge to screen right, respecting gutters */
+  left: calc(var(--nq-sidebar-width) + 16px);
+  right: 16px;
+  max-width: 820px;
+  /* visually center inside the main area */
+  margin-left: auto;
+  margin-right: auto;
+
+  background: rgba(10, 10, 15, 0.96);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  border-radius: 24px;
+  padding: 12px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: var(--nq-player-z);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.65);
+  animation: audioBarIn 0.45s ease-out both;
+}
+
+@keyframes audioBarIn {
+  from { opacity: 0; transform: translateY(32px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+  .nq-audio-bar {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: none;
+    border-radius: 20px 20px 0 0;
+    padding: 14px 18px 22px;
+    border-bottom: none;
+  }
+}
+
+.nq-audio-bar-inner {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 20px;
-  z-index: 500;
-  box-shadow: var(--reader-shadow-lg), 0 0 40px var(--brand-primary-glow);
-  animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
 }
 
-.reader-audio-player::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, var(--brand-primary), var(--accent-gold), var(--brand-primary));
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateX(-50%) translateY(30px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
-}
-
-.audio-player-info {
+/* Track Info Section */
+.nq-audio-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   flex: 1;
   min-width: 0;
 }
 
-.audio-player-verse {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--reader-text);
-  margin-bottom: 2px;
-}
-
-.audio-player-surah {
-  font-size: 13px;
-  color: var(--reader-text-muted);
-}
-
-.audio-player-controls {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.audio-control-btn {
+.nq-audio-info-icon {
+  width: 40px;
+  height: 40px;
+  background: rgba(245, 158, 11, 0.1);
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
-  background: var(--reader-bg-card);
-  border: 1px solid var(--reader-border);
-  border-radius: 50%;
-  color: var(--reader-text);
-  font-size: 18px;
+  color: #f59e0b;
+  flex-shrink: 0;
+}
+
+.nq-audio-info-text {
+  min-width: 0;
+}
+
+.nq-audio-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: white;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nq-audio-subtitle {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0;
+}
+
+/* Controls Section */
+.nq-audio-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.nq-ctrl-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
   cursor: pointer;
   transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-radius: 50%;
 }
 
-.audio-control-btn:hover {
-  background: var(--reader-bg-hover);
-  border-color: var(--reader-border-light);
-}
-
-.audio-control-btn.primary {
-  width: 56px;
-  height: 56px;
-  background: var(--reader-primary);
-  border-color: var(--reader-primary);
+.nq-ctrl-btn:hover {
   color: white;
-  font-size: 22px;
+  background: rgba(255, 255, 255, 0.05);
 }
 
-.audio-control-btn.primary:hover {
-  filter: brightness(1.1);
-  transform: scale(1.05);
+.nq-play-btn {
+  width: 52px;
+  height: 52px;
+  background: #f59e0b;
+  border: none;
+  border-radius: 50%;
+  color: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3);
 }
 
-.audio-player-progress {
+.nq-play-btn:hover {
+  transform: scale(1.08);
+  background: #fbbf24;
+}
+
+.nq-play-btn:active {
+  transform: scale(0.95);
+}
+
+/* Utility Section */
+.nq-audio-utils {
   display: flex;
   align-items: center;
   gap: 12px;
+  flex: 1;
+  justify-content: flex-end;
 }
 
-.audio-progress-text {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--reader-text-muted);
-  white-space: nowrap;
-}
-
-.audio-progress-bar {
-  width: 100px;
-  height: 4px;
-  background: var(--reader-border);
-  border-radius: 2px;
-  overflow: hidden;
-}
-
-.audio-progress-fill {
-  height: 100%;
-  background: var(--reader-primary);
-  border-radius: 2px;
-  transition: width 0.3s ease;
-}
-
-/* Close button */
-.audio-close-btn {
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  width: 28px;
-  height: 28px;
-  background: var(--reader-bg-elevated);
-  border: 1px solid var(--reader-border);
-  border-radius: 50%;
-  color: var(--reader-text-muted);
+/* Progress Section */
+.nq-audio-progress-wrap {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.nq-progress-time {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.4);
+  font-family: 'Lexend', sans-serif;
+  min-width: 35px;
+}
+
+.nq-audio-progress-track {
+  flex: 1;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  position: relative;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.audio-close-btn:hover {
-  background: #f85149;
-  border-color: #f85149;
-  color: white;
+.nq-audio-progress-track:hover {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.nq-audio-progress-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: #f59e0b;
+  border-radius: 2px;
+  transition: width 0.1s linear;
+}
+
+.nq-audio-progress-fill::after {
+  content: '';
+  position: absolute;
+  right: -6px;
+  top: 50%;
+  transform: translateY(-50%) scale(0);
+  width: 12px;
+  height: 12px;
+  background: #f59e0b;
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+  transition: transform 0.2s ease;
+}
+
+.nq-audio-progress-track:hover .nq-audio-progress-fill::after {
+  transform: translateY(-50%) scale(1);
+}
+
+/* Settings Toggle */
+.nq-audio-settings-btn {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.nq-audio-settings-btn:hover {
+  color: #f59e0b;
+}
+
+
+/* ============ RUKU MARKERS ============ */
+
+/**
+ * Inline ع marker — appears after the last verse of each Ruku
+ * in Reading (Mushaf) mode and Translation mode.
+ * Two-part: the ع letter + a tiny Ruku number badge beside it.
+ */
+.ruku-end-marker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  margin: 0;            /* no side margins — we're stacked vertically */
+  cursor: default;
+}
+
+.ruku-marker-ain {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 5px;
+  background: rgba(245, 158, 11, 0.14);
+  border: 1.5px solid rgba(245, 158, 11, 0.4);
+  color: #b45309;
+  font-family: 'Scheherazade New', 'Amiri', serif;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1;
+  box-shadow: 0 1px 4px rgba(245, 158, 11, 0.15);
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+.ruku-end-marker:hover .ruku-marker-ain {
+  background: rgba(245, 158, 11, 0.25);
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.25);
+}
+
+.ruku-marker-num {
+  font-size: 10px;
+  font-weight: 700;
+  color: #b45309;
+  font-family: 'Lexend', 'Inter', sans-serif;
+  letter-spacing: 0;
+}
+
+/* Dark reading context — amber colour is already set above, no override needed */
+
+/**
+ * Full-width Ruku separator — appears between verse cards in
+ * Translation mode and Word-by-Word mode at each Ruku boundary.
+ */
+.ruku-sep {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 24px 0;
+  padding: 0 4px;
+}
+
+.ruku-sep--wbw {
+  margin: 20px 0 8px;
+}
+
+.ruku-sep-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(245, 158, 11, 0.3), transparent);
+}
+
+.ruku-sep-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 14px 6px 10px;
+  background: rgba(245, 158, 11, 0.06);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  border-radius: 20px;
+  flex-shrink: 0;
+}
+
+.ruku-sep-ain {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  background: rgba(245, 158, 11, 0.18);
+  border: 1.5px solid rgba(245, 158, 11, 0.4);
+  font-family: 'Scheherazade New', 'Amiri', serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #92400e;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.ruku-sep-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #b45309;
+  font-family: 'Lexend', 'Inter', sans-serif;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .ruku-sep-label {
+    display: none;
+  }
+  .ruku-sep-badge {
+    padding: 6px 8px;
+  }
+}
+
+/* ─── Mobile Adjustments ─── */
+
+@media (max-width: 768px) {
+  /* Progress first, then single row: info | controls | close */
+  .nq-audio-bar {
+    /* full width, anchored to bottom */
+    bottom: 0;
+    left: 0 !important;
+    right: 0 !important;
+    border-radius: 20px 20px 0 0;
+    padding: 12px 16px 20px;
+    gap: 8px;
+  }
+
+  /* progress bar stays on top */
+  .nq-audio-progress-wrap {
+    order: 0;
+    gap: 8px;
+  }
+
+  /* inner row: info | controls | close — single line */
+  .nq-audio-bar-inner {
+    order: 1;
+    gap: 8px;
+  }
+
+  /* track info: shrink and truncate */
+  .nq-audio-info {
+    flex: 1;
+    min-width: 0;
+    gap: 8px;
+  }
+
+  .nq-audio-info-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+  }
+
+  .nq-audio-title {
+    font-size: 13px;
+  }
+
+  .nq-audio-subtitle {
+    font-size: 11px;
+  }
+
+  /* controls: tighter spacing, smaller play btn */
+  .nq-audio-controls {
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .nq-play-btn {
+    width: 42px;
+    height: 42px;
+  }
+
+  .nq-ctrl-btn {
+    padding: 6px;
+  }
+
+  /* close (X) button */
+  .nq-audio-utils {
+    flex: 0;
+    gap: 4px;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 380px) {
+  .nq-audio-info-icon {
+    display: none;
+  }
 }
 
 /* ============ SETTINGS PANEL ============ */
@@ -831,21 +1162,21 @@
   width: 100%;
   max-width: 400px;
   height: 100vh;
-  background: var(--reader-bg-elevated);
-  border-left: 1px solid var(--reader-border);
-  z-index: 700;
+  /* Must be ABOVE sidebar (2000) and audio bar (3000) */
+  z-index: 4000;
   overflow-y: auto;
-  animation: slideIn 0.3s ease;
+  
+  /* Premium dark theme matching the audio player */
+  background: #0d1117;
+  border-left: 1px solid rgba(245, 158, 11, 0.2);
+  box-shadow: -20px 0 60px rgba(0, 0, 0, 0.8);
+  
+  animation: settingsSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@keyframes slideIn {
-  from {
-    transform: translateX(100%);
-  }
-
-  to {
-    transform: translateX(0);
-  }
+@keyframes settingsSlideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
 }
 
 .settings-header {
@@ -853,37 +1184,37 @@
   align-items: center;
   justify-content: space-between;
   padding: 24px;
-  border-bottom: 1px solid var(--reader-border);
+  border-bottom: 1px solid rgba(245, 158, 11, 0.15);
   position: sticky;
   top: 0;
-  background: var(--reader-bg-elevated);
+  background: #0d1117;
   z-index: 10;
 }
 
 .settings-title {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
-  color: var(--reader-text);
+  color: white;
+  letter-spacing: -0.02em;
 }
 
 .settings-close-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  background: var(--reader-bg-card);
-  border: 1px solid var(--reader-border);
+  width: 36px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 10px;
-  color: var(--reader-text-secondary);
-  font-size: 18px;
+  color: rgba(255, 255, 255, 0.6);
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .settings-close-btn:hover {
-  background: #f85149;
-  border-color: #f85149;
+  background: #ef4444;
+  border-color: #ef4444;
   color: white;
 }
 
@@ -892,40 +1223,51 @@
 }
 
 .settings-section {
-  margin-bottom: 32px;
+  margin-bottom: 28px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.settings-section:last-child {
+  border-bottom: none;
 }
 
 .settings-label {
   display: block;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
-  color: var(--reader-text-muted);
+  color: #f59e0b;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   margin-bottom: 12px;
 }
 
 .settings-select {
   width: 100%;
-  padding: 14px 16px;
-  background: var(--reader-bg-card);
-  border: 1px solid var(--reader-border);
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 10px;
-  color: var(--reader-text);
-  font-size: 15px;
-  font-family: var(--font-ui);
+  color: white;
+  font-size: 14px;
   cursor: pointer;
   transition: all 0.2s ease;
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238b949e' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23f59e0b' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 14px center;
 }
 
 .settings-select:hover,
 .settings-select:focus {
-  border-color: var(--reader-primary);
+  border-color: rgba(245, 158, 11, 0.4);
   outline: none;
+  background-color: rgba(255, 255, 255, 0.07);
+}
+
+.settings-select option {
+  background: #1a1a2e;
+  color: white;
 }
 
 /* Font Size Slider */
@@ -937,22 +1279,22 @@
 
 .font-size-slider {
   flex: 1;
-  height: 6px;
-  background: var(--reader-border);
-  border-radius: 3px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
   appearance: none;
   cursor: pointer;
 }
 
 .font-size-slider::-webkit-slider-thumb {
   appearance: none;
-  width: 22px;
-  height: 22px;
-  background: var(--reader-primary);
+  width: 20px;
+  height: 20px;
+  background: #f59e0b;
   border-radius: 50%;
   cursor: pointer;
   transition: transform 0.15s ease;
-  box-shadow: 0 2px 8px var(--reader-primary-glow);
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
 }
 
 .font-size-slider::-webkit-slider-thumb:hover {
@@ -960,14 +1302,14 @@
 }
 
 .font-size-value {
-  min-width: 56px;
-  padding: 10px 14px;
-  background: var(--reader-bg-card);
-  border: 1px solid var(--reader-border);
+  min-width: 52px;
+  padding: 8px 12px;
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.25);
   border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--reader-text);
+  font-size: 13px;
+  font-weight: 700;
+  color: #f59e0b;
   text-align: center;
 }
 
@@ -976,8 +1318,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 0;
-  border-bottom: 1px solid var(--reader-border);
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .settings-toggle:last-child {
@@ -989,29 +1331,31 @@
 }
 
 .toggle-label {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
-  color: var(--reader-text);
-  margin-bottom: 4px;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 2px;
 }
 
 .toggle-desc {
-  font-size: 13px;
-  color: var(--reader-text-muted);
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
 }
 
 .toggle-switch {
   position: relative;
-  width: 52px;
-  height: 28px;
-  background: var(--reader-border);
-  border-radius: 14px;
+  width: 48px;
+  height: 26px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 13px;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: background 0.25s ease;
+  flex-shrink: 0;
+  margin-left: 16px;
 }
 
 .toggle-switch.active {
-  background: var(--reader-primary);
+  background: #f59e0b;
 }
 
 .toggle-switch::after {
@@ -1019,40 +1363,41 @@
   position: absolute;
   top: 3px;
   left: 3px;
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   background: white;
   border-radius: 50%;
-  transition: transform 0.2s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 }
 
 .toggle-switch.active::after {
-  transform: translateX(24px);
+  transform: translateX(22px);
 }
 
 /* ============ KEYBOARD SHORTCUTS HINT ============ */
 .keyboard-hints {
-  padding: 20px;
-  background: var(--reader-bg-card);
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
   border-radius: 12px;
-  margin-top: 20px;
+  margin-top: 8px;
 }
 
 .keyboard-hints-title {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
-  color: var(--reader-text-muted);
+  color: rgba(255, 255, 255, 0.4);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: 16px;
+  letter-spacing: 0.08em;
+  margin-bottom: 14px;
 }
 
 .keyboard-hint {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 0;
+  padding: 7px 0;
 }
 
 .keyboard-key {
@@ -1060,20 +1405,20 @@
   align-items: center;
   justify-content: center;
   min-width: 32px;
-  height: 28px;
+  height: 26px;
   padding: 0 10px;
-  background: var(--reader-bg-hover);
-  border: 1px solid var(--reader-border);
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.2);
   border-radius: 6px;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
-  color: var(--reader-text-secondary);
+  color: #f59e0b;
   font-family: monospace;
 }
 
 .keyboard-action {
   font-size: 13px;
-  color: var(--reader-text-muted);
+  color: rgba(255, 255, 255, 0.5);
 }
 
 /* ============ LOADING STATE ============ */

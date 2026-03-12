@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -11,7 +11,7 @@ const NAV_LINKS = [
     { icon: 'home', label: 'Home', href: '/' },
     { icon: 'menu_book', label: 'Read Quran', href: '/read-quran/1' },
     { icon: 'ads_click', label: 'Memorize', href: '/memorize-quran' },
-    { icon: 'radio', label: 'Radio', href: '/radio' },
+    { icon: 'radio', label: 'Radio', href: '/quran-player' },
     { icon: 'music_note', label: 'Audio', href: '/audio-quran' },
     null, // divider
     { icon: 'star', label: 'Duas', href: '/dua' },
@@ -25,7 +25,7 @@ const MOBILE_TABS = [
     { icon: 'home', label: 'Home', href: '/' },
     { icon: 'menu_book', label: 'Quran', href: '/read-quran/1' },
     { icon: 'ads_click', label: 'Memorize', href: '/memorize-quran' },
-    { icon: 'radio', label: 'Radio', href: '/radio' },
+    { icon: 'radio', label: 'Radio', href: '/quran-player' },
     { icon: 'star', label: 'Duas', href: '/dua' },
 ];
 
