@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import "./quranfy-player.css";
 
 /* ─── Types ─── */
@@ -201,23 +201,53 @@ export default function QuranPlayerPage() {
   const [volume, setVolume] = useState(70);
   const [isMuted, setIsMuted] = useState(false);
   const [isShuffled, setIsShuffled] = useState(false);
+  const [shuffleQueue, setShuffleQueue] = useState<number[]>([]);
   const [isRepeating, setIsRepeating] = useState(false);
-  const [isLiked, setIsLiked] = useState(false);
+  const [likedTracks, setLikedTracks] = useState<Set<number>>(() => {
+    if (typeof window === 'undefined') return new Set();
+    try { return new Set(JSON.parse(localStorage.getItem('qp-liked') || '[]')); } catch { return new Set(); }
+  });
   const [showNowPlaying, setShowNowPlaying] = useState(false);
+  const [showQueue, setShowQueue] = useState(false);
+  const [showSearchView, setShowSearchView] = useState(false);
+  const [mobileView, setMobileView] = useState<'home'|'search'|'library'>('home');
+  const [showCreatePlaylist, setShowCreatePlaylist] = useState(false);
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
   const [scrolled, setScrolled] = useState(false);
   const [activeFilter, setActiveFilter] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [audioError, setAudioError] = useState<string | null>(null);
   const [selectedReciterPlaylist, setSelectedReciterPlaylist] = useState<Reciter | null>(null);
+  const [greeting, setGreeting] = useState("Welcome");
+  const [isDraggingProgress, setIsDraggingProgress] = useState(false);
+  const [isDraggingVolume, setIsDraggingVolume] = useState(false);
 
   const audioRef = useRef<HTMLAudioElement>(null);
   const mainRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
   const volumeRef = useRef<HTMLDivElement>(null);
 
-  // Build tracks list from surahs + current reciter
-  const tracks: Track[] = SURAHS_DATA.map((s, i) => {
+  // Helpers
+  const isLiked = (id: number) => likedTracks.has(id);
+  const toggleLike = (id: number) => {
+    setLikedTracks(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      try { localStorage.setItem('qp-liked', JSON.stringify([...next])); } catch {}
+      return next;
+    });
+  };
+  const toggleSection = (key: string) => {
+    setExpandedSections(prev => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key); else next.add(key);
+      return next;
+    });
+  };
+
+  // Build tracks list — memoized to avoid rebuilding every render tick
+  const tracks: Track[] = useMemo(() => SURAHS_DATA.map((s, i) => {
     const est = estimateDuration(s.ayahs);
     return {
       id: s.number,
@@ -232,7 +262,7 @@ export default function QuranPlayerPage() {
       durationSeconds: est.seconds,
       gradient: GRADIENTS[i % GRADIENTS.length],
     };
-  });
+  }), [currentReciter]);
 
   const filteredTracks = tracks.filter(t => {
     if (searchQuery) {
@@ -279,13 +309,16 @@ export default function QuranPlayerPage() {
     if (mainRef.current) mainRef.current.scrollTop = 0;
   };
 
-  // Get greeting based on hour
-  const getGreeting = () => {
-    const hour = new Date().getHours();
-    if (hour < 12) return "Good morning";
-    if (hour < 18) return "Good afternoon";
-    return "Good evening";
-  };
+  // Fix hydration: compute greeting only on client
+  useEffect(() => {
+    const update = () => {
+      const h = new Date().getHours();
+      setGreeting(h < 12 ? "Good morning" : h < 18 ? "Good afternoon" : "Good evening");
+    };
+    update();
+    const timer = setInterval(update, 60_000);
+    return () => clearInterval(timer);
+  }, []);
 
   // Scroll handler
   useEffect(() => {
@@ -450,20 +483,58 @@ export default function QuranPlayerPage() {
     playTrack(tracks[prevIndex]);
   };
 
+  const calcPercent = (e: React.MouseEvent<HTMLDivElement> | MouseEvent, el: HTMLElement) => {
+    const rect = el.getBoundingClientRect();
+    return Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+  };
+
   const seekTo = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const percent = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-    if (audioRef.current && duration) {
-      audioRef.current.currentTime = percent * duration;
-    }
+    const pct = calcPercent(e, e.currentTarget);
+    if (audioRef.current && duration) audioRef.current.currentTime = pct * duration;
   };
 
   const seekVolume = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const percent = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-    setVolume(Math.round(percent * 100));
+    const pct = calcPercent(e, e.currentTarget);
+    setVolume(Math.round(pct * 100));
     setIsMuted(false);
   };
+
+  // Drag handlers for progress bar
+  const onProgressMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    setIsDraggingProgress(true);
+    seekTo(e);
+    const el = e.currentTarget;
+    const onMove = (ev: MouseEvent) => { if (audioRef.current && duration) audioRef.current.currentTime = calcPercent(ev, el) * duration; };
+    const onUp = () => { setIsDraggingProgress(false); window.removeEventListener('mousemove', onMove); window.removeEventListener('mouseup', onUp); };
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onUp);
+  };
+
+  // Drag handlers for volume bar
+  const onVolumeMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    setIsDraggingVolume(true);
+    seekVolume(e);
+    const el = e.currentTarget;
+    const onMove = (ev: MouseEvent) => { setVolume(Math.round(calcPercent(ev, el) * 100)); setIsMuted(false); };
+    const onUp = () => { setIsDraggingVolume(false); window.removeEventListener('mousemove', onMove); window.removeEventListener('mouseup', onUp); };
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onUp);
+  };
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      const tag = (e.target as HTMLElement).tagName.toLowerCase();
+      if (tag === 'input' || tag === 'textarea') return;
+      if (e.code === 'Space') { e.preventDefault(); togglePlay(); }
+      else if (e.code === 'ArrowRight') { if (audioRef.current) audioRef.current.currentTime = Math.min(audioRef.current.duration || 0, audioRef.current.currentTime + 10); }
+      else if (e.code === 'ArrowLeft') { if (audioRef.current) audioRef.current.currentTime = Math.max(0, audioRef.current.currentTime - 10); }
+      else if (e.key.toLowerCase() === 'm') setIsMuted(p => !p);
+      else if (e.key.toLowerCase() === 'n') playNext();
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [togglePlay, playNext]);
 
   const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
   const isTrackPlaying = (trackId: number) => currentTrack?.id === trackId && isPlaying;
@@ -506,14 +577,22 @@ export default function QuranPlayerPage() {
         <aside className="sp-sidebar">
           {/* Nav */}
           <nav className="sp-sidebar-nav">
-            <a className="sp-sidebar-nav-item active" href="#" onClick={e => e.preventDefault()}>
+            <button
+              className={`sp-sidebar-nav-item${!selectedReciterPlaylist && mobileView === 'home' ? ' active' : ''}`}
+              onClick={() => { setSelectedReciterPlaylist(null); setMobileView('home'); setSearchQuery(''); }}
+              title="Home"
+            >
               <Icons.Home />
               <span>Home</span>
-            </a>
-            <a className="sp-sidebar-nav-item" href="#" onClick={e => e.preventDefault()}>
+            </button>
+            <button
+              className={`sp-sidebar-nav-item${mobileView === 'search' ? ' active' : ''}`}
+              onClick={() => { setMobileView('search'); setShowSearchView(v => !v); }}
+              title="Search"
+            >
               <Icons.Search />
               <span>Search</span>
-            </a>
+            </button>
           </nav>
 
           {/* Library */}
@@ -524,7 +603,12 @@ export default function QuranPlayerPage() {
                 <span>Your Library</span>
               </div>
               <div className="sp-library-actions">
-                <button className="sp-library-action-btn" title="Create playlist">
+                <button
+                  className="sp-library-action-btn"
+                  title="Create playlist"
+                  aria-label="Create playlist"
+                  onClick={() => setShowCreatePlaylist(true)}
+                >
                   <Icons.Plus />
                 </button>
               </div>
@@ -584,7 +668,10 @@ export default function QuranPlayerPage() {
             <div className="sp-sidebar-cta">
               <h4>Discover Quran Recitations</h4>
               <p>Listen to beautiful recitations from world-renowned reciters.</p>
-              <button className="sp-sidebar-cta-btn">Explore</button>
+              <button
+                className="sp-sidebar-cta-btn"
+                onClick={() => { setSelectedReciterPlaylist(null); setSearchQuery(''); if (mainRef.current) mainRef.current.scrollTo({ top: 9999, behavior: 'smooth' }); }}
+              >Explore</button>
             </div>
           </div>
         </aside>
@@ -746,7 +833,7 @@ export default function QuranPlayerPage() {
             <>
               {/* Hero Gradient */}
               <div className="sp-hero-gradient">
-                <h1 className="sp-hero-greeting">{getGreeting()}</h1>
+                <h1 className="sp-hero-greeting">{greeting}</h1>
               </div>
 
               {/* Quick Play Grid */}
@@ -772,7 +859,7 @@ export default function QuranPlayerPage() {
               <div className="sp-section">
                 <div className="sp-section-header">
                   <h2 className="sp-section-title">Popular Reciters</h2>
-                  <button className="sp-section-show-all">Show all</button>
+                  <button className="sp-section-show-all" onClick={() => toggleSection('reciters')}>{ expandedSections.has('reciters') ? 'Show less' : 'Show all' }</button>
                 </div>
                 <div className="sp-reciter-row">
                   {RECITERS.map((r) => (
@@ -791,10 +878,10 @@ export default function QuranPlayerPage() {
               <div className="sp-section">
                 <div className="sp-section-header">
                   <h2 className="sp-section-title">Featured Surahs</h2>
-                  <button className="sp-section-show-all">Show all</button>
+                  <button className="sp-section-show-all" onClick={() => toggleSection('featured')}>{ expandedSections.has('featured') ? 'Show less' : 'Show all' }</button>
                 </div>
                 <div className="sp-card-grid">
-                  {filteredTracks.slice(0, 8).map(track => (
+                  {(expandedSections.has('featured') ? filteredTracks : filteredTracks.slice(0, 8)).map(track => (
                     <div key={track.id} className="sp-card" onClick={() => playTrack(track)}>
                       <div className="sp-card-art-container">
                         <SurahArt number={track.id} name={track.englishName} gradient={track.gradient} />
@@ -813,10 +900,10 @@ export default function QuranPlayerPage() {
               <div className="sp-section">
                 <div className="sp-section-header">
                   <h2 className="sp-section-title">Short Surahs for Daily Recitation</h2>
-                  <button className="sp-section-show-all">Show all</button>
+                  <button className="sp-section-show-all" onClick={() => toggleSection('short')}>{ expandedSections.has('short') ? 'Show less' : 'Show all' }</button>
                 </div>
                 <div className="sp-card-grid">
-                  {filteredTracks.filter(t => t.ayahs <= 20).slice(0, 8).map(track => (
+                  {(expandedSections.has('short') ? filteredTracks.filter(t => t.ayahs <= 20) : filteredTracks.filter(t => t.ayahs <= 20).slice(0, 8)).map(track => (
                     <div key={track.id} className="sp-card" onClick={() => playTrack(track)}>
                       <div className="sp-card-art-container">
                         <SurahArt number={track.id} name={track.englishName} gradient={track.gradient} />
@@ -882,8 +969,13 @@ export default function QuranPlayerPage() {
                   <div className="sp-player-track-name">{currentTrack.name}</div>
                   <div className="sp-player-track-artist">{currentTrack.reciter}</div>
                 </div>
-                <button className={`sp-player-like-btn${isLiked ? " liked" : ""}`} onClick={() => setIsLiked(!isLiked)}>
-                  {isLiked ? <Icons.HeartFilled /> : <Icons.Heart />}
+                <button
+                  className={`sp-player-like-btn${currentTrack && isLiked(currentTrack.id) ? ' liked' : ''}`}
+                  onClick={() => currentTrack && toggleLike(currentTrack.id)}
+                  title="Save to liked"
+                  aria-label="Save to liked"
+                >
+                  {currentTrack && isLiked(currentTrack.id) ? <Icons.HeartFilled /> : <Icons.Heart />}
                 </button>
               </>
             ) : (
@@ -897,32 +989,32 @@ export default function QuranPlayerPage() {
           <div className="sp-player-center">
             <div className="sp-player-controls">
               <button
-                className={`sp-control-btn${isShuffled ? " active" : ""}`}
+                className={`sp-control-btn${isShuffled ? ' active' : ''}`}
                 onClick={() => setIsShuffled(!isShuffled)}
-                style={{ position: "relative" }}
+                title="Shuffle (S)" aria-label="Shuffle"
               >
                 <Icons.Shuffle />
               </button>
-              <button className="sp-control-btn" onClick={playPrev}>
+              <button className="sp-control-btn" onClick={playPrev} title="Previous" aria-label="Previous">
                 <Icons.SkipPrev />
               </button>
-              <button className="sp-play-btn" onClick={togglePlay}>
+              <button className="sp-play-btn" onClick={togglePlay} title="Play/Pause (Space)" aria-label={isPlaying ? 'Pause' : 'Play'}>
                 {isPlaying ? <Icons.Pause /> : <span className="play-icon"><Icons.Play /></span>}
               </button>
-              <button className="sp-control-btn" onClick={playNext}>
+              <button className="sp-control-btn" onClick={playNext} title="Next (N)" aria-label="Next">
                 <Icons.SkipNext />
               </button>
               <button
-                className={`sp-control-btn${isRepeating ? " active" : ""}`}
+                className={`sp-control-btn${isRepeating ? ' active' : ''}`}
                 onClick={() => setIsRepeating(!isRepeating)}
-                style={{ position: "relative" }}
+                title="Repeat" aria-label="Repeat"
               >
                 <Icons.Repeat />
               </button>
             </div>
             <div className="sp-progress-container">
               <span className="sp-progress-time left">{formatTime(currentTime)}</span>
-              <div className="sp-progress-bar-wrapper" ref={progressRef} onClick={seekTo}>
+              <div className="sp-progress-bar-wrapper" ref={progressRef} onMouseDown={onProgressMouseDown} onClick={seekTo}>
                 <div className="sp-progress-bar">
                   <div className="sp-progress-fill" style={{ width: `${progressPercent}%` }}>
                     <div className="sp-progress-knob" />
@@ -935,14 +1027,18 @@ export default function QuranPlayerPage() {
 
           {/* Right - Volume + Extra */}
           <div className="sp-player-right">
-            <button className="sp-control-btn">
+            <button
+              className={`sp-control-btn${showQueue ? ' active' : ''}`}
+              onClick={() => setShowQueue(q => !q)}
+              title="Queue" aria-label="Queue"
+            >
               <Icons.Queue />
             </button>
             <div className="sp-volume-group">
-              <button className="sp-volume-btn" onClick={() => setIsMuted(!isMuted)}>
+              <button className="sp-volume-btn" onClick={() => setIsMuted(!isMuted)} title={isMuted ? 'Unmute (M)' : 'Mute (M)'} aria-label={isMuted ? 'Unmute' : 'Mute'}>
                 {isMuted || volume === 0 ? <Icons.VolumeMute /> : <Icons.Volume2 />}
               </button>
-              <div className="sp-volume-bar-wrapper" ref={volumeRef} onClick={seekVolume}>
+              <div className="sp-volume-bar-wrapper" ref={volumeRef} onMouseDown={onVolumeMouseDown} onClick={seekVolume}>
                 <div className="sp-volume-bar">
                   <div className="sp-volume-fill" style={{ width: `${isMuted ? 0 : volume}%` }}>
                     <div className="sp-volume-knob" />
@@ -966,8 +1062,12 @@ export default function QuranPlayerPage() {
                 <div className="sp-mobile-player-artist">{currentTrack.reciter}</div>
               </div>
               <div className="sp-mobile-player-controls">
-                <button className={`sp-mobile-player-btn${isLiked ? " liked" : ""}`} onClick={e => { e.stopPropagation(); setIsLiked(!isLiked); }}>
-                  {isLiked ? <Icons.HeartFilled /> : <Icons.Heart />}
+                <button
+                  className={`sp-mobile-player-btn${currentTrack && isLiked(currentTrack.id) ? ' liked' : ''}`}
+                  onClick={e => { e.stopPropagation(); currentTrack && toggleLike(currentTrack.id); }}
+                  aria-label="Like"
+                >
+                  {currentTrack && isLiked(currentTrack.id) ? <Icons.HeartFilled /> : <Icons.Heart />}
                 </button>
                 <button className="sp-mobile-player-btn" onClick={e => { e.stopPropagation(); togglePlay(); }}>
                   {isPlaying
@@ -984,24 +1084,90 @@ export default function QuranPlayerPage() {
 
         {/* ═══ MOBILE BOTTOM NAV ═══ */}
         <div className="sp-mobile-nav">
-          <button className="sp-mobile-nav-item active">
-            <Icons.Home />
-            <span>Home</span>
+          <button
+            className={`sp-mobile-nav-item${mobileView === 'home' ? ' active' : ''}`}
+            onClick={() => { setMobileView('home'); setSelectedReciterPlaylist(null); setSearchQuery(''); }}
+            aria-label="Home"
+          >
+            <Icons.Home /><span>Home</span>
           </button>
-          <button className="sp-mobile-nav-item">
-            <Icons.Search />
-            <span>Search</span>
+          <button
+            className={`sp-mobile-nav-item${mobileView === 'search' ? ' active' : ''}`}
+            onClick={() => { setMobileView('search'); setShowSearchView(v => !v); }}
+            aria-label="Search"
+          >
+            <Icons.Search /><span>Search</span>
           </button>
-          <button className="sp-mobile-nav-item">
-            <Icons.Library />
-            <span>Your Library</span>
+          <button
+            className={`sp-mobile-nav-item${mobileView === 'library' ? ' active' : ''}`}
+            onClick={() => { setMobileView('library'); setSelectedReciterPlaylist(null); setSearchQuery(''); }}
+            aria-label="Your Library"
+          >
+            <Icons.Library /><span>Your Library</span>
           </button>
         </div>
       </div>
 
-      {/* ═══ NOW PLAYING OVERLAY (Mobile Full-screen) ═══ */}
+      {/* ═══ QUEUE PANEL ═══ */}
+      {showQueue && (
+        <div className="sp-queue-panel">
+          <div className="sp-queue-header">
+            <h3>Queue</h3>
+            <button className="sp-queue-close" onClick={() => setShowQueue(false)} aria-label="Close queue"><Icons.Close /></button>
+          </div>
+          {currentTrack && (
+            <div className="sp-queue-now">
+              <div className="sp-queue-section-label">Now playing</div>
+              <div className="sp-queue-item active">
+                <div className="sp-queue-item-art">
+                  <SurahArt number={currentTrack.id} name={currentTrack.englishName} gradient={currentTrack.gradient} size="small" />
+                </div>
+                <div className="sp-queue-item-info">
+                  <div className="sp-queue-item-name">{currentTrack.name}</div>
+                  <div className="sp-queue-item-artist">{currentTrack.reciter}</div>
+                </div>
+                <span className="sp-queue-item-dur">{currentTrack.duration}</span>
+              </div>
+            </div>
+          )}
+          <div className="sp-queue-next">
+            <div className="sp-queue-section-label">Next in queue</div>
+            {tracks.filter(t => t.id !== currentTrack?.id).slice(0, 20).map(track => (
+              <div key={track.id} className="sp-queue-item" onClick={() => playTrack(track)}>
+                <div className="sp-queue-item-art">
+                  <SurahArt number={track.id} name={track.englishName} gradient={track.gradient} size="small" />
+                </div>
+                <div className="sp-queue-item-info">
+                  <div className="sp-queue-item-name">{track.name}</div>
+                  <div className="sp-queue-item-artist">{track.reciter}</div>
+                </div>
+                <span className="sp-queue-item-dur">{track.duration}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ═══ CREATE PLAYLIST MODAL ═══ */}
+      {showCreatePlaylist && (
+        <div className="sp-modal-backdrop" onClick={() => setShowCreatePlaylist(false)}>
+          <div className="sp-modal" onClick={e => e.stopPropagation()}>
+            <button className="sp-modal-close" onClick={() => setShowCreatePlaylist(false)} aria-label="Close"><Icons.Close /></button>
+            <h2 className="sp-modal-title">Create playlist</h2>
+            <p className="sp-modal-desc">Give your playlist a name to get started.</p>
+            <input className="sp-modal-input" type="text" placeholder="My Playlist #1" autoFocus
+              onKeyDown={e => { if (e.key === 'Enter') setShowCreatePlaylist(false); }} />
+            <div className="sp-modal-actions">
+              <button className="sp-modal-btn cancel" onClick={() => setShowCreatePlaylist(false)}>Cancel</button>
+              <button className="sp-modal-btn create" onClick={() => setShowCreatePlaylist(false)}>Create</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ═══ NOW PLAYING OVERLAY (Full-screen) ═══ */}
       <div className={`sp-now-playing-overlay${showNowPlaying ? " active" : ""}`}>
-        <button className="sp-now-playing-close" onClick={() => setShowNowPlaying(false)}>
+        <button className="sp-now-playing-close" onClick={() => setShowNowPlaying(false)} aria-label="Close now playing">
           <Icons.Close />
         </button>
         {currentTrack && (
