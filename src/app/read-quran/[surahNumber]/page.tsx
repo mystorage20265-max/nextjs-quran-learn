@@ -833,11 +833,11 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 .nq-tajweed-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
                 .nq-tajweed-desc{font-size:13px;color:#64748b;line-height:1.5}
                 .dark .nq-tajweed-desc{color:#94a3b8}
-                /* scrollbar — hidden */
-                .nq-scroll::-webkit-scrollbar{display:none}
-                .nq-scroll{scrollbar-width:none;-ms-overflow-style:none}
-                .nq-right::-webkit-scrollbar{width:4px}
-                .nq-right::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.08);border-radius:2px}
+                /* scrollbar — hidden everywhere */
+                .nq-shell,.nq-shell *{scrollbar-width:none;-ms-overflow-style:none}
+                .nq-shell::-webkit-scrollbar,.nq-shell *::-webkit-scrollbar{display:none}
+                .wdm-sheet{scrollbar-width:none;-ms-overflow-style:none}
+                .wdm-sheet::-webkit-scrollbar{display:none}
                 /* Mode tabs row */
                 .nq-tabs-row{display:flex;align-items:center;background:rgba(255,255,255,0.8);border-bottom:1px solid #e2e8f0;height:44px;flex-shrink:0;min-width:0}
                 @media(min-width:640px){.nq-tabs-row{height:48px}}
@@ -1036,7 +1036,8 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                 </button>
                             ))}
                         </div>
-                        {/* Sound Toggle — always visible, same for mobile & desktop */}
+                        {/* Sound Toggle — hidden in word-by-word mode */}
+                        {readingMode !== 'word-by-word' && (
                         <div className="nq-sound-toggle-wrap">
                             <span className="nq-sound-toggle-label" style={{ color: audioEnabled ? '#f59e0b' : '#94a3b8' }}>
                                 Audio
@@ -1050,6 +1051,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                 <span className="nq-sound-pill-thumb" />
                             </button>
                         </div>
+                        )}
                     </div>
 
                     {/* Content area */}
@@ -1460,8 +1462,8 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
 
                     </div>
 
-                    {/* AUDIO BAR — Spotify-style 3-column premium bar */}
-                    {audioEnabled && (
+                    {/* AUDIO BAR — hidden in word-by-word mode */}
+                    {audioEnabled && readingMode !== 'word-by-word' && (
                         <div className="nq-audio-bar">
                             {/* LEFT — Surah Art + Track Info + Like */}
                             <div className="nq-ab-left">
