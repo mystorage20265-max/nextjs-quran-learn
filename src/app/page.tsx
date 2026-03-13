@@ -1,8 +1,45 @@
 'use client';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import { useTheme } from '@/components/ThemeProvider';
 import { trackSurahVisit, getRecentSurahs } from '@/lib/recentSurahs';
+
+// ── Prayer Times Types ──
+interface PrayerTimesData {
+  Fajr: string;
+  Sunrise: string;
+  Dhuhr: string;
+  Asr: string;
+  Maghrib: string;
+  Isha: string;
+}
+interface HijriDate {
+  day: string;
+  month: { en: string; ar: string; number: number };
+  year: string;
+  weekday: { en: string; ar: string };
+  holidays: string[];
+}
+interface PrayerApiResponse {
+  data: {
+    timings: PrayerTimesData & { [key: string]: string };
+    date: {
+      readable: string;
+      hijri: HijriDate;
+      gregorian: { date: string; day: string; weekday: { en: string }; month: { en: string; number: number }; year: string };
+    };
+    meta: { timezone: string; latitude: number; longitude: number };
+  };
+}
+
+const PRAYER_NAMES: { key: keyof PrayerTimesData; label: string; icon: string }[] = [
+  { key: 'Fajr', label: 'Fajr', icon: 'routine' },
+  { key: 'Sunrise', label: 'Sunrise', icon: 'wb_twilight' },
+  { key: 'Dhuhr', label: 'Dhuhr', icon: 'wb_sunny' },
+  { key: 'Asr', label: 'Asr', icon: 'sunny_snowing' },
+  { key: 'Maghrib', label: 'Maghrib', icon: 'wb_twilight' },
+  { key: 'Isha', label: 'Isha', icon: 'dark_mode' },
+];
 
 const SURAHS = [
   { num: 1, ar: 'الفاتحة', name: 'Al-Fatihah', meaning: 'The Opening', v: 7, t: 'Meccan' },
@@ -200,6 +237,15 @@ export default function HomePage() {
   const [sessionTime, setSessionTime] = useState(0); // seconds this session
   const [totalTime, setTotalTime] = useState(0);     // cumulative seconds all sessions
 
+  // ── Prayer Times State ──
+  const [prayerTimes, setPrayerTimes] = useState<PrayerTimesData | null>(null);
+  const [hijriDate, setHijriDate] = useState<HijriDate | null>(null);
+  const [gregorianDate, setGregorianDate] = useState<string>('');
+  const [locationName, setLocationName] = useState<string>('Locating...');
+  const [currentTime, setCurrentTime] = useState<Date>(new Date());
+  const [nextPrayer, setNextPrayer] = useState<{ name: string; time: string; remaining: string } | null>(null);
+  const [prayerLoading, setPrayerLoading] = useState(true);
+
   // ── Prefetch Dua data after 3 s so the /dua page loads instantly ──
   useEffect(() => {
     const t = setTimeout(() => {
@@ -208,6 +254,102 @@ export default function HomePage() {
     }, 3000);
     return () => clearTimeout(t);
   }, []);
+
+  // ── Prayer Times: calculate next prayer ──
+  const calcNextPrayer = useCallback((times: PrayerTimesData, now: Date) => {
+    const prayerOrder: (keyof PrayerTimesData)[] = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+    const nowMins = now.getHours() * 60 + now.getMinutes();
+    for (const key of prayerOrder) {
+      if (key === 'Sunrise') continue; // skip sunrise for "next prayer" countdown
+      const [h, m] = times[key].split(':').map(Number);
+      const pMins = h * 60 + m;
+      if (pMins > nowMins) {
+        const diff = pMins - nowMins;
+        const dH = Math.floor(diff / 60);
+        const dM = diff % 60;
+        const dS = 60 - now.getSeconds();
+        return {
+          name: key,
+          time: times[key],
+          remaining: `${dH > 0 ? dH + 'h ' : ''}${String(dM).padStart(2, '0')}m ${String(dS % 60).padStart(2, '0')}s`,
+        };
+      }
+    }
+    // After Isha → next is Fajr (tomorrow)
+    const [fH, fM] = times.Fajr.split(':').map(Number);
+    const fajrTotalMins = fH * 60 + fM + 24 * 60;
+    const diff = fajrTotalMins - nowMins;
+    const dH = Math.floor(diff / 60);
+    const dM = diff % 60;
+    const dS = 60 - now.getSeconds();
+    return {
+      name: 'Fajr',
+      time: times.Fajr,
+      remaining: `${dH > 0 ? dH + 'h ' : ''}${String(dM).padStart(2, '0')}m ${String(dS % 60).padStart(2, '0')}s`,
+    };
+  }, []);
+
+  // ── Fetch prayer times ──
+  useEffect(() => {
+    const fetchPrayer = async (lat?: number, lng?: number) => {
+      try {
+        let url = 'https://api.aladhan.com/v1/timings';
+        if (lat !== undefined && lng !== undefined) {
+          url += `?latitude=${lat}&longitude=${lng}&method=2`;
+        } else {
+          url += 'ByCity?city=Makkah&country=SA&method=4';
+        }
+        const res = await fetch(url);
+        const json: PrayerApiResponse = await res.json();
+        const t = json.data.timings;
+        setPrayerTimes({ Fajr: t.Fajr, Sunrise: t.Sunrise, Dhuhr: t.Dhuhr, Asr: t.Asr, Maghrib: t.Maghrib, Isha: t.Isha });
+        setHijriDate(json.data.date.hijri);
+        const g = json.data.date.gregorian;
+        setGregorianDate(`${g.day} ${g.month.en} ${g.year}`);
+        setPrayerLoading(false);
+
+        // Reverse geocode for location name
+        if (lat !== undefined && lng !== undefined) {
+          try {
+            const geoRes = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&zoom=10`);
+            const geoJson = await geoRes.json();
+            const city = geoJson.address?.city || geoJson.address?.town || geoJson.address?.county || geoJson.address?.state || '';
+            const country = geoJson.address?.country || '';
+            setLocationName(city ? `${city}, ${country}` : country || 'Your Location');
+          } catch {
+            setLocationName('Your Location');
+          }
+        } else {
+          setLocationName('Makkah, Saudi Arabia');
+        }
+      } catch {
+        setPrayerLoading(false);
+        setLocationName('Unable to load');
+      }
+    };
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => fetchPrayer(pos.coords.latitude, pos.coords.longitude),
+        () => fetchPrayer(), // fallback to Makkah
+        { timeout: 5000 }
+      );
+    } else {
+      fetchPrayer();
+    }
+  }, []);
+
+  // ── Real-time clock + next prayer update ──
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = new Date();
+      setCurrentTime(now);
+      if (prayerTimes) {
+        setNextPrayer(calcNextPrayer(prayerTimes, now));
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [prayerTimes, calcNextPrayer]);
 
   // ── Verse Search ──
   const [verseQuery, setVerseQuery] = useState('');
@@ -543,6 +685,105 @@ export default function HomePage() {
         @keyframes navSlideIn{from{transform:translateX(-100%);opacity:0}to{transform:translateX(0);opacity:1}}
         @keyframes navSkel{0%,100%{opacity:0.5}50%{opacity:1}}
         @keyframes spin{to{transform:translateY(-50%) rotate(360deg)}}
+
+        /* ── Prayer Times Hero ── */
+        .prayer-hero{
+          position:relative;overflow:hidden;border-radius:20px;
+          margin-bottom:24px;
+          padding:28px 24px 20px;
+          background:linear-gradient(135deg,#FFF8E7 0%,#FDECC8 40%,#FDE8B8 100%);
+          box-shadow:0 4px 24px rgba(245,158,11,0.12);
+        }
+        [data-theme='dark'] .prayer-hero{
+          background:linear-gradient(135deg,#1a1612 0%,#1f1a12 40%,#241e14 100%);
+          box-shadow:0 4px 24px rgba(0,0,0,0.3);
+        }
+        .prayer-hero-mosque{
+          position:absolute;bottom:0;left:0;right:0;height:100px;pointer-events:none;
+          opacity:0.12;
+        }
+        [data-theme='dark'] .prayer-hero-mosque{opacity:0.08}
+        .prayer-hero-orb1{
+          position:absolute;top:-60px;right:-40px;width:200px;height:200px;
+          border-radius:50%;pointer-events:none;
+          background:radial-gradient(circle,rgba(245,158,11,0.15),transparent 70%);
+        }
+        .prayer-hero-orb2{
+          position:absolute;bottom:-40px;left:-30px;width:150px;height:150px;
+          border-radius:50%;pointer-events:none;
+          background:radial-gradient(circle,rgba(217,119,6,0.10),transparent 70%);
+        }
+        .prayer-clock{font-size:clamp(48px,10vw,72px);font-weight:800;line-height:1;letter-spacing:-2px;
+          color:#b45309;font-variant-numeric:tabular-nums;
+          text-shadow:0 2px 12px rgba(180,83,9,0.12);
+        }
+        [data-theme='dark'] .prayer-clock{color:#f59e0b;text-shadow:0 2px 18px rgba(245,158,11,0.25)}
+        .prayer-clock-colon{
+          display:inline-block;animation:colonBlink 1s step-end infinite;
+          margin:0 2px;
+        }
+        @keyframes colonBlink{0%,100%{opacity:1}50%{opacity:0.3}}
+        .prayer-next-badge{
+          display:inline-flex;align-items:center;gap:6px;
+          background:rgba(245,158,11,0.15);color:#b45309;
+          padding:4px 12px;border-radius:20px;
+          font-size:12px;font-weight:600;
+          border:1px solid rgba(245,158,11,0.2);
+        }
+        [data-theme='dark'] .prayer-next-badge{background:rgba(245,158,11,0.12);color:#fbbf24;border-color:rgba(245,158,11,0.18)}
+        .prayer-times-row{
+          display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-top:18px;
+        }
+        .prayer-time-card{
+          display:flex;flex-direction:column;align-items:center;gap:4px;
+          padding:10px 4px;border-radius:14px;
+          background:rgba(255,255,255,0.65);
+          border:1px solid rgba(245,158,11,0.1);
+          transition:all 0.18s ease;
+        }
+        [data-theme='dark'] .prayer-time-card{
+          background:rgba(255,255,255,0.04);
+          border-color:rgba(245,158,11,0.08);
+        }
+        .prayer-time-card.active{
+          background:linear-gradient(135deg,#f59e0b,#d97706);
+          border-color:#f59e0b;
+          box-shadow:0 4px 16px rgba(245,158,11,0.3);
+          transform:translateY(-2px);
+        }
+        .prayer-time-card.active .ptc-icon,
+        .prayer-time-card.active .ptc-label,
+        .prayer-time-card.active .ptc-time{color:white !important}
+        .ptc-icon{font-size:20px;color:#d97706}
+        [data-theme='dark'] .ptc-icon{color:#fbbf24}
+        .ptc-label{font-size:10px;font-weight:600;color:#92400e;text-transform:uppercase;letter-spacing:0.06em}
+        [data-theme='dark'] .ptc-label{color:#fbbf24}
+        .ptc-time{font-size:13px;font-weight:700;color:#78350f;font-variant-numeric:tabular-nums}
+        [data-theme='dark'] .ptc-time{color:#fde68a}
+        .prayer-meta-row{
+          display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;
+          margin-top:8px;
+        }
+        .prayer-meta-item{
+          display:flex;align-items:center;gap:4px;
+          font-size:11.5px;font-weight:500;color:#92400e;
+        }
+        [data-theme='dark'] .prayer-meta-item{color:#d4a574}
+        .prayer-hijri{
+          text-align:center;margin-top:4px;
+          font-size:12px;font-weight:600;color:#b45309;
+        }
+        [data-theme='dark'] .prayer-hijri{color:#fbbf24}
+        .prayer-skeleton{
+          background:linear-gradient(90deg,rgba(245,158,11,0.08) 25%,rgba(245,158,11,0.18) 50%,rgba(245,158,11,0.08) 75%);
+          background-size:200% 100%;animation:shimmerPrayer 1.5s ease infinite;border-radius:8px;
+        }
+        @keyframes shimmerPrayer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+        @media(max-width:500px){
+          .prayer-times-row{grid-template-columns:repeat(3,1fr)}
+          .prayer-hero{padding:22px 16px 16px}
+        }
+
         /* ── Responsive ── */
         .hp-header-inner{padding:10px 16px !important}
         .hp-content{padding:16px 16px 16px !important}
@@ -678,6 +919,107 @@ export default function HomePage() {
         {/* MAIN — scrollable content only */}
         <main className="hp-scroll hp-dot" style={{ background: dark ? 'var(--bg-base)' : '#ffffff' }}>
           <div className="hp-content" style={{ maxWidth: 860, margin: '0 auto' }}>
+
+            {/* ── PRAYER TIMES HERO BANNER ── */}
+            <section className="prayer-hero">
+              {/* Decorative elements */}
+              <div className="prayer-hero-orb1" />
+              <div className="prayer-hero-orb2" />
+
+              {/* Mosque silhouette SVG */}
+              <svg className="prayer-hero-mosque" viewBox="0 0 800 120" preserveAspectRatio="xMidYMax slice" fill={dark ? '#f59e0b' : '#b45309'}>
+                <path d="M0,120 L0,90 Q20,88 40,90 L40,70 Q50,30 60,70 L60,90 L80,90 L80,75 Q85,60 90,75 L90,90 L120,90 L120,65 Q130,20 140,65 L140,90 Q160,88 180,90 L180,100 L200,100 L200,85 Q210,50 220,85 L220,100 L260,100 L260,80 Q270,35 280,80 L280,100 L320,95 L320,70 Q340,10 360,70 L360,95 L380,90 L380,75 Q390,40 400,75 L400,90 L420,90 L420,70 Q440,5 460,70 L460,90 L480,88 L480,75 Q490,45 500,75 L500,90 L540,90 L540,65 Q550,25 560,65 L560,90 L580,92 L580,100 L600,100 L600,80 Q610,40 620,80 L620,100 L660,100 L660,70 Q670,30 680,70 L680,100 L700,95 L700,85 Q710,55 720,85 L720,95 L760,95 L760,90 Q770,70 780,90 L780,95 L800,95 L800,120 Z" />
+                <circle cx="140" cy="30" r="18" opacity="0.5" />
+                <circle cx="340" cy="20" r="14" opacity="0.4" />
+                <circle cx="460" cy="15" r="16" opacity="0.45" />
+                <rect x="138" y="8" width="4" height="22" rx="2" opacity="0.4" />
+                <rect x="338" y="3" width="4" height="17" rx="2" opacity="0.35" />
+                <rect x="458" y="-2" width="4" height="17" rx="2" opacity="0.4" />
+              </svg>
+
+              {/* Content */}
+              <div style={{ position: 'relative', zIndex: 2, textAlign: 'center' }}>
+                {prayerLoading ? (
+                  // Skeleton loader
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
+                    <div className="prayer-skeleton" style={{ width: 180, height: 60 }} />
+                    <div className="prayer-skeleton" style={{ width: 220, height: 20 }} />
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6,1fr)', gap: 6, width: '100%', marginTop: 12 }}>
+                      {Array.from({ length: 6 }).map((_, i) => (
+                        <div key={i} className="prayer-skeleton" style={{ height: 70 }} />
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    {/* App label */}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, marginBottom: 12 }}>
+                      <span className="material-symbols-outlined" style={{ fontSize: 18, color: dark ? '#fbbf24' : '#b45309' }}>mosque</span>
+                      <span style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: '0.18em', color: dark ? '#fbbf24' : '#92400e' }}>Prayer Times</span>
+                    </div>
+
+                    {/* Large clock */}
+                    <div className="prayer-clock">
+                      {String(currentTime.getHours()).padStart(2, '0')}
+                      <span className="prayer-clock-colon">:</span>
+                      {String(currentTime.getMinutes()).padStart(2, '0')}
+                    </div>
+
+                    {/* Next prayer countdown */}
+                    {nextPrayer && (
+                      <div style={{ marginTop: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, flexWrap: 'wrap' }}>
+                        <span className="prayer-next-badge">
+                          <span className="material-symbols-outlined" style={{ fontSize: 14 }}>schedule</span>
+                          {nextPrayer.name} in {nextPrayer.remaining}
+                        </span>
+                      </div>
+                    )}
+
+                    {/* Meta row — date and location */}
+                    <div className="prayer-meta-row">
+                      <span className="prayer-meta-item">
+                        <span className="material-symbols-outlined" style={{ fontSize: 14 }}>calendar_today</span>
+                        {gregorianDate}
+                      </span>
+                      <span style={{ color: dark ? '#5a4a3a' : '#d4a574', fontSize: 11 }}>·</span>
+                      <span className="prayer-meta-item">
+                        <span className="material-symbols-outlined" style={{ fontSize: 14 }}>location_on</span>
+                        {locationName}
+                      </span>
+                    </div>
+
+                    {/* Hijri date */}
+                    {hijriDate && (
+                      <p className="prayer-hijri">
+                        {hijriDate.day} {hijriDate.month.en} {hijriDate.year} AH
+                        {hijriDate.month.number === 9 && (
+                          <span style={{ marginLeft: 8, background: 'rgba(245,158,11,0.15)', padding: '2px 8px', borderRadius: 12, fontSize: 10, fontWeight: 700 }}>🌙 Ramadan</span>
+                        )}
+                        {hijriDate.holidays.length > 0 && (
+                          <span style={{ marginLeft: 6, fontSize: 10, fontWeight: 500, color: dark ? '#fbbf24' : '#b45309' }}>• {hijriDate.holidays[0]}</span>
+                        )}
+                      </p>
+                    )}
+
+                    {/* Prayer times row */}
+                    {prayerTimes && (
+                      <div className="prayer-times-row">
+                        {PRAYER_NAMES.map(p => (
+                          <div
+                            key={p.key}
+                            className={`prayer-time-card${nextPrayer?.name === p.key ? ' active' : ''}`}
+                          >
+                            <span className={`material-symbols-outlined ptc-icon`}>{p.icon}</span>
+                            <span className="ptc-label">{p.label}</span>
+                            <span className="ptc-time">{prayerTimes[p.key]}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            </section>
 
             {/* ── TOP FEATURED ACTIONS ── */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 12, marginBottom: 24 }}>
