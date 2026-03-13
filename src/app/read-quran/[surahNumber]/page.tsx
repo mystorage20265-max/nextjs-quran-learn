@@ -328,7 +328,72 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
     // Tooltip state for word meanings
     const [tooltip] = useState<{ meaning: string; x: number; y: number } | null>(null);
     const tooltipRef = useRef<HTMLDivElement | null>(null);
-    const verseToPageIndexRef = useRef<Map<number, number>>(new Map());    const [audioVolume, setAudioVolume] = useState(100);  // 0-100
+    const verseToPageIndexRef = useRef<Map<number, number>>(new Map());
+
+    // ── Word Detail Modal state ──
+    interface SelectedWordInfo {
+        text_uthmani: string;
+        text_indopak?: string;
+        translation: string;
+        transliteration: string;
+        location: string; // e.g. "1:2:1"
+        audio_url?: string | null;
+        char_type_name?: string;
+        position: number;
+        verseKey: string;
+        verseText?: string;
+    }
+    const [selectedWord, setSelectedWord] = useState<SelectedWordInfo | null>(null);
+    const wordAudioRef = useRef<HTMLAudioElement | null>(null);
+    const [wordAudioPlaying, setWordAudioPlaying] = useState(false);
+
+    const playWordAudio = useCallback((audioUrl?: string | null) => {
+        if (!audioUrl) return;
+        if (wordAudioRef.current) {
+            wordAudioRef.current.pause();
+            wordAudioRef.current = null;
+        }
+        const fullUrl = audioUrl.startsWith('http') ? audioUrl : `https://audio.qurancdn.com/${audioUrl}`;
+        const audio = new Audio(fullUrl);
+        wordAudioRef.current = audio;
+        setWordAudioPlaying(true);
+        audio.play().catch(() => setWordAudioPlaying(false));
+        audio.onended = () => setWordAudioPlaying(false);
+        audio.onerror = () => setWordAudioPlaying(false);
+    }, []);
+
+    const openWordDetail = useCallback((word: any, verseKey: string, verseWords?: any[]) => {
+        // Build context: the full verse text from all words
+        const verseText = verseWords
+            ? verseWords.filter((w: any) => w.char_type_name !== 'end').map((w: any) => w.text_uthmani).join(' ')
+            : '';
+        setSelectedWord({
+            text_uthmani: word.text_uthmani,
+            text_indopak: word.text_indopak,
+            translation: word.translation?.text || '',
+            transliteration: word.transliteration?.text || '',
+            location: word.location || `${verseKey}:${word.position}`,
+            audio_url: word.audio_url,
+            char_type_name: word.char_type_name,
+            position: word.position,
+            verseKey,
+            verseText,
+        });
+    }, []);
+
+    // ESC to close word detail modal
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape' && selectedWord) {
+                setSelectedWord(null);
+                if (wordAudioRef.current) { wordAudioRef.current.pause(); wordAudioRef.current = null; setWordAudioPlaying(false); }
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [selectedWord]);
+
+    const [audioVolume, setAudioVolume] = useState(100);  // 0-100
     const [isAudioMuted, setIsAudioMuted] = useState(false);
     const [isShuffled, setIsShuffled] = useState(false);
     const [isRepeating, setIsRepeating] = useState(false);
@@ -768,10 +833,9 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 .nq-tajweed-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
                 .nq-tajweed-desc{font-size:13px;color:#64748b;line-height:1.5}
                 .dark .nq-tajweed-desc{color:#94a3b8}
-                /* scrollbar */
-                .nq-scroll::-webkit-scrollbar{width:5px}
-                .nq-scroll::-webkit-scrollbar-track{background:transparent}
-                .nq-scroll::-webkit-scrollbar-thumb{background:rgba(245,158,11,0.2);border-radius:3px}
+                /* scrollbar — hidden */
+                .nq-scroll::-webkit-scrollbar{display:none}
+                .nq-scroll{scrollbar-width:none;-ms-overflow-style:none}
                 .nq-right::-webkit-scrollbar{width:4px}
                 .nq-right::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.08);border-radius:2px}
                 /* Mode tabs row */
@@ -1273,21 +1337,23 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                     })()
 
                                 ) : readingMode === 'word-by-word' ? (
-                                    <div className="reader-verses">
+                                    <div className="wbw-clean">
                                         {wordDataLoading ? (
                                             <div className="reader-loading"><div className="reader-spinner" /><p className="reader-loading-text">Loading word data…</p></div>
                                         ) : displayVerses.map((verse) => (
-                                            <div key={verse.id} id={`verse-${verse.verse_number}`} className={`reader-verse ${currentVerse === verse.verse_number ? 'playing' : ''}`}>
-                                                <div className="reader-verse-header">
-                                                    <span className="reader-verse-number">{verse.verse_number}</span>
-                                                    <button className="verse-mini-play" onClick={() => playVerse(verse.verse_number)}><Volume2 size={14} /></button>
-                                                </div>
+                                            <div key={verse.id} id={`verse-${verse.verse_number}`} className="wbw-verse">
+                                                {/* Tiny verse number */}
+                                                <span className="wbw-vnum">{verse.verse_number}</span>
+                                                {/* Words */}
                                                 <div className="reader-verse-words">
                                                     {verse.words && verse.words.length > 0 ? (
                                                         verse.words.filter((w: any) => w.char_type_name !== 'end').map((word: any, idx: number) => (
-                                                            <div key={word.id || idx} className="word-item">
+                                                            <div
+                                                                key={word.id || idx}
+                                                                className={`word-item ${selectedWord?.location === (word.location || `${verse.verse_key}:${word.position}`) ? 'word-selected' : ''}`}
+                                                                onClick={() => openWordDetail(word, verse.verse_key, verse.words)}
+                                                            >
                                                                 <span className="word-arabic">{cleanIndopakText(word.text_indopak ?? word.text_uthmani)}</span>
-                                                                {word.transliteration?.text && <span className="word-transliteration">{word.transliteration.text}</span>}
                                                                 {word.translation?.text && <span className="word-translation">{word.translation.text}</span>}
                                                             </div>
                                                         ))
@@ -1295,23 +1361,8 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                         <div className="reader-verse-arabic">{verse.verse_number === 1 && chapter.bismillah_pre ? cleanIndopakText(removeBismillah(verse.text_indopak ?? verse.text_uthmani)) : cleanIndopakText(verse.text_indopak ?? verse.text_uthmani)}</div>
                                                     )}
                                                 </div>
-                                                {showTranslation && <div className="reader-verse-translation">{parseTranslationWithFootnotes(verse.translations?.[0]?.text || '')}</div>}
-                                                <div className="reader-verse-actions">
-                                                    <button className="verse-action-btn" onClick={() => copyVerse(verse)}><Copy size={14} /><span>Copy</span></button>
-                                                    <button className={`verse-action-btn ${bookmarks.includes(verse.verse_key) ? 'bookmarked' : ''}`} onClick={() => toggleBookmark(verse.verse_key)}><Bookmark size={14} /><span>{bookmarks.includes(verse.verse_key) ? 'Saved' : 'Save'}</span></button>
-                                                    <button className="verse-action-btn" onClick={() => shareVerse(verse)}><Share2 size={14} /><span>Share</span></button>
-                                                    <button className={`verse-tafsir-toggle ${tafseerModalVerse === verse.verse_number ? 'active' : ''}`} onClick={() => openTafseer(verse.verse_number)}><BookOpen size={14} /><span>Tafsir</span></button>
-                                                </div>
-                                                {isRukuEnd(verse, displayVerses) && (
-                                                    <div className="ruku-sep ruku-sep--wbw">
-                                                        <div className="ruku-sep-line" />
-                                                        <div className="ruku-sep-badge">
-                                                            <span className="ruku-sep-ain">ع</span>
-                                                            <span className="ruku-sep-label">Rukuʿ {verse.ruku_number} ends · Rukuʿ {verse.ruku_number + 1} begins</span>
-                                                        </div>
-                                                        <div className="ruku-sep-line" />
-                                                    </div>
-                                                )}
+                                                {/* Translation */}
+                                                {showTranslation && <p className="wbw-translation">{parseTranslationWithFootnotes(verse.translations?.[0]?.text || '')}</p>}
                                             </div>
                                         ))}
                                         {/* Surah navigation */}
@@ -1593,6 +1644,78 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
 
             {/* Toast */}
             {toast && <div className={`reader-toast ${toast.type}`}>{toast.message}</div>}
+
+            {/* ── WORD DETAIL MODAL ── */}
+            {selectedWord && (
+                <>
+                    <div className="wdm-backdrop" onClick={() => { setSelectedWord(null); if (wordAudioRef.current) { wordAudioRef.current.pause(); wordAudioRef.current = null; setWordAudioPlaying(false); } }} />
+                    <div className="wdm-sheet">
+                        {/* Drag handle */}
+                        <div className="wdm-handle"><div className="wdm-handle-bar" /></div>
+                        {/* Header */}
+                        <div className="wdm-header">
+                            <span className="wdm-ref">{selectedWord.location.replace(/:/g, ':')}</span>
+                            <button className="wdm-close" onClick={() => { setSelectedWord(null); if (wordAudioRef.current) { wordAudioRef.current.pause(); wordAudioRef.current = null; setWordAudioPlaying(false); } }}>
+                                <X size={18} />
+                            </button>
+                        </div>
+                        {/* Word display */}
+                        <div className="wdm-word-display">
+                            <span className="wdm-arabic">{cleanIndopakText(selectedWord.text_indopak ?? selectedWord.text_uthmani)}</span>
+                            <span className="wdm-meaning">{selectedWord.translation}</span>
+                        </div>
+                        {/* Transliteration + Location */}
+                        <div className="wdm-meta-row">
+                            <div className="wdm-meta-item">
+                                <span className="wdm-meta-label">Transliteration</span>
+                                <span className="wdm-meta-value">{selectedWord.transliteration || '—'}</span>
+                            </div>
+                            <div className="wdm-meta-item">
+                                <span className="wdm-meta-label">Position</span>
+                                <span className="wdm-meta-value">Word {selectedWord.position}</span>
+                            </div>
+                        </div>
+                        {/* Verse context */}
+                        {selectedWord.verseText && (
+                            <div className="wdm-context">
+                                <span className="wdm-context-label">Verse Context</span>
+                                <p className="wdm-context-text" dir="rtl">{selectedWord.verseText}</p>
+                            </div>
+                        )}
+                        {/* Actions */}
+                        <div className="wdm-actions">
+                            {selectedWord.audio_url && (
+                                <button className={`wdm-action-btn wdm-audio-btn ${wordAudioPlaying ? 'playing' : ''}`} onClick={() => playWordAudio(selectedWord.audio_url)}>
+                                    <span className="material-symbols-outlined" style={{ fontSize: 20 }}>{wordAudioPlaying ? 'pause_circle' : 'play_circle'}</span>
+                                    <span>{wordAudioPlaying ? 'Playing...' : 'Play Audio'}</span>
+                                </button>
+                            )}
+                            <button className="wdm-action-btn" onClick={() => {
+                                if (navigator.share) {
+                                    navigator.share({ text: `${selectedWord.text_uthmani} - ${selectedWord.translation} (${selectedWord.location})` }).catch(() => {});
+                                } else {
+                                    navigator.clipboard.writeText(`${selectedWord.text_uthmani} - ${selectedWord.translation}`);
+                                    setToast({ message: 'Word copied!', type: 'success' });
+                                    setTimeout(() => setToast(null), 2000);
+                                }
+                            }}>
+                                <Share2 size={16} />
+                                <span>Share</span>
+                            </button>
+                            <button className="wdm-action-btn" onClick={() => {
+                                navigator.clipboard.writeText(`${selectedWord.text_uthmani} - ${selectedWord.translation} (${selectedWord.transliteration})`);
+                                setToast({ message: 'Word copied to clipboard!', type: 'success' });
+                                setTimeout(() => setToast(null), 2000);
+                            }}>
+                                <Copy size={16} />
+                                <span>Copy</span>
+                            </button>
+                        </div>
+                        {/* Close hint */}
+                        <p className="wdm-hint">Tap outside or press ESC to close</p>
+                    </div>
+                </>
+            )}
 
             {/* Word Meaning Tooltip */}
             {tooltip && (
