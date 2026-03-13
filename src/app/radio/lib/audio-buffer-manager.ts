@@ -115,11 +115,14 @@ export class AudioBufferManager {
     }
 
     private setupEventListeners(): void {
-        if (!this.audioElement) return;
+        const audio = this.audioElement;
+        if (!audio) return;
 
-        this.audioElement.addEventListener('progress', () => this.optimizeBuffer());
-        this.audioElement.addEventListener('waiting', () => this.optimizeBuffer());
-        this.audioElement.addEventListener('canplay', () => this.optimizeBuffer());
+        const handleUpdate = () => this.optimizeBuffer();
+        
+        audio.addEventListener('progress', handleUpdate);
+        audio.addEventListener('waiting', handleUpdate);
+        audio.addEventListener('canplay', handleUpdate);
     }
 
     private calculateLoadedPercentage(): number {

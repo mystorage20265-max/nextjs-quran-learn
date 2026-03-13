@@ -34,7 +34,7 @@ interface AdvancedAudioPlayerProps {
     crossfadeDuration?: number;
 }
 
-export default function AdvancedAudioPlayer({
+const AdvancedAudioPlayer = React.forwardRef<AudioPlayerControls, AdvancedAudioPlayerProps>(({
     src,
     autoPlay = false,
     onStateChange,
@@ -42,12 +42,12 @@ export default function AdvancedAudioPlayer({
     onError,
     effects = [],
     crossfadeDuration = 0,
-}: AdvancedAudioPlayerProps) {
-    const audioRef = useRef<HTMLAudioElement | null>(null);
+}, ref) => {
+    const internalAudioRef = useRef<HTMLAudioElement | null>(null);
     const audioContextRef = useRef<AudioContext | null>(null);
     const sourceNodeRef = useRef<MediaElementAudioSourceNode | null>(null);
     const analyserNodeRef = useRef<AnalyserNode | null>(null);
-    const eq ualizerNodesRef = useRef<BiquadFilterNode[]>([]);
+    const equalizerNodesRef = useRef<BiquadFilterNode[]>([]);
     const gainNodeRef = useRef<GainNode | null>(null);
 
     const [state, setState] = useState<PlaybackState>({
@@ -105,8 +105,68 @@ export default function AdvancedAudioPlayer({
         gainNodeRef.current = gainNode;
 
         // Initialize buffer manager
-        audioBufferManager.initialize(audioRef.current);
+        if (internalAudioRef.current) {
+            audioBufferManager.initialize(internalAudioRef.current);
+        }
     }, []);
+
+    const play = useCallback(async () => {
+        if (!internalAudioRef.current) return;
+        try {
+            await internalAudioRef.current.play();
+        } catch (error) {
+            console.error('Play error:', error);
+            onError?.(error as Error);
+        }
+    }, [onError]);
+
+    const pause = useCallback(() => {
+        internalAudioRef.current?.pause();
+    }, []);
+
+    const seek = useCallback((time: number) => {
+        if (internalAudioRef.current) {
+            internalAudioRef.current.currentTime = time;
+        }
+    }, []);
+
+    const setVolumeControl = useCallback((volume: number) => {
+        if (internalAudioRef.current) {
+            internalAudioRef.current.volume = Math.max(0, Math.min(1, volume));
+            if (gainNodeRef.current) {
+                gainNodeRef.current.gain.value = volume;
+            }
+            updateState({ volume });
+        }
+    }, []);
+
+    const setSpeed = useCallback((speed: number) => {
+        if (internalAudioRef.current) {
+            internalAudioRef.current.playbackRate = speed;
+            updateState({ speed });
+        }
+    }, []);
+
+    const getAnalyser = useCallback(() => {
+        return analyserNodeRef.current;
+    }, []);
+
+    const getEqualizerNodes = useCallback(() => {
+        return equalizerNodesRef.current;
+    }, []);
+
+    React.useImperativeHandle(ref, () => ({
+        play,
+        pause,
+        seek,
+        setVolume: setVolumeControl,
+        setSpeed,
+        getAnalyser,
+        getEqualizerNodes,
+        get currentTime() { return internalAudioRef.current?.currentTime || 0; },
+        get duration() { return internalAudioRef.current?.duration || 0; },
+        get paused() { return internalAudioRef.current?.paused ?? true; }
+    }), [play, pause, seek, setVolumeControl, setSpeed, getAnalyser, getEqualizerNodes]);
 
     /**
      * Apply audio effects
@@ -303,60 +363,17 @@ export default function AdvancedAudioPlayer({
         }
     }, []);
 
-    const setSpeed = useCallback((speed: number) => {
-        if (audioRef.current) {
-            audioRef.current.playbackRate = speed;
-            updateState({ speed });
-        }
-    }, []);
-
-    /**
-     * Get analyser for visualizations
-     */
-    const getAnalyser = useCallback(() => {
-        return analyserNodeRef.current;
-    }, []);
-
-    /**
-     * Get equalizer nodes for adjustment
-     */
-    const getEqualizerNodes = useCallback(() => {
-        return equalizerNodesRef.current;
-    }, []);
-
-    // Expose controls via ref
-    React.useImperativeHandle(
-        audioRef,
-        () => ({
-            play,
-            pause,
-            seek,
-            setVolume,
-            setSpeed,
-            getAnalyser,
-            getEqualizerNodes,
-            get currentTime() {
-                return audioRef.current?.currentTime || 0;
-            },
-            get duration() {
-                return audioRef.current?.duration || 0;
-            },
-            get paused() {
-                return audioRef.current?.paused ?? true;
-            },
-        }),
-        [play, pause, seek, setVolume, setSpeed, getAnalyser, getEqualizerNodes]
-    );
-
     return (
         <audio
-            ref={audioRef}
+            ref={internalAudioRef}
             crossOrigin="anonymous"
             preload="auto"
             style={{ display: 'none' }}
         />
     );
-}
+});
+
+export default AdvancedAudioPlayer;
 
 // Export controls interface for TypeScript
 export interface AudioPlayerControls {

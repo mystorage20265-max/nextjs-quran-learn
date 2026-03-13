@@ -190,7 +190,7 @@ export async function getVerses(
 
         // Build verse_key → indopak text map (e.g. "2:1" → "...")
         const indopakMap = new Map<string, string>();
-        (indopakJson?.verses || []).forEach((v: any) => {
+        (indopakJson?.verses || []).forEach((v: { verse_key: string; text_indopak: string }) => {
             indopakMap.set(v.verse_key, v.text_indopak);
         });
 
@@ -277,7 +277,7 @@ export async function getVersesWithWords(
 
         // Build verse_key → full indopak text map (with sukun) from QuranCDN
         const indopakMap = new Map<string, string>();
-        (indopakJson?.verses || []).forEach((v: any) => {
+        (indopakJson?.verses || []).forEach((v: { verse_key: string; text_indopak: string }) => {
             indopakMap.set(v.verse_key, v.text_indopak);
         });
 

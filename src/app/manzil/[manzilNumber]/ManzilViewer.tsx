@@ -15,12 +15,36 @@ interface ManzilViewerProps {
 }
 
 export default function ManzilViewer({ manzilNumber }: ManzilViewerProps) {
-  // Individual verse playback state
+  // --- Refs and State at the top to avoid initialization errors ---
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const userInteractedRef = useRef(false);
+
+  const [manzil, setManzil] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  
+  // Audio system state
+  type Ayah = { number: number; text: string; audio: string | null; translation?: string };
+  const [ayahs, setAyahs] = useState<Ayah[]>([]); 
+  const [currentIndex, setCurrentIndex] = useState<number | null>(null); 
   const [currentPlayingVerse, setCurrentPlayingVerse] = useState<number | null>(null);
+  const [autoplay, setAutoplay] = useState(false); 
+  const [isFetchingAudio, setIsFetchingAudio] = useState(false);
+
+  const [offset, setOffset] = useState<number>(0);
+  const [limit] = useState<number>(50);
+  const [totalAyahs, setTotalAyahs] = useState<number>(0);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
   // Cleanup: stop any playing verse on unmount
   useEffect(() => {
     return () => {
-      if (audioRef.current) audioRef.current.pause();
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.src = "";
+      }
     };
   }, []);
   // Play or pause a single verse manually
@@ -56,26 +80,7 @@ export default function ManzilViewer({ manzilNumber }: ManzilViewerProps) {
   };
   // --- All state and variable declarations at the top ---
   // This ordering prevents ReferenceError: no variable is referenced before initialization
-  const [manzil, setManzil] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  // Audio system state
-  type Ayah = { number: number; text: string; audio: string | null; translation?: string };
-  const [ayahs, setAyahs] = useState<Ayah[]>([]); // Current page's ayahs with audio
-  const [currentIndex, setCurrentIndex] = useState<number | null>(null); // Index in ayahs
-  const [autoplay, setAutoplay] = useState(false); // Single source of truth for autoplay
-  const [isFetchingAudio, setIsFetchingAudio] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const userInteractedRef = useRef(false);
-  const [offset, setOffset] = useState<number>(0);
-  const [limit, setLimit] = useState<number>(50);
-  const [totalAyahs, setTotalAyahs] = useState<number>(0);
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [totalPages, setTotalPages] = useState<number>(1);
-  const [playingVerse, setPlayingVerse] = useState<string | null>(null);
-  const [loadingVerse, setLoadingVerse] = useState<string | null>(null);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [retryCount, setRetryCount] = useState<number>(0);
+
   // ...existing code...
 
   // --- Defensive guards and correct ordering in effects ---
@@ -141,7 +146,7 @@ export default function ManzilViewer({ manzilNumber }: ManzilViewerProps) {
     };
     audioRef.current.onerror = () => {
       setErrorMessage('Audio not available for this verse.');
-      setCurrentIndex(idx => (idx !== null && idx + 1 < ayahs.length ? idx + 1 : null));
+      setCurrentIndex(prev => (prev !== null && prev + 1 < ayahs.length ? prev + 1 : null));
     };
     // Highlight currently playing verse (UI logic can use currentIndex)
   }, [currentIndex, ayahs, autoplay]);
@@ -169,8 +174,7 @@ export default function ManzilViewer({ manzilNumber }: ManzilViewerProps) {
   // Function to stop verse audio
   const stopVerse = () => {
     console.log('[Manzil] Stopping audio playback');
-    setPlayingVerse(null);
-    setLoadingVerse(null);
+    setErrorMessage(null);
   };
   
   // (Removed obsolete playAllVersesInSurah and stopAutoPlay logic)
@@ -244,8 +248,8 @@ export default function ManzilViewer({ manzilNumber }: ManzilViewerProps) {
   const ayahsBySurah = useMemo(() => {
     if (!manzil || !manzil.ayahs) return {};
     
-    const grouped = {};
-    manzil.ayahs.forEach(ayah => {
+    const grouped: Record<number, any> = {};
+    manzil.ayahs.forEach((ayah: any) => {
       const surahNum = ayah.surah.number;
       if (!grouped[surahNum]) {
         grouped[surahNum] = {
@@ -312,8 +316,7 @@ export default function ManzilViewer({ manzilNumber }: ManzilViewerProps) {
     });
   }
 
-  // Check if any audio is currently playing
-  const isAnyAudioPlaying = playingVerse !== null;
+
 
   return (
     <div className="manzil-viewer">

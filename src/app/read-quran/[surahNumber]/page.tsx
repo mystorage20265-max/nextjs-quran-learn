@@ -6,11 +6,6 @@ import { useSearchParams } from 'next/navigation';
 import {
     ChevronLeft,
     ChevronRight,
-    Play,
-    Pause,
-    SkipBack,
-    SkipForward,
-    Settings,
     X,
     Bookmark,
     Copy,
@@ -69,15 +64,7 @@ const stripInvisibleChars = (text: string): string => {
 };
 
 // Ultra-strict: check if text has at least one visible/meaningful character
-const hasVisibleContent = (text: string): boolean => {
-    if (!text) return false;
-    const cleaned = stripInvisibleChars(text);
-    if (!cleaned || cleaned.length === 0) return false;
-    // Must have at least one non-whitespace character that's actual content
-    // Check for: Arabic, Latin, numbers, or other visible punctuation
-    const hasContent = /[\u0600-\u06FF\u0750-\u077F\p{L}\p{N}\p{P}]/u.test(cleaned);
-    return hasContent;
-};
+
 
 
 const removeBismillah = (text: string): string => {
@@ -339,7 +326,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
     const [toast, setToast] = useState<{ message: string; type: 'success' | 'warning' } | null>(null);
 
     // Tooltip state for word meanings
-    const [tooltip, setTooltip] = useState<{ meaning: string; x: number; y: number } | null>(null);
+    const [tooltip] = useState<{ meaning: string; x: number; y: number } | null>(null);
     const tooltipRef = useRef<HTMLDivElement | null>(null);
     const verseToPageIndexRef = useRef<Map<number, number>>(new Map());    const [audioVolume, setAudioVolume] = useState(100);  // 0-100
     const [isAudioMuted, setIsAudioMuted] = useState(false);
@@ -594,7 +581,6 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
     }
 
     const displayVerses = (readingMode === 'word-by-word' || readingMode === 'reading') && versesWithWords.length > 0 ? versesWithWords : verses;
-    const currentReciter = POPULAR_RECITERS.find(r => r.id === selectedReciter);
 
     return (
         <>
@@ -1025,52 +1011,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                             }
                                         }
 
-                                        const renderVerseWords = (verse: typeof versesToRender[0]) => {
-                                            let words: { text: string; key: string | number; translation?: string; transliteration?: string; wordObj?: any }[] = [];
-                                            const verseText = verse.text_indopak || verse.text_uthmani || '';
-                                            const hasWordData = verse.words && verse.words.length > 0;
-                                            const cleanedVerse = cleanIndopakText(
-                                                verse.verse_number === 1 && chapter.bismillah_pre && surahNumber !== 1
-                                                    ? removeBismillah(verseText)
-                                                    : verseText
-                                            );
-                                            const verseTokens = cleanedVerse.split(/\s+/).filter(Boolean);
 
-                                            if (hasWordData) {
-                                                let wordList = verse.words!.filter((w: any) => w.char_type_name !== 'end');
-                                                if (verse.verse_number === 1 && chapter.bismillah_pre && surahNumber !== 1) {
-                                                    let skip = 0;
-                                                    for (const w of wordList) {
-                                                        if (isBismillahWord(w.text_uthmani) && skip < 4) skip++;
-                                                        else break;
-                                                    }
-                                                    wordList = wordList.slice(skip);
-                                                }
-                                                if (verseTokens.length > 0 && verseTokens.length === wordList.length) {
-                                                    words = wordList.map((w: any, i: number) => ({
-                                                        text: stripInvisibleChars(verseTokens[i]),
-                                                        key: w.id || w.position,
-                                                        translation: w.translation?.text?.trim() || '',
-                                                        transliteration: w.transliteration?.text?.trim() || '',
-                                                        wordObj: w
-                                                    }));
-                                                } else {
-                                                    words = wordList.map((w: any) => ({
-                                                        text: stripInvisibleChars(w.text_imlaei || w.text_indopak || w.text_uthmani),
-                                                        key: w.id || w.position,
-                                                        translation: w.translation?.text?.trim() || '',
-                                                        transliteration: w.transliteration?.text?.trim() || '',
-                                                        wordObj: w
-                                                    }));
-                                                }
-                                            } else {
-                                                words = verseTokens.map((w, idx) => ({
-                                                    text: stripInvisibleChars(w),
-                                                    key: idx
-                                                }));
-                                            }
-                                            return words.map(w => ({ ...w, text: stripInvisibleChars(w.text || '') }));
-                                        };
 
                                         const ayahSize = isMobile ? Math.max(20, Math.round(fontSize * 0.72)) : Math.max(26, Math.round(fontSize * 0.95));
                                         const surahInfo = ALL_SURAHS.find(s => s.number === surahNumber);

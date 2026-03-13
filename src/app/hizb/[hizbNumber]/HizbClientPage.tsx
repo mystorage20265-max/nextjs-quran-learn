@@ -17,15 +17,15 @@ export default function HizbClientPage({ hizbId, ayahs, error }: { hizbId: numbe
   const searchParams = useSearchParams();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
-  const audioRef = useRef<HTMLAudioElement>(null);
-  const prefetchRef = useRef<HTMLAudioElement>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const prefetchRef = useRef<HTMLAudioElement | null>(null);
   const [autoplayOnLoad, setAutoplayOnLoad] = useState(false);
 
   useEffect(() => {
     if (searchParams?.get("auto") === "1") {
       setAutoplayOnLoad(true);
       // Remove query param so it doesn't replay on refresh
-      const params = new URLSearchParams(searchParams as any);
+      const params = new URLSearchParams(searchParams?.toString() || "");
       params.delete("auto");
       router.replace(`?${params.toString()}`);
     }
@@ -204,15 +204,13 @@ export default function HizbClientPage({ hizbId, ayahs, error }: { hizbId: numbe
                   >
                     ▶ Play this ayah
                   </button>
-                  {!ayah.audio && (
-                    <span className="text-xs text-red-500 ml-2">Audio not available</span>
-                  )}
                 </div>
               </div>
             );
           })}
         </div>
       </div>
-    </>
+      </main>
+    </div>
   );
 }

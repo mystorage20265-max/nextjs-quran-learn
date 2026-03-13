@@ -39,7 +39,7 @@ async function getCachedChapters(): Promise<Chapter[]> {
     return cachedChapters;
   }
   const chapters = await fetchQuranChapters();
-  cachedChapters = chapters as Chapter[];
+  cachedChapters = chapters;
   lastChapterFetch = now;
   return cachedChapters;
 }
@@ -97,13 +97,17 @@ export async function fetchAudio(
       getCachedChapters(),
     ]);
 
-    const reciter = reciters.find(r => r.id === reciterId || r.originalReciterId === reciterId);
+    const reciter = reciters.find(r => 
+      r.id === reciterId || 
+      (r.originalReciterId !== undefined && r.originalReciterId === reciterId)
+    );
 
     if (!reciter) {
       throw new Error(`Reciter with ID ${reciterId} not found`);
     }
 
-    const audioUrl = await getAudioUrl(reciter.originalReciterId || reciterId, surahNumber);
+    const effectiveReciterId = reciter.originalReciterId !== undefined ? reciter.originalReciterId : reciterId;
+    const audioUrl = await getAudioUrl(effectiveReciterId, surahNumber);
     const surah = chapters.find(c => c.id === surahNumber);
 
     return {
@@ -123,7 +127,7 @@ export async function fetchAudio(
 /**
  * Search radio stations
  */
-export async function searchRadio(query: string, type: 'all' | 'surah' | 'reciter' = 'all'): Promise<Station[]> {
+export async function searchRadio(query: string, _type: 'all' | 'surah' | 'reciter' = 'all'): Promise<Station[]> {
   if (!query.trim()) return [];
 
   const reciters = await getCachedReciters();

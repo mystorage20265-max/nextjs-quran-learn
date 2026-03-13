@@ -99,7 +99,7 @@ export class StreamValidator {
             checkBuffer();
             this.metrics.set(streamUrl, { ...metrics });
             this.notifyObservers(streamUrl, metrics);
-        }, 1000);
+        }, 1000) as any;
 
         // Cleanup
         audioElement.addEventListener('ended', () => {

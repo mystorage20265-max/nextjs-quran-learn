@@ -44,7 +44,9 @@ export default function EqualizerPanel({
         const newBands = [...localBands];
         newBands[index] = value;
         setLocalBands(newBands);
-        if (equalizerNodes?.[index]) equalizerNodes[index].gain.value = value;
+        if (equalizerNodes && equalizerNodes[index]) {
+            equalizerNodes[index].gain.value = value;
+        }
         onSettingsChange({ bands: newBands, preset: 'custom' });
     }, [localBands, equalizerNodes, onSettingsChange]);
 
@@ -58,8 +60,9 @@ export default function EqualizerPanel({
     // Build SVG path for curve
     const curvePath = (() => {
         const W = 1000, H = 100, mid = H / 2;
-        const pts = localBands.map((v, i) => {
-            const x = (i / (localBands.length - 1)) * W;
+        const currentBands = localBands || [];
+        const pts = currentBands.map((v: number, i: number) => {
+            const x = (i / (currentBands.length - 1)) * W;
             const y = mid - (v / 12) * (mid * 0.85);
             return [x, y] as [number, number];
         });

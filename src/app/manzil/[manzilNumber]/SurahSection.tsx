@@ -53,6 +53,7 @@ export default function SurahSection({
         </div>
         {/* Hidden audio element for playback */}
         <audio ref={audioRef} style={{ display: 'none' }} />
+      </div>
   {/* End verses-container */}
       <div className="verses-container">
         {ayahs.map((ayah, idx) => {

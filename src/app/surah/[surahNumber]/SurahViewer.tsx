@@ -11,6 +11,23 @@ import './audio-button.css';
 import './SurahAudioControls.css';
 import './SurahControlsLayout.css';
 
+interface Ayah {
+  number: number;
+  numberInSurah: number;
+  text: string;
+  translation?: string;
+}
+
+interface Surah {
+  number: number;
+  name: string;
+  englishName: string;
+  englishNameTranslation: string;
+  revelationType: string;
+  numberOfAyahs: number;
+  ayahs: Ayah[];
+}
+
 interface SurahViewerProps {
   surahNumber: number;
 }
@@ -19,7 +36,7 @@ export default function SurahViewer({ surahNumber }: SurahViewerProps) {
   // State to track the currently playing verse during auto-play
   // Used for highlighting and button synchronization
   const [currentVerseIndex, setCurrentVerseIndex] = useState<number | null>(null);
-  const [surah, setSurah] = useState<any>(null);
+  const [surah, setSurah] = useState<Surah | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   // Translation is always shown
@@ -390,7 +407,7 @@ export default function SurahViewer({ surahNumber }: SurahViewerProps) {
         
         {/* Ayahs (Verses) */}
         <div className="ayah-list">
-          {surah.ayahs.map((ayah, index) => (
+          {surah.ayahs && surah.ayahs.map((ayah: Ayah, index: number) => (
             <article
               key={ayah.number}
               className={`ayah-item${currentVerseIndex === index ? ' active-verse' : ''}`}

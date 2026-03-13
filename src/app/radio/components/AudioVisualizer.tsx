@@ -26,7 +26,7 @@ export default function AudioVisualizer({
         }
 
         const interval = setInterval(() => {
-            setAnimatedHeights(Array(barCount).fill(0).map(() => 0.1 + Math.random() * 0.9));
+            setAnimatedHeights(Array.from({ length: barCount }, () => 0.1 + Math.random() * 0.9));
         }, 100);
 
         return () => clearInterval(interval);

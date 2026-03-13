@@ -40,14 +40,13 @@ import stationsData from '../data/stations.json';
 export async function fetchQuranReciters(): Promise<Reciter[]> {
     try {
         // Use local stations data which has correct image URLs and IDs
-        return stationsData.map((s: any, index: number) => ({
+        return (stationsData as any[]).map((s: any, index: number) => ({
             id: index + 1000, // Use high offset to ensure uniqueness
             stationId: s.id, // Unique station ID string
-            originalReciterId: parseInt(s.reciters[0], 10), // Keep original for audio fetching
+            originalReciterId: s.reciters && s.reciters.length > 0 ? parseInt(s.reciters[0], 10) : undefined, // Keep original for audio fetching
             name: s.title,
             style: s.subtitle,
             imageUrl: s.imageUrl,
-            relativePath: s.id
         }));
     } catch (error) {
         console.error('Error fetching reciters:', error);
@@ -82,11 +81,11 @@ export async function getAudioUrl(reciterId: number, chapterId: number): Promise
 }
 
 // Fetch Chapters needed for mapping
-export async function fetchQuranChapters() {
+export async function fetchQuranChapters(): Promise<import('./types').Chapter[]> {
     try {
         const response = await fetch(`${API_BASE_URL}/chapters`, {
             next: { revalidate: 86400 }
-        });
+        } as any);
 
         if (!response.ok) throw new Error('Failed to fetch chapters');
 

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useEffect, useRef, useState } from "react";
 import Navbar from '../../../components/Navbar/Navbar';
@@ -16,6 +16,7 @@ type Ayah = {
 // Helper: group ayahs by surah
 function groupAyahsBySurah(ayahs: Ayah[]) {
   const groups: { surah: Ayah["surah"]; ayahs: Ayah[] }[] = [];
+  if (!ayahs || ayahs.length === 0) return groups;
   let currentSurah: Ayah["surah"] | null = null;
   let currentAyahs: Ayah[] = [];
   for (const ayah of ayahs) {
@@ -192,8 +193,13 @@ export default function HizbViewerClient({ ayahs, hizb }: { ayahs: Ayah[]; hizb:
           <a href="/quran" style={{ background: '#2563eb', color: '#fff', fontWeight: 600, fontSize: 18, borderRadius: 24, padding: '10px 28px', textDecoration: 'none', display: 'inline-block', minWidth: 180 }}>← Back to Quran</a>
         </div>
         <div style={{ background: '#fff', borderRadius: 10, padding: 16, margin: '0 auto 1.5rem auto', maxWidth: 520, boxShadow: '0 1px 4px #0001' }}>
-          <div style={{ fontSize: 17, color: '#222', marginBottom: 4 }}>From Surah {surahGroups[0]?.surah?.englishName} ({surahGroups[0]?.surah?.number}) to Surah {surahGroups[surahGroups.length - 1]?.surah?.englishName} ({surahGroups[surahGroups.length - 1]?.surah?.number})</div>
-          <div style={{ fontSize: 16, color: '#64748b', fontStyle: 'italic' }}>{surahGroups[0]?.surah?.name} to {surahGroups[surahGroups.length - 1]?.surah?.name}</div>
+          <div style={{ fontSize: 17, color: '#222', marginBottom: 4 }}>
+            From Surah {surahGroups[0]?.surah?.englishName || "..."} ({surahGroups[0]?.surah?.number || "0"}) 
+            to Surah {surahGroups[surahGroups.length - 1]?.surah?.englishName || "..."} ({surahGroups[surahGroups.length - 1]?.surah?.number || "0"})
+          </div>
+          <div style={{ fontSize: 16, color: '#64748b', fontStyle: 'italic' }}>
+            {surahGroups[0]?.surah?.name || "..."} to {surahGroups[surahGroups.length - 1]?.surah?.name || "..."}
+          </div>
         </div>
         {userGestureHint && (
           <div style={{ color: '#e67e22', fontSize: 15, marginTop: 8 }}>

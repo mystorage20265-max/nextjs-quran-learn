@@ -1,4 +1,4 @@
-﻿import React, { useRef, useState, useEffect, useCallback } from "react";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 
 function formatTime(sec = 0) {
   if (!isFinite(sec) || sec < 0) return "0:00";
@@ -9,8 +9,14 @@ function formatTime(sec = 0) {
   return `${m}:${s}`;
 }
 
-export default function SurahAudioPlayer({ audioSrc, title = "", onEnded }) {
-  const audioRef = useRef(null);
+interface SurahAudioPlayerProps {
+  audioSrc: string | null;
+  title?: string;
+  onEnded?: () => void;
+}
+
+export default function SurahAudioPlayer({ audioSrc, title = "", onEnded }: SurahAudioPlayerProps) {
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [duration, setDuration] = useState(0);
@@ -19,12 +25,14 @@ export default function SurahAudioPlayer({ audioSrc, title = "", onEnded }) {
   const [scrubTime, setScrubTime] = useState(0);
 
   useEffect(() => {
-    if (!audioRef.current) {
+    if (typeof window !== "undefined" && !audioRef.current) {
       audioRef.current = new Audio();
       audioRef.current.preload = "metadata";
       audioRef.current.crossOrigin = "anonymous";
     }
     const audio = audioRef.current;
+    if (!audio) return;
+
     audio.src = audioSrc ?? "";
     audio.load();
 
@@ -82,7 +90,7 @@ export default function SurahAudioPlayer({ audioSrc, title = "", onEnded }) {
     }
   }, [isPlaying]);
 
-  const seekTo = useCallback((timeSec) => {
+  const seekTo = useCallback((timeSec: number) => {
     const audio = audioRef.current;
     if (!audio || !isFinite(duration)) return;
     const t = Math.max(0, Math.min(duration, timeSec));
@@ -90,13 +98,13 @@ export default function SurahAudioPlayer({ audioSrc, title = "", onEnded }) {
     setCurrentTime(t);
   }, [duration]);
 
-  const seekBy = useCallback((deltaSeconds) => {
+  const seekBy = useCallback((deltaSeconds: number) => {
     const audio = audioRef.current;
     if (!audio) return;
     seekTo(audio.currentTime + deltaSeconds);
   }, [seekTo]);
 
-  const onKeyDown = (e) => {
+  const onKeyDown = (e: React.KeyboardEvent) => {
     if (e.code === "Space") {
       e.preventDefault();
       handlePlayPause();
