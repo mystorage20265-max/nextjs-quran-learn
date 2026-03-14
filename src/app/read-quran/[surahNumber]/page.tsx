@@ -48,9 +48,10 @@ const cleanIndopakText = (text: string): string => {
         .replace(/\u06E1/g, '\u0652')     // IndoPak sukun (ۡ U+06E1) → standard sukun (ْ U+0652)
         .replace(/[\u06D6-\u06FF]/g, '') // waqf marks, annotation glyphs, Indo-Pak marks
         .replace(/[\uFBB2-\uFBC2]/g, '') // Arabic Presentation Forms
+        .replace(/[\uE000-\uF8FF]/g, '') // Private Use Area glyphs (ruku/pause markers in IndoPak fonts)
         // Strip everything that isn't a primary letter or vowel from the end of the string
         // Includes: ع, digits, Ayah markers (۝), Hizb markers (۞), Sajda (۩), and misc marks
-        .replace(/[\u0639\u0660-\u0669\u06F0-\u06F9\u06DD\u06DE\u06E9\u06D6-\u06ED\s]+$/, '')
+        .replace(/[\u0639\u064B-\u065F\u0670\u0610-\u061A\u0660-\u0669\u06F0-\u06F9\u06DD\u06DE\u06E9\u06D6-\u06ED\s]+$/, '')
         .replace(/\s{2,}/g, ' ')
         .trim();
 };
