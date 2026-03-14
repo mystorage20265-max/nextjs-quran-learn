@@ -782,11 +782,12 @@
 /* ============ COMPACT PREMIUM AUDIO PLAYER ============ */
 .nq-audio-bar.nq-audio-bar--compact {
   position: fixed;
-  bottom: 20px;
-  /* Mobile: no sidebar — centered in full width */
-  left: 50%;
-  transform: translateX(-50%);
-  width: calc(100% - 24px);
+  bottom: 24px !important;
+  /* Reset base right:0 and left:0 from lines 1031-1035 */
+  left: 50% !important;
+  right: auto !important;
+  transform: translateX(-50%) !important;
+  width: calc(100% - 32px) !important;
   max-width: 560px;
   background: #111111;
   border-radius: 16px;
@@ -796,31 +797,58 @@
   align-items: center;
   justify-content: space-between;
   gap: 14px;
-  z-index: var(--nq-player-z, 9990);
+  z-index: var(--nq-player-z, 9995);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255,255,255,0.07);
 }
 
 /* Tablet: sidebar = 56px → center of content = 56 + (100% - 56) / 2 = 28px + 50% */
 @media (min-width: 640px) {
   .nq-audio-bar.nq-audio-bar--compact {
-    left: calc(28px + 50%);
-    transform: translateX(-50%);
-    width: calc(100% - 56px - 48px);
-    max-width: 620px;
-    bottom: 18px;
+    left: calc(28px + 50%) !important;
+    width: calc(100% - 56px - 48px) !important;
+    bottom: 20px !important;
   }
 }
 
 /* Desktop: sidebar = 256px → center of content = 256 + (100% - 256) / 2 = 128px + 50% */
 @media (min-width: 1024px) {
   .nq-audio-bar.nq-audio-bar--compact {
-    left: calc(128px + 50%);
-    transform: translateX(-50%);
-    width: calc(100% - 256px - 64px);
-    max-width: 780px;
-    bottom: 20px;
+    left: calc(128px + 50%) !important;
+    width: calc(100% - 256px - 64px) !important;
+    bottom: 24px !important;
     padding: 12px 24px;
   }
+}
+
+/* Large Screens: Right sidebar appears (1280px) → Sidebars are symmetrical (256px each) 
+   Center is simply 50% of screen. */
+@media (min-width: 1280px) {
+  .nq-audio-bar.nq-audio-bar--compact {
+    left: 50% !important;
+    width: calc(100% - 512px - 64px) !important;
+    max-width: 800px;
+  }
+}
+
+/* Mobile: Narrow screens (under 480px) */
+@media (max-width: 480px) {
+  .nq-audio-bar.nq-audio-bar--compact {
+    width: calc(100% - 24px) !important;
+    padding: 8px 12px;
+    gap: 8px;
+    bottom: 16px !important;
+    border-radius: 14px;
+  }
+  .nq-ab-art {
+    width: 38px;
+    height: 38px;
+    font-size: 14px;
+  }
+  .nq-ab-art br { display: none; }
+  .nq-ab-track { min-width: 0; flex: 1; overflow: hidden; }
+  .nq-ab-track-name { font-size: 12px; }
+  .nq-ab-track-artist { font-size: 10px; }
+  .nq-ab-play-btn svg { width: 20px; height: 20px; }
 }
 
 /* Entry animation (separate from positioning transform) */

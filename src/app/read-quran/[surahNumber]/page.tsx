@@ -1230,11 +1230,11 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
 
                                                             {/* ===== VERSE CONTENT AREA ===== */}
                                                             <div style={{
-                                                                padding: isMobile ? '16px 10px' : '28px 32px',
+                                                                padding: isMobile ? '16px 24px' : '28px 32px',
                                                             }}>
                                                                 <div style={{
                                                                     fontFamily: "'Naskh IndoPak', 'KFGQPC Uthmanic Script HAFS Regular', 'Scheherazade New', 'Amiri', 'Traditional Arabic', serif",
-                                                                    fontSize: isMobile ? `${Math.round(fontSize * 0.78)}px` : `${fontSize}px`,
+                                                                    fontSize: isMobile ? `${Math.round(fontSize * 0.72)}px` : `${fontSize}px`,
                                                                     lineHeight: isMobile ? 2.0 : 2.4,
                                                                     textAlign: 'center',
                                                                     direction: 'rtl' as const,
@@ -1844,7 +1844,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                     <div style={{ width: 36, height: 4, borderRadius: 99, background: '#e2e8f0' }} />
                                 </div>
                                 {/* Header */}
-                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 18px 10px', borderBottom: '1px solid #f1f5f9', flexShrink: 0 }}>
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 24px 10px', borderBottom: '1px solid #f1f5f9', flexShrink: 0 }}>
                                     <span style={{ fontWeight: 700, fontSize: 13, color: '#0f172a', textTransform: 'uppercase', letterSpacing: '0.08em', fontFamily: 'Lexend, sans-serif' }}>Select Surah</span>
                                     <button onClick={() => setShowSurahPicker(false)} style={{ background: '#f1f5f9', border: 'none', borderRadius: 8, width: 30, height: 30, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#64748b', fontSize: 16 }}>✕</button>
                                 </div>
@@ -1857,7 +1857,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                             onClick={() => setShowSurahPicker(false)}
                                             style={{
                                                 display: 'flex', alignItems: 'center', gap: 12,
-                                                padding: '11px 18px', textDecoration: 'none',
+                                                padding: '11px 24px', textDecoration: 'none',
                                                 background: s.number === surahNumber ? 'rgba(245,158,11,0.08)' : 'transparent',
                                                 borderBottom: '1px solid #f8fafc',
                                                 color: s.number === surahNumber ? '#f59e0b' : '#1e293b',
