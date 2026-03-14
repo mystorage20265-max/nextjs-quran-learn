@@ -49,7 +49,8 @@ export function VolumeBar({ volume, isMuted, setVolume, setIsMuted }: VolumeBarP
 
   return (
     <div 
-      className="sp-volume-bar-wrapper" 
+      className={`sp-volume-bar-wrapper ${isDragging ? 'dragging' : ''}`}
+      style={{ touchAction: 'none' }}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}

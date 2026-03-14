@@ -1,0 +1,25 @@
+/* Quran Player Controls Fix - Overrides for quranfy-player.css */
+
+.sp-progress-bar-wrapper {
+  height: 32px !important;
+  touch-action: none !important;
+}
+
+.sp-progress-bar-wrapper.dragging .sp-progress-fill {
+  transition: none !important;
+}
+
+.sp-volume-bar-wrapper {
+  height: 32px !important;
+  touch-action: none !important;
+}
+
+.sp-volume-bar-wrapper.dragging .sp-volume-fill {
+  transition: none !important;
+}
+
+/* Ensure the knob is visible when dragging */
+.sp-progress-bar-wrapper.dragging .sp-progress-knob,
+.sp-volume-bar-wrapper.dragging .sp-volume-knob {
+  opacity: 1 !important;
+}

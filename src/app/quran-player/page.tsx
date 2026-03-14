@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import "./quranfy-player.css";
+import "./player-controls-fix.css";
 
 import { 
   Track, Reciter, RECITERS, SURAHS_DATA, GRADIENTS, QUICK_PLAY_SURAHS,

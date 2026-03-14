@@ -65,7 +65,8 @@ export function ProgressBar({ audioRef, duration }: ProgressBarProps) {
     <div className="sp-progress-container" style={{ width: '100%', maxWidth: '100%' }}>
       <span className="sp-progress-time left">{formatTime(displayTime)}</span>
       <div 
-        className="sp-progress-bar-wrapper" 
+        className={`sp-progress-bar-wrapper ${isDragging ? 'dragging' : ''}`}
+        style={{ touchAction: 'none' }}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
