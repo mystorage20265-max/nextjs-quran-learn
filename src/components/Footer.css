@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    FOOTER — Premium Green/Islamic Theme
    ============================================================ */
 
@@ -64,9 +64,10 @@
 
 /* ── Container ── */
 .ftr-container {
-  max-width: 1100px;
+  max-width: 1550px;
+  width: 94%;
   margin: 0 auto;
-  padding: 48px 32px 32px;
+  padding: 48px 24px 32px;
   position: relative;
 }
 
@@ -75,9 +76,10 @@
 /* ── Main 5-column grid ── */
 .ftr-main {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr 1.4fr;
-  gap: 40px;
-  margin-bottom: 40px;
+  /* 4 columns: Brand, Explore, Learn, WhatsApp CTA */
+  grid-template-columns: minmax(320px, 2.5fr) 1fr 1fr minmax(280px, 2fr);
+  gap: 56px;
+  margin-bottom: 48px;
   align-items: flex-start;
 }
 
@@ -195,10 +197,11 @@
   background: white;
   border: 1px solid #e2e8f0;
   border-radius: 16px;
-  padding: 22px 20px;
+  padding: 24px 20px;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  min-width: 180px;
 }
 
 .ftr-cta-top-bar {
@@ -218,9 +221,9 @@
 }
 
 .ftr-cta-sub {
-  font-size: 12px;
+  font-size: 13px;
   color: #94a3b8;
-  margin: 0 0 18px;
+  margin: 0 0 20px;
   line-height: 1.6;
 }
 
@@ -228,7 +231,7 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 16px;
+  padding: 10px 14px;
   background: rgba(37, 211, 102, 0.08);
   border: 1px solid rgba(37, 211, 102, 0.25);
   border-radius: 10px;
@@ -239,6 +242,7 @@
   transition: all 0.18s ease;
   width: 100%;
   justify-content: center;
+  white-space: nowrap;
 }
 
 .ftr-wa-btn:hover {
@@ -311,19 +315,22 @@
 }
 
 /* ── Responsive ── */
-@media (max-width: 1024px) {
+@media (max-width: 1250px) {
   .ftr-main {
-    grid-template-columns: 1fr 1fr 1fr;
+    /* Switch to 2x2 grid for better use of space on tablet/small laptop */
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
   }
 
   .ftr-brand {
     grid-column: 1 / -1;
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    gap: 24px;
+    max-width: 100%;
   }
-
+  
+  .ftr-cta-card {
+    grid-column: span 1;
+    min-width: unset;
+  }
   .ftr-desc {
     max-width: 400px;
   }

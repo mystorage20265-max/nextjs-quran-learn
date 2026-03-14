@@ -237,6 +237,7 @@ export default function HomePage() {
   const [sessionTime, setSessionTime] = useState(0); // seconds this session
   const [totalTime, setTotalTime] = useState(0);     // cumulative seconds all sessions
 
+
   // ── Prayer Times State ──
   const [prayerTimes, setPrayerTimes] = useState<PrayerTimesData | null>(null);
   const [hijriDate, setHijriDate] = useState<HijriDate | null>(null);
@@ -254,6 +255,7 @@ export default function HomePage() {
     }, 3000);
     return () => clearTimeout(t);
   }, []);
+
 
   // ── Prayer Times: calculate next prayer ──
   const calcNextPrayer = useCallback((times: PrayerTimesData, now: Date) => {

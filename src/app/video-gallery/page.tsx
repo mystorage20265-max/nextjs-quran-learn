@@ -3,6 +3,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import './video-gallery.css';
+import GlobalLoader from '@/components/Loader/GlobalLoader';
 
 /* ================================================================
    DATA – Islamic educational video content
@@ -393,9 +394,11 @@ export default function VideoGalleryPage() {
     const [searchQuery, setSearchQuery] = useState('');
     const [activeYouTube, setActiveYouTube] = useState<{ id: string; title: string } | null>(null);
 
-    // Simulate loading
+    // Controlled loading duration to ensure smooth font loading and premium entry
     useEffect(() => {
-        const timer = setTimeout(() => setLoading(false), 1800);
+        const timer = setTimeout(() => {
+            setLoading(false);
+        }, 1000);
         return () => clearTimeout(timer);
     }, []);
 
@@ -410,16 +413,8 @@ export default function VideoGalleryPage() {
 
     return (
         <div className="vg-page">
-            {/* ── Loading Screen ── */}
-            <div className={`vg-loader ${!loading ? 'hidden' : ''}`}>
-                <div className="vg-loader-logo">
-                    Quranic<span style={{ color: '#fff' }}>Learn</span>
-                    <span style={{ fontSize: 20, verticalAlign: 'super' }}>+</span>
-                </div>
-                <div className="vg-loader-bar">
-                    <div className="vg-loader-bar-fill" />
-                </div>
-            </div>
+            {/* ── Standardized Premium Loader ── */}
+            <GlobalLoader loading={loading} />
 
             {/* ── Sticky Navigation ── */}
             <nav className="vg-nav">

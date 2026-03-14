@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePathname } from 'next/navigation';
+import { usePrefetch } from '@/hooks/usePrefetch';
 
 export default function ClientWrapper({
     children,
@@ -9,6 +10,9 @@ export default function ClientWrapper({
     children: React.ReactNode;
 }) {
     const pathname = usePathname();
+    
+    // Initialize background prefetching
+    usePrefetch();
 
     return (
         <AnimatePresence mode="wait">

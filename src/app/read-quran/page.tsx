@@ -6,6 +6,7 @@ import { Search, BookOpen, Clock, ArrowRight, ChevronRight, MapPin } from 'lucid
 import { getChapters, getTafsirs, Chapter, Tafsir } from './lib/api';
 import { getLastRead, getProgressPercentage, getProgress, LastReadPosition } from './lib/progress';
 import './styles/reader.css';
+import GlobalLoader from '@/components/Loader/GlobalLoader';
 
 
 
@@ -28,7 +29,8 @@ export default function ReadQuranPage() {
             } catch (err) {
                 console.error(err);
             } finally {
-                setLoading(false);
+                // Ensure a minimum loading duration for visual stability and font loading
+                setTimeout(() => setLoading(false), 800);
             }
         }
         loadData();
@@ -47,16 +49,7 @@ export default function ReadQuranPage() {
     }, [chapters, searchTerm]);
 
     if (loading) {
-        return (
-            <div className="quran-reader">
-                <div className="reader-container" style={{ paddingTop: 120 }}>
-                    <div className="reader-loading">
-                        <div className="reader-spinner"></div>
-                        <p className="reader-loading-text">Loading the Noble Quran...</p>
-                    </div>
-                </div>
-            </div>
-        );
+        return <GlobalLoader loading={loading} />;
     }
 
     return (

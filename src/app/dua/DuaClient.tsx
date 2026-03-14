@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
+import GlobalLoader from '@/components/Loader/GlobalLoader';
 import './duas.css';
 
 /* ─── Types ──────────────────────────────────────────────────── */
@@ -199,6 +200,13 @@ export default function DuaClient() {
 
       {/* ── Main Layout ── */}
       <div className="duas-layout">
+
+        {/* Global Loader for initial full-page fetch */}
+        {isAnyLoading && categories.length > 0 && allDuas.length === 0 && (
+          <div style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'var(--bg-primary)' }}>
+            <GlobalLoader />
+          </div>
+        )}
 
         {/* Mobile sidebar toggle */}
         <button className="duas-sidebar-toggle" onClick={() => setSidebarOpen(!sidebarOpen)}>
