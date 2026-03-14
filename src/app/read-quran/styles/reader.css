@@ -922,44 +922,7 @@
 
 
 
-/* ============ RUKU MARKERS ============ */
-
-/**
- * Traditional ع marker — appears after the last verse of each Ruku
- * Positioned absolutely on top of the verse end circle.
- */
-.ruku-end-marker {
-  position: absolute;
-  top: -24px;         /* Position above the verse circle */
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 0px;
-  cursor: default;
-  z-index: 2;
-  pointer-events: none;
-}
-
-.ruku-marker-ain {
-  color: #1a1a1a; /* Black */
-  font-family: var(--rq-font-arabic), 'Scheherazade New', 'Amiri', serif;
-  font-size: 22px;
-  font-weight: 700;
-  line-height: 1;
-  text-shadow: none;
-}
-.dark .ruku-marker-ain {
-  color: #e2e8f0; /* Near-white in dark mode */
-}
-
-.ruku-marker-num {
-  display: none; /* Hidden — ع alone is sufficient */
-}
-
-/* Dark reading context — amber colour is already set above, no override needed */
+/* ============ RUKU SEPARATORS ============ */
 
 /**
  * Full-width Ruku separator — appears between verse cards in

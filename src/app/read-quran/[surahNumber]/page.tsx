@@ -136,24 +136,11 @@ const AyahMarker = ({ number, size = 30 }: { number: number; size?: number }) =>
 };
 
 /**
- * ع Ruku End Marker — displayed after the last verse of each Ruku.
- * Traditional Islamic notation: the letter ع marks the boundary where
- * a Ruku (section for bowing in prayer) ends in a printed Mushaf.
- */
-const RukuEndMarker = ({ ruküNumber }: { ruküNumber: number }) => (
-    <span className="ruku-end-marker" title={`End of Rukuʿ ${ruküNumber}`} aria-label={`End of Rukuʿ ${ruküNumber}`}>
-        <span className="ruku-marker-ain" style={{ color: '#1a1a1a' }}>ع</span>
-    </span>
-);
-
-/**
  * Returns true if `verse` is the last verse of its Ruku.
- * verses should be the full sorted list for the surah.
  */
 const isRukuEnd = (verse: { verse_number: number; ruku_number: number }, verses: Array<{ verse_number: number; ruku_number: number }>): boolean => {
     const idx = verses.findIndex(v => v.verse_number === verse.verse_number);
     if (idx === -1) return false;
-    // last verse overall OR next verse has a different ruku_number
     return idx === verses.length - 1 || verses[idx + 1].ruku_number !== verse.ruku_number;
 };
 
@@ -1268,6 +1255,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                                         if (!displayText.trim()) return null;
                                                                         const isActive = currentVerse === verse.verse_number;
                                                                         const showRuku = isRukuEnd(verse, displayVerses);
+
                                                                         return (
                                                                             <span key={verse.id}>
                                                                                 <span
@@ -1284,13 +1272,13 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                                                     {displayText}
                                                                                 </span>
                                                                                 {' '}
-                                                                                <span style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', verticalAlign: 'middle', gap: 2, position: 'relative' }}>
+                                                                                <span style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', verticalAlign: 'middle', gap: 0 }}>
+                                                                                    {showRuku && (
+                                                                                        <span style={{ fontSize: Math.round(ayahSize * 0.55), fontFamily: "'Naskh IndoPak', 'Scheherazade New', 'Amiri', serif", color: '#1e293b', fontWeight: 700, lineHeight: 1, userSelect: 'none' }} aria-label={`End of Ruku ${verse.ruku_number}`}>ع</span>
+                                                                                    )}
                                                                                     <span style={{ cursor: 'pointer', lineHeight: 1 }} onClick={() => playVerse(verse.verse_number)}>
                                                                                         <AyahMarker number={verse.verse_number} size={ayahSize} />
                                                                                     </span>
-                                                                                    {showRuku && (
-                                                                                        <RukuEndMarker ruküNumber={verse.ruku_number} />
-                                                                                    )}
                                                                                 </span>
                                                                                 {' '}
                                                                             </span>
