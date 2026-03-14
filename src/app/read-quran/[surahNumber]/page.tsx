@@ -1453,9 +1453,6 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                                 <span className="nq-ayah-end-marker" onClick={() => playVerse(verse.verse_number)}>
                                                                     <AyahMarker number={verse.verse_number} size={isMobile ? 26 : 32} />
                                                                 </span>
-                                                                {isRukuEnd(verse, verses) && (
-                                                                    <RukuEndMarker ruküNumber={verse.ruku_number} />
-                                                                )}
                                                             </span>
                                                         </span>
                                                     </div>
