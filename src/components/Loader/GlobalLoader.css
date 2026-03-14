@@ -1,0 +1,110 @@
+/* ── Global Premium Loader Styles ── */
+/* Extracted from video-gallery.css and refined for global use */
+
+:root {
+  --loader-bg: #0a0a0f;
+  --loader-accent: #f5c518;
+  --loader-surface: #1a1a24;
+  --loader-radius-full: 999px;
+  --loader-transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.global-loader-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: var(--loader-bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  transition: opacity var(--loader-transition), visibility var(--loader-transition);
+}
+
+.global-loader-overlay.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.global-loader-logo {
+  font-size: 42px;
+  font-weight: 800;
+  color: var(--loader-accent);
+  letter-spacing: -1px;
+  animation: gl-pulse 1.5s ease-in-out infinite;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.global-loader-logo span.white {
+  color: #fff;
+}
+
+.global-loader-logo span.plus {
+  font-size: 20px;
+  vertical-align: super;
+  margin-bottom: 20px;
+  margin-left: 2px;
+}
+
+.global-loader-bar {
+  width: 200px;
+  height: 3px;
+  background: var(--loader-surface);
+  border-radius: var(--loader-radius-full);
+  overflow: hidden;
+}
+
+.global-loader-bar-fill {
+  height: 100%;
+  background: var(--loader-accent);
+  border-radius: var(--loader-radius-full);
+  animation: gl-loading-bar 1.5s ease-in-out infinite;
+}
+
+@keyframes gl-loading-bar {
+  0% {
+    width: 0%;
+    transform: translateX(0);
+  }
+  50% {
+    width: 70%;
+  }
+  100% {
+    width: 100%;
+    transform: translateX(0);
+  }
+}
+
+@keyframes gl-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(0.97);
+  }
+}
+
+/* Inline variant for section loading */
+.global-loader-inline {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 40px;
+  width: 100%;
+}
+
+.global-loader-inline .global-loader-logo {
+  font-size: 28px;
+}
+
+.global-loader-inline .global-loader-bar {
+  width: 140px;
+}

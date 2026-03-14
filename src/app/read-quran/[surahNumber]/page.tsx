@@ -38,13 +38,20 @@ import '../styles/tafseer-modal.css';
 // Core Arabic letters and standard tashkeel (U+0621–U+06D5) are preserved.
 const cleanIndopakText = (text: string): string => {
     if (!text) return '';
-    return text
-        .replace(/[\n\r\t]+/g, ' ')       // Normalize newlines, carriage returns, tabs to spaces
+    // First strip invisible characters globally
+    let cleaned = text
+        .replace(/[\u200B-\u200D\uFEFF\u061C\u180E\u00A0]/g, ' ')
+        .replace(/[\n\r\t]+/g, ' ');
+
+    return cleaned
         .replace(/[\u0610-\u061A]/g, '') // Arabic Quran-specific phonetic marks
-        .replace(/\u06E1/g, '\u0652')     // IndoPak sukun (ۡ U+06E1) → standard sukun (ْ U+0652), BEFORE range strip
+        .replace(/\u06E1/g, '\u0652')     // IndoPak sukun (ۡ U+06E1) → standard sukun (ْ U+0652)
         .replace(/[\u06D6-\u06FF]/g, '') // waqf marks, annotation glyphs, Indo-Pak marks
-        .replace(/[\uFBB2-\uFBC2]/g, '') // Arabic Presentation Forms (Quran edition marks)
-        .replace(/\s{2,}/g, ' ')         // Collapse multiple spaces to single space
+        .replace(/[\uFBB2-\uFBC2]/g, '') // Arabic Presentation Forms
+        // Strip everything that isn't a primary letter or vowel from the end of the string
+        // Includes: ع, digits, Ayah markers (۝), Hizb markers (۞), Sajda (۩), and misc marks
+        .replace(/[\u0639\u0660-\u0669\u06F0-\u06F9\u06DD\u06DE\u06E9\u06D6-\u06ED\s]+$/, '')
+        .replace(/\s{2,}/g, ' ')
         .trim();
 };
 
@@ -106,7 +113,8 @@ const toArabicNumeral = (num: number): string => {
 
 const AyahMarker = ({ number, size = 30 }: { number: number; size?: number }) => {
     const numStr = toArabicNumeral(number);
-    const fs = numStr.length > 2 ? size * 0.34 : numStr.length > 1 ? size * 0.38 : size * 0.42;
+    // Increased base font sizes for the inner text
+    const fs = numStr.length > 2 ? size * 0.45 : numStr.length > 1 ? size * 0.52 : size * 0.58;
     const c = '#333';
     return (
         <svg width={size} height={size} viewBox="0 0 50 50" style={{ display: 'inline-block', verticalAlign: 'middle', flexShrink: 0 }}>
@@ -120,9 +128,9 @@ const AyahMarker = ({ number, size = 30 }: { number: number; size?: number }) =>
             <circle cx="40.5" cy="9.5" r="1" fill={c} />
             <circle cx="9.5" cy="40.5" r="1" fill={c} />
             <circle cx="40.5" cy="40.5" r="1" fill={c} />
-            <text x="25" y="26" textAnchor="middle" dominantBaseline="central"
+            <text x="25" y="27" textAnchor="middle" dominantBaseline="central"
                 fontFamily="'Scheherazade New', 'Amiri', 'Traditional Arabic', 'Arial', sans-serif"
-                fontSize={fs} fontWeight="600" fill={c}>{numStr}</text>
+                fontSize={fs * 1.5} fontWeight="700" fill={c}>{numStr}</text>
         </svg>
     );
 };
@@ -134,8 +142,7 @@ const AyahMarker = ({ number, size = 30 }: { number: number; size?: number }) =>
  */
 const RukuEndMarker = ({ ruküNumber }: { ruküNumber: number }) => (
     <span className="ruku-end-marker" title={`End of Rukuʿ ${ruküNumber}`} aria-label={`End of Rukuʿ ${ruküNumber}`}>
-        <span className="ruku-marker-ain">ع</span>
-        <span className="ruku-marker-num">{ruküNumber}</span>
+        <span className="ruku-marker-ain" style={{ color: '#1a1a1a' }}>ع</span>
     </span>
 );
 
@@ -1477,24 +1484,13 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                         <button className={`nq-bar-btn ${tafseerModalVerse === verse.verse_number ? 'nq-bar-active' : ''}`} onClick={() => openTafseer(verse.verse_number)} title="Tafsir"><BookOpen size={13} /><span>Tafsir</span></button>
                                                     </div>
                                                 </div>
-                                                {/* After the card: Ruku separator OR decorative separator */}
+                                                {/* After the card: simple decorative separator */}
                                                 {idx < verses.length - 1 && (
-                                                    isRukuEnd(verse, verses) ? (
-                                                        <div className="ruku-sep">
-                                                            <div className="ruku-sep-line" />
-                                                            <div className="ruku-sep-badge">
-                                                                <span className="ruku-sep-ain">ع</span>
-                                                                <span className="ruku-sep-label">Rukuʿ {verse.ruku_number} ends · Rukuʿ {verse.ruku_number + 1} begins</span>
-                                                            </div>
-                                                            <div className="ruku-sep-line" />
-                                                        </div>
-                                                    ) : (
-                                                        <div className="nq-ayah-sep">
-                                                            <div className="nq-sep-line" />
-                                                            <span className="nq-sep-icon">۞</span>
-                                                            <div className="nq-sep-line" />
-                                                        </div>
-                                                    )
+                                                    <div className="nq-ayah-sep">
+                                                        <div className="nq-sep-line" />
+                                                        <span className="nq-sep-icon">۞</span>
+                                                        <div className="nq-sep-line" />
+                                                    </div>
                                                 )}
                                             </div>
                                         ))}
