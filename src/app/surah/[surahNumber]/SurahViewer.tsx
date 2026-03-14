@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
+import { ChevronDown, BookOpen, SlidersHorizontal, MoreVertical } from 'lucide-react';
 import { fetchSurah, fetchSurahWithTranslation, EDITIONS } from '../../../utils/quranApi';
 import SurahAudioControls from './SurahAudioControls';
 import getSurahAudioPlayer from '../../../utils/enhancedSurahAudio';
@@ -343,126 +345,105 @@ export default function SurahViewer({ surahNumber }: SurahViewerProps) {
   
   return (
     <div className="surah-page-container">
-      {/* Navigation Controls */}
-      <div className="surah-controls">
-        <button className="back-to-surah" onClick={() => window.history.back()}>
-          <span>←</span>
-          <span>Back to Surah List</span>
+      {/* Simple compact header */}
+      <header className="translation-header">
+        <button type="button" className="translation-header-back" onClick={() => window.history.back()} aria-label="Back">
+          ←
         </button>
-        <button className="bookmark-button">
-          <span>☆</span>
-          <span>Bookmark</span>
-        </button>
-      </div>
+        <Link href="/quran" className="translation-header-title">
+          <span>{surah.number}. {surah.englishName}</span>
+          <ChevronDown className="translation-header-chevron" aria-hidden />
+        </Link>
+        <div className="translation-header-actions">
+          <Link href="/quran" className="translation-header-icon" aria-label="Surah list">
+            <BookOpen size={22} />
+          </Link>
+          <button type="button" className="translation-header-icon" aria-label="Settings">
+            <SlidersHorizontal size={20} />
+          </button>
+        </div>
+      </header>
 
-      <div className="surah-viewer">
-        {/* Surah Header */}
-        <div className="surah-header">
-          <div className="surah-name">
-            <h1 className="arabic-name">{surah.name}</h1>
-            <h2 className="english-name">{surah.englishName}</h2>
-            <p className="name-translation">{surah.englishNameTranslation}</p>
+      <div className="surah-viewer translation-ui">
+        {/* Teal surah info card */}
+        <div className="translation-surah-card">
+          <div className="translation-surah-info">
+            <p className="translation-surah-label">Surah: {surah.name}</p>
+            <p className="translation-surah-meta">English: {surah.englishNameTranslation}</p>
+            <p className="translation-surah-meta">Verses: {surah.numberOfAyahs}</p>
+            <p className="translation-surah-meta">Revealed in: {surah.revelationType}</p>
           </div>
-          
-          <div className="surah-info">
-            <div className="info-item">
-              <span className="info-label">Revelation Type:</span>
-              <span className="info-value">{surah.revelationType}</span>
-            </div>
-            <div className="info-item">
-              <span className="info-label">Verses:</span>
-              <span className="info-value">{surah.numberOfAyahs}</span>
-            </div>
+          <div className="translation-surah-arabic" dir="rtl" aria-hidden>
+            {surah.name}
           </div>
         </div>
-        
-        {/* Audio Controls */}
-        <SurahAudioControls
-          surah={surah}
-        />
-        
-        {/* Error notification */}
+
+        {/* Bismillah in light card */}
+        {surah.number !== 1 && surah.number !== 9 && (
+          <div className="translation-bismillah-card" dir="rtl">
+            بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+          </div>
+        )}
+
+        {/* Collapsible audio controls - minimal */}
+        <details className="translation-audio-details">
+          <summary>Play full Surah</summary>
+          <SurahAudioControls surah={surah} />
+        </details>
+
         {errorMessage && (
           <div className={`audio-error-notification ${errorMessage.includes('Retrying') ? 'retrying' : ''}`}>
             <span className="error-icon">{errorMessage.includes('Retrying') ? '↻' : '!'}</span>
             <span>{errorMessage}</span>
             {!errorMessage.includes('Retrying') && (
-              <button 
-                className="dismiss-error"
-                onClick={() => setErrorMessage(null)}
-                aria-label="Dismiss error"
-              >
-                ×
-              </button>
+              <button type="button" className="dismiss-error" onClick={() => setErrorMessage(null)} aria-label="Dismiss">×</button>
             )}
           </div>
         )}
-        
-        {/* Bismillah */}
-        {surah.number !== 1 && surah.number !== 9 && (
-          <div className="bismillah" dir="rtl">
-            بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
-          </div>
-        )}
-        
-        {/* Ayahs (Verses) */}
-        <div className="ayah-list">
+
+        {/* Verse cards - simple layout */}
+        <div className="translation-ayah-list">
           {surah.ayahs && surah.ayahs.map((ayah: Ayah, index: number) => (
             <article
               key={ayah.number}
-              className={`ayah-item${currentVerseIndex === index ? ' active-verse' : ''}`}
+              className={`translation-ayah-card${currentVerseIndex === index ? ' active-verse' : ''}`}
               aria-current={currentVerseIndex === index ? 'true' : undefined}
-              tabIndex={0}
             >
-              <div className="ayah-number">
-                <span>{ayah.numberInSurah}</span>
-                <button
-                  className={`verse-audio-btn${playingVerse === ayah.numberInSurah ? ' playing' : ''} ${loadingVerse === ayah.numberInSurah ? 'loading' : ''}`}
-                  onClick={() => playVerse(ayah.numberInSurah, index)}
-                  disabled={loadingVerse !== null && loadingVerse !== ayah.numberInSurah}
-                  aria-label={playingVerse === ayah.numberInSurah ? `Pause verse ${ayah.numberInSurah}` : `Play verse ${ayah.numberInSurah}`}
-                  aria-pressed={playingVerse === ayah.numberInSurah}
-                >
-                  {loadingVerse === ayah.numberInSurah ? '' : 
-                   playingVerse === ayah.numberInSurah ? '⏸' : '▶'}
-                </button>
+              <div className="translation-ayah-row">
+                <span className="translation-ayah-num">{ayah.numberInSurah}</span>
+                <div className="translation-ayah-arabic-wrap">
+                  <p className="translation-ayah-arabic" dir="rtl">{ayah.text}</p>
+                  <span className="translation-ayah-badge">{ayah.numberInSurah}</span>
+                </div>
+                <div className="translation-ayah-actions">
+                  <button
+                    type="button"
+                    className={`translation-verse-audio-btn${playingVerse === ayah.numberInSurah ? ' playing' : ''} ${loadingVerse === ayah.numberInSurah ? 'loading' : ''}`}
+                    onClick={() => playVerse(ayah.numberInSurah, index)}
+                    disabled={loadingVerse !== null && loadingVerse !== ayah.numberInSurah}
+                    aria-label={playingVerse === ayah.numberInSurah ? `Pause verse ${ayah.numberInSurah}` : `Play verse ${ayah.numberInSurah}`}
+                  >
+                    {loadingVerse === ayah.numberInSurah ? '' : playingVerse === ayah.numberInSurah ? '⏸' : '▶'}
+                  </button>
+                  <button type="button" className="translation-ayah-more" aria-label="More options">
+                    <MoreVertical size={18} />
+                  </button>
+                </div>
               </div>
-              <div className="ayah-content">
-                <p className="ayah-text" dir="rtl">{ayah.text}</p>
-                <p className="ayah-translation">
-                  {ayah.translation}
-                </p>
-              </div>
+              <p className="translation-ayah-english">{ayah.translation}</p>
             </article>
           ))}
         </div>
-        
-        <div className="surah-navigation">
+
+        <nav className="translation-nav">
           {surah.number > 1 && (
-            <a 
-              href={`/surah/${surah.number - 1}`} 
-              className="nav-button prev-button"
-            >
-              <span className="nav-icon">←</span>
-              <span>Previous Surah</span>
-            </a>
+            <Link href={`/surah/${surah.number - 1}`} className="translation-nav-btn prev">← Previous</Link>
           )}
-          
-          <a href="/quran" className="nav-button home-button">
-            <span className="nav-icon">◆</span>
-            <span>Back to Quran</span>
-          </a>
-          
+          <Link href="/quran" className="translation-nav-btn home">Surah list</Link>
           {surah.number < 114 && (
-            <a 
-              href={`/surah/${surah.number + 1}`} 
-              className="nav-button next-button"
-            >
-              <span>Next Surah</span>
-              <span className="nav-icon">→</span>
-            </a>
+            <Link href={`/surah/${surah.number + 1}`} className="translation-nav-btn next">Next →</Link>
           )}
-        </div>
+        </nav>
       </div>
     </div>
   );

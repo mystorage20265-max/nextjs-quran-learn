@@ -34,6 +34,16 @@ const COLLECTIONS: Collection[] = [
   { id: 'ibnmajah',  name: 'Ibn Majah',      ar: 'سنن ابن ماجه',    description: 'Sunan Ibn Majah',            color: '#b45309', icon: 'library_books'  },
 ];
 
+/* Card colours for landing grid (pastel tones matching the design) */
+const CARD_COLORS = [
+  { bg: '#fde2e4', accent: '#e74c3c' },  // Al-Muslim — soft pink
+  { bg: '#dbeafe', accent: '#3b82f6' },  // Al-Bukhari — soft blue
+  { bg: '#d1fae5', accent: '#10b981' },  // Sunnan e Nasai — soft green
+  { bg: '#fef9c3', accent: '#eab308' },  // Abu Dawood — soft yellow
+  { bg: '#ede9fe', accent: '#8b5cf6' },  // Al-Tirmazi — soft purple
+  { bg: '#e0f2fe', accent: '#0ea5e9' },  // Al-Ibn e Maja — soft sky
+];
+
 const HADITH_OF_THE_DAY = {
   arabic: 'إِنَّمَا الْأَعْمَالُ بِالنِّيَّاتِ وَإِنَّمَا لِكُلِّ امْرِئٍ مَا نَوَى',
   text: "Actions are but by intentions, and every person shall have only that which he intended. So whoever's emigration was for Allah and His Messenger, his emigration is for Allah and His Messenger; and whoever's emigration was for worldly gain or a woman to marry, his emigration is for that which he emigrated.",
@@ -61,6 +71,7 @@ export default function HadeesPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
   const [visibleBooksCount, setVisibleBooksCount] = useState(20);
+  const [showLanding, setShowLanding] = useState(true);
 
   const [loadProgress, setLoadProgress] = useState(0);
   const [showLoadBar, setShowLoadBar] = useState(false);
@@ -189,6 +200,52 @@ export default function HadeesPage() {
     if (page >= total - 3) return [1, '...', total - 4, total - 3, total - 2, total - 1, total];
     return [1, '...', page - 1, page, page + 1, '...', total];
   }, [page, totalPages]);
+
+  const openCollection = (col: Collection) => {
+    switchCollection(col);
+    setShowLanding(false);
+  };
+
+  /* ─── Landing Screen ─── */
+  if (showLanding) {
+    return (
+      <div className="hadees-landing">
+        <div className="hadees-landing-inner">
+          {/* Header */}
+          <h1 className="hadees-landing-title">Hadith</h1>
+          <p className="hadees-landing-sub">Explore the six major collections of Hadith</p>
+
+          {/* Search */}
+          <div className="hadees-landing-search">
+            <span className="material-symbols-outlined" style={{ fontSize: 20, color: '#999' }}>search</span>
+            <input
+              type="text"
+              placeholder="Search Hadees Book"
+              className="hadees-landing-search-input"
+              onFocus={() => setShowLanding(false)}
+            />
+          </div>
+
+          {/* Book Grid */}
+          <div className="hadees-landing-grid">
+            {COLLECTIONS.map((col, idx) => (
+              <button
+                key={col.id}
+                className="hadees-landing-card"
+                style={{ background: CARD_COLORS[idx]?.bg || '#f5f5f5' }}
+                onClick={() => openCollection(col)}
+              >
+                <div className="hadees-landing-card-icon" style={{ color: CARD_COLORS[idx]?.accent || '#333' }}>
+                  <span style={{ fontFamily: "'Naskh IndoPak', 'Amiri', serif", fontSize: 28, lineHeight: 1 }}>{col.ar.split(' ').slice(0, 2).join(' ')}</span>
+                </div>
+                <span className="hadees-landing-card-name">{col.name}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="hadees-page">
