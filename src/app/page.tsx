@@ -922,7 +922,8 @@ export default function HomePage() {
         <main className="hp-scroll hp-dot" style={{ background: dark ? 'var(--bg-base)' : '#ffffff' }}>
           <div className="hp-content" style={{ maxWidth: 860, margin: '0 auto' }}>
 
-            {/* ── PRAYER TIMES HERO BANNER ── */}
+            {/* ── PRAYER TIMES HERO BANNER (temporarily hidden) ── */}
+            {false && (
             <section className="prayer-hero">
               {/* Decorative elements */}
               <div className="prayer-hero-orb1" />
@@ -1022,6 +1023,7 @@ export default function HomePage() {
                 )}
               </div>
             </section>
+            )}
 
             {/* ── TOP FEATURED ACTIONS ── */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 12, marginBottom: 24 }}>
