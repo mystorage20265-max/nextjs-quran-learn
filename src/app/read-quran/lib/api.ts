@@ -129,13 +129,20 @@ async function fetchWithRetry(url: string, retries = 3): Promise<Response> {
 
 // ============ API FUNCTIONS ============
 
+// ============ CACHE LAYER ============
+const clientCache = new Map<string, any>();
+
 /**
  * Get all 114 chapters/surahs
  */
 export async function getChapters(): Promise<Chapter[]> {
+    const cacheKey = 'chapters';
+    if (clientCache.has(cacheKey)) return clientCache.get(cacheKey);
+
     try {
         const response = await fetchWithRetry(`${API_BASE}/chapters?language=en`);
         const data: ChaptersResponse = await response.json();
+        clientCache.set(cacheKey, data.chapters);
         return data.chapters;
     } catch (error) {
         console.error('Error fetching chapters:', error);
@@ -147,9 +154,13 @@ export async function getChapters(): Promise<Chapter[]> {
  * Get single chapter info
  */
 export async function getChapter(chapterId: number): Promise<Chapter> {
+    const cacheKey = `chapter-${chapterId}`;
+    if (clientCache.has(cacheKey)) return clientCache.get(cacheKey);
+
     try {
         const response = await fetchWithRetry(`${API_BASE}/chapters/${chapterId}?language=en`);
         const data: ChapterResponse = await response.json();
+        clientCache.set(cacheKey, data.chapter);
         return data.chapter;
     } catch (error) {
         console.error(`Error fetching chapter ${chapterId}:`, error);
@@ -168,6 +179,8 @@ export async function getVerses(
     page: number = 1,
     perPage: number = 50
 ): Promise<VersesResponse> {
+    const cacheKey = `verses-${chapterId}-${translationId}`;
+    if (clientCache.has(cacheKey)) return clientCache.get(cacheKey);
     try {
         const ALQURAN_API = 'https://api.alquran.cloud/v1';
 
@@ -220,7 +233,7 @@ export async function getVerses(
             };
         });
 
-        return {
+        const result = {
             verses,
             pagination: {
                 per_page: perPage,
@@ -230,6 +243,8 @@ export async function getVerses(
                 total_records: verses.length
             }
         };
+        clientCache.set(cacheKey, result);
+        return result;
     } catch (error) {
         console.error(`Error fetching verses for chapter ${chapterId}:`, error);
         throw error;
@@ -256,6 +271,8 @@ export async function getVersesWithWords(
     translationId: string = '131', // Sahih International (English)
     wordLanguage: string = 'en' // Default to English for word translations/transliterations
 ): Promise<VerseWithTranslation[]> {
+    const cacheKey = `verses-words-${chapterId}-${translationId}-${wordLanguage}`;
+    if (clientCache.has(cacheKey)) return clientCache.get(cacheKey);
     try {
         // Fetch Quran.com words data AND QuranCDN IndoPak text in parallel.
         // Quran.com's text_indopak omits sukun (U+0652); QuranCDN has the full diacritics.
@@ -316,6 +333,7 @@ export async function getVersesWithWords(
             };
         });
 
+        clientCache.set(cacheKey, verses);
         return verses;
     } catch (error) {
         console.error(`Error fetching verses with words for chapter ${chapterId}:`, error);
