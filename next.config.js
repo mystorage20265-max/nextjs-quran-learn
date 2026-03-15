@@ -3,6 +3,7 @@ const path = require('path');
 
 const nextConfig = {
   reactStrictMode: true,
+  transpilePackages: ['framer-motion'],
 
   // Allow builds to succeed (ESLint warnings won't block deployment)
   eslint: {
@@ -55,7 +56,6 @@ const nextConfig = {
   },
 
   webpack: (config) => {
-    config.resolve.alias['@'] = path.join(__dirname, 'src');
     return config;
   },
 }

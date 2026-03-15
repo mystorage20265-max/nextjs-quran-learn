@@ -413,8 +413,7 @@ export default function VideoGalleryPage() {
 
     return (
         <div className="vg-page">
-            {/* ── Standardized Premium Loader ── */}
-            <GlobalLoader loading={loading} />
+            {/* Standardized Premium Loader is now handled by ClientWrapper */}
 
             {/* ── Sticky Navigation ── */}
             <nav className="vg-nav">

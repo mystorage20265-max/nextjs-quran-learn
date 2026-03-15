@@ -118,7 +118,7 @@ export default function RootLayout({
         {/* ✅ Theme init – runs before first paint to prevent flash */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var s=localStorage.getItem('quran-learn-theme');var sys=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';var t=s&&s!=='system'?s:sys;var r=document.documentElement;r.setAttribute('data-theme',t);if(t==='dark'){r.classList.add('dark');}else{r.classList.remove('dark');}}catch(e){}})();`,
+            __html: `(function(){try{var k='quran-learn-theme';var s=localStorage.getItem(k);var sys=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';var t=(s&&s!=='system')?s:sys;var r=document.documentElement;r.setAttribute('data-theme',t);if(t==='dark'){r.classList.add('dark');}else{r.classList.remove('dark');}}catch(e){}})();`,
           }}
         />
 

@@ -12,7 +12,12 @@ import {
     Share2,
     Volume2,
     ChevronDown,
-    BookOpen
+    BookOpen,
+    Info,
+    Hash,
+    MapPin,
+    ListOrdered,
+    Zap
 } from 'lucide-react';
 import {
     getChapter,
@@ -135,6 +140,146 @@ const AyahMarker = memo(({ number, size = 30 }: { number: number; size?: number 
         </svg>
     );
 });
+
+// Right Sidebar component for Desktop
+const RightSidebar = ({ 
+    chapter, 
+    surahInfo, 
+    onJumpToVerse 
+}: { 
+    chapter: Chapter; 
+    surahInfo?: any; 
+    onJumpToVerse: (num: number) => void;
+}) => {
+    const isMakkah = chapter.revelation_place === 'makkah';
+    
+    return (
+        <aside className="nq-right-sidebar">
+            <div className="insight-card surah-main-card">
+                <div className="revelation-badge" data-place={chapter.revelation_place}>
+                    <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
+                        {isMakkah ? 'wb_sunny' : 'nightlight'}
+                    </span>
+                    <span>{chapter.revelation_place}</span>
+                </div>
+                
+                <div style={{ textAlign: 'center', marginBottom: 24, marginTop: 12 }}>
+                    <div style={{ 
+                        color: 'var(--reader-primary)', 
+                        fontSize: 44, 
+                        fontFamily: 'var(--font-arabic)', 
+                        marginBottom: 4,
+                        textShadow: '0 0 24px var(--reader-primary-glow)'
+                    }}>
+                        {chapter.name_arabic}
+                    </div>
+                    <div style={{ fontSize: 24, fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.03em' }}>
+                        {surahInfo?.name || chapter.name_simple}
+                    </div>
+                    <p style={{ fontSize: 14, color: 'var(--text-muted)', margin: '4px 0 0', fontWeight: 500 }}>
+                        {chapter.translated_name.name}
+                    </p>
+                </div>
+                <div className="surah-meaning-box">
+                    <span className="quote-icon-left">"</span>
+                    <p className="surah-meaning-text">{chapter.translated_name.name}</p>
+                    <span className="quote-icon-right">"</span>
+                </div>
+            </div>
+
+            <div className="insight-card">
+                <div className="insight-title">
+                    <Zap size={16} />
+                    <span>Surah Dimensions</span>
+                </div>
+                <div className="insight-stat-grid two-cols">
+                    <div className="insight-stat-item">
+                        <div className="stat-icon-wrapper">
+                            <Hash size={14} />
+                        </div>
+                        <div className="stat-content">
+                            <span className="insight-stat-label">Verses</span>
+                            <span className="insight-stat-value">{chapter.verses_count}</span>
+                        </div>
+                    </div>
+                    <div className="insight-stat-item">
+                        <div className="stat-icon-wrapper">
+                            <ListOrdered size={14} />
+                        </div>
+                        <div className="stat-content">
+                            <span className="insight-stat-label">Rank</span>
+                            <span className="insight-stat-value">#{chapter.revelation_order}</span>
+                        </div>
+                    </div>
+                    <div className="insight-stat-item">
+                        <div className="stat-icon-wrapper">
+                            <MapPin size={14} />
+                        </div>
+                        <div className="stat-content">
+                            <span className="insight-stat-label">Origin</span>
+                            <span className="insight-stat-value" style={{ textTransform: 'capitalize' }}>
+                                {chapter.revelation_place.slice(0, 3)}
+                            </span>
+                        </div>
+                    </div>
+                    <div className="insight-stat-item">
+                        <div className="stat-icon-wrapper">
+                            <BookOpen size={14} />
+                        </div>
+                        <div className="stat-content">
+                            <span className="insight-stat-label">Type</span>
+                            <span className="insight-stat-value">
+                                {chapter.verses_count > 50 ? 'Long' : 'Short'}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="insight-card">
+                <div className="insight-title">
+                    <Zap size={16} />
+                    <span>Quick Navigation</span>
+                </div>
+                <div className="quick-nav-list">
+                    <div className="quick-nav-item" onClick={() => onJumpToVerse(1)}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                            <div className="nav-icon-circle">1</div>
+                            <span>First Ayah</span>
+                        </div>
+                        <ChevronRight size={14} />
+                    </div>
+                    <div className="quick-nav-item" onClick={() => onJumpToVerse(chapter.verses_count)}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                            <div className="nav-icon-circle">{chapter.verses_count}</div>
+                            <span>Last Ayah</span>
+                        </div>
+                        <ChevronRight size={14} />
+                    </div>
+                    {chapter.id === 32 && (
+                        <div className="quick-nav-item sajdah-nav" onClick={() => onJumpToVerse(15)}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                                <div className="nav-icon-circle sajdah-icon">۩</div>
+                                <span style={{ color: 'var(--nq-orange)' }}>Sajdah (15)</span>
+                            </div>
+                            <Zap size={14} fill="currentColor" />
+                        </div>
+                    )}
+                </div>
+            </div>
+            
+            <div style={{ marginTop: 'auto', padding: '12px 0 24px', textAlign: 'center' }}>
+                <Link 
+                    href="/" 
+                    className="all-surahs-link"
+                >
+                    <BookOpen size={14} />
+                    <span>Explore All Surahs</span>
+                </Link>
+            </div>
+        </aside>
+    );
+};
 
 /**
  * Returns true if `verse` is the last verse of its Ruku.
@@ -482,7 +627,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 // We attach 'verseContext' to each verse so we don't join strings on every click
                 const processedVerses = versesData.map(v => {
                     const context = v.words 
-                        ? v.words.filter((w: any) => w.char_type_name !== 'end').map((w: any) => w.text_uthmani).join(' ')
+                        ? v.words.filter((w: any) => w.char_type_name !== 'end').map((w: any) => cleanIndopakText(w.text_indopak ?? w.text_uthmani)).join(' ')
                         : '';
                     return { ...v, verseContext: context };
                 });
@@ -498,7 +643,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                         if (!isCancelled) {
                             const processed = wordData.map(v => ({
                                 ...v,
-                                verseContext: v.words?.filter((w: any) => w.char_type_name !== 'end').map((w: any) => w.text_uthmani).join(' ') || ''
+                                verseContext: v.words?.filter((w: any) => w.char_type_name !== 'end').map((w: any) => cleanIndopakText(w.text_indopak ?? w.text_uthmani)).join(' ') || ''
                             }));
                             setVersesWithWords(processed);
                         }
@@ -717,22 +862,19 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 @media(min-width:640px){.nq-sidebar{width:56px}}
                 @media(min-width:1024px){.nq-sidebar{width:256px}}
                 .dark .nq-sidebar{background:#0f172a;border-color:#1e293b}
-                .nq-main{flex:1;display:flex;flex-direction:column;min-width:0;position:relative}
+                .nq-main{flex:1;display:flex;flex-direction:column;min-width:0;position:relative;transition:margin 0.3s ease}
+                @media(min-width:1280px){.nq-main{margin-right:280px}}
                 .nq-header{height:56px;background:rgba(255,255,255,0.8);backdrop-filter:blur(12px);border-bottom:1px solid #e2e8f0;padding:0 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;z-index:10;gap:8px}
                 @media(min-width:640px){.nq-header{height:64px;padding:0 24px}}
                 @media(min-width:1024px){.nq-header{height:80px;padding:0 32px}}
                 .dark .nq-header{background:rgba(15,23,42,0.8);border-color:#1e293b}
                 .nq-content{flex:1;display:flex;flex-direction:column;overflow:hidden}
-                @media(min-width:1280px){.nq-content{display:grid;grid-template-columns:1fr 256px}}
                 .nq-scroll{flex:1;overflow-y:auto;padding:16px 16px 32px}
                 @media(min-width:640px){.nq-scroll{padding:24px 24px 32px}}
                 @media(min-width:1024px){.nq-scroll{padding:32px 48px 32px}}
                 .nq-scroll.audio-on{padding-bottom:80px!important}
                 @media(min-width:640px){.nq-scroll.audio-on{padding-bottom:80px!important}}
                 @media(min-width:1024px){.nq-scroll.audio-on{padding-bottom:80px!important}}
-                .nq-right{flex-shrink:0;border-left:1px solid #e2e8f0;background:white;display:none;flex-direction:column;overflow:hidden}
-                @media(min-width:1280px){.nq-right{display:flex;width:256px}}
-                .dark .nq-right{background:#0f172a;border-color:#1e293b}
                 .nq-islamic{background-image:radial-gradient(circle at 2px 2px,rgba(245,158,11,0.05) 1px,transparent 0);background-size:24px 24px}
                 /* Bismillah */
                 .nq-bismillah{display:flex;flex-direction:column;align-items:center;margin-bottom:48px}
@@ -1138,7 +1280,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                     {/* Mode tabs + Sound Toggle */}
                     <div className="nq-tabs-row">
                         <div className="nq-mode-tabs">
-                            {(['reading', 'translation', 'word-by-word'] as ReadingMode[]).map(m => (
+                            {(['reading', 'translation', 'word-by-word'] as ReadingMode[]).filter(m => !isMobile || m !== 'word-by-word').map(m => (
                                 <button key={m} className={`nq-mode-tab ${readingMode === m ? 'active' : ''}`} onClick={() => setReadingMode(m)}>
                                     {m === 'word-by-word' ? 'Word by Word' : m.charAt(0).toUpperCase() + m.slice(1)}
                                 </button>
@@ -1508,7 +1650,6 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
 
                     </div>
 
-                    {/* COMPACT AUDIO BAR — Simple & Sober premium design */}
                     {audioEnabled && readingMode !== 'word-by-word' && (
                         <div className="nq-audio-bar nq-audio-bar--compact">
                             {/* Left Side: Thumbnail & Info */}
@@ -1556,6 +1697,15 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                         </div>
                     )}
                 </div>
+
+                {/* RIGHT SIDEBAR - Surah Insights */}
+                {chapter && (
+                    <RightSidebar 
+                        chapter={chapter} 
+                        surahInfo={ALL_SURAHS.find(s => s.number === surahNumber)} 
+                        onJumpToVerse={jumpToVerse} 
+                    />
+                )}
             </div>
             {/* Settings Panel */}
             {showSettings && (
@@ -1649,7 +1799,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                         {selectedWord.verseText && (
                             <div className="wdm-context">
                                 <span className="wdm-context-label">Verse Context</span>
-                                <p className="wdm-context-text" dir="rtl">{selectedWord.verseText}</p>
+                                <p className="wdm-context-text" dir="rtl">{cleanIndopakText(selectedWord.verseText)}</p>
                             </div>
                         )}
                         {/* Actions */}

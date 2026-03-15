@@ -50,17 +50,21 @@ export const usePrefetch = () => {
 
       // Process remaining surahs in background with even more delay to not affect actual user experience
       const processBackground = async () => {
-        const bgBatchSize = 2;
+        // Wait even longer before starting low-priority background sync
+        await new Promise(r => setTimeout(r, 10000));
+        
+        const bgBatchSize = 1; // Load one by one to keep main thread free
         for (let i = 0; i < backgroundRoutes.length; i += bgBatchSize) {
           const batch = backgroundRoutes.slice(i, i + bgBatchSize);
           await Promise.all(batch.map(async (route) => {
             try {
+              // Use low priority fetch if supported
               // @ts-ignore
-              await fetch(route, { priority: 'low' });
+              await fetch(route, { priority: 'low', cache: 'force-cache' });
             } catch (error) {}
           }));
-          // Longer delay for full background loading
-          await new Promise(r => setTimeout(r, 2000));
+          // Longer delay for full background loading (5 seconds between each surah)
+          await new Promise(r => setTimeout(r, 5000));
         }
         console.log(`[Prefetch] Global background sync completed`);
       };
@@ -68,11 +72,11 @@ export const usePrefetch = () => {
       // Start background sync after initial batches are done
       processBackground();
       
-      console.log(`[Prefetch] Completed background loading of ${routes.length} core resources`);
+      console.log(`[Prefetch] Started background sync for ${backgroundRoutes.length} surahs`);
     };
 
-    // Wait 5 seconds after mount before starting heavy pre-fetching
-    const timer = setTimeout(prefetchData, 5000);
+    // Wait 8 seconds instead of 5 after mount before starting pre-fetching
+    const timer = setTimeout(prefetchData, 8000);
     
     return () => clearTimeout(timer);
   }, []);
