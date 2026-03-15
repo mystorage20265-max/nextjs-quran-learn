@@ -11,6 +11,8 @@ export interface Category {
   description?: string;
   totalDuas?: number;
   icon?: string;
+  imageIcon?: string;
+  color?: string;
 }
 
 export interface Dua {

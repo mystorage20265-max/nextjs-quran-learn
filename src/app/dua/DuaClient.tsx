@@ -54,7 +54,11 @@ export default function DuaClient() {
   const [duasLoading, setDuasLoading] = useState(false);
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<'categories' | 'duas'>('categories');
+  const [isCatSearchExpanded, setIsCatSearchExpanded] = useState(false);
+  const [catSearch, setCatSearch] = useState('');
   const searchRef = useRef<HTMLInputElement>(null);
+  const catSearchRef = useRef<HTMLInputElement>(null);
   const duaListRef = useRef<HTMLDivElement>(null);
 
   const [loadProgress, setLoadProgress] = useState(0);
@@ -62,6 +66,12 @@ export default function DuaClient() {
   const progressTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const isAnyLoading = loading || duasLoading;
+
+  useEffect(() => {
+    if (isCatSearchExpanded && catSearchRef.current) {
+      catSearchRef.current.focus();
+    }
+  }, [isCatSearchExpanded]);
 
   useEffect(() => {
     if (isAnyLoading) {
@@ -124,10 +134,30 @@ export default function DuaClient() {
     fetchAll();
   }, [categories]);
 
-  /* Fetch duas by category */
+  /* Control view mode based on selection and screen size */
+  useEffect(() => {
+    const checkMobile = () => {
+      if (window.innerWidth < 1024) {
+        if (!activeCategory && !search && !showFavoritesOnly) {
+          setViewMode('categories');
+        } else {
+          setViewMode('duas');
+        }
+      } else {
+        setViewMode('duas');
+      }
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, [activeCategory, search, showFavoritesOnly]);
+
+  /* Load category */
   const loadCategory = useCallback(async (slug: string | null) => {
     setActiveCategory(slug);
     setSidebarOpen(false);
+    setIsCatSearchExpanded(false);
+    setCatSearch('');
     if (!slug) {
       setDuas(allDuas);
       return;
@@ -161,7 +191,7 @@ export default function DuaClient() {
     else { navigator.clipboard.writeText(text); setCopied('share-' + dua.id); setTimeout(() => setCopied(null), 2000); }
   };
 
-  /* Filter duas - when searching, search ALL duas globally; otherwise use category filter */
+  /* Filter duas */
   const duasToFilter = search ? allDuas : duas;
   const filtered = duasToFilter.filter(d => {
     const q = search.toLowerCase();
@@ -177,6 +207,11 @@ export default function DuaClient() {
     const matchFav = !showFavoritesOnly || favorites.has(d.id);
     return matchSearch && matchSource && matchFav;
   });
+
+  const filteredCategories = categories.filter(cat => 
+    cat.title.toLowerCase().includes(catSearch.toLowerCase()) ||
+    cat.description?.toLowerCase().includes(catSearch.toLowerCase())
+  );
 
   const activeCat = categories.find(c => c.id === activeCategory);
 
@@ -199,7 +234,7 @@ export default function DuaClient() {
       )}
 
       {/* ── Main Layout ── */}
-      <div className="duas-layout">
+      <div className={`duas-layout ${viewMode === 'categories' ? 'view-categories' : 'view-duas'}`}>
 
         {/* Global Loader for initial full-page fetch */}
         {isAnyLoading && categories.length > 0 && allDuas.length === 0 && (
@@ -208,13 +243,7 @@ export default function DuaClient() {
           </div>
         )}
 
-        {/* Mobile sidebar toggle */}
-        <button className="duas-sidebar-toggle" onClick={() => setSidebarOpen(!sidebarOpen)}>
-          <span className="material-symbols-outlined">{sidebarOpen ? 'close' : 'menu'}</span>
-          Categories
-        </button>
-
-        {/* ── Sidebar ── */}
+        {/* ── Sidebar (Category Picker) ── */}
         <aside className={`duas-sidebar ${sidebarOpen ? 'open' : ''}`}>
           <div className="duas-sidebar-header">
             <h3 className="duas-sidebar-title">
@@ -225,8 +254,11 @@ export default function DuaClient() {
           </div>
 
           <button
-            className={`duas-cat-btn ${!activeCategory ? 'active' : ''}`}
-            onClick={() => loadCategory(null)}
+            className={`duas-cat-btn ${!activeCategory && !showFavoritesOnly ? 'active' : ''}`}
+            onClick={() => {
+              loadCategory(null);
+              setShowFavoritesOnly(false);
+            }}
           >
             <div className="duas-cat-icon" style={{ background: 'var(--brand-primary-soft)', color: 'var(--brand-primary)' }}>
               <span className="material-symbols-outlined">apps</span>
@@ -250,17 +282,23 @@ export default function DuaClient() {
               <button
                 key={cat.id}
                 className={`duas-cat-btn ${activeCategory === cat.id ? 'active' : ''}`}
-                onClick={() => loadCategory(cat.id)}
+                onClick={() => {
+                  loadCategory(cat.id);
+                  setShowFavoritesOnly(false);
+                }}
               >
-                <div className="duas-cat-icon" style={{
-                  background: `${cat.color}15`,
-                  color: cat.color
-                }}>
-                  <span className="material-symbols-outlined">{cat.icon || 'menu_book'}</span>
+                <div className="duas-cat-icon-premium">
+                   {cat.imageIcon ? (
+                     <img src={cat.imageIcon} alt={cat.title} className="duas-cat-img" />
+                   ) : (
+                     <div className="duas-cat-icon" style={{ background: `${cat.color}15`, color: cat.color }}>
+                       <span className="material-symbols-outlined">{cat.icon || 'menu_book'}</span>
+                     </div>
+                   )}
                 </div>
                 <div className="duas-cat-info">
-                  <span className="duas-cat-name">{cat.title}</span>
-                  <span className="duas-cat-count">{cat.description}</span>
+                   <span className="duas-cat-name">{cat.title}</span>
+                   <span className="duas-cat-count">{cat.description}</span>
                 </div>
                 {activeCategory === cat.id && (
                   <span className="duas-cat-active-dot" style={{ background: cat.color }} />
@@ -270,7 +308,62 @@ export default function DuaClient() {
           )}
         </aside>
 
-        {/* ── Content ── */}
+        {/* ── Mobile Category Grid (Full Viewport) ── */}
+        <div className="duas-mobile-categories">
+          <div className={`duas-mobile-header ${isCatSearchExpanded ? 'search-active' : ''}`}>
+            {!isCatSearchExpanded ? (
+              <>
+                <h2>Dua & Zikr</h2>
+                <div className="duas-mobile-header-actions">
+                  <button onClick={() => setIsCatSearchExpanded(true)}>
+                    <span className="material-symbols-outlined">search</span>
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div className="duas-cat-search-bar">
+                <span className="material-symbols-outlined cat-search-icon">search</span>
+                <input
+                  ref={catSearchRef}
+                  type="text"
+                  placeholder="Search categories..."
+                  value={catSearch}
+                  onChange={(e) => setCatSearch(e.target.value)}
+                  className="duas-cat-search-input"
+                />
+                <button 
+                  className="duas-cat-search-close"
+                  onClick={() => {
+                    setIsCatSearchExpanded(false);
+                    setCatSearch('');
+                  }}
+                >
+                  <span className="material-symbols-outlined">close</span>
+                </button>
+              </div>
+            )}
+          </div>
+          
+          <div className="duas-category-grid">
+            {filteredCategories.map(cat => (
+              <div 
+                key={cat.id} 
+                className="duas-category-card" 
+                onClick={() => loadCategory(cat.id)}
+                style={{ '--cat-color': cat.color } as any}
+              >
+                <div className="duas-category-card-content">
+                  <h3>{cat.title}</h3>
+                  <div className="duas-category-card-img-wrapper">
+                    {cat.imageIcon && <img src={cat.imageIcon} alt={cat.title} />}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ── Content (Dua List) ── */}
         <main className="duas-content" ref={duaListRef}>
 
           {/* Search & Filters */}
@@ -310,7 +403,10 @@ export default function DuaClient() {
 
               <button
                 className={`duas-fav-toggle ${showFavoritesOnly ? 'active' : ''}`}
-                onClick={() => setShowFavoritesOnly(f => !f)}
+                onClick={() => {
+                   setShowFavoritesOnly(f => !f);
+                   setActiveCategory(null);
+                }}
               >
                 <span className="material-symbols-outlined" style={{
                   fontSize: 18,
@@ -322,12 +418,24 @@ export default function DuaClient() {
             </div>
           </div>
 
-          {/* Category Title */}
+          {/* Category Title & Browse Again */}
           <div className="duas-content-header">
             <div>
-              <h2 className="duas-content-title">
-                {search ? 'Search Results' : activeCat ? activeCat.title : showFavoritesOnly ? 'Your Favorites' : 'All Supplications'}
-              </h2>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <button 
+                  className="duas-browse-again-btn"
+                  onClick={() => {
+                    setActiveCategory(null);
+                    setSearch('');
+                    setShowFavoritesOnly(false);
+                  }}
+                >
+                  <span className="material-symbols-outlined">arrow_back</span>
+                </button>
+                <h2 className="duas-content-title">
+                  {search ? 'Search Results' : activeCat ? activeCat.title : showFavoritesOnly ? 'Your Favorites' : 'All Supplications'}
+                </h2>
+              </div>
               <p className="duas-content-subtitle">
                 {filtered.length} {filtered.length === 1 ? 'dua' : 'duas'} found
                 {search && <span> for &ldquo;{search}&rdquo;</span>}

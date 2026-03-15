@@ -7,6 +7,7 @@
       "description": "Quranic supplications beginning with 'Our Lord'",
       "totalDuas": 8,
       "icon": "auto_stories",
+      "imageIcon": "/images/duas/rabbana.png",
       "color": "#f59e0b"
     },
     {
@@ -16,6 +17,7 @@
       "description": "Daily adhkar for morning and evening remembrance",
       "totalDuas": 6,
       "icon": "wb_twilight",
+      "imageIcon": "/images/duas/morning-evening.png",
       "color": "#f97316"
     },
     {
@@ -25,6 +27,7 @@
       "description": "Essential duas for everyday activities",
       "totalDuas": 8,
       "icon": "today",
+      "imageIcon": "/images/duas/daily.png",
       "color": "#14b8a6"
     },
     {
@@ -34,6 +37,7 @@
       "description": "Duas recited during and after prayers",
       "totalDuas": 6,
       "icon": "mosque",
+      "imageIcon": "/images/duas/salah.png",
       "color": "#8b5cf6"
     },
     {
@@ -43,6 +47,7 @@
       "description": "Seeking Allah's protection from harm and evil",
       "totalDuas": 6,
       "icon": "shield",
+      "imageIcon": "/images/duas/protection.png",
       "color": "#3b82f6"
     },
     {
@@ -52,6 +57,7 @@
       "description": "Duas for seeking Allah's forgiveness",
       "totalDuas": 6,
       "icon": "favorite",
+      "imageIcon": "/images/duas/forgiveness.png",
       "color": "#ec4899"
     },
     {
@@ -61,6 +67,7 @@
       "description": "Supplications for travelers and journeys",
       "totalDuas": 4,
       "icon": "flight",
+      "imageIcon": "/images/duas/travel.png",
       "color": "#06b6d4"
     },
     {
@@ -70,6 +77,7 @@
       "description": "Duas for good health, cure and recovery",
       "totalDuas": 4,
       "icon": "healing",
+      "imageIcon": "/images/duas/health.png",
       "color": "#22c55e"
     },
     {
@@ -79,6 +87,7 @@
       "description": "Duas for parents, spouse, and children",
       "totalDuas": 6,
       "icon": "family_restroom",
+      "imageIcon": "/images/duas/family.png",
       "color": "#e11d48"
     },
     {
@@ -88,6 +97,7 @@
       "description": "Special supplications for the holy month",
       "totalDuas": 6,
       "icon": "nightlight",
+      "imageIcon": "/images/duas/ramadan.png",
       "color": "#a855f7"
     },
     {
@@ -97,6 +107,7 @@
       "description": "Finding peace and comfort through dua",
       "totalDuas": 5,
       "icon": "self_improvement",
+      "imageIcon": "/images/duas/anxiety.png",
       "color": "#0ea5e9"
     },
     {
@@ -106,7 +117,8 @@
       "description": "Duas for guidance and worldly success",
       "totalDuas": 5,
       "icon": "star",
+      "imageIcon": "/images/duas/success.png",
       "color": "#eab308"
     }
   ]
-}
+}
