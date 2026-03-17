@@ -22,6 +22,7 @@ interface VideoItem {
     description?: string;
     year?: string;
     genre?: string;
+    youtubeId?: string;
 }
 
 interface LiveChannel {
@@ -36,33 +37,34 @@ interface LiveChannel {
 
 const HERO_CATEGORIES = [
     'Quran Recitation',
-    'Islamic Lectures',
-    'Prophet Stories',
+    'English Lectures',
+    'Urdu Lectures',
     'Live Channels',
 ];
 
 const HERO_PANELS = [
     { img: '/images/video-posters/quran-recitation.png', label: 'Quran Recitation' },
-    { img: '/images/video-posters/islamic-lectures.png', label: 'Islamic Lectures' },
-    { img: '/images/video-posters/prophet-stories.png', label: 'Prophet Stories' },
+    { img: '/images/video-posters/islamic-lectures.png', label: 'English Lectures' },
+    { img: '/images/video-posters/islamic-history.png', label: 'Urdu Lectures' },
+    { img: '/images/video-posters/mecca-live.png', label: 'Live Channels' },
 ];
 
 const POPULAR_RECITATIONS: VideoItem[] = [
-    { id: 'mishary', title: 'Mishary Rashid', subtitle: 'Full Quran · 114 Surahs', poster: '/images/video-posters/quran-recitation.png', badge: 'Popular', category: 'recitation', episodes: 114, year: '2024', genre: 'Quran, Recitation, Tilawah', description: 'Listen to the complete Quran recited by Sheikh Mishary Rashid Alafasy in his world-renowned melodious voice. Covers all 114 Surahs with perfect Tajweed.' },
-    { id: 'sudais', title: 'Abdul Rahman Al-Sudais', subtitle: 'Imam of Masjid al-Haram', poster: '/images/video-posters/islamic-lectures.png', badge: 'Featured', category: 'recitation', episodes: 114, year: '2024', genre: 'Quran, Recitation', description: 'The Imam of the Grand Mosque in Makkah, Sheikh Al-Sudais delivers a powerful and deeply moving recitation of the Holy Quran.' },
-    { id: 'shuraim', title: 'Saud Al-Shuraim', subtitle: 'Beautiful Recitation', poster: '/images/video-posters/prophet-stories.png', category: 'recitation', episodes: 114, year: '2023', genre: 'Quran, Recitation', description: 'Sheikh Saud Al-Shuraim\'s beautiful and serene recitation brings peace and tranquility to the listener.' },
-    { id: 'minshawi', title: 'Muhammad Al-Minshawi', subtitle: 'Murattal Style', poster: '/images/video-posters/arabic-calligraphy.png', category: 'recitation', episodes: 60, year: '2023', genre: 'Quran, Murattal', description: 'A classic Murattal-style recitation by the legendary Sheikh Muhammad Siddiq Al-Minshawi.' },
-    { id: 'husary', title: 'Mahmoud Al-Husary', subtitle: 'Tajweed Master', poster: '/images/video-posters/islamic-history.png', badge: 'Classic', category: 'recitation', episodes: 114, year: '2022', genre: 'Quran, Tajweed', description: 'Known as the "Master of Tajweed", Sheikh Al-Husary\'s precise and clear recitation is considered a gold standard for Quran learners.' },
-    { id: 'ajmy', title: 'Ahmad Al-Ajmy', subtitle: 'Emotional Recitation', poster: '/images/video-posters/quran-recitation.png', category: 'recitation', episodes: 80, year: '2024', genre: 'Quran, Emotional', description: 'An incredibly emotional and heartfelt recitation that moves listeners to tears. Sheikh Ahmad Al-Ajmy\'s voice carries deep spiritual weight.' },
-    { id: 'ghamdi', title: 'Saad Al-Ghamdi', subtitle: 'Melodious Voice', poster: '/images/video-posters/islamic-lectures.png', badgeType: 'new', badge: 'New', category: 'recitation', episodes: 114, year: '2025', genre: 'Quran, Recitation', description: 'Newly uploaded! Saad Al-Ghamdi\'s melodious and soothing recitation of the entire Holy Quran.' },
-    { id: 'dosari', title: 'Yasser Al-Dosari', subtitle: 'Full Quran', poster: '/images/video-posters/prophet-stories.png', category: 'recitation', episodes: 114, year: '2024', genre: 'Quran, Recitation', description: 'Experience the full Quran recited by Sheikh Yasser Al-Dosari with his distinctive and captivating voice.' },
-    { id: 'maher', title: 'Maher Al-Muaiqly', subtitle: 'Imam of Masjid al-Haram', poster: '/images/video-posters/arabic-calligraphy.png', badge: 'Top Rated', category: 'recitation', episodes: 114, year: '2024', genre: 'Quran, Recitation', description: 'The current Imam of Masjid al-Haram, Sheikh Maher Al-Muaiqly\'s recitation is known for its beauty and spiritual depth.' },
-    { id: 'basfar', title: 'Abdullah Basfar', subtitle: 'Calm & Peaceful', poster: '/images/video-posters/islamic-history.png', category: 'recitation', episodes: 114, year: '2023', genre: 'Quran, Peaceful', description: 'A calm and peaceful recitation perfect for daily listening and reflection. Sheikh Abdullah Basfar\'s gentle voice soothes the soul.' },
+    { id: 'mishary', title: 'Mishary Rashid', subtitle: 'Full Quran · 114 Surahs', poster: '/images/video-posters/quran-recitation.png', badge: 'Popular', category: 'recitation', episodes: 114, year: '2024', genre: 'Quran, Recitation, Tilawah', description: 'Listen to the complete Quran recited by Sheikh Mishary Rashid Alafasy in his world-renowned melodious voice. Covers all 114 Surahs with perfect Tajweed.', youtubeId: '1xN5I5-G7XQ' },
+    { id: 'sudais', title: 'Abdul Rahman Al-Sudais', subtitle: 'Imam of Masjid al-Haram', poster: '/images/video-posters/islamic-lectures.png', badge: 'Featured', category: 'recitation', episodes: 114, year: '2024', genre: 'Quran, Recitation', description: 'The Imam of the Grand Mosque in Makkah, Sheikh Al-Sudais delivers a powerful and deeply moving recitation of the Holy Quran.', youtubeId: 'rC_x_4l-4r0' },
+    { id: 'shuraim', title: 'Saud Al-Shuraim', subtitle: 'Beautiful Recitation', poster: '/images/video-posters/prophet-stories.png', category: 'recitation', episodes: 114, year: '2023', genre: 'Quran, Recitation', description: 'Sheikh Saud Al-Shuraim\'s beautiful and serene recitation brings peace and tranquility to the listener.', youtubeId: '3U2M9T9v2xQ' },
+    { id: 'minshawi', title: 'Muhammad Al-Minshawi', subtitle: 'Murattal Style', poster: '/images/video-posters/arabic-calligraphy.png', category: 'recitation', episodes: 60, year: '2023', genre: 'Quran, Murattal', description: 'A classic Murattal-style recitation by the legendary Sheikh Muhammad Siddiq Al-Minshawi.', youtubeId: 'i_yS2F1p5nU' },
+    { id: 'husary', title: 'Mahmoud Al-Husary', subtitle: 'Tajweed Master', poster: '/images/video-posters/islamic-history.png', badge: 'Classic', category: 'recitation', episodes: 114, year: '2022', genre: 'Quran, Tajweed', description: 'Known as the "Master of Tajweed", Sheikh Al-Husary\'s precise and clear recitation is considered a gold standard for Quran learners.', youtubeId: 'n36S-S2_y-k' },
+    { id: 'ajmy', title: 'Ahmad Al-Ajmy', subtitle: 'Emotional Recitation', poster: '/images/video-posters/quran-recitation.png', category: 'recitation', episodes: 80, year: '2024', genre: 'Quran, Emotional', description: 'An incredibly emotional and heartfelt recitation that moves listeners to tears. Sheikh Ahmad Al-Ajmy\'s voice carries deep spiritual weight.', youtubeId: 'X0vL6Vv6D5k' },
+    { id: 'ghamdi', title: 'Saad Al-Ghamdi', subtitle: 'Melodious Voice', poster: '/images/video-posters/islamic-lectures.png', badgeType: 'new', badge: 'New', category: 'recitation', episodes: 114, year: '2025', genre: 'Quran, Recitation', description: 'Newly uploaded! Saad Al-Ghamdi\'s melodious and soothing recitation of the entire Holy Quran.', youtubeId: 'hU519bQj314' },
+    { id: 'dosari', title: 'Yasser Al-Dosari', subtitle: 'Full Quran', poster: '/images/video-posters/prophet-stories.png', category: 'recitation', episodes: 114, year: '2024', genre: 'Quran, Recitation', description: 'Experience the full Quran recited by Sheikh Yasser Al-Dosari with his distinctive and captivating voice.', youtubeId: 'jAP5Bl-euYM' },
+    { id: 'maher', title: 'Maher Al-Muaiqly', subtitle: 'Imam of Masjid al-Haram', poster: '/images/video-posters/arabic-calligraphy.png', badge: 'Top Rated', category: 'recitation', episodes: 114, year: '2024', genre: 'Quran, Recitation', description: 'The current Imam of Masjid al-Haram, Sheikh Maher Al-Muaiqly\'s recitation is known for its beauty and spiritual depth.', youtubeId: 'R7WpIn072pM' },
+    { id: 'basfar', title: 'Abdullah Basfar', subtitle: 'Calm & Peaceful', poster: '/images/video-posters/islamic-history.png', category: 'recitation', episodes: 114, year: '2023', genre: 'Quran, Peaceful', description: 'A calm and peaceful recitation perfect for daily listening and reflection. Sheikh Abdullah Basfar\'s gentle voice soothes the soul.', youtubeId: '0kH8327m7S4' },
 ];
 
 const ISLAMIC_LECTURES: VideoItem[] = [
-    { id: 'seerah-1', title: 'Life of Prophet Muhammad ﷺ', subtitle: 'Complete Seerah Series', poster: '/images/video-posters/prophet-stories.png', badge: 'QuranicLearn', category: 'lecture', episodes: 40, year: '2024', genre: 'Seerah, Biography, History', description: 'A comprehensive 40-part series covering the complete life of Prophet Muhammad ﷺ from birth to the establishment of the Muslim Ummah.' },
-    { id: 'tafsir-1', title: 'Tafsir Ibn Kathir', subtitle: 'Verse by Verse Explanation', poster: '/images/video-posters/arabic-calligraphy.png', badge: 'QuranicLearn', category: 'lecture', episodes: 120, year: '2024', genre: 'Tafseer, Quran, Education', description: 'A detailed verse-by-verse explanation of the Holy Quran based on the renowned Tafsir Ibn Kathir.' },
+    { id: 'seerah-1', title: 'Life of Prophet Muhammad ﷺ', subtitle: 'Complete Seerah Series', poster: '/images/video-posters/prophet-stories.png', badge: 'QuranicLearn', category: 'lecture', episodes: 40, year: '2024', genre: 'Seerah, Biography, History', description: 'A comprehensive 40-part series covering the complete life of Prophet Muhammad ﷺ from birth to the establishment of the Muslim Ummah.', youtubeId: 'VOUp3_9_6To' },
+    { id: 'tafsir-1', title: 'Tafsir Ibn Kathir', subtitle: 'Verse by Verse Explanation', poster: '/images/video-posters/arabic-calligraphy.png', badge: 'QuranicLearn', category: 'lecture', episodes: 120, year: '2024', genre: 'Tafseer, Quran, Education', description: 'A detailed verse-by-verse explanation of the Holy Quran based on the renowned Tafsir Ibn Kathir.', youtubeId: '2bY10kZtq6w' },
     { id: 'aqeedah', title: 'Fundamentals of Aqeedah', subtitle: 'Beliefs & Faith', poster: '/images/video-posters/islamic-history.png', badge: 'QuranicLearn', category: 'lecture', episodes: 24, year: '2023', genre: 'Aqeedah, Theology', description: 'Learn the core beliefs and foundations of Islamic theology in this structured course on Aqeedah.' },
     { id: 'fiqh', title: 'Fiqh Made Easy', subtitle: 'Islamic Jurisprudence', poster: '/images/video-posters/quran-recitation.png', badge: 'QuranicLearn', category: 'lecture', episodes: 36, year: '2024', genre: 'Fiqh, Law, Education', description: 'A beginner-friendly introduction to Islamic jurisprudence covering prayer, fasting, zakat, and more.' },
     { id: 'arabic-1', title: 'Learn Arabic Grammar', subtitle: 'Nahw & Sarf Basics', poster: '/images/video-posters/arabic-calligraphy.png', badge: 'QuranicLearn', category: 'lecture', episodes: 50, year: '2024', genre: 'Arabic, Language, Grammar', description: 'Master the fundamentals of Arabic grammar – Nahw and Sarf – to better understand the Quran in its original language.' },
@@ -102,17 +104,49 @@ const PROPHET_STORIES: VideoItem[] = [
     { id: 'companions', title: 'Stories of Companions', subtitle: 'Sahaba RA', poster: '/images/video-posters/quran-recitation.png', badgeType: 'new', badge: 'New', category: 'story', episodes: 20, year: '2025', genre: 'Stories, Sahaba, History', description: 'Newly released! Inspiring stories of the companions of Prophet Muhammad ﷺ – their sacrifices, bravery, and devotion.' },
 ];
 
+const ENGLISH_LECTURES: VideoItem[] = [
+    { id: 'menk-1', title: 'Don\'t Give Up, Keep Going', subtitle: 'Mufti Menk · Motivation', poster: '/images/video-posters/islamic-lectures.png', badge: 'Must Watch', category: 'lecture-en', year: '2024', genre: 'Motivation, Spiritual', description: 'A powerful motivational talk by Mufti Menk on persevering through trials and never losing hope in Allah.', youtubeId: 'B0g0dK_y_6Y' },
+    { id: 'nak-1', title: 'Guiding Loved Ones', subtitle: 'Nouman Ali Khan', poster: '/images/video-posters/prophet-stories.png', category: 'lecture-en', year: '2024', genre: 'Family, Guidance', description: 'Nouman Ali Khan discusses the reality that we cannot always guide those we love, and how to handle such situations with faith.', youtubeId: 'cZ1x_eXb0pQ' },
+    { id: 'zakir-1', title: 'Proving God\'s Existence', subtitle: 'Dr. Zakir Naik', poster: '/images/video-posters/arabic-calligraphy.png', badge: 'Scientific', category: 'lecture-en', year: '2023', genre: 'Dawah, Logic', description: 'Dr. Zakir Naik explains the best methods to prove the existence of God to an atheist using logic and science.', youtubeId: 'i_Z-6jQ2qW4' },
+    { id: 'menk-2', title: 'Marriage Advice', subtitle: 'Mufti Menk · Family', poster: '/images/video-posters/islamic-history.png', badgeType: 'new', badge: 'New', category: 'lecture-en', year: '2025', genre: 'Dua, Worship', description: 'Practical and spiritual advice on marriage and family life by Mufti Menk.', youtubeId: 't_Lz6vUeS80' },
+    { id: 'yq-1', title: 'Saved From Hellfire', subtitle: 'Dr. Yasir Qadhi', poster: '/images/video-posters/quran-recitation.png', badge: 'Essential', category: 'lecture-en', year: '2024', genre: 'Theology, Akhirah', description: 'Dr. Yasir Qadhi explains the deeds that save a believer from the fire of Hell.', youtubeId: 'x7_7s2r-XQ8' },
+    { id: 'os-1', title: 'Why Allah Created You', subtitle: 'Omar Suleiman', poster: '/images/video-posters/prophet-stories.png', category: 'lecture-en', year: '2024', genre: 'Purpose, Faith', description: 'Understanding your purpose in life and why Allah brought you into existence.', youtubeId: '4dJ4K0d4f3k' },
+    { id: 'nak-2', title: 'Miracle of Quran', subtitle: 'Nouman Ali Khan', poster: '/images/video-posters/arabic-calligraphy.png', badge: 'Viral', category: 'lecture-en', year: '2024', genre: 'Quranic Wonders', description: 'Linguistic miracles of the Quran that prove its divine origin.', youtubeId: 'Y_4x28h6P5o' },
+];
+
+const URDU_LECTURES: VideoItem[] = [
+    { id: 'israr-1', title: 'Bayan ul Quran - Part 1', subtitle: 'Dr. Israr Ahmed', poster: '/images/video-posters/islamic-history.png', badge: 'Legendary', category: 'lecture-ur', year: '2024', genre: 'Tafseer, Quran', description: 'The legendary Dr. Israr Ahmed starts his comprehensive Bayan ul Quran series with deep theological insights.', youtubeId: '_xY1Fj9kYhA' },
+    { id: 'tj-1', title: 'Nakaam Log', subtitle: 'Maulana Tariq Jameel', poster: '/images/video-posters/quran-recitation.png', category: 'lecture-ur', year: '2024', genre: 'Emotional, Bayan', description: 'A heart-touching bayan by Tariq Jameel on the characteristics of failed people and how to gain success.', youtubeId: '2b6yd5qehDM' },
+    { id: 'israr-2', title: 'Zawal e Ummat', subtitle: 'Dr. Israr Ahmed', poster: '/images/video-posters/prophet-stories.png', badge: 'Historical', category: 'lecture-ur', year: '2023', genre: 'History, Theology', description: 'Dr. Israr Ahmed analyzes the causes behind the decline of the Muslim Ummah.', youtubeId: 'L37i_c-hG4o' },
+    { id: 'tj-2', title: 'Mout ka Manzar', subtitle: 'Maulana Tariq Jameel', poster: '/images/video-posters/islamic-lectures.png', category: 'lecture-ur', year: '2024', genre: 'Social, Bayan', description: 'A powerful lecture on the reality of death and the life hereafter.', youtubeId: 'QxNfR1Cj42o' },
+    { id: 'mirza-1', title: 'Gaarhi TOHEED', subtitle: 'Engr. Muhammad Ali Mirza', poster: '/images/video-posters/arabic-calligraphy.png', category: 'lecture-ur', year: '2024', genre: 'Theology', description: 'Engineer Muhammad Ali Mirza explains the core concept of Tawheed with evidence.', youtubeId: 'oVlYj_VfKio' },
+    { id: 'zulfiqar-1', title: 'Toba Kay Kalimaat', subtitle: 'Peer Zulfiqar Ahmad', poster: '/images/video-posters/islamic-history.png', category: 'lecture-ur', year: '2024', genre: 'Spirituality', description: 'Shaykh Zulfiqar Ahmad Naqshbandi discusses the power of repentance.', youtubeId: 'LGsp9I9sVL4' },
+];
+
 const FEATURED_RECITERS = [
-    { id: 'mishary-r', name: 'Mishary Rashid', label: 'Quran Reciter', poster: '/images/video-posters/quran-recitation.png' },
-    { id: 'sudais-r', name: 'Al-Sudais', label: 'Imam · Makkah', poster: '/images/video-posters/islamic-lectures.png' },
-    { id: 'shuraim-r', name: 'Al-Shuraim', label: 'Quran Reciter', poster: '/images/video-posters/prophet-stories.png' },
-    { id: 'minshawi-r', name: 'Al-Minshawi', label: 'Murattal Style', poster: '/images/video-posters/arabic-calligraphy.png' },
-    { id: 'husary-r', name: 'Al-Husary', label: 'Tajweed Master', poster: '/images/video-posters/islamic-history.png' },
-    { id: 'ajmy-r', name: 'Ahmad Al-Ajmy', label: 'Emotional', poster: '/images/video-posters/quran-recitation.png' },
-    { id: 'ghamdi-r', name: 'Saad Al-Ghamdi', label: 'Melodious', poster: '/images/video-posters/islamic-lectures.png' },
-    { id: 'dosari-r', name: 'Al-Dosari', label: 'Quran Reciter', poster: '/images/video-posters/prophet-stories.png' },
-    { id: 'maher-r', name: 'Maher Al-Muaiqly', label: 'Imam · Makkah', poster: '/images/video-posters/arabic-calligraphy.png' },
-    { id: 'basfar-r', name: 'Abdullah Basfar', label: 'Peaceful', poster: '/images/video-posters/islamic-history.png' },
+    { id: 'mishary-r', name: 'Mishary Rashid', label: 'Quran Reciter', poster: '/images/video-posters/quran-recitation.png', youtubeId: '1xN5I5-G7XQ' },
+    { id: 'sudais-r', name: 'Al-Sudais', label: 'Imam · Makkah', poster: '/images/video-posters/islamic-lectures.png', youtubeId: 'rC_x_4l-4r0' },
+    { id: 'shuraim-r', name: 'Al-Shuraim', label: 'Quran Reciter', poster: '/images/video-posters/prophet-stories.png', youtubeId: '3U2M9T9v2xQ' },
+    { id: 'maher-r', name: 'Maher Al-Muaiqly', label: 'Imam · Makkah', poster: '/images/video-posters/arabic-calligraphy.png', youtubeId: 'R7WpIn072pM' },
+    { id: 'minshawi-r', name: 'Al-Minshawi', label: 'Murattal', poster: '/images/video-posters/islamic-history.png', youtubeId: 'i_yS2F1p5nU' },
+    { id: 'basit-r', name: 'Abdul Basit', label: 'Legendary Reciter', poster: '/images/video-posters/prophet-stories.png', youtubeId: 'I0v-a6n_K9g' },
+    { id: 'lohaidan-r', name: 'Al-Lohaidan', label: 'Emotional', poster: '/images/video-posters/quran-recitation.png', youtubeId: 'nOq-Q-1Gg40' },
+    { id: 'abkar-r', name: 'Idris Abkar', label: 'Peaceful', poster: '/images/video-posters/islamic-lectures.png', youtubeId: '9gWjK28m1kI' },
+    { id: 'salimi-r', name: 'Mansour Salimi', label: 'Heart Touching', poster: '/images/video-posters/arabic-calligraphy.png', youtubeId: 'oGQwgL_8zsk' },
+    { id: 'kurdi-r', name: 'Raad Al-Kurdi', label: 'Melodious', poster: '/images/video-posters/islamic-history.png', youtubeId: 'yYj_j1fR4r4' },
+];
+
+const FEATURED_SCHOLARS = [
+    { id: 'israr-s', name: 'Dr. Israr Ahmed', label: 'Urdu · Scholar', poster: '/images/video-posters/islamic-history.png', youtubeId: '5b-w8RjQv04' },
+    { id: 'menk-s', name: 'Mufti Menk', label: 'English · Scholar', poster: '/images/video-posters/islamic-lectures.png', youtubeId: 'eZ-lG3Q6y3A' },
+    { id: 'nak-s', name: 'Nouman Ali Khan', label: 'English · Speaker', poster: '/images/video-posters/prophet-stories.png', youtubeId: 'cZ1x_eXb0pQ' },
+    { id: 'tj-s', name: 'Tariq Jameel', label: 'Urdu · Speaker', poster: '/images/video-posters/quran-recitation.png', youtubeId: '_LjEMpH8F3g' },
+    { id: 'yq-s', name: 'Yasir Qadhi', label: 'English · Scholar', poster: '/images/video-posters/arabic-calligraphy.png', youtubeId: 'x7_7s2r-XQ8' },
+    { id: 'os-s', name: 'Omar Suleiman', label: 'English · Speaker', poster: '/images/video-posters/islamic-history.png', youtubeId: '4dJ4K0d4f3k' },
+    { id: 'mirza-s', name: 'Eng Muhammad Ali', label: 'Urdu · Researcher', poster: '/images/video-posters/islamic-lectures.png', youtubeId: 'oVlYj_VfKio' },
+    { id: 'zulfiqar-s', name: 'Peer Zulfiqar', label: 'Urdu · Spiritual', poster: '/images/video-posters/quran-recitation.png', youtubeId: 'LGsp9I9sVL4' },
+    { id: 'zakir-s', name: 'Zakir Naik', label: 'Dawah Specialist', poster: '/images/video-posters/arabic-calligraphy.png', youtubeId: 's7z4E6x3tA0' },
+    { id: 'bilal-s', name: 'Bilal Philips', label: 'English · Scholar', poster: '/images/video-posters/prophet-stories.png', youtubeId: 'O1_5l_j_XvQ' },
 ];
 
 /* ================================================================
@@ -158,7 +192,7 @@ function Carousel({ children, id }: { children: React.ReactNode; id: string }) {
    POSTER CARD COMPONENT
    ================================================================ */
 
-function PosterCard({ item }: { item: VideoItem }) {
+function PosterCard({ item, onPlay }: { item: VideoItem; onPlay?: (id: string, title: string) => void }) {
     const [hovered, setHovered] = useState(false);
     const [popupVisible, setPopupVisible] = useState(false);
     const [popupPos, setPopupPos] = useState<{ top: number; left: number } | null>(null);
@@ -225,6 +259,7 @@ function PosterCard({ item }: { item: VideoItem }) {
             ref={cardRef}
             onMouseEnter={showPopup}
             onMouseLeave={hidePopup}
+            onClick={() => { if (item.id && onPlay) onPlay(item.id, item.title); }}
         >
             <div className="vg-card-poster">
                 <img src={item.poster} alt={item.title} loading="lazy" />
@@ -256,7 +291,7 @@ function PosterCard({ item }: { item: VideoItem }) {
                     <div className="vg-hover-popup-body">
                         <div className="vg-hover-popup-header">
                             <h3 className="vg-hover-popup-title">{item.title}</h3>
-                            <button className="vg-hover-popup-play">
+                            <button className="vg-hover-popup-play" onClick={(e) => { e.stopPropagation(); if (item.id && onPlay) onPlay(item.id, item.title); }}>
                                 <span className="material-symbols-outlined">play_arrow</span>
                             </button>
                         </div>
@@ -411,6 +446,50 @@ export default function VideoGalleryPage() {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
+    const reciterScrollRef = useRef<HTMLDivElement>(null);
+    const scholarScrollRef = useRef<HTMLDivElement>(null);
+
+    const scrollRow = (ref: React.RefObject<HTMLDivElement | null>, dir: 'left' | 'right') => {
+        if (!ref.current) return;
+        const amt = ref.current.clientWidth * 0.8;
+        ref.current.scrollBy({ left: dir === 'left' ? -amt : amt, behavior: 'smooth' });
+    };
+
+    const scrollToSection = (id: string) => {
+        const el = document.getElementById(id);
+        if (el) {
+            const yOffset = -80; // Account for sticky nav
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            // Fine-tune with offset if needed
+            window.scrollBy(0, yOffset);
+        }
+    };
+
+    const handleHeroCatClick = (idx: number) => {
+        setActiveHeroCat(idx);
+        const sectionIds = ['popular-recitations', 'english-lectures', 'urdu-lectures', 'live-channels'];
+        const targetId = sectionIds[idx];
+        if (targetId) scrollToSection(targetId);
+    };
+
+    const filterData = <T extends { title?: string; name?: string }>(data: T[]) => {
+        if (!searchQuery.trim()) return data;
+        const q = searchQuery.toLowerCase();
+        return data.filter(item => 
+            (item.title?.toLowerCase().includes(q)) || (item.name?.toLowerCase().includes(q))
+        );
+    };
+
+    const playVideo = (id: string, title: string) => {
+        // Find if it has a youtubeId, otherwise use a default or the id itself as mock
+        const allItems = [...POPULAR_RECITATIONS, ...ISLAMIC_LECTURES, ...PROPHET_STORIES, ...KIDS_CONTENT, ...ENGLISH_LECTURES, ...URDU_LECTURES];
+        const item = allItems.find(x => x.id === id);
+        const yId = item?.youtubeId || 'Cm1v4bteXbI'; // Mock Makkah Live if missing
+        setActiveYouTube({ id: yId, title });
+    };
+
+    const activeHeroPanel = HERO_PANELS[Math.min(activeHeroCat, HERO_PANELS.length - 1)];
+
     return (
         <div className="vg-page">
             {/* Standardized Premium Loader is now handled by ClientWrapper */}
@@ -482,15 +561,26 @@ export default function VideoGalleryPage() {
                             <button
                                 key={cat}
                                 className={`vg-hero-cat ${activeHeroCat === i ? 'active' : ''}`}
-                                onClick={() => setActiveHeroCat(i)}
+                                onClick={() => handleHeroCatClick(i)}
                             >
                                 {cat}
                             </button>
                         ))}
                     </div>
                 </div>
-                <div className="vg-hero-panels">
-                    {HERO_PANELS.map((panel, i) => (
+                <div className="vg-hero-panels" style={{ perspective: '1000px' }}>
+                    <div className="vg-hero-panel" style={{ flex: 1.6, transformStyle: 'preserve-3d' }}>
+                        <img 
+                            src={activeHeroPanel.img} 
+                            alt={activeHeroPanel.label} 
+                            style={{ 
+                                filter: 'brightness(0.9)', 
+                                transform: 'skewX(4deg) scale(1.02)' 
+                            }} 
+                        />
+                        <span className="vg-hero-panel-label" style={{ opacity: 1 }}>{activeHeroPanel.label}</span>
+                    </div>
+                    {HERO_PANELS.filter(p => p.label !== activeHeroPanel.label).map((panel, i) => (
                         <div className="vg-hero-panel" key={i}>
                             <img src={panel.img} alt={panel.label} />
                             <span className="vg-hero-panel-label">{panel.label}</span>
@@ -521,38 +611,28 @@ export default function VideoGalleryPage() {
                             is added to curated collections and each featured scholar
                             reaches millions of learners worldwide.
                         </p>
-                        <button className="vg-spotlight-cta">Listen Now</button>
+                        <button className="vg-spotlight-cta" onClick={() => playVideo('mishary-r', 'Mishary Rashid Recitation')}>Listen Now</button>
                     </div>
                 </div>
             </section>
 
-            {/* ── Popular Reciters (Circular Row — Amazon/TIDAL-style) ── */}
-            <section className="vg-section vg-animate-in vg-animate-in-delay-1">
+            {/* ── Popular Reciters ── */}
+            <section id="popular-reciters" className="vg-section vg-animate-in vg-animate-in-delay-1">
                 <div className="vg-section-header">
                     <h2 className="vg-section-title" style={{ fontWeight: 800 }}>Popular Reciters</h2>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <button className="vg-circle-nav-arrow" aria-label="Previous">
+                        <button className="vg-circle-nav-arrow" aria-label="Previous" onClick={() => scrollRow(reciterScrollRef, 'left')}>
                             <span className="material-symbols-outlined" style={{ fontSize: 18 }}>chevron_left</span>
                         </button>
-                        <button className="vg-circle-nav-arrow" aria-label="Next">
+                        <button className="vg-circle-nav-arrow" aria-label="Next" onClick={() => scrollRow(reciterScrollRef, 'right')}>
                             <span className="material-symbols-outlined" style={{ fontSize: 18 }}>chevron_right</span>
                         </button>
-                        <button className="vg-see-all-btn">SEE ALL</button>
                     </div>
                 </div>
-                {loading ? (
-                    <div className="vg-reciters-row">
-                        {Array.from({ length: 8 }).map((_, i) => (
-                            <div key={i} className="vg-reciter-card" style={{ pointerEvents: 'none' }}>
-                                <div className="vg-skeleton vg-reciter-avatar" />
-                                <div className="vg-skeleton" style={{ width: '70%', height: 12, marginTop: 12, borderRadius: 6 }} />
-                            </div>
-                        ))}
-                    </div>
-                ) : (
-                    <div className="vg-reciters-row">
-                        {FEATURED_RECITERS.map(reciter => (
-                            <div key={reciter.id} className="vg-reciter-card">
+                {!filterData(FEATURED_RECITERS).length ? null : (
+                    <div className="vg-reciters-row" ref={reciterScrollRef}>
+                        {filterData(FEATURED_RECITERS).map(reciter => (
+                            <div key={reciter.id} className="vg-reciter-card" onClick={() => playVideo(reciter.id, reciter.name)}>
                                 <div className="vg-reciter-avatar">
                                     <img src={reciter.poster} alt={reciter.name} />
                                 </div>
@@ -564,8 +644,35 @@ export default function VideoGalleryPage() {
                 )}
             </section>
 
+            {/* ── Featured Scholars Round ── */}
+            <section id="featured-scholars" className="vg-section vg-animate-in vg-animate-in-delay-1">
+                <div className="vg-section-header">
+                    <h2 className="vg-section-title" style={{ fontWeight: 800 }}>Featured Scholars</h2>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <button className="vg-circle-nav-arrow" aria-label="Previous" onClick={() => scrollRow(scholarScrollRef, 'left')}>
+                            <span className="material-symbols-outlined" style={{ fontSize: 18 }}>chevron_left</span>
+                        </button>
+                        <button className="vg-circle-nav-arrow" aria-label="Next" onClick={() => scrollRow(scholarScrollRef, 'right')}>
+                            <span className="material-symbols-outlined" style={{ fontSize: 18 }}>chevron_right</span>
+                        </button>
+                    </div>
+                </div>
+                <div className="vg-reciters-row" ref={scholarScrollRef}>
+                    {filterData(FEATURED_SCHOLARS).map(scholar => (
+                        <div key={scholar.id} className="vg-reciter-card" onClick={() => playVideo(scholar.id, scholar.name)}>
+                            <div className="vg-reciter-avatar" style={{ border: '3px solid var(--vg-accent-glow)' }}>
+                                <img src={scholar.poster} alt={scholar.name} />
+                            </div>
+                            <p className="vg-reciter-name">{scholar.name}</p>
+                            <p className="vg-reciter-label">{scholar.label}</p>
+                        </div>
+                    ))}
+                    {!filterData(FEATURED_SCHOLARS).length && <p style={{ color: 'var(--vg-text-muted)', fontSize: 13 }}>No scholars found matching your search.</p>}
+                </div>
+            </section>
+
             {/* ── Live TV Channels ── */}
-            <section className="vg-section vg-animate-in vg-animate-in-delay-1">
+            <section id="live-channels" className="vg-section vg-animate-in vg-animate-in-delay-1">
                 <div className="vg-section-header">
                     <h2 className="vg-section-title">
                         <span className="material-symbols-outlined" style={{ fontSize: 22, color: '#ef4444', verticalAlign: 'middle', marginRight: 8 }}>
@@ -584,7 +691,7 @@ export default function VideoGalleryPage() {
                     </div>
                 ) : (
                     <Carousel id="live-channels">
-                        {LIVE_CHANNELS.map(ch => (
+                        {filterData(LIVE_CHANNELS).map(ch => (
                             <LandscapeCard
                                 key={ch.id}
                                 channel={ch}
@@ -595,44 +702,49 @@ export default function VideoGalleryPage() {
                 )}
             </section>
 
-            {/* ── Popular Recitations ── */}
-            <section className="vg-section vg-animate-in vg-animate-in-delay-2">
+            {/* ── English Lectures ── */}
+            <section id="english-lectures" className="vg-section vg-animate-in vg-animate-in-delay-2">
                 <div className="vg-section-header">
-                    <h2 className="vg-section-title">Popular Recitations</h2>
+                    <h2 className="vg-section-title">Lectures (English)</h2>
                     <button className="vg-section-see-all">
                         See All
                         <span className="material-symbols-outlined" style={{ fontSize: 16 }}>chevron_right</span>
                     </button>
                 </div>
-                {loading ? (
-                    <div className="vg-carousel" style={{ gap: 14 }}>
-                        {Array.from({ length: 8 }).map((_, i) => <SkeletonPosterCard key={i} />)}
-                    </div>
-                ) : (
-                    <Carousel id="popular-recitations">
-                        {POPULAR_RECITATIONS.map(item => <PosterCard key={item.id} item={item} />)}
-                    </Carousel>
-                )}
+                <Carousel id="english-lectures">
+                    {filterData(ENGLISH_LECTURES).map(item => <PosterCard key={item.id} item={item} onPlay={playVideo} />)}
+                </Carousel>
+                {!filterData(ENGLISH_LECTURES).length && <p style={{ color: 'var(--vg-text-muted)', fontSize: 13, padding: '0 48px' }}>No matches found.</p>}
             </section>
 
-            {/* ── Islamic Lectures ── */}
-            <section className="vg-section vg-animate-in vg-animate-in-delay-3">
+            {/* ── Urdu Lectures ── */}
+            <section id="urdu-lectures" className="vg-section vg-animate-in vg-animate-in-delay-3">
                 <div className="vg-section-header">
-                    <h2 className="vg-section-title">Islamic Lectures & Courses</h2>
+                    <h2 className="vg-section-title">Lectures (Urdu)</h2>
                     <button className="vg-section-see-all">
                         See All
                         <span className="material-symbols-outlined" style={{ fontSize: 16 }}>chevron_right</span>
                     </button>
                 </div>
-                {loading ? (
-                    <div className="vg-carousel" style={{ gap: 14 }}>
-                        {Array.from({ length: 8 }).map((_, i) => <SkeletonPosterCard key={i} />)}
-                    </div>
-                ) : (
-                    <Carousel id="islamic-lectures">
-                        {ISLAMIC_LECTURES.map(item => <PosterCard key={item.id} item={item} />)}
-                    </Carousel>
-                )}
+                <Carousel id="urdu-lectures">
+                    {filterData(URDU_LECTURES).map(item => <PosterCard key={item.id} item={item} onPlay={playVideo} />)}
+                </Carousel>
+                {!filterData(URDU_LECTURES).length && <p style={{ color: 'var(--vg-text-muted)', fontSize: 13, padding: '0 48px' }}>No matches found.</p>}
+            </section>
+
+            {/* ── Popular Recitations Section ── */}
+            <section id="popular-recitations" className="vg-section vg-animate-in vg-animate-in-delay-4">
+                <div className="vg-section-header">
+                    <h2 className="vg-section-title">Full Quran Recitations</h2>
+                    <button className="vg-section-see-all">
+                        See All
+                        <span className="material-symbols-outlined" style={{ fontSize: 16 }}>chevron_right</span>
+                    </button>
+                </div>
+                <Carousel id="popular-recitations">
+                    {filterData(POPULAR_RECITATIONS).map(item => <PosterCard key={item.id} item={item} onPlay={playVideo} />)}
+                </Carousel>
+                {!filterData(POPULAR_RECITATIONS).length && <p style={{ color: 'var(--vg-text-muted)', fontSize: 13, padding: '0 48px' }}>No matches found.</p>}
             </section>
 
             {/* ── Promo Banner – Quran Audio ── */}
@@ -670,16 +782,16 @@ export default function VideoGalleryPage() {
                     </div>
                 ) : (
                     <Carousel id="prophet-stories">
-                        {PROPHET_STORIES.map(item => <PosterCard key={item.id} item={item} />)}
+                        {filterData(PROPHET_STORIES).map(item => <PosterCard key={item.id} item={item} onPlay={playVideo} />)}
                     </Carousel>
                 )}
             </section>
 
             {/* ── Promo Banner – Sports / Quranic Sciences ── */}
-            <section className="vg-section" style={{ paddingTop: 12 }}>
+            <section id="arabic-calligraphy" className="vg-section" style={{ paddingTop: 12 }}>
                 <div className="vg-tabs">
                     {['Quran Sciences', 'Arabic Language', 'Fiqh', 'Hadith Sciences', 'Islamic History'].map((tab, i) => (
-                        <button key={tab} className={`vg-tab ${i === 0 ? 'active' : ''}`}>{tab}</button>
+                        <button key={tab} id={tab === 'Islamic History' ? 'islamic-history' : undefined} className={`vg-tab ${i === 0 ? 'active' : ''}`}>{tab}</button>
                     ))}
                 </div>
                 <div className="vg-promo" style={{ margin: 0 }}>
@@ -693,7 +805,7 @@ export default function VideoGalleryPage() {
                             Learn from certified scholars and enhance your understanding of the
                             divine text.
                         </p>
-                        <button className="vg-promo-btn">
+                        <button className="vg-promo-btn" onClick={() => scrollToSection('islamic-lectures')}>
                             <span className="material-symbols-outlined" style={{ fontSize: 20 }}>school</span>
                             Explore Courses
                         </button>
@@ -721,67 +833,11 @@ export default function VideoGalleryPage() {
                     </div>
                 ) : (
                     <Carousel id="kids-content">
-                        {KIDS_CONTENT.map(item => <PosterCard key={item.id} item={item} />)}
+                        {filterData(KIDS_CONTENT).map(item => <PosterCard key={item.id} item={item} onPlay={playVideo} />)}
                     </Carousel>
                 )}
             </section>
 
-            {/* ── Footer ── */}
-            <footer className="vg-footer">
-                <div className="vg-footer-grid">
-                    <div>
-                        <h4 className="vg-footer-col-title">Explore</h4>
-                        <Link href="/read-quran/1" className="vg-footer-link">Read Quran</Link>
-                        <Link href="/audio-quran" className="vg-footer-link">Audio Quran</Link>
-                        <Link href="/video-gallery" className="vg-footer-link">Video Gallery</Link>
-                        <Link href="/tafseer" className="vg-footer-link">Tafseer</Link>
-                        <Link href="/memorize-quran" className="vg-footer-link">Memorize Quran</Link>
-                    </div>
-                    <div>
-                        <h4 className="vg-footer-col-title">Learn</h4>
-                        <Link href="/radio" className="vg-footer-link">Quran Radio</Link>
-                        <Link href="/hadees" className="vg-footer-link">Hadees</Link>
-                        <Link href="/dua" className="vg-footer-link">Daily Duas</Link>
-                        <Link href="/learn-quran" className="vg-footer-link">Learn Quran</Link>
-                        <Link href="/tajweed" className="vg-footer-link">Tajweed</Link>
-                    </div>
-                    <div>
-                        <h4 className="vg-footer-col-title">Categories</h4>
-                        <span className="vg-footer-link" style={{ cursor: 'pointer' }}>Quran Recitation</span>
-                        <span className="vg-footer-link" style={{ cursor: 'pointer' }}>Islamic Lectures</span>
-                        <span className="vg-footer-link" style={{ cursor: 'pointer' }}>Prophet Stories</span>
-                        <span className="vg-footer-link" style={{ cursor: 'pointer' }}>Kids Content</span>
-                        <span className="vg-footer-link" style={{ cursor: 'pointer' }}>Live Channels</span>
-                    </div>
-                    <div>
-                        <h4 className="vg-footer-col-title">Connect</h4>
-                        <span className="vg-footer-link" style={{ cursor: 'pointer' }}>About Us</span>
-                        <span className="vg-footer-link" style={{ cursor: 'pointer' }}>Contact</span>
-                        <span className="vg-footer-link" style={{ cursor: 'pointer' }}>Privacy Policy</span>
-                        <span className="vg-footer-link" style={{ cursor: 'pointer' }}>Terms of Service</span>
-                    </div>
-                </div>
-
-                <div className="vg-footer-bottom">
-                    <span className="vg-footer-copyright">
-                        © 2024 QuranicLearn. All rights reserved. Free Quran education for everyone.
-                    </span>
-                    <div className="vg-footer-socials">
-                        <span className="vg-footer-social" title="YouTube">
-                            <span className="material-symbols-outlined" style={{ fontSize: 18 }}>play_circle</span>
-                        </span>
-                        <span className="vg-footer-social" title="Twitter / X">
-                            <span className="material-symbols-outlined" style={{ fontSize: 18 }}>tag</span>
-                        </span>
-                        <span className="vg-footer-social" title="Instagram">
-                            <span className="material-symbols-outlined" style={{ fontSize: 18 }}>photo_camera</span>
-                        </span>
-                        <span className="vg-footer-social" title="Telegram">
-                            <span className="material-symbols-outlined" style={{ fontSize: 18 }}>send</span>
-                        </span>
-                    </div>
-                </div>
-            </footer>
 
             {/* ── Sticky Bottom CTA Bar ── */}
             <div className="vg-bottom-bar">

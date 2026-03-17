@@ -159,19 +159,19 @@ const SURAHS = [
 ];
 
 const FEATURED_ACTIONS = [
-  { icon: 'auto_stories', label: 'Mushaf Reader', sub: 'Read page by page', href: '/quran-pages', img: '/transparent icons/mushaf reader.jpg' },
-  { icon: 'music_note', label: 'Quran Player', sub: 'Listen & recite', href: '/quran-player', img: '/transparent icons/quran radio.png' },
-  { icon: 'volunteer_activism', label: 'Dua', sub: 'Daily supplications', href: '/dua', img: '/transparent icons/dua.png' },
-  { icon: 'format_quote', label: 'Hadees', sub: "Prophet's sayings ﷺ", href: '/hadees', img: '/transparent icons/hadees.jpg' },
+  { icon: 'auto_stories', label: 'Mushaf Reader', sub: 'Read page by page', href: '/quran-pages' },
+  { icon: 'music_note', label: 'Quran Player', sub: 'Listen & recite', href: '/quran-player' },
+  { icon: 'volunteer_activism', label: 'Dua', sub: 'Daily supplications', href: '/dua' },
+  { icon: 'format_quote', label: 'Hadees', sub: "Prophet's sayings ﷺ", href: '/hadees' },
 ];
 
 const FEATURES = [
-  { icon: 'menu_book', label: 'Read Quran', sub: '114 Surahs', href: '/read-quran/1', color: '#f59e0b', img: '/transparent icons/quran.png' },
-  { icon: 'explore', label: 'Navigate', sub: 'Surah · Juz · Page', href: '#navigate', color: '#0ea5e9', img: '/transparent icons/navigate.png' },
-  { icon: 'ads_click', label: 'Memorize', sub: 'Hifz Program', href: '/memorize-quran', color: '#a855f7', img: '/transparent icons/memorize.png' },
-  { icon: 'radio', label: 'Quran Radio', sub: '24/7 Recitation', href: '/radio', color: '#ef4444', img: '/transparent icons/quran radio.png' },
-  { icon: 'translate', label: 'Word by Word', sub: 'Arabic Learning', href: '/read-quran/1?mode=word-by-word', color: '#06b6d4', img: '/transparent icons/word by word.png' },
-  { icon: 'book_2', label: 'Tafseer', sub: 'Verse Explanations', href: '/tafseer', color: '#8b5cf6', img: '/transparent icons/tafseer.png' },
+  { icon: 'menu_book', label: 'Read Quran', sub: '114 Surahs', href: '/read-quran/1', color: '#f59e0b' },
+  { icon: 'explore', label: 'Navigate', sub: 'Surah · Juz · Page', href: '#navigate', color: '#0ea5e9' },
+  { icon: 'ads_click', label: 'Memorize', sub: 'Hifz Program', href: '/memorize-quran', color: '#a855f7' },
+  { icon: 'radio', label: 'Quran Radio', sub: '24/7 Recitation', href: '/radio', color: '#ef4444' },
+  { icon: 'translate', label: 'Word by Word', sub: 'Arabic Learning', href: '/read-quran/1?mode=word-by-word', color: '#06b6d4' },
+  { icon: 'book_2', label: 'Tafseer', sub: 'Verse Explanations', href: '/tafseer', color: '#8b5cf6' },
 ];
 
 const AYAHS_OF_DAY = [
@@ -1035,42 +1035,25 @@ export default function HomePage() {
                     ...S.card, 
                     padding: '18px 16px', 
                     display: 'flex', 
-                    flexDirection: 'column', 
-                    alignItems: 'flex-start', 
-                    justifyContent: 'flex-start',
+                    flexDirection: 'row', 
+                    alignItems: 'center', 
+                    gap: 16,
                     cursor: 'pointer', 
                     position: 'relative',
                     overflow: 'hidden',
-                    minHeight: '100px', 
-                    borderRadius: '24px',
-                    background: dark ? '#1a202c' : '#f8fafc',
+                    borderRadius: '16px',
+                    background: dark ? '#1a1612' : '#f8fafc',
                     border: 'none',
-                    boxShadow: dark ? '0 4px 20px rgba(0,0,0,0.4)' : '0 4px 12px rgba(0,0,0,0.05)',
+                    boxShadow: dark ? '0 4px 20px rgba(0,0,0,0.6)' : '0 4px 12px rgba(0,0,0,0.05)',
                   }}
                   >
-                    <div style={{ position: 'relative', zIndex: 2, maxWidth: '75%', pointerEvents: 'none' }}>
-                      <p style={{ margin: 0, fontWeight: 700, fontSize: '17px', color: 'var(--text-primary)', letterSpacing: '-0.01em', lineHeight: 1.2 }}>{f.label}</p>
-                      <p style={{ margin: '3px 0 0', fontSize: '11px', color: 'var(--text-muted)', opacity: 0.6, lineHeight: 1.3 }}>{f.sub}</p>
+                    <div style={{ width: 44, height: 44, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                       <span className="material-symbols-outlined" style={{ fontSize: 28, color: '#f59e0b' }}>{f.icon}</span>
                     </div>
-
-                    {/* Pro-Mixed Transparent Icons */}
-                    <img 
-                      src={f.img} 
-                      alt={f.label}
-                      style={{
-                        position: 'absolute',
-                        bottom: f.label === 'Quran Player' ? '-12px' : '-8px',
-                        right: f.label === 'Quran Player' ? '-8px' : '-5px',
-                        width: f.label === 'Quran Player' ? '115px' : '90px',
-                        height: f.label === 'Quran Player' ? '115px' : '90px',
-                        objectFit: 'contain',
-                        opacity: 0.95,
-                        zIndex: 1,
-                        filter: dark ? 'drop-shadow(0 0 10px rgba(0,0,0,0.4))' : 'none',
-                        transition: 'transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-                      }}
-                      className="feat-icon-img"
-                    />
+                    <div>
+                      <p style={{ margin: 0, fontWeight: 700, fontSize: '15px', color: 'var(--text-primary)', letterSpacing: '-0.01em', lineHeight: 1.2 }}>{f.label}</p>
+                      <p style={{ margin: '3px 0 0', fontSize: '11px', color: 'var(--text-muted)', lineHeight: 1.3 }}>{f.sub}</p>
+                    </div>
                   </div>
                 </Link>
               ))}
@@ -1144,43 +1127,30 @@ export default function HomePage() {
                   const inner = (
                     <div className="feat-card" style={{ 
                       ...S.card, 
-                      padding: '18px 16px', 
+                      padding: '20px 16px', 
                       display: 'flex', 
                       flexDirection: 'column', 
-                      alignItems: 'flex-start', 
-                      justifyContent: 'flex-start',
+                      alignItems: 'center', 
+                      justifyContent: 'center',
+                      textAlign: 'center',
                       cursor: 'pointer', 
-                      position: 'relative',
-                      overflow: 'hidden',
-                      minHeight: '110px', 
-                      borderRadius: '24px',
-                      background: dark ? '#1a202c' : '#f8fafc',
+                      borderRadius: '16px',
+                      background: dark ? '#1a1612' : '#f8fafc',
                       border: 'none',
-                      boxShadow: dark ? '0 4px 20px rgba(0,0,0,0.4)' : '0 4px 12px rgba(0,0,0,0.05)',
+                      boxShadow: dark ? '0 4px 20px rgba(0,0,0,0.6)' : '0 4px 12px rgba(0,0,0,0.05)',
                     }}>
-                      <div style={{ position: 'relative', zIndex: 2, maxWidth: '75%', pointerEvents: 'none' }}>
-                        <p style={{ margin: 0, fontWeight: 700, fontSize: f.label.length > 10 ? '16px' : '18px', color: 'var(--text-primary)', letterSpacing: '-0.01em', lineHeight: 1.2 }}>{f.label}</p>
-                        <p style={{ margin: '4px 0 0', fontSize: '11px', color: 'var(--text-muted)', opacity: 0.6, lineHeight: 1.3 }}>{f.sub}</p>
+                      <div style={{ 
+                        width: 48, height: 48, borderRadius: '50%', 
+                        background: `${f.color}20`, 
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        marginBottom: 12 
+                      }}>
+                        <span className="material-symbols-outlined" style={{ fontSize: 24, color: f.color }}>{f.icon}</span>
                       </div>
-                      
-                      {/* Mixed Transparent 3D Icon - Bottom Right */}
-                      <img 
-                        src={f.img} 
-                        alt={f.label}
-                        style={{
-                          position: 'absolute',
-                          bottom: '-10px',
-                          right: '-10px',
-                          width: '105px',
-                          height: '105px',
-                          objectFit: 'contain',
-                          opacity: 0.95,
-                          zIndex: 1,
-                          filter: dark ? 'drop-shadow(0 0 12px rgba(0,0,0,0.4))' : 'none',
-                          transition: 'transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-                        }}
-                        className="feat-icon-img"
-                      />
+                      <div>
+                        <p style={{ margin: 0, fontWeight: 700, fontSize: '13px', color: 'var(--text-primary)', lineHeight: 1.2 }}>{f.label}</p>
+                        <p style={{ margin: '4px 0 0', fontSize: '10px', color: 'var(--text-muted)', lineHeight: 1.2 }}>{f.sub}</p>
+                      </div>
                     </div>
                   );
                   if (isNav) return <div key={f.label} onClick={() => openNav()} style={{ textDecoration: 'none', cursor: 'pointer' }}>{inner}</div>;
