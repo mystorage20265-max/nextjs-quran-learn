@@ -1517,7 +1517,7 @@ export default function HomePage() {
                     <span style={{ color: '#f59e0b' }}>to learning</span>
                   </h2>
                   <p style={{ margin: 0, fontSize: 14, lineHeight: 1.7, color: dark ? '#94a3b8' : '#475569', maxWidth: 280 }}>
-                    Explore all the ways QuranicLearn can support your spiritual journey — from reading to memorisation.
+                    Explore all the ways Learn Quran can support your spiritual journey — from reading to memorisation.
                   </p>
                 </div>
 
@@ -1527,7 +1527,7 @@ export default function HomePage() {
                     { icon: 'support_agent', label: 'Contact us', sub: 'Talk to an expert and see how our platform can meet your goals.', href: '/community', color: '#8b5cf6' },
                     { icon: 'group', label: 'Join the community', sub: 'Learn, share, and connect with people doing work that matters.', href: '/community', color: '#f59e0b' },
                     { icon: 'school', label: 'Find a teacher', sub: 'Realize even more value with a certified Quran tutor.', href: '/learn-quran', color: '#f59e0b' },
-                    { icon: 'view_module', label: 'Explore modules', sub: 'Get hands-on with the QuranicLearn platform.', href: '/courses', color: '#0ea5e9' },
+                    { icon: 'view_module', label: 'Explore modules', sub: 'Get hands-on with the Learn Quran platform.', href: '/courses', color: '#0ea5e9' },
                   ].map((item, i, arr) => (
                     <Link key={item.label} href={item.href} style={{ textDecoration: 'none', display: 'block' }}>
                       <div

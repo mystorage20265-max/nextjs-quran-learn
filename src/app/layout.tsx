@@ -12,7 +12,7 @@ import ClientWrapper from '@/components/ClientWrapper';
 export const metadata: Metadata = {
   title: 'Learn Quran - Learn the Noble Quran | Interactive Quranic Education',
   description: 'Embark on a transformative journey with the Holy Quran through our comprehensive learning platform. Learn Quran with interactive lessons, audio recitations, and guided study plans.',
-  keywords: 'Quran, Learn Quran, Quranic learning, Islamic education, Tajweed, Tafsir, Hifz, Arabic, Muslim, Islamic studies',
+  keywords: 'Quran, Learn Quran, Quran learning, Islamic education, Tajweed, Tafsir, Hifz, Arabic, Muslim, Islamic studies',
   authors: [{ name: 'Learn Quran Team' }],
   creator: 'Learn Quran',
   publisher: 'Learn Quran',
@@ -112,7 +112,7 @@ export default function RootLayout({
         <meta name="theme-color" content="#d97706" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content="QuranLearn" />
+        <meta name="apple-mobile-web-app-title" content="Learn Quran" />
         <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
 
         {/* ✅ Theme init – runs before first paint to prevent flash */}

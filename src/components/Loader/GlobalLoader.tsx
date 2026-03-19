@@ -26,7 +26,7 @@ const GlobalLoader: React.FC<GlobalLoaderProps> = ({
   return (
     <div className={containerClass}>
       <div className="global-loader-logo">
-        Quranic<span className="white">Learn</span>
+        Learn <span className="white">Quran</span>
         <span className="plus">+</span>
       </div>
       <div className="global-loader-bar">

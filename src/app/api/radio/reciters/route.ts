@@ -60,7 +60,7 @@ export async function GET(request: Request) {
         headers: {
           'Accept': 'application/json',
           'Accept-Encoding': 'gzip, deflate',
-          'User-Agent': 'Mozilla/5.0 (compatible; QuranicLearn/1.0)',
+          'User-Agent': 'Mozilla/5.0 (compatible; LearnQuran/1.0)',
         },
         next: { 
           revalidate: 1800, // ISR: 30 minutes

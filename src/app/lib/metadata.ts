@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 
 export const generateMetadata = (page: string): Metadata => {
-  const baseTitle = 'QuranicLearn';
+  const baseTitle = 'Learn Quran';
   const basePath = 'https://quraniclearn.com';
 
   const pages = {
