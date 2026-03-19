@@ -65,12 +65,12 @@ const POPULAR_RECITATIONS: VideoItem[] = [
 const ISLAMIC_LECTURES: VideoItem[] = [
     { id: 'seerah-1', title: 'Life of Prophet Muhammad ﷺ', subtitle: 'Complete Seerah Series', poster: '/images/video-posters/prophet-stories.png', badge: 'LearnQuran', category: 'lecture', episodes: 40, year: '2024', genre: 'Seerah, Biography, History', description: 'A comprehensive 40-part series covering the complete life of Prophet Muhammad ﷺ from birth to the establishment of the Muslim Ummah.', youtubeId: 'VOUp3_9_6To' },
     { id: 'tafsir-1', title: 'Tafsir Ibn Kathir', subtitle: 'Verse by Verse Explanation', poster: '/images/video-posters/arabic-calligraphy.png', badge: 'LearnQuran', category: 'lecture', episodes: 120, year: '2024', genre: 'Tafseer, Quran, Education', description: 'A detailed verse-by-verse explanation of the Holy Quran based on the renowned Tafsir Ibn Kathir.', youtubeId: '2bY10kZtq6w' },
-    { id: 'aqeedah', title: 'Fundamentals of Aqeedah', subtitle: 'Beliefs & Faith', poster: '/images/video-posters/islamic-history.png', badge: 'LearnQuran', category: 'lecture', episodes: 24, year: '2023', genre: 'Aqeedah, Theology', description: 'Learn the core beliefs and foundations of Islamic theology in this structured course on Aqeedah.' },
-    { id: 'fiqh', title: 'Fiqh Made Easy', subtitle: 'Islamic Jurisprudence', poster: '/images/video-posters/quran-recitation.png', badge: 'LearnQuran', category: 'lecture', episodes: 36, year: '2024', genre: 'Fiqh, Law, Education', description: 'A beginner-friendly introduction to Islamic jurisprudence covering prayer, fasting, zakat, and more.' },
-    { id: 'arabic-1', title: 'Learn Arabic Grammar', subtitle: 'Nahw & Sarf Basics', poster: '/images/video-posters/arabic-calligraphy.png', badge: 'LearnQuran', category: 'lecture', episodes: 50, year: '2024', genre: 'Arabic, Language, Grammar', description: 'Master the fundamentals of Arabic grammar – Nahw and Sarf – to better understand the Quran in its original language.' },
-    { id: 'hadith-1', title: '40 Hadith of Nawawi', subtitle: 'With Commentary', poster: '/images/video-posters/islamic-lectures.png', badge: 'LearnQuran', category: 'lecture', episodes: 42, year: '2023', genre: 'Hadith, Commentary', description: 'An in-depth study of the famous 40 Hadith of Imam Nawawi with detailed explanation and practical application.' },
-    { id: 'history-1', title: 'Islamic Golden Age', subtitle: 'Science & Civilization', poster: '/images/video-posters/islamic-history.png', badgeType: 'new', badge: 'New Series', category: 'lecture', episodes: 18, year: '2025', genre: 'History, Science, Civilization', description: 'Explore the golden era of Islamic civilization – its contributions to science, medicine, astronomy, and philosophy.' },
-    { id: 'women', title: 'Women in Islam', subtitle: 'Rights & Contributions', poster: '/images/video-posters/prophet-stories.png', category: 'lecture', episodes: 12, year: '2024', genre: 'Education, Society', description: 'A thought-provoking series highlighting the rights, roles, and remarkable contributions of women in Islamic history.' },
+    { id: 'aqeedah', title: 'Fundamentals of Aqeedah', subtitle: 'Beliefs & Faith', poster: '/images/video-posters/islamic-history.png', badge: 'LearnQuran', category: 'lecture', episodes: 24, year: '2023', genre: 'Aqeedah, Theology', description: 'Learn the core beliefs and foundations of Islamic theology in this structured course on Aqeedah.', youtubeId: 'vWfQZ_S1YfI' },
+    { id: 'fiqh', title: 'Fiqh Made Easy', subtitle: 'Islamic Jurisprudence', poster: '/images/video-posters/quran-recitation.png', badge: 'LearnQuran', category: 'lecture', episodes: 36, year: '2024', genre: 'Fiqh, Law, Education', description: 'A beginner-friendly introduction to Islamic jurisprudence covering prayer, fasting, zakat, and more.', youtubeId: 'P6q3k_S_9kE' },
+    { id: 'arabic-1', title: 'Learn Arabic Grammar', subtitle: 'Nahw & Sarf Basics', poster: '/images/video-posters/arabic-calligraphy.png', badge: 'LearnQuran', category: 'lecture', episodes: 50, year: '2024', genre: 'Arabic, Language, Grammar', description: 'Master the fundamentals of Arabic grammar – Nahw and Sarf – to better understand the Quran in its original language.', youtubeId: 'MvTtT3_S-kE' },
+    { id: 'hadith-1', title: '40 Hadith of Nawawi', subtitle: 'With Commentary', poster: '/images/video-posters/islamic-lectures.png', badge: 'LearnQuran', category: 'lecture', episodes: 42, year: '2023', genre: 'Hadith, Commentary', description: 'An in-depth study of the famous 40 Hadith of Imam Nawawi with detailed explanation and practical application.', youtubeId: 'OmSlsEEvKs0' },
+    { id: 'history-1', title: 'Islamic Golden Age', subtitle: 'Science & Civilization', poster: '/images/video-posters/islamic-history.png', badgeType: 'new', badge: 'New Series', category: 'lecture', episodes: 18, year: '2025', genre: 'History, Science, Civilization', description: 'Explore the golden era of Islamic civilization – its contributions to science, medicine, astronomy, and philosophy.', youtubeId: 'A-N1X_S_9_k' },
+    { id: 'women', title: 'Women in Islam', subtitle: 'Rights & Contributions', poster: '/images/video-posters/prophet-stories.png', category: 'lecture', episodes: 12, year: '2024', genre: 'Education, Society', description: 'A thought-provoking series highlighting the rights, roles, and remarkable contributions of women in Islamic history.', youtubeId: 'xnU9pnYT5x0' },
 ];
 
 const KIDS_CONTENT: VideoItem[] = [
@@ -514,7 +514,14 @@ export default function VideoGalleryPage() {
         setActiveHeroCat(idx);
         const sectionIds = ['popular-recitations', 'english-lectures', 'urdu-lectures', 'live-channels'];
         const targetId = sectionIds[idx];
-        if (targetId) scrollToSection(targetId);
+        if (targetId) {
+            const el = document.getElementById(targetId);
+            if (el) {
+                const yOffset = -100;
+                const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                window.scrollTo({ top: y, behavior: 'smooth' });
+            }
+        }
     };
 
     const filterData = <T extends { title?: string; name?: string }>(data: T[]) => {
@@ -757,6 +764,21 @@ export default function VideoGalleryPage() {
                         ))}
                     </Carousel>
                 )}
+            </section>
+
+            {/* ── Islamic Educational Courses ── */}
+            <section id="islamic-courses" className="vg-section vg-animate-in vg-animate-in-delay-2">
+                <div className="vg-section-header">
+                    <h2 className="vg-section-title">Islamic Educational Courses</h2>
+                    <button className="vg-section-see-all">
+                        See All Courses
+                        <span className="material-symbols-outlined" style={{ fontSize: 16 }}>chevron_right</span>
+                    </button>
+                </div>
+                <Carousel id="islamic-courses">
+                    {filterData(ISLAMIC_LECTURES).map(item => <PosterCard key={item.id} item={item} onPlay={playVideo} />)}
+                </Carousel>
+                {!filterData(ISLAMIC_LECTURES).length && <p style={{ color: 'var(--vg-text-muted)', fontSize: 13, padding: '0 48px' }}>No courses found matching your search.</p>}
             </section>
 
             {/* ── English Lectures ── */}
