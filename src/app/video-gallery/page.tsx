@@ -105,10 +105,8 @@ const PROPHET_STORIES: VideoItem[] = [
 ];
 
 const ENGLISH_LECTURES: VideoItem[] = [
-    { id: 'menk-1', title: 'Don\'t Give Up, Keep Going', subtitle: 'Mufti Menk · Motivation', poster: '/images/video-posters/islamic-lectures.png', badge: 'Must Watch', category: 'lecture-en', year: '2024', genre: 'Motivation, Spiritual', description: 'A powerful motivational talk by Mufti Menk on persevering through trials and never losing hope in Allah.', youtubeId: 'B0g0dK_y_6Y' },
     { id: 'nak-1', title: 'Guiding Loved Ones', subtitle: 'Nouman Ali Khan', poster: '/images/video-posters/prophet-stories.png', category: 'lecture-en', year: '2024', genre: 'Family, Guidance', description: 'Nouman Ali Khan discusses the reality that we cannot always guide those we love, and how to handle such situations with faith.', youtubeId: 'cZ1x_eXb0pQ' },
     { id: 'zakir-1', title: 'Proving God\'s Existence', subtitle: 'Dr. Zakir Naik', poster: '/images/video-posters/arabic-calligraphy.png', badge: 'Scientific', category: 'lecture-en', year: '2023', genre: 'Dawah, Logic', description: 'Dr. Zakir Naik explains the best methods to prove the existence of God to an atheist using logic and science.', youtubeId: 'i_Z-6jQ2qW4' },
-    { id: 'menk-2', title: 'Marriage Advice', subtitle: 'Mufti Menk · Family', poster: '/images/video-posters/islamic-history.png', badgeType: 'new', badge: 'New', category: 'lecture-en', year: '2025', genre: 'Dua, Worship', description: 'Practical and spiritual advice on marriage and family life by Mufti Menk.', youtubeId: 't_Lz6vUeS80' },
     { id: 'yq-1', title: 'Saved From Hellfire', subtitle: 'Dr. Yasir Qadhi', poster: '/images/video-posters/quran-recitation.png', badge: 'Essential', category: 'lecture-en', year: '2024', genre: 'Theology, Akhirah', description: 'Dr. Yasir Qadhi explains the deeds that save a believer from the fire of Hell.', youtubeId: 'x7_7s2r-XQ8' },
     { id: 'os-1', title: 'Why Allah Created You', subtitle: 'Omar Suleiman', poster: '/images/video-posters/prophet-stories.png', category: 'lecture-en', year: '2024', genre: 'Purpose, Faith', description: 'Understanding your purpose in life and why Allah brought you into existence.', youtubeId: '4dJ4K0d4f3k' },
     { id: 'nak-2', title: 'Miracle of Quran', subtitle: 'Nouman Ali Khan', poster: '/images/video-posters/arabic-calligraphy.png', badge: 'Viral', category: 'lecture-en', year: '2024', genre: 'Quranic Wonders', description: 'Linguistic miracles of the Quran that prove its divine origin.', youtubeId: 'Y_4x28h6P5o' },
@@ -124,29 +122,28 @@ const URDU_LECTURES: VideoItem[] = [
 ];
 
 const FEATURED_RECITERS = [
-    { id: 'mishary-r', name: 'Mishary Rashid', label: 'Quran Reciter', poster: '/images/video-posters/quran-recitation.png', youtubeId: '1xN5I5-G7XQ' },
-    { id: 'sudais-r', name: 'Al-Sudais', label: 'Imam · Makkah', poster: '/images/video-posters/islamic-lectures.png', youtubeId: 'rC_x_4l-4r0' },
-    { id: 'shuraim-r', name: 'Al-Shuraim', label: 'Quran Reciter', poster: '/images/video-posters/prophet-stories.png', youtubeId: '3U2M9T9v2xQ' },
-    { id: 'maher-r', name: 'Maher Al-Muaiqly', label: 'Imam · Makkah', poster: '/images/video-posters/arabic-calligraphy.png', youtubeId: 'R7WpIn072pM' },
-    { id: 'minshawi-r', name: 'Al-Minshawi', label: 'Murattal', poster: '/images/video-posters/islamic-history.png', youtubeId: 'i_yS2F1p5nU' },
-    { id: 'basit-r', name: 'Abdul Basit', label: 'Legendary Reciter', poster: '/images/video-posters/prophet-stories.png', youtubeId: 'I0v-a6n_K9g' },
-    { id: 'lohaidan-r', name: 'Al-Lohaidan', label: 'Emotional', poster: '/images/video-posters/quran-recitation.png', youtubeId: 'nOq-Q-1Gg40' },
-    { id: 'abkar-r', name: 'Idris Abkar', label: 'Peaceful', poster: '/images/video-posters/islamic-lectures.png', youtubeId: '9gWjK28m1kI' },
-    { id: 'salimi-r', name: 'Mansour Salimi', label: 'Heart Touching', poster: '/images/video-posters/arabic-calligraphy.png', youtubeId: 'oGQwgL_8zsk' },
-    { id: 'kurdi-r', name: 'Raad Al-Kurdi', label: 'Melodious', poster: '/images/video-posters/islamic-history.png', youtubeId: 'yYj_j1fR4r4' },
+    { id: 'mishary-r', name: 'Mishary Rashid', label: 'Quran Reciter', poster: '/images/video-posters/quran-recitation.png', youtubeId: 'X2YnP50cwNU' },
+    { id: 'sudais-r', name: 'Al-Sudais', label: 'Imam · Makkah', poster: '/images/video-posters/islamic-lectures.png', youtubeId: 'PW0NcmKBLcE' },
+    { id: 'shuraim-r', name: 'Al-Shuraim', label: 'Quran Reciter', poster: '/images/video-posters/prophet-stories.png', youtubeId: 'HQmm2IVsQBc' },
+    { id: 'maher-r', name: 'Maher Al-Muaiqly', label: 'Imam · Makkah', poster: '/images/video-posters/arabic-calligraphy.png', youtubeId: 'qWC-iaGVweM' },
+    { id: 'minshawi-r', name: 'Al-Minshawi', label: 'Murattal', poster: '/images/video-posters/islamic-history.png', youtubeId: 'KA0-5pALW5c' },
+    { id: 'basit-r', name: 'Abdul Basit', label: 'Legendary Reciter', poster: '/images/video-posters/prophet-stories.png', youtubeId: 'NdpBGYdQ_lU' },
+    { id: 'lohaidan-r', name: 'Al-Lohaidan', label: 'Emotional', poster: '/images/video-posters/quran-recitation.png', youtubeId: 'JrjhOma915E' },
+    { id: 'abkar-r', name: 'Idris Abkar', label: 'Peaceful', poster: '/images/video-posters/islamic-lectures.png', youtubeId: 'aT6SlNqNlAA' },
+    { id: 'salimi-r', name: 'Mansour Salimi', label: 'Heart Touching', poster: '/images/video-posters/arabic-calligraphy.png', youtubeId: 'AZ8MiorTDnU' },
+    { id: 'kurdi-r', name: 'Raad Al-Kurdi', label: 'Melodious', poster: '/images/video-posters/islamic-history.png', youtubeId: 'MlCXPjpTVZk' },
 ];
 
 const FEATURED_SCHOLARS = [
-    { id: 'israr-s', name: 'Dr. Israr Ahmed', label: 'Urdu · Scholar', poster: '/images/video-posters/islamic-history.png', youtubeId: '5b-w8RjQv04' },
-    { id: 'menk-s', name: 'Mufti Menk', label: 'English · Scholar', poster: '/images/video-posters/islamic-lectures.png', youtubeId: 'eZ-lG3Q6y3A' },
-    { id: 'nak-s', name: 'Nouman Ali Khan', label: 'English · Speaker', poster: '/images/video-posters/prophet-stories.png', youtubeId: 'cZ1x_eXb0pQ' },
-    { id: 'tj-s', name: 'Tariq Jameel', label: 'Urdu · Speaker', poster: '/images/video-posters/quran-recitation.png', youtubeId: '_LjEMpH8F3g' },
-    { id: 'yq-s', name: 'Yasir Qadhi', label: 'English · Scholar', poster: '/images/video-posters/arabic-calligraphy.png', youtubeId: 'x7_7s2r-XQ8' },
-    { id: 'os-s', name: 'Omar Suleiman', label: 'English · Speaker', poster: '/images/video-posters/islamic-history.png', youtubeId: '4dJ4K0d4f3k' },
-    { id: 'mirza-s', name: 'Eng Muhammad Ali', label: 'Urdu · Researcher', poster: '/images/video-posters/islamic-lectures.png', youtubeId: 'oVlYj_VfKio' },
+    { id: 'israr-s', name: 'Dr. Israr Ahmed', label: 'Urdu · Scholar', poster: '/images/video-posters/islamic-history.png', youtubeId: '2WAFIAfL7nM' },
+    { id: 'nak-s', name: 'Nouman Ali Khan', label: 'English · Speaker', poster: '/images/video-posters/prophet-stories.png', youtubeId: 'mnFhntnp8uc' },
+    { id: 'tj-s', name: 'Tariq Jameel', label: 'Urdu · Speaker', poster: '/images/video-posters/quran-recitation.png', youtubeId: 'MKD2gqVUwJw' },
+    { id: 'yq-s', name: 'Yasir Qadhi', label: 'English · Scholar', poster: '/images/video-posters/arabic-calligraphy.png', youtubeId: 'jTqHL018QI8' },
+    { id: 'os-s', name: 'Omar Suleiman', label: 'English · Speaker', poster: '/images/video-posters/islamic-history.png', youtubeId: '4Tzxiwv8ndg' },
+    { id: 'mirza-s', name: 'Eng Muhammad Ali', label: 'Urdu · Researcher', poster: '/images/video-posters/islamic-lectures.png', youtubeId: 'cz_0xLpAGa8' },
     { id: 'zulfiqar-s', name: 'Peer Zulfiqar', label: 'Urdu · Spiritual', poster: '/images/video-posters/quran-recitation.png', youtubeId: 'LGsp9I9sVL4' },
-    { id: 'zakir-s', name: 'Zakir Naik', label: 'Dawah Specialist', poster: '/images/video-posters/arabic-calligraphy.png', youtubeId: 's7z4E6x3tA0' },
-    { id: 'bilal-s', name: 'Bilal Philips', label: 'English · Scholar', poster: '/images/video-posters/prophet-stories.png', youtubeId: 'O1_5l_j_XvQ' },
+    { id: 'zakir-s', name: 'Zakir Naik', label: 'Dawah Specialist', poster: '/images/video-posters/arabic-calligraphy.png', youtubeId: 'xnU9pnYT5x0' },
+    { id: 'bilal-s', name: 'Bilal Philips', label: 'English · Scholar', poster: '/images/video-posters/prophet-stories.png', youtubeId: 'PShBTE2atOk' },
 ];
 
 /* ================================================================
@@ -383,7 +380,7 @@ function YouTubeModal({ youtubeId, title, onClose }: { youtubeId: string; title:
                 <iframe
                     width="100%"
                     height="100%"
-                    src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&rel=0`}
+                    src={`https://www.youtube-nocookie.com/embed/${youtubeId}?autoplay=1&rel=0&modestbranding=1&enablejsapi=1`}
                     title={title}
                     frameBorder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -482,16 +479,34 @@ export default function VideoGalleryPage() {
 
     const playVideo = (id: string, title: string) => {
         // Find if it has a youtubeId, otherwise use a default or the id itself as mock
-        const allItems = [...POPULAR_RECITATIONS, ...ISLAMIC_LECTURES, ...PROPHET_STORIES, ...KIDS_CONTENT, ...ENGLISH_LECTURES, ...URDU_LECTURES];
-        const item = allItems.find(x => x.id === id);
+        const allItems = [...POPULAR_RECITATIONS, ...ISLAMIC_LECTURES, ...PROPHET_STORIES, ...KIDS_CONTENT, ...ENGLISH_LECTURES, ...URDU_LECTURES, ...FEATURED_RECITERS, ...FEATURED_SCHOLARS];
+        const item = (allItems as any[]).find(x => x.id === id);
         const yId = item?.youtubeId || 'Cm1v4bteXbI'; // Mock Makkah Live if missing
         setActiveYouTube({ id: yId, title });
     };
 
     const activeHeroPanel = HERO_PANELS[Math.min(activeHeroCat, HERO_PANELS.length - 1)];
 
+    // ── PERFORMANCE: Warm up YouTube handshake ──
+    useEffect(() => {
+        // Pre-connect to common YT domains
+        const domains = ['https://www.youtube-nocookie.com', 'https://i.ytimg.com', 'https://googleads.g.doubleclick.net'];
+        domains.forEach(url => {
+            const link = document.createElement('link');
+            link.rel = 'preconnect';
+            link.href = url;
+            document.head.appendChild(link);
+        });
+    }, []);
+
     return (
         <div className="vg-page">
+            {/* ── PERFORMANCE SCRIPT: Pre-warm YouTube Player Logic ── */}
+            <iframe
+                style={{ position: 'absolute', width: 1, height: 1, opacity: 0, pointerEvents: 'none' }}
+                src="https://www.youtube-nocookie.com/embed?autoplay=0"
+                title="YT Warmup"
+            />
             {/* Standardized Premium Loader is now handled by ClientWrapper */}
 
             {/* ── Sticky Navigation ── */}
