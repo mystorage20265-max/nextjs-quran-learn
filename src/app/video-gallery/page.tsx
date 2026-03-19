@@ -473,6 +473,15 @@ export default function VideoGalleryPage() {
     const [showBackTop, setShowBackTop] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [activeYouTube, setActiveYouTube] = useState<{ id: string; title: string } | null>(null);
+    const [activeTrack, setActiveTrack] = useState(0);
+
+    const KNOWLEDGE_TRACKS = [
+        { title: 'Quran Sciences', desc: 'Dive deep into the sciences of the Quran – from Tajweed rules and Makharij al-Huruf to the occasions of revelation (Asbab an-Nuzul). Learn from certified scholars and enhance your understanding of the divine text.', img: '/images/video-posters/arabic-calligraphy.png' },
+        { title: 'Arabic Language', desc: 'Master the foundation of the divine text with comprehensive Nahw and Sarf courses. Transition from the basic alphabet to complex grammar to understand the Quran in its original language.', img: '/images/video-posters/islamic-lectures.png' },
+        { title: 'Fiqh', desc: 'Understand the practical application of Islamic law in daily life, covering Salah, Zakat, fasting, and contemporary issues. Essential rules for every Muslim to live by.', img: '/images/video-posters/prophet-stories.png' },
+        { title: 'Hadith Sciences', desc: 'Explore the preservation and authenticity of the sayings of the Prophet ﷺ. Study the 40 Hadith and the complex sciences of Mustalah al-Hadith (Hadith Terminology).', img: '/images/video-posters/islamic-history.png' },
+        { title: 'Islamic History', desc: 'From the Seerah of the Prophet ﷺ to the Golden Age and beyond – discover the rich legacy, contributions, and remarkable civilization of Islam across the centuries.', img: '/images/video-posters/quran-recitation.png' },
+    ];
 
     // Controlled loading duration to ensure smooth font loading and premium entry
     useEffect(() => {
@@ -866,31 +875,39 @@ export default function VideoGalleryPage() {
                 )}
             </section>
 
-            {/* ── Promo Banner – Sports / Quranic Sciences ── */}
+            {/* ── Quran Sciences & Courses Promo ── */}
             <section id="arabic-calligraphy" className="vg-section" style={{ paddingTop: 12 }}>
                 <div className="vg-tabs">
-                    {['Quran Sciences', 'Arabic Language', 'Fiqh', 'Hadith Sciences', 'Islamic History'].map((tab, i) => (
-                        <button key={tab} id={tab === 'Islamic History' ? 'islamic-history' : undefined} className={`vg-tab ${i === 0 ? 'active' : ''}`}>{tab}</button>
+                    {KNOWLEDGE_TRACKS.map((track, i) => (
+                        <button 
+                            key={track.title} 
+                            className={`vg-tab ${activeTrack === i ? 'active' : ''}`}
+                            onClick={() => setActiveTrack(i)}
+                        >
+                            {track.title}
+                        </button>
                     ))}
                 </div>
                 <div className="vg-promo" style={{ margin: 0 }}>
                     <div className="vg-promo-text">
                         <h3 className="vg-promo-title">
-                            Quran Sciences
+                            {KNOWLEDGE_TRACKS[activeTrack].title}
                         </h3>
                         <p className="vg-promo-desc">
-                            Dive deep into the sciences of the Quran – from Tajweed rules and
-                            Makharij al-Huruf to the occasions of revelation (Asbab an-Nuzul).
-                            Learn from certified scholars and enhance your understanding of the
-                            divine text.
+                            {KNOWLEDGE_TRACKS[activeTrack].desc}
                         </p>
-                        <button className="vg-promo-btn" onClick={() => scrollToSection('islamic-lectures')}>
+                        <button className="vg-promo-btn" onClick={() => scrollToSection('islamic-courses')}>
                             <span className="material-symbols-outlined" style={{ fontSize: 20 }}>school</span>
                             Explore Courses
                         </button>
                     </div>
                     <div className="vg-promo-visual">
-                        <img src="/images/video-posters/arabic-calligraphy.png" alt="Quran Sciences" />
+                        <img 
+                            key={activeTrack}
+                            src={KNOWLEDGE_TRACKS[activeTrack].img} 
+                            alt={KNOWLEDGE_TRACKS[activeTrack].title} 
+                            style={{ animation: 'vg-fadeIn 0.5s ease' }}
+                        />
                     </div>
                 </div>
             </section>
