@@ -50,16 +50,16 @@ const HERO_PANELS = [
 ];
 
 const POPULAR_RECITATIONS: VideoItem[] = [
-    { id: 'mishary', title: 'Mishary Rashid', subtitle: 'Full Quran · 114 Surahs', poster: '/images/video-posters/quran-recitation.png', badge: 'Popular', category: 'recitation', episodes: 114, year: '2024', genre: 'Quran, Recitation, Tilawah', description: 'Listen to the complete Quran recited by Sheikh Mishary Rashid Alafasy in his world-renowned melodious voice. Covers all 114 Surahs with perfect Tajweed.', youtubeId: '1xN5I5-G7XQ' },
-    { id: 'sudais', title: 'Abdul Rahman Al-Sudais', subtitle: 'Imam of Masjid al-Haram', poster: '/images/video-posters/islamic-lectures.png', badge: 'Featured', category: 'recitation', episodes: 114, year: '2024', genre: 'Quran, Recitation', description: 'The Imam of the Grand Mosque in Makkah, Sheikh Al-Sudais delivers a powerful and deeply moving recitation of the Holy Quran.', youtubeId: 'rC_x_4l-4r0' },
-    { id: 'shuraim', title: 'Saud Al-Shuraim', subtitle: 'Beautiful Recitation', poster: '/images/video-posters/prophet-stories.png', category: 'recitation', episodes: 114, year: '2023', genre: 'Quran, Recitation', description: 'Sheikh Saud Al-Shuraim\'s beautiful and serene recitation brings peace and tranquility to the listener.', youtubeId: '3U2M9T9v2xQ' },
-    { id: 'minshawi', title: 'Muhammad Al-Minshawi', subtitle: 'Murattal Style', poster: '/images/video-posters/arabic-calligraphy.png', category: 'recitation', episodes: 60, year: '2023', genre: 'Quran, Murattal', description: 'A classic Murattal-style recitation by the legendary Sheikh Muhammad Siddiq Al-Minshawi.', youtubeId: 'i_yS2F1p5nU' },
-    { id: 'husary', title: 'Mahmoud Al-Husary', subtitle: 'Tajweed Master', poster: '/images/video-posters/islamic-history.png', badge: 'Classic', category: 'recitation', episodes: 114, year: '2022', genre: 'Quran, Tajweed', description: 'Known as the "Master of Tajweed", Sheikh Al-Husary\'s precise and clear recitation is considered a gold standard for Quran learners.', youtubeId: 'n36S-S2_y-k' },
-    { id: 'ajmy', title: 'Ahmad Al-Ajmy', subtitle: 'Emotional Recitation', poster: '/images/video-posters/quran-recitation.png', category: 'recitation', episodes: 80, year: '2024', genre: 'Quran, Emotional', description: 'An incredibly emotional and heartfelt recitation that moves listeners to tears. Sheikh Ahmad Al-Ajmy\'s voice carries deep spiritual weight.', youtubeId: 'X0vL6Vv6D5k' },
-    { id: 'ghamdi', title: 'Saad Al-Ghamdi', subtitle: 'Melodious Voice', poster: '/images/video-posters/islamic-lectures.png', badgeType: 'new', badge: 'New', category: 'recitation', episodes: 114, year: '2025', genre: 'Quran, Recitation', description: 'Newly uploaded! Saad Al-Ghamdi\'s melodious and soothing recitation of the entire Holy Quran.', youtubeId: 'hU519bQj314' },
-    { id: 'dosari', title: 'Yasser Al-Dosari', subtitle: 'Full Quran', poster: '/images/video-posters/prophet-stories.png', category: 'recitation', episodes: 114, year: '2024', genre: 'Quran, Recitation', description: 'Experience the full Quran recited by Sheikh Yasser Al-Dosari with his distinctive and captivating voice.', youtubeId: 'jAP5Bl-euYM' },
-    { id: 'maher', title: 'Maher Al-Muaiqly', subtitle: 'Imam of Masjid al-Haram', poster: '/images/video-posters/arabic-calligraphy.png', badge: 'Top Rated', category: 'recitation', episodes: 114, year: '2024', genre: 'Quran, Recitation', description: 'The current Imam of Masjid al-Haram, Sheikh Maher Al-Muaiqly\'s recitation is known for its beauty and spiritual depth.', youtubeId: 'R7WpIn072pM' },
-    { id: 'basfar', title: 'Abdullah Basfar', subtitle: 'Calm & Peaceful', poster: '/images/video-posters/islamic-history.png', category: 'recitation', episodes: 114, year: '2023', genre: 'Quran, Peaceful', description: 'A calm and peaceful recitation perfect for daily listening and reflection. Sheikh Abdullah Basfar\'s gentle voice soothes the soul.', youtubeId: '0kH8327m7S4' },
+    { id: 'mishary', title: 'Mishary Rashid', subtitle: 'Full Quran · 114 Surahs', poster: '/images/video-posters/quran-recitation.png', badge: 'Popular', category: 'recitation', episodes: 114, year: '2024', genre: 'Quran, Recitation, Tilawah', description: 'Listen to the complete Quran recited by Sheikh Mishary Rashid Alafasy in his world-renowned melodious voice. Covers all 114 Surahs with perfect Tajweed.', youtubeId: 'suFI9vC7HB4' },
+    { id: 'sudais', title: 'Abdul Rahman Al-Sudais', subtitle: 'Imam of Masjid al-Haram', poster: '/images/video-posters/islamic-lectures.png', badge: 'Featured', category: 'recitation', episodes: 114, year: '2024', genre: 'Quran, Recitation', description: 'The Imam of the Grand Mosque in Makkah, Sheikh Al-Sudais delivers a powerful and deeply moving recitation of the Holy Quran.', youtubeId: 'NI-ecVMP7Zo' },
+    { id: 'shuraim', title: 'Saud Al-Shuraim', subtitle: 'Beautiful Recitation', poster: '/images/video-posters/prophet-stories.png', category: 'recitation', episodes: 114, year: '2023', genre: 'Quran, Recitation', description: 'Sheikh Saud Al-Shuraim\'s beautiful and serene recitation brings peace and tranquility to the listener.', youtubeId: 'bGUhSwaodiQ' },
+    { id: 'minshawi', title: 'Muhammad Al-Minshawi', subtitle: 'Murattal Style', poster: '/images/video-posters/arabic-calligraphy.png', category: 'recitation', episodes: 60, year: '2023', genre: 'Quran, Murattal', description: 'A classic Murattal-style recitation by the legendary Sheikh Muhammad Siddiq Al-Minshawi.', youtubeId: 'F1y4Y0R4PnE' },
+    { id: 'husary', title: 'Mahmoud Al-Husary', subtitle: 'Tajweed Master', poster: '/images/video-posters/islamic-history.png', badge: 'Classic', category: 'recitation', episodes: 114, year: '2022', genre: 'Quran, Tajweed', description: 'Known as the "Master of Tajweed", Sheikh Al-Husary\'s precise and clear recitation is considered a gold standard for Quran learners.', youtubeId: '3E6iTiXAY90' },
+    { id: 'ajmy', title: 'Ahmad Al-Ajmy', subtitle: 'Emotional Recitation', poster: '/images/video-posters/quran-recitation.png', category: 'recitation', episodes: 80, year: '2024', genre: 'Quran, Emotional', description: 'An incredibly emotional and heartfelt recitation that moves listeners to tears. Sheikh Ahmad Al-Ajmy\'s voice carries deep spiritual weight.', youtubeId: 'C4Me582aQU8' },
+    { id: 'ghamdi', title: 'Saad Al-Ghamdi', subtitle: 'Melodious Voice', poster: '/images/video-posters/islamic-lectures.png', badgeType: 'new', badge: 'New', category: 'recitation', episodes: 114, year: '2025', genre: 'Quran, Recitation', description: 'Newly uploaded! Saad Al-Ghamdi\'s melodious and soothing recitation of the entire Holy Quran.', youtubeId: 'FLmHcBzVbC0' },
+    { id: 'dosari', title: 'Yasser Al-Dosari', subtitle: 'Full Quran', poster: '/images/video-posters/prophet-stories.png', category: 'recitation', episodes: 114, year: '2024', genre: 'Quran, Recitation', description: 'Experience the full Quran recited by Sheikh Yasser Al-Dosari with his distinctive and captivating voice.', youtubeId: 'PBrcXBnGBeU' },
+    { id: 'maher', title: 'Maher Al-Muaiqly', subtitle: 'Imam of Masjid al-Haram', poster: '/images/video-posters/arabic-calligraphy.png', badge: 'Top Rated', category: 'recitation', episodes: 114, year: '2024', genre: 'Quran, Recitation', description: 'The current Imam of Masjid al-Haram, Sheikh Maher Al-Muaiqly\'s recitation is known for its beauty and spiritual depth.', youtubeId: '0SILdb7gS-8' },
+    { id: 'basfar', title: 'Abdullah Basfar', subtitle: 'Calm & Peaceful', poster: '/images/video-posters/islamic-history.png', category: 'recitation', episodes: 114, year: '2023', genre: 'Quran, Peaceful', description: 'A calm and peaceful recitation perfect for daily listening and reflection. Sheikh Abdullah Basfar\'s gentle voice soothes the soul.', youtubeId: 'mlTEaDewo8g' },
 ];
 
 const ISLAMIC_LECTURES: VideoItem[] = [
@@ -74,51 +74,50 @@ const ISLAMIC_LECTURES: VideoItem[] = [
 ];
 
 const KIDS_CONTENT: VideoItem[] = [
-    { id: 'kids-arabic', title: 'Arabic Alphabet Fun', subtitle: 'Learn Letters with Animation', poster: '/images/video-posters/kids-islamic.png', badge: 'Kids', category: 'kids', episodes: 28, year: '2024', genre: 'Kids, Arabic, Education', description: 'A fun animated series teaching children the Arabic alphabet with colorful characters and catchy songs!' },
-    { id: 'kids-stories', title: 'Prophets for Children', subtitle: 'Animated Stories', poster: '/images/video-posters/kids-islamic.png', badge: 'Kids', category: 'kids', episodes: 25, year: '2024', genre: 'Kids, Animation, Stories', description: 'Beautifully animated stories of the Prophets designed especially for young viewers to learn and enjoy.' },
-    { id: 'kids-duas', title: 'Daily Duas for Kids', subtitle: 'Easy to Learn', poster: '/images/video-posters/kids-islamic.png', badge: 'Kids', category: 'kids', episodes: 20, year: '2024', genre: 'Kids, Duas, Daily', description: 'Teach your kids essential daily duas with easy-to-follow animations and pronunciation guides.' },
-    { id: 'kids-quran', title: 'Juz Amma for Children', subtitle: 'Short Surahs', poster: '/images/video-posters/kids-islamic.png', badge: 'Kids', category: 'kids', episodes: 37, year: '2023', genre: 'Kids, Quran, Memorization', description: 'Help your children memorize the short Surahs of Juz Amma with engaging visuals and repeat-after-me segments.' },
-    { id: 'kids-manners', title: 'Islamic Manners', subtitle: 'Adab & Akhlaq', poster: '/images/video-posters/kids-islamic.png', badgeType: 'new', badge: 'New', category: 'kids', episodes: 15, year: '2025', genre: 'Kids, Manners, Adab', description: 'New series! Teaching children Islamic manners, good conduct, and how to be kind and respectful.' },
-    { id: 'kids-nasheed', title: 'Nasheeds for Kids', subtitle: 'Fun Islamic Songs', poster: '/images/video-posters/kids-islamic.png', category: 'kids', episodes: 30, year: '2024', genre: 'Kids, Nasheed, Music', description: 'Fun and catchy nasheeds that kids will love singing along to. Perfect for car rides and playtime!' },
-    { id: 'kids-pillars', title: '5 Pillars of Islam', subtitle: 'Interactive Learning', poster: '/images/video-posters/kids-islamic.png', badge: 'Kids', category: 'kids', episodes: 10, year: '2024', genre: 'Kids, Education, Pillars', description: 'An interactive series explaining the 5 pillars of Islam through fun activities and animated characters.' },
-    { id: 'kids-ramadan', title: 'Ramadan Adventures', subtitle: 'Fasting & Charity', poster: '/images/video-posters/kids-islamic.png', category: 'kids', episodes: 12, year: '2024', genre: 'Kids, Ramadan, Charity', description: 'Join an exciting Ramadan journey learning about fasting, charity, and the spirit of the holy month.' },
+    { id: 'kids-arabic', title: 'Arabic Alphabet Fun', subtitle: 'Learn Letters with Animation', poster: '/images/video-posters/kids-islamic.png', badge: 'Kids', category: 'kids', episodes: 28, year: '2024', genre: 'Kids, Arabic, Education', description: 'A fun animated series teaching children the Arabic alphabet with colorful characters and catchy songs!', youtubeId: 'HeBcxdgQI3c' },
+    { id: 'kids-stories', title: 'Prophets for Children', subtitle: 'Animated Stories', poster: '/images/video-posters/kids-islamic.png', badge: 'Kids', category: 'kids', episodes: 25, year: '2024', genre: 'Kids, Animation, Stories', description: 'Beautifully animated stories of the Prophets designed especially for young viewers to learn and enjoy.', youtubeId: '0RX221MYwrY' },
+    { id: 'kids-duas', title: 'Daily Duas for Kids', subtitle: 'Easy to Learn', poster: '/images/video-posters/kids-islamic.png', badge: 'Kids', category: 'kids', episodes: 20, year: '2024', genre: 'Kids, Duas, Daily', description: 'Teach your kids essential daily duas with easy-to-follow animations and pronunciation guides.', youtubeId: 'OMQnYZzJnZE' },
+    { id: 'kids-quran', title: 'Juz Amma for Children', subtitle: 'Short Surahs', poster: '/images/video-posters/kids-islamic.png', badge: 'Kids', category: 'kids', episodes: 37, year: '2023', genre: 'Kids, Quran, Memorization', description: 'Help your children memorize the short Surahs of Juz Amma with engaging visuals and repeat-after-me segments.', youtubeId: 'brtVQDXde-s' },
+    { id: 'kids-manners', title: 'Islamic Manners', subtitle: 'Adab & Akhlaq', poster: '/images/video-posters/kids-islamic.png', badgeType: 'new', badge: 'New', category: 'kids', episodes: 15, year: '2025', genre: 'Kids, Manners, Adab', description: 'New series! Teaching children Islamic manners, good conduct, and how to be kind and respectful.', youtubeId: 'FfhyMT2k76Q' },
+    { id: 'kids-nasheed', title: 'Nasheeds for Kids', subtitle: 'Fun Islamic Songs', poster: '/images/video-posters/kids-islamic.png', category: 'kids', episodes: 30, year: '2024', genre: 'Kids, Nasheed, Music', description: 'Fun and catchy nasheeds that kids will love singing along to. Perfect for car rides and playtime!', youtubeId: 'WyxekrpqcEQ' },
+    { id: 'kids-pillars', title: '5 Pillars of Islam', subtitle: 'Interactive Learning', poster: '/images/video-posters/kids-islamic.png', badge: 'Kids', category: 'kids', episodes: 10, year: '2024', genre: 'Kids, Education, Pillars', description: 'An interactive series explaining the 5 pillars of Islam through fun activities and animated characters.', youtubeId: '0iXh-DFj3II' },
+    { id: 'kids-ramadan', title: 'Ramadan Adventures', subtitle: 'Fasting & Charity', poster: '/images/video-posters/kids-islamic.png', category: 'kids', episodes: 12, year: '2024', genre: 'Kids, Ramadan, Charity', description: 'Join an exciting Ramadan journey learning about fasting, charity, and the spirit of the holy month.', youtubeId: 'J5AL4wdm9DU' },
 ];
 
 const LIVE_CHANNELS: LiveChannel[] = [
     { id: 'makkah', title: 'Makkah Live', poster: '/images/video-posters/mecca-live.png', channelTag: 'LIVE', isLive: true, youtubeId: 'Cm1v4bteXbI' },
     { id: 'madinah', title: 'Madinah Live', poster: '/images/video-posters/madinah-live.png', channelTag: 'LIVE', isLive: true, youtubeId: '3L7Gf0BD0gc' },
-    { id: 'quran-tv', title: 'Quran TV', poster: '/images/video-posters/arabic-calligraphy.png', channelTag: 'QTV', isLive: true },
-    { id: 'peace-tv', title: 'Peace TV', poster: '/images/video-posters/prophet-stories.png', channelTag: 'PTV', isLive: true, schedule: 'Live Now' },
-    { id: 'huda-tv', title: 'Huda TV', poster: '/images/video-posters/islamic-history.png', channelTag: 'HTV', isLive: true },
-    { id: 'iqra-tv', title: 'Iqra TV', poster: '/images/video-posters/islamic-lectures.png', channelTag: 'IQR', isLive: false, schedule: 'Starts 07:30' },
+    { id: 'quran-tv', title: 'Quran TV', poster: '/images/video-posters/arabic-calligraphy.png', channelTag: 'QTV', isLive: true, youtubeId: 'N5YXJ34PBxo' },
+    { id: 'alehsan-tv', title: 'Al Ehsan TV', poster: '/images/video-posters/prophet-stories.png', channelTag: 'LIVE', isLive: true, youtubeId: 'ePzppodyAZg' },
+    { id: 'huda-tv', title: 'Huda TV', poster: '/images/video-posters/islamic-history.png', channelTag: 'HTV', isLive: true, youtubeId: 'AHZQ-_fzwGc' },
+    { id: 'iqra-tv', title: 'Iqra TV', poster: '/images/video-posters/islamic-lectures.png', channelTag: 'IQR', isLive: true, youtubeId: 'dL7FNvij_AA' },
 ];
 
 const PROPHET_STORIES: VideoItem[] = [
-    { id: 'adam', title: 'Story of Adam (AS)', subtitle: 'The First Human', poster: '/images/video-posters/prophet-stories.png', category: 'story', episodes: 3, year: '2024', genre: 'Stories, Prophets', description: 'The story of Prophet Adam (AS) – the first human and the first prophet. Learn about creation, the Garden, and the beginning of humanity.' },
-    { id: 'nuh', title: 'Story of Nuh (AS)', subtitle: 'Noah & The Great Flood', poster: '/images/video-posters/islamic-history.png', category: 'story', episodes: 4, year: '2024', genre: 'Stories, Prophets', description: 'The epic story of Prophet Nuh (AS) and the great flood. A tale of patience, perseverance, and unwavering faith.' },
-    { id: 'ibrahim', title: 'Story of Ibrahim (AS)', subtitle: 'The Friend of Allah', poster: '/images/video-posters/quran-recitation.png', badge: 'Must Watch', category: 'story', episodes: 6, year: '2024', genre: 'Stories, Prophets', description: 'Discover the remarkable life of Prophet Ibrahim (AS) – the friend of Allah, his trials, and the building of the Kaaba.' },
-    { id: 'yusuf', title: 'Story of Yusuf (AS)', subtitle: 'The Dream Interpreter', poster: '/images/video-posters/arabic-calligraphy.png', badge: 'Best Story', category: 'story', episodes: 8, year: '2024', genre: 'Stories, Prophets, Drama', description: 'Called "the best of stories" in the Quran. Follow Prophet Yusuf (AS) through betrayal, imprisonment, and his rise to power in Egypt.' },
-    { id: 'musa', title: 'Story of Musa (AS)', subtitle: 'Moses & Pharaoh', poster: '/images/video-posters/islamic-lectures.png', category: 'story', episodes: 10, year: '2024', genre: 'Stories, Prophets', description: 'The dramatic confrontation between Prophet Musa (AS) and Pharaoh – miracles, perseverance, and the liberation of the Israelites.' },
-    { id: 'isa', title: 'Story of Isa (AS)', subtitle: 'Jesus in Islam', poster: '/images/video-posters/prophet-stories.png', category: 'story', episodes: 5, year: '2024', genre: 'Stories, Prophets', description: 'Learn about Prophet Isa (AS) – his miraculous birth, his message, and his honored place in Islamic tradition.' },
-    { id: 'muhammad', title: 'Story of Muhammad ﷺ', subtitle: 'The Last Messenger', poster: '/images/video-posters/islamic-history.png', badge: 'Essential', category: 'story', episodes: 30, year: '2024', genre: 'Seerah, Prophets, Biography', description: 'The complete life story of the final Prophet Muhammad ﷺ – from Makkah to Madinah, a journey that changed the world forever.' },
-    { id: 'companions', title: 'Stories of Companions', subtitle: 'Sahaba RA', poster: '/images/video-posters/quran-recitation.png', badgeType: 'new', badge: 'New', category: 'story', episodes: 20, year: '2025', genre: 'Stories, Sahaba, History', description: 'Newly released! Inspiring stories of the companions of Prophet Muhammad ﷺ – their sacrifices, bravery, and devotion.' },
+    { id: 'adam-to-nuh', title: 'Adam to Nuh - Movie', subtitle: 'The Beginning of Humanity', poster: '/images/video-posters/prophet-stories.png', badge: 'Complete Movie', category: 'story', episodes: 7, year: '2024', genre: 'Stories, Prophets', description: 'The epic story from the creation of Adam (AS) to the Great Flood of Nuh (AS) – a complete cinematic journey of early humanity.', youtubeId: 'G4DGSc1FwvQ' },
+    { id: 'ibrahim', title: 'Story of Ibrahim (AS)', subtitle: 'The Friend of Allah', poster: '/images/video-posters/quran-recitation.png', badge: 'Must Watch', category: 'story', episodes: 6, year: '2024', genre: 'Stories, Prophets', description: 'Discover the remarkable life of Prophet Ibrahim (AS) – the friend of Allah, his trials, and the building of the Kaaba.', youtubeId: '-5pJ790IoK8' },
+    { id: 'yusuf', title: 'Story of Yusuf (AS)', subtitle: 'The Dream Interpreter', poster: '/images/video-posters/arabic-calligraphy.png', badge: 'Best Story', category: 'story', episodes: 8, year: '2024', genre: 'Stories, Prophets, Drama', description: 'Called "the best of stories" in the Quran. Follow Prophet Yusuf (AS) through betrayal, imprisonment, and his rise to power in Egypt.', youtubeId: 'pXti2TQpwCE' },
+    { id: 'musa', title: 'Story of Musa (AS)', subtitle: 'Moses & Pharaoh', poster: '/images/video-posters/islamic-lectures.png', category: 'story', episodes: 10, year: '2024', genre: 'Stories, Prophets', description: 'The dramatic confrontation between Prophet Musa (AS) and Pharaoh – miracles, perseverance, and the liberation of the Israelites.', youtubeId: 'fIalhWnJHPA' },
+    { id: 'isa', title: 'Story of Isa (AS)', subtitle: 'Jesus in Islam', poster: '/images/video-posters/prophet-stories.png', category: 'story', episodes: 5, year: '2024', genre: 'Stories, Prophets', description: 'Learn about Prophet Isa (AS) – his miraculous birth, his message, and his honored place in Islamic tradition.', youtubeId: 'EL8eAAv7QNA' },
+    { id: 'muhammad', title: 'Story of Muhammad ﷺ', subtitle: 'The Last Messenger', poster: '/images/video-posters/islamic-history.png', badge: 'Essential', category: 'story', episodes: 30, year: '2024', genre: 'Seerah, Prophets, Biography', description: 'The complete life story of the final Prophet Muhammad ﷺ – from Makkah to Madinah, a journey that changed the world forever.', youtubeId: 'L973xRqg4Us' },
+    { id: 'karbala', title: 'Dastan e Karbala', subtitle: 'The Epic Sacrifice', poster: '/images/video-posters/quran-recitation.png', badgeType: 'new', badge: 'Must Watch', category: 'story', episodes: 1, year: '2024', genre: 'History, Sacrifice, Islam', description: 'Experience the powerful and heart-wrenching Story of Karbala – the ultimate sacrifice of Imam Hussain (RA) and his family for the sake of Truth.', youtubeId: 'gA38BvKlMUU' },
 ];
 
 const ENGLISH_LECTURES: VideoItem[] = [
-    { id: 'nak-1', title: 'Guiding Loved Ones', subtitle: 'Nouman Ali Khan', poster: '/images/video-posters/prophet-stories.png', category: 'lecture-en', year: '2024', genre: 'Family, Guidance', description: 'Nouman Ali Khan discusses the reality that we cannot always guide those we love, and how to handle such situations with faith.', youtubeId: 'cZ1x_eXb0pQ' },
-    { id: 'zakir-1', title: 'Proving God\'s Existence', subtitle: 'Dr. Zakir Naik', poster: '/images/video-posters/arabic-calligraphy.png', badge: 'Scientific', category: 'lecture-en', year: '2023', genre: 'Dawah, Logic', description: 'Dr. Zakir Naik explains the best methods to prove the existence of God to an atheist using logic and science.', youtubeId: 'i_Z-6jQ2qW4' },
-    { id: 'yq-1', title: 'Saved From Hellfire', subtitle: 'Dr. Yasir Qadhi', poster: '/images/video-posters/quran-recitation.png', badge: 'Essential', category: 'lecture-en', year: '2024', genre: 'Theology, Akhirah', description: 'Dr. Yasir Qadhi explains the deeds that save a believer from the fire of Hell.', youtubeId: 'x7_7s2r-XQ8' },
-    { id: 'os-1', title: 'Why Allah Created You', subtitle: 'Omar Suleiman', poster: '/images/video-posters/prophet-stories.png', category: 'lecture-en', year: '2024', genre: 'Purpose, Faith', description: 'Understanding your purpose in life and why Allah brought you into existence.', youtubeId: '4dJ4K0d4f3k' },
-    { id: 'nak-2', title: 'Miracle of Quran', subtitle: 'Nouman Ali Khan', poster: '/images/video-posters/arabic-calligraphy.png', badge: 'Viral', category: 'lecture-en', year: '2024', genre: 'Quranic Wonders', description: 'Linguistic miracles of the Quran that prove its divine origin.', youtubeId: 'Y_4x28h6P5o' },
+    { id: 'nak-1', title: 'Guiding Loved Ones', subtitle: 'Nouman Ali Khan', poster: '/images/video-posters/prophet-stories.png', category: 'lecture-en', year: '2024', genre: 'Family, Guidance', description: 'Nouman Ali Khan discusses the reality that we cannot always guide those we love, and how to handle such situations with faith.', youtubeId: 'kp1PjNmtRis' },
+    { id: 'zakir-1', title: 'Proving God\'s Existence', subtitle: 'Dr. Zakir Naik', poster: '/images/video-posters/arabic-calligraphy.png', badge: 'Scientific', category: 'lecture-en', year: '2023', genre: 'Dawah, Logic', description: 'Dr. Zakir Naik explains the best methods to prove the existence of God to an atheist using logic and science.', youtubeId: 'luJ4p7ZJv3Y' },
+    { id: 'yq-1', title: 'Saved From Hellfire', subtitle: 'Dr. Yasir Qadhi', poster: '/images/video-posters/quran-recitation.png', badge: 'Essential', category: 'lecture-en', year: '2024', genre: 'Theology, Akhirah', description: 'Dr. Yasir Qadhi explains the deeds that save a believer from the fire of Hell.', youtubeId: 'OmSlsEEvKs0' },
+    { id: 'os-1', title: 'Why Allah Created You', subtitle: 'Omar Suleiman', poster: '/images/video-posters/prophet-stories.png', category: 'lecture-en', year: '2024', genre: 'Purpose, Faith', description: 'Understanding your purpose in life and why Allah brought you into existence.', youtubeId: '3WEYp_v0AZk' },
+    { id: 'nak-2', title: 'Miracle of Quran', subtitle: 'Nouman Ali Khan', poster: '/images/video-posters/arabic-calligraphy.png', badge: 'Viral', category: 'lecture-en', year: '2024', genre: 'Quranic Wonders', description: 'Linguistic miracles of the Quran that prove its divine origin.', youtubeId: 'lkg9BPGtcNA' },
 ];
 
 const URDU_LECTURES: VideoItem[] = [
-    { id: 'israr-1', title: 'Bayan ul Quran - Part 1', subtitle: 'Dr. Israr Ahmed', poster: '/images/video-posters/islamic-history.png', badge: 'Legendary', category: 'lecture-ur', year: '2024', genre: 'Tafseer, Quran', description: 'The legendary Dr. Israr Ahmed starts his comprehensive Bayan ul Quran series with deep theological insights.', youtubeId: '_xY1Fj9kYhA' },
-    { id: 'tj-1', title: 'Nakaam Log', subtitle: 'Maulana Tariq Jameel', poster: '/images/video-posters/quran-recitation.png', category: 'lecture-ur', year: '2024', genre: 'Emotional, Bayan', description: 'A heart-touching bayan by Tariq Jameel on the characteristics of failed people and how to gain success.', youtubeId: '2b6yd5qehDM' },
-    { id: 'israr-2', title: 'Zawal e Ummat', subtitle: 'Dr. Israr Ahmed', poster: '/images/video-posters/prophet-stories.png', badge: 'Historical', category: 'lecture-ur', year: '2023', genre: 'History, Theology', description: 'Dr. Israr Ahmed analyzes the causes behind the decline of the Muslim Ummah.', youtubeId: 'L37i_c-hG4o' },
-    { id: 'tj-2', title: 'Mout ka Manzar', subtitle: 'Maulana Tariq Jameel', poster: '/images/video-posters/islamic-lectures.png', category: 'lecture-ur', year: '2024', genre: 'Social, Bayan', description: 'A powerful lecture on the reality of death and the life hereafter.', youtubeId: 'QxNfR1Cj42o' },
-    { id: 'mirza-1', title: 'Gaarhi TOHEED', subtitle: 'Engr. Muhammad Ali Mirza', poster: '/images/video-posters/arabic-calligraphy.png', category: 'lecture-ur', year: '2024', genre: 'Theology', description: 'Engineer Muhammad Ali Mirza explains the core concept of Tawheed with evidence.', youtubeId: 'oVlYj_VfKio' },
-    { id: 'zulfiqar-1', title: 'Toba Kay Kalimaat', subtitle: 'Peer Zulfiqar Ahmad', poster: '/images/video-posters/islamic-history.png', category: 'lecture-ur', year: '2024', genre: 'Spirituality', description: 'Shaykh Zulfiqar Ahmad Naqshbandi discusses the power of repentance.', youtubeId: 'LGsp9I9sVL4' },
+    { id: 'israr-1', title: 'Bayan ul Quran - Part 1', subtitle: 'Dr. Israr Ahmed', poster: '/images/video-posters/islamic-history.png', badge: 'Legendary', category: 'lecture-ur', year: '2024', genre: 'Tafseer, Quran', description: 'The legendary Dr. Israr Ahmed starts his comprehensive Bayan ul Quran series with deep theological insights.', youtubeId: 'ZtyG_6cEK-w' },
+    { id: 'tj-1', title: 'Nakaam Log', subtitle: 'Maulana Tariq Jameel', poster: '/images/video-posters/quran-recitation.png', category: 'lecture-ur', year: '2024', genre: 'Emotional, Bayan', description: 'A heart-touching bayan by Tariq Jameel on the characteristics of failed people and how to gain success.', youtubeId: 'kCXBwf-P6SY' },
+    { id: 'israr-2', title: 'Zawal e Ummat', subtitle: 'Dr. Israr Ahmed', poster: '/images/video-posters/prophet-stories.png', badge: 'Historical', category: 'lecture-ur', year: '2023', genre: 'History, Theology', description: 'Dr. Israr Ahmed analyzes the causes behind the decline of the Muslim Ummah.', youtubeId: 'j03wfNaFs3Q' },
+    { id: 'tj-2', title: 'Mout ka Manzar', subtitle: 'Maulana Tariq Jameel', poster: '/images/video-posters/islamic-lectures.png', category: 'lecture-ur', year: '2024', genre: 'Social, Bayan', description: 'A powerful lecture on the reality of death and the life hereafter.', youtubeId: 'FcVsFfwMaC8' },
+    { id: 'mirza-1', title: 'Gaarhi TOHEED', subtitle: 'Engr. Muhammad Ali Mirza', poster: '/images/video-posters/arabic-calligraphy.png', category: 'lecture-ur', year: '2024', genre: 'Theology', description: 'Engineer Muhammad Ali Mirza explains the core concept of Tawheed with evidence.', youtubeId: 'tKnkRBd9OQg' },
+    { id: 'zulfiqar-1', title: 'Toba Kay Kalimaat', subtitle: 'Peer Zulfiqar Ahmad', poster: '/images/video-posters/islamic-history.png', category: 'lecture-ur', year: '2024', genre: 'Spirituality', description: 'Shaykh Zulfiqar Ahmad Naqshbandi discusses the power of repentance.', youtubeId: 'lmT1lZHsYe8' },
 ];
 
 const FEATURED_RECITERS = [
@@ -335,60 +334,109 @@ function LandscapeCard({ channel, onPlay }: { channel: LiveChannel; onPlay?: () 
    ================================================================ */
 
 function YouTubeModal({ youtubeId, title, onClose }: { youtubeId: string; title: string; onClose: () => void }) {
+    const [isIframeLoaded, setIsIframeLoaded] = useState(false);
+
     useEffect(() => {
         const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
         document.addEventListener('keydown', handler);
         return () => document.removeEventListener('keydown', handler);
     }, [onClose]);
 
+    // High-res YouTube thumbnail URL
+    const posterUrl = `https://i.ytimg.com/vi/${youtubeId}/maxresdefault.jpg`;
+
     return (
         <div
             style={{
                 position: 'fixed', inset: 0, zIndex: 10001,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(8px)',
-                animation: 'vg-fadeIn 0.25s ease',
+                background: 'rgba(0,0,0,0.92)', backdropFilter: 'blur(10px)',
+                animation: 'vg-fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
             }}
             onClick={onClose}
         >
             <div
                 style={{
-                    position: 'relative', width: '90%', maxWidth: 900,
-                    aspectRatio: '16/9', borderRadius: 16, overflow: 'hidden',
-                    boxShadow: '0 20px 80px rgba(0,0,0,0.6)',
-                    border: '1px solid rgba(255,255,255,0.1)',
+                    position: 'relative', width: '90%', maxWidth: 1000,
+                    aspectRatio: '16/9', borderRadius: 20, overflow: 'hidden',
+                    boxShadow: '0 30px 100px rgba(0,0,0,0.8)',
+                    border: '1px solid rgba(255,255,255,0.15)',
+                    background: '#000',
+                    transform: 'scale(1)',
+                    animation: 'vg-modalIn 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
                 }}
                 onClick={e => e.stopPropagation()}
             >
-                {/* Close button */}
+                {/* ── LOADING STATE / FACADE ── */}
+                {!isIframeLoaded && (
+                    <div style={{ position: 'absolute', inset: 0, zIndex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <img 
+                            src={posterUrl} 
+                            alt="" 
+                            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', filter: 'blur(5px) brightness(0.5)' }} 
+                        />
+                        <div className="vg-loader-spinner" style={{ position: 'relative', zIndex: 2 }}>
+                            <div className="vg-spinner-inner"></div>
+                            <p style={{ color: 'white', marginTop: 15, fontSize: 13, opacity: 0.7, fontFamily: 'Lexend' }}>Loading Sacred Knowledge...</p>
+                        </div>
+                    </div>
+                )}
+
+                {/* ── Close button ── */}
                 <button
                     onClick={onClose}
                     style={{
-                        position: 'absolute', top: -44, right: 0, zIndex: 2,
+                        position: 'absolute', top: 20, right: 20, zIndex: 10,
                         background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)',
-                        borderRadius: '50%', width: 36, height: 36,
+                        borderRadius: '50%', width: 40, height: 40,
                         color: 'white', cursor: 'pointer',
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        backdropFilter: 'blur(8px)',
-                        transition: 'background 0.2s',
+                        backdropFilter: 'blur(12px)',
+                        transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
                     }}
                     onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.2)')}
                     onMouseLeave={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.1)')}
                 >
-                    <span className="material-symbols-outlined" style={{ fontSize: 20 }}>close</span>
+                    <span className="material-symbols-outlined" style={{ fontSize: 22 }}>close</span>
                 </button>
+
                 <iframe
                     width="100%"
                     height="100%"
-                    src={`https://www.youtube-nocookie.com/embed/${youtubeId}?autoplay=1&rel=0&modestbranding=1&enablejsapi=1`}
+                    src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&rel=0&modestbranding=1&enablejsapi=1&origin=${typeof window !== 'undefined' ? window.location.origin : ''}`}
                     title={title}
                     frameBorder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     referrerPolicy="strict-origin-when-cross-origin"
                     allowFullScreen
-                    style={{ border: 'none', display: 'block' }}
+                    style={{ border: 'none', display: 'block', opacity: isIframeLoaded ? 1 : 0, transition: 'opacity 0.5s ease' }}
+                    onLoad={() => setIsIframeLoaded(true)}
+                    loading="eager"
                 />
             </div>
+
+            <style jsx>{`
+                @keyframes vg-modalIn {
+                    from { opacity: 0; transform: translateY(20px) scale(0.95); }
+                    to { opacity: 1; transform: translateY(0) scale(1); }
+                }
+                .vg-loader-spinner {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                }
+                .vg-spinner-inner {
+                    width: 48px;
+                    height: 48px;
+                    border: 3px solid rgba(255,255,255,0.1);
+                    border-top-color: var(--vg-accent);
+                    border-radius: 50%;
+                    animation: vg-spin 1s infinite linear;
+                }
+                @keyframes vg-spin {
+                    to { transform: rotate(360deg); }
+                }
+            `}</style>
         </div>
     );
 }
@@ -501,12 +549,6 @@ export default function VideoGalleryPage() {
 
     return (
         <div className="vg-page">
-            {/* ── PERFORMANCE SCRIPT: Pre-warm YouTube Player Logic ── */}
-            <iframe
-                style={{ position: 'absolute', width: 1, height: 1, opacity: 0, pointerEvents: 'none' }}
-                src="https://www.youtube-nocookie.com/embed?autoplay=0"
-                title="YT Warmup"
-            />
             {/* Standardized Premium Loader is now handled by ClientWrapper */}
 
             {/* ── Sticky Navigation ── */}
