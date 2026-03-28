@@ -5,145 +5,16 @@ import Link from 'next/link';
 import './video-gallery.css';
 import GlobalLoader from '@/components/Loader/GlobalLoader';
 
-/* ================================================================
-   DATA – Islamic educational video content
-   ================================================================ */
-
-interface VideoItem {
-    id: string;
-    title: string;
-    subtitle?: string;
-    poster: string;
-    badge?: string;
-    badgeType?: 'default' | 'new';
-    category: string;
-    duration?: string;
-    episodes?: number;
-    description?: string;
-    year?: string;
-    genre?: string;
-    youtubeId?: string;
-}
-
-interface LiveChannel {
-    id: string;
-    title: string;
-    poster: string;
-    channelTag: string;
-    isLive: boolean;
-    schedule?: string;
-    youtubeId?: string;
-}
-
-const HERO_CATEGORIES = [
-    'Quran Recitation',
-    'English Lectures',
-    'Urdu Lectures',
-    'Live Channels',
-];
-
-const HERO_PANELS = [
-    { img: '/images/video-posters/quran-recitation.png', label: 'Quran Recitation' },
-    { img: '/images/video-posters/islamic-lectures.png', label: 'English Lectures' },
-    { img: '/images/video-posters/islamic-history.png', label: 'Urdu Lectures' },
-    { img: '/images/video-posters/mecca-live.png', label: 'Live Channels' },
-];
-
-const POPULAR_RECITATIONS: VideoItem[] = [
-    { id: 'mishary', title: 'Mishary Rashid', subtitle: 'Full Quran · 114 Surahs', poster: '/images/video-posters/quran-recitation.png', badge: 'Popular', category: 'recitation', episodes: 114, year: '2024', genre: 'Quran, Recitation, Tilawah', description: 'Listen to the complete Quran recited by Sheikh Mishary Rashid Alafasy in his world-renowned melodious voice. Covers all 114 Surahs with perfect Tajweed.', youtubeId: 'suFI9vC7HB4' },
-    { id: 'sudais', title: 'Abdul Rahman Al-Sudais', subtitle: 'Imam of Masjid al-Haram', poster: '/images/video-posters/islamic-lectures.png', badge: 'Featured', category: 'recitation', episodes: 114, year: '2024', genre: 'Quran, Recitation', description: 'The Imam of the Grand Mosque in Makkah, Sheikh Al-Sudais delivers a powerful and deeply moving recitation of the Holy Quran.', youtubeId: 'NI-ecVMP7Zo' },
-    { id: 'shuraim', title: 'Saud Al-Shuraim', subtitle: 'Beautiful Recitation', poster: '/images/video-posters/prophet-stories.png', category: 'recitation', episodes: 114, year: '2023', genre: 'Quran, Recitation', description: 'Sheikh Saud Al-Shuraim\'s beautiful and serene recitation brings peace and tranquility to the listener.', youtubeId: 'bGUhSwaodiQ' },
-    { id: 'minshawi', title: 'Muhammad Al-Minshawi', subtitle: 'Murattal Style', poster: '/images/video-posters/arabic-calligraphy.png', category: 'recitation', episodes: 60, year: '2023', genre: 'Quran, Murattal', description: 'A classic Murattal-style recitation by the legendary Sheikh Muhammad Siddiq Al-Minshawi.', youtubeId: 'F1y4Y0R4PnE' },
-    { id: 'husary', title: 'Mahmoud Al-Husary', subtitle: 'Tajweed Master', poster: '/images/video-posters/islamic-history.png', badge: 'Classic', category: 'recitation', episodes: 114, year: '2022', genre: 'Quran, Tajweed', description: 'Known as the "Master of Tajweed", Sheikh Al-Husary\'s precise and clear recitation is considered a gold standard for Quran learners.', youtubeId: '3E6iTiXAY90' },
-    { id: 'ajmy', title: 'Ahmad Al-Ajmy', subtitle: 'Emotional Recitation', poster: '/images/video-posters/quran-recitation.png', category: 'recitation', episodes: 80, year: '2024', genre: 'Quran, Emotional', description: 'An incredibly emotional and heartfelt recitation that moves listeners to tears. Sheikh Ahmad Al-Ajmy\'s voice carries deep spiritual weight.', youtubeId: 'C4Me582aQU8' },
-    { id: 'ghamdi', title: 'Saad Al-Ghamdi', subtitle: 'Melodious Voice', poster: '/images/video-posters/islamic-lectures.png', badgeType: 'new', badge: 'New', category: 'recitation', episodes: 114, year: '2025', genre: 'Quran, Recitation', description: 'Newly uploaded! Saad Al-Ghamdi\'s melodious and soothing recitation of the entire Holy Quran.', youtubeId: 'FLmHcBzVbC0' },
-    { id: 'dosari', title: 'Yasser Al-Dosari', subtitle: 'Full Quran', poster: '/images/video-posters/prophet-stories.png', category: 'recitation', episodes: 114, year: '2024', genre: 'Quran, Recitation', description: 'Experience the full Quran recited by Sheikh Yasser Al-Dosari with his distinctive and captivating voice.', youtubeId: 'PBrcXBnGBeU' },
-    { id: 'maher', title: 'Maher Al-Muaiqly', subtitle: 'Imam of Masjid al-Haram', poster: '/images/video-posters/arabic-calligraphy.png', badge: 'Top Rated', category: 'recitation', episodes: 114, year: '2024', genre: 'Quran, Recitation', description: 'The current Imam of Masjid al-Haram, Sheikh Maher Al-Muaiqly\'s recitation is known for its beauty and spiritual depth.', youtubeId: '0SILdb7gS-8' },
-    { id: 'basfar', title: 'Abdullah Basfar', subtitle: 'Calm & Peaceful', poster: '/images/video-posters/islamic-history.png', category: 'recitation', episodes: 114, year: '2023', genre: 'Quran, Peaceful', description: 'A calm and peaceful recitation perfect for daily listening and reflection. Sheikh Abdullah Basfar\'s gentle voice soothes the soul.', youtubeId: 'mlTEaDewo8g' },
-];
-
-const ISLAMIC_LECTURES: VideoItem[] = [
-    { id: 'seerah-1', title: 'Life of Prophet Muhammad ﷺ', subtitle: 'Complete Seerah Series', poster: '/images/video-posters/prophet-stories.png', badge: 'LearnQuran', category: 'lecture', episodes: 40, year: '2024', genre: 'Seerah, Biography, History', description: 'A comprehensive 40-part series covering the complete life of Prophet Muhammad ﷺ from birth to the establishment of the Muslim Ummah.', youtubeId: 'VOUp3_9_6To' },
-    { id: 'tafsir-1', title: 'Tafsir Ibn Kathir', subtitle: 'Verse by Verse Explanation', poster: '/images/video-posters/arabic-calligraphy.png', badge: 'LearnQuran', category: 'lecture', episodes: 120, year: '2024', genre: 'Tafseer, Quran, Education', description: 'A detailed verse-by-verse explanation of the Holy Quran based on the renowned Tafsir Ibn Kathir.', youtubeId: '2bY10kZtq6w' },
-    { id: 'aqeedah', title: 'Fundamentals of Aqeedah', subtitle: 'Beliefs & Faith', poster: '/images/video-posters/islamic-history.png', badge: 'LearnQuran', category: 'lecture', episodes: 24, year: '2023', genre: 'Aqeedah, Theology', description: 'Learn the core beliefs and foundations of Islamic theology in this structured course on Aqeedah.', youtubeId: 'vWfQZ_S1YfI' },
-    { id: 'fiqh', title: 'Fiqh Made Easy', subtitle: 'Islamic Jurisprudence', poster: '/images/video-posters/quran-recitation.png', badge: 'LearnQuran', category: 'lecture', episodes: 36, year: '2024', genre: 'Fiqh, Law, Education', description: 'A beginner-friendly introduction to Islamic jurisprudence covering prayer, fasting, zakat, and more.', youtubeId: 'P6q3k_S_9kE' },
-    { id: 'arabic-1', title: 'Learn Arabic Grammar', subtitle: 'Nahw & Sarf Basics', poster: '/images/video-posters/arabic-calligraphy.png', badge: 'LearnQuran', category: 'lecture', episodes: 50, year: '2024', genre: 'Arabic, Language, Grammar', description: 'Master the fundamentals of Arabic grammar – Nahw and Sarf – to better understand the Quran in its original language.', youtubeId: 'MvTtT3_S-kE' },
-    { id: 'hadith-1', title: '40 Hadith of Nawawi', subtitle: 'With Commentary', poster: '/images/video-posters/islamic-lectures.png', badge: 'LearnQuran', category: 'lecture', episodes: 42, year: '2023', genre: 'Hadith, Commentary', description: 'An in-depth study of the famous 40 Hadith of Imam Nawawi with detailed explanation and practical application.', youtubeId: 'OmSlsEEvKs0' },
-    { id: 'history-1', title: 'Islamic Golden Age', subtitle: 'Science & Civilization', poster: '/images/video-posters/islamic-history.png', badgeType: 'new', badge: 'New Series', category: 'lecture', episodes: 18, year: '2025', genre: 'History, Science, Civilization', description: 'Explore the golden era of Islamic civilization – its contributions to science, medicine, astronomy, and philosophy.', youtubeId: 'A-N1X_S_9_k' },
-    { id: 'women', title: 'Women in Islam', subtitle: 'Rights & Contributions', poster: '/images/video-posters/prophet-stories.png', category: 'lecture', episodes: 12, year: '2024', genre: 'Education, Society', description: 'A thought-provoking series highlighting the rights, roles, and remarkable contributions of women in Islamic history.', youtubeId: 'xnU9pnYT5x0' },
-];
-
-const KIDS_CONTENT: VideoItem[] = [
-    { id: 'kids-arabic', title: 'Arabic Alphabet Fun', subtitle: 'Learn Letters with Animation', poster: '/images/video-posters/kids-islamic.png', badge: 'Kids', category: 'kids', episodes: 28, year: '2024', genre: 'Kids, Arabic, Education', description: 'A fun animated series teaching children the Arabic alphabet with colorful characters and catchy songs!', youtubeId: 'HeBcxdgQI3c' },
-    { id: 'kids-stories', title: 'Prophets for Children', subtitle: 'Animated Stories', poster: '/images/video-posters/kids-islamic.png', badge: 'Kids', category: 'kids', episodes: 25, year: '2024', genre: 'Kids, Animation, Stories', description: 'Beautifully animated stories of the Prophets designed especially for young viewers to learn and enjoy.', youtubeId: '0RX221MYwrY' },
-    { id: 'kids-duas', title: 'Daily Duas for Kids', subtitle: 'Easy to Learn', poster: '/images/video-posters/kids-islamic.png', badge: 'Kids', category: 'kids', episodes: 20, year: '2024', genre: 'Kids, Duas, Daily', description: 'Teach your kids essential daily duas with easy-to-follow animations and pronunciation guides.', youtubeId: 'OMQnYZzJnZE' },
-    { id: 'kids-quran', title: 'Juz Amma for Children', subtitle: 'Short Surahs', poster: '/images/video-posters/kids-islamic.png', badge: 'Kids', category: 'kids', episodes: 37, year: '2023', genre: 'Kids, Quran, Memorization', description: 'Help your children memorize the short Surahs of Juz Amma with engaging visuals and repeat-after-me segments.', youtubeId: 'brtVQDXde-s' },
-    { id: 'kids-manners', title: 'Islamic Manners', subtitle: 'Adab & Akhlaq', poster: '/images/video-posters/kids-islamic.png', badgeType: 'new', badge: 'New', category: 'kids', episodes: 15, year: '2025', genre: 'Kids, Manners, Adab', description: 'New series! Teaching children Islamic manners, good conduct, and how to be kind and respectful.', youtubeId: 'FfhyMT2k76Q' },
-    { id: 'kids-nasheed', title: 'Nasheeds for Kids', subtitle: 'Fun Islamic Songs', poster: '/images/video-posters/kids-islamic.png', category: 'kids', episodes: 30, year: '2024', genre: 'Kids, Nasheed, Music', description: 'Fun and catchy nasheeds that kids will love singing along to. Perfect for car rides and playtime!', youtubeId: 'WyxekrpqcEQ' },
-    { id: 'kids-pillars', title: '5 Pillars of Islam', subtitle: 'Interactive Learning', poster: '/images/video-posters/kids-islamic.png', badge: 'Kids', category: 'kids', episodes: 10, year: '2024', genre: 'Kids, Education, Pillars', description: 'An interactive series explaining the 5 pillars of Islam through fun activities and animated characters.', youtubeId: '0iXh-DFj3II' },
-    { id: 'kids-ramadan', title: 'Ramadan Adventures', subtitle: 'Fasting & Charity', poster: '/images/video-posters/kids-islamic.png', category: 'kids', episodes: 12, year: '2024', genre: 'Kids, Ramadan, Charity', description: 'Join an exciting Ramadan journey learning about fasting, charity, and the spirit of the holy month.', youtubeId: 'J5AL4wdm9DU' },
-];
-
-const LIVE_CHANNELS: LiveChannel[] = [
-    { id: 'makkah', title: 'Makkah Live', poster: '/images/video-posters/mecca-live.png', channelTag: 'LIVE', isLive: true, youtubeId: 'Cm1v4bteXbI' },
-    { id: 'madinah', title: 'Madinah Live', poster: '/images/video-posters/madinah-live.png', channelTag: 'LIVE', isLive: true, youtubeId: '3L7Gf0BD0gc' },
-    { id: 'quran-tv', title: 'Quran TV', poster: '/images/video-posters/arabic-calligraphy.png', channelTag: 'QTV', isLive: true, youtubeId: 'N5YXJ34PBxo' },
-    { id: 'alehsan-tv', title: 'Al Ehsan TV', poster: '/images/video-posters/prophet-stories.png', channelTag: 'LIVE', isLive: true, youtubeId: 'ePzppodyAZg' },
-    { id: 'huda-tv', title: 'Huda TV', poster: '/images/video-posters/islamic-history.png', channelTag: 'HTV', isLive: true, youtubeId: 'AHZQ-_fzwGc' },
-    { id: 'iqra-tv', title: 'Iqra TV', poster: '/images/video-posters/islamic-lectures.png', channelTag: 'IQR', isLive: true, youtubeId: 'dL7FNvij_AA' },
-];
-
-const PROPHET_STORIES: VideoItem[] = [
-    { id: 'adam-to-nuh', title: 'Adam to Nuh - Movie', subtitle: 'The Beginning of Humanity', poster: '/images/video-posters/prophet-stories.png', badge: 'Complete Movie', category: 'story', episodes: 7, year: '2024', genre: 'Stories, Prophets', description: 'The epic story from the creation of Adam (AS) to the Great Flood of Nuh (AS) – a complete cinematic journey of early humanity.', youtubeId: 'G4DGSc1FwvQ' },
-    { id: 'ibrahim', title: 'Story of Ibrahim (AS)', subtitle: 'The Friend of Allah', poster: '/images/video-posters/quran-recitation.png', badge: 'Must Watch', category: 'story', episodes: 6, year: '2024', genre: 'Stories, Prophets', description: 'Discover the remarkable life of Prophet Ibrahim (AS) – the friend of Allah, his trials, and the building of the Kaaba.', youtubeId: '-5pJ790IoK8' },
-    { id: 'yusuf', title: 'Story of Yusuf (AS)', subtitle: 'The Dream Interpreter', poster: '/images/video-posters/arabic-calligraphy.png', badge: 'Best Story', category: 'story', episodes: 8, year: '2024', genre: 'Stories, Prophets, Drama', description: 'Called "the best of stories" in the Quran. Follow Prophet Yusuf (AS) through betrayal, imprisonment, and his rise to power in Egypt.', youtubeId: 'pXti2TQpwCE' },
-    { id: 'musa', title: 'Story of Musa (AS)', subtitle: 'Moses & Pharaoh', poster: '/images/video-posters/islamic-lectures.png', category: 'story', episodes: 10, year: '2024', genre: 'Stories, Prophets', description: 'The dramatic confrontation between Prophet Musa (AS) and Pharaoh – miracles, perseverance, and the liberation of the Israelites.', youtubeId: 'fIalhWnJHPA' },
-    { id: 'isa', title: 'Story of Isa (AS)', subtitle: 'Jesus in Islam', poster: '/images/video-posters/prophet-stories.png', category: 'story', episodes: 5, year: '2024', genre: 'Stories, Prophets', description: 'Learn about Prophet Isa (AS) – his miraculous birth, his message, and his honored place in Islamic tradition.', youtubeId: 'EL8eAAv7QNA' },
-    { id: 'muhammad', title: 'Story of Muhammad ﷺ', subtitle: 'The Last Messenger', poster: '/images/video-posters/islamic-history.png', badge: 'Essential', category: 'story', episodes: 30, year: '2024', genre: 'Seerah, Prophets, Biography', description: 'The complete life story of the final Prophet Muhammad ﷺ – from Makkah to Madinah, a journey that changed the world forever.', youtubeId: 'L973xRqg4Us' },
-    { id: 'karbala', title: 'Dastan e Karbala', subtitle: 'The Epic Sacrifice', poster: '/images/video-posters/quran-recitation.png', badgeType: 'new', badge: 'Must Watch', category: 'story', episodes: 1, year: '2024', genre: 'History, Sacrifice, Islam', description: 'Experience the powerful and heart-wrenching Story of Karbala – the ultimate sacrifice of Imam Hussain (RA) and his family for the sake of Truth.', youtubeId: 'gA38BvKlMUU' },
-];
-
-const ENGLISH_LECTURES: VideoItem[] = [
-    { id: 'nak-1', title: 'Guiding Loved Ones', subtitle: 'Nouman Ali Khan', poster: '/images/video-posters/prophet-stories.png', category: 'lecture-en', year: '2024', genre: 'Family, Guidance', description: 'Nouman Ali Khan discusses the reality that we cannot always guide those we love, and how to handle such situations with faith.', youtubeId: 'kp1PjNmtRis' },
-    { id: 'zakir-1', title: 'Proving God\'s Existence', subtitle: 'Dr. Zakir Naik', poster: '/images/video-posters/arabic-calligraphy.png', badge: 'Scientific', category: 'lecture-en', year: '2023', genre: 'Dawah, Logic', description: 'Dr. Zakir Naik explains the best methods to prove the existence of God to an atheist using logic and science.', youtubeId: 'luJ4p7ZJv3Y' },
-    { id: 'yq-1', title: 'Saved From Hellfire', subtitle: 'Dr. Yasir Qadhi', poster: '/images/video-posters/quran-recitation.png', badge: 'Essential', category: 'lecture-en', year: '2024', genre: 'Theology, Akhirah', description: 'Dr. Yasir Qadhi explains the deeds that save a believer from the fire of Hell.', youtubeId: 'OmSlsEEvKs0' },
-    { id: 'os-1', title: 'Why Allah Created You', subtitle: 'Omar Suleiman', poster: '/images/video-posters/prophet-stories.png', category: 'lecture-en', year: '2024', genre: 'Purpose, Faith', description: 'Understanding your purpose in life and why Allah brought you into existence.', youtubeId: '3WEYp_v0AZk' },
-    { id: 'nak-2', title: 'Miracle of Quran', subtitle: 'Nouman Ali Khan', poster: '/images/video-posters/arabic-calligraphy.png', badge: 'Viral', category: 'lecture-en', year: '2024', genre: 'Quranic Wonders', description: 'Linguistic miracles of the Quran that prove its divine origin.', youtubeId: 'lkg9BPGtcNA' },
-];
-
-const URDU_LECTURES: VideoItem[] = [
-    { id: 'israr-1', title: 'Bayan ul Quran - Part 1', subtitle: 'Dr. Israr Ahmed', poster: '/images/video-posters/islamic-history.png', badge: 'Legendary', category: 'lecture-ur', year: '2024', genre: 'Tafseer, Quran', description: 'The legendary Dr. Israr Ahmed starts his comprehensive Bayan ul Quran series with deep theological insights.', youtubeId: 'ZtyG_6cEK-w' },
-    { id: 'tj-1', title: 'Nakaam Log', subtitle: 'Maulana Tariq Jameel', poster: '/images/video-posters/quran-recitation.png', category: 'lecture-ur', year: '2024', genre: 'Emotional, Bayan', description: 'A heart-touching bayan by Tariq Jameel on the characteristics of failed people and how to gain success.', youtubeId: 'kCXBwf-P6SY' },
-    { id: 'israr-2', title: 'Zawal e Ummat', subtitle: 'Dr. Israr Ahmed', poster: '/images/video-posters/prophet-stories.png', badge: 'Historical', category: 'lecture-ur', year: '2023', genre: 'History, Theology', description: 'Dr. Israr Ahmed analyzes the causes behind the decline of the Muslim Ummah.', youtubeId: 'j03wfNaFs3Q' },
-    { id: 'tj-2', title: 'Mout ka Manzar', subtitle: 'Maulana Tariq Jameel', poster: '/images/video-posters/islamic-lectures.png', category: 'lecture-ur', year: '2024', genre: 'Social, Bayan', description: 'A powerful lecture on the reality of death and the life hereafter.', youtubeId: 'FcVsFfwMaC8' },
-    { id: 'mirza-1', title: 'Gaarhi TOHEED', subtitle: 'Engr. Muhammad Ali Mirza', poster: '/images/video-posters/arabic-calligraphy.png', category: 'lecture-ur', year: '2024', genre: 'Theology', description: 'Engineer Muhammad Ali Mirza explains the core concept of Tawheed with evidence.', youtubeId: 'tKnkRBd9OQg' },
-    { id: 'zulfiqar-1', title: 'Toba Kay Kalimaat', subtitle: 'Peer Zulfiqar Ahmad', poster: '/images/video-posters/islamic-history.png', category: 'lecture-ur', year: '2024', genre: 'Spirituality', description: 'Shaykh Zulfiqar Ahmad Naqshbandi discusses the power of repentance.', youtubeId: 'lmT1lZHsYe8' },
-];
-
-const FEATURED_RECITERS = [
-    { id: 'mishary-r', name: 'Mishary Rashid', label: 'Quran Reciter', poster: '/images/video-posters/quran-recitation.png', youtubeId: 'X2YnP50cwNU' },
-    { id: 'sudais-r', name: 'Al-Sudais', label: 'Imam · Makkah', poster: '/images/video-posters/islamic-lectures.png', youtubeId: 'PW0NcmKBLcE' },
-    { id: 'shuraim-r', name: 'Al-Shuraim', label: 'Quran Reciter', poster: '/images/video-posters/prophet-stories.png', youtubeId: 'HQmm2IVsQBc' },
-    { id: 'maher-r', name: 'Maher Al-Muaiqly', label: 'Imam · Makkah', poster: '/images/video-posters/arabic-calligraphy.png', youtubeId: 'qWC-iaGVweM' },
-    { id: 'minshawi-r', name: 'Al-Minshawi', label: 'Murattal', poster: '/images/video-posters/islamic-history.png', youtubeId: 'KA0-5pALW5c' },
-    { id: 'basit-r', name: 'Abdul Basit', label: 'Legendary Reciter', poster: '/images/video-posters/prophet-stories.png', youtubeId: 'NdpBGYdQ_lU' },
-    { id: 'lohaidan-r', name: 'Al-Lohaidan', label: 'Emotional', poster: '/images/video-posters/quran-recitation.png', youtubeId: 'JrjhOma915E' },
-    { id: 'abkar-r', name: 'Idris Abkar', label: 'Peaceful', poster: '/images/video-posters/islamic-lectures.png', youtubeId: 'aT6SlNqNlAA' },
-    { id: 'salimi-r', name: 'Mansour Salimi', label: 'Heart Touching', poster: '/images/video-posters/arabic-calligraphy.png', youtubeId: 'AZ8MiorTDnU' },
-    { id: 'kurdi-r', name: 'Raad Al-Kurdi', label: 'Melodious', poster: '/images/video-posters/islamic-history.png', youtubeId: 'MlCXPjpTVZk' },
-];
-
-const FEATURED_SCHOLARS = [
-    { id: 'israr-s', name: 'Dr. Israr Ahmed', label: 'Urdu · Scholar', poster: '/images/video-posters/islamic-history.png', youtubeId: '2WAFIAfL7nM' },
-    { id: 'nak-s', name: 'Nouman Ali Khan', label: 'English · Speaker', poster: '/images/video-posters/prophet-stories.png', youtubeId: 'mnFhntnp8uc' },
-    { id: 'tj-s', name: 'Tariq Jameel', label: 'Urdu · Speaker', poster: '/images/video-posters/quran-recitation.png', youtubeId: 'MKD2gqVUwJw' },
-    { id: 'yq-s', name: 'Yasir Qadhi', label: 'English · Scholar', poster: '/images/video-posters/arabic-calligraphy.png', youtubeId: 'jTqHL018QI8' },
-    { id: 'os-s', name: 'Omar Suleiman', label: 'English · Speaker', poster: '/images/video-posters/islamic-history.png', youtubeId: '4Tzxiwv8ndg' },
-    { id: 'mirza-s', name: 'Eng Muhammad Ali', label: 'Urdu · Researcher', poster: '/images/video-posters/islamic-lectures.png', youtubeId: 'cz_0xLpAGa8' },
-    { id: 'zulfiqar-s', name: 'Peer Zulfiqar', label: 'Urdu · Spiritual', poster: '/images/video-posters/quran-recitation.png', youtubeId: 'LGsp9I9sVL4' },
-    { id: 'zakir-s', name: 'Zakir Naik', label: 'Dawah Specialist', poster: '/images/video-posters/arabic-calligraphy.png', youtubeId: 'xnU9pnYT5x0' },
-    { id: 'bilal-s', name: 'Bilal Philips', label: 'English · Scholar', poster: '/images/video-posters/prophet-stories.png', youtubeId: 'PShBTE2atOk' },
-];
+import {
+    VideoItem, LiveChannel,
+    HERO_CATEGORIES, HERO_PANELS,
+    POPULAR_RECITATIONS, ISLAMIC_LECTURES,
+    KIDS_CONTENT, LIVE_CHANNELS,
+    PROPHET_STORIES, ENGLISH_LECTURES,
+    URDU_LECTURES, FEATURED_RECITERS,
+    FEATURED_SCHOLARS, KNOWLEDGE_TRACKS
+} from './videoData';
+import { YouTubeModal } from './components/YouTubeModal';
 
 /* ================================================================
    CAROUSEL COMPONENT
@@ -333,113 +204,6 @@ function LandscapeCard({ channel, onPlay }: { channel: LiveChannel; onPlay?: () 
    YOUTUBE PLAYER MODAL
    ================================================================ */
 
-function YouTubeModal({ youtubeId, title, onClose }: { youtubeId: string; title: string; onClose: () => void }) {
-    const [isIframeLoaded, setIsIframeLoaded] = useState(false);
-
-    useEffect(() => {
-        const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
-        document.addEventListener('keydown', handler);
-        return () => document.removeEventListener('keydown', handler);
-    }, [onClose]);
-
-    // High-res YouTube thumbnail URL
-    const posterUrl = `https://i.ytimg.com/vi/${youtubeId}/maxresdefault.jpg`;
-
-    return (
-        <div
-            style={{
-                position: 'fixed', inset: 0, zIndex: 10001,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                background: 'rgba(0,0,0,0.92)', backdropFilter: 'blur(10px)',
-                animation: 'vg-fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
-            }}
-            onClick={onClose}
-        >
-            <div
-                style={{
-                    position: 'relative', width: '90%', maxWidth: 1000,
-                    aspectRatio: '16/9', borderRadius: 20, overflow: 'hidden',
-                    boxShadow: '0 30px 100px rgba(0,0,0,0.8)',
-                    border: '1px solid rgba(255,255,255,0.15)',
-                    background: '#000',
-                    transform: 'scale(1)',
-                    animation: 'vg-modalIn 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-                }}
-                onClick={e => e.stopPropagation()}
-            >
-                {/* ── LOADING STATE / FACADE ── */}
-                {!isIframeLoaded && (
-                    <div style={{ position: 'absolute', inset: 0, zIndex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <img 
-                            src={posterUrl} 
-                            alt="" 
-                            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', filter: 'blur(5px) brightness(0.5)' }} 
-                        />
-                        <div className="vg-loader-spinner" style={{ position: 'relative', zIndex: 2 }}>
-                            <div className="vg-spinner-inner"></div>
-                            <p style={{ color: 'white', marginTop: 15, fontSize: 13, opacity: 0.7, fontFamily: 'Lexend' }}>Loading Sacred Knowledge...</p>
-                        </div>
-                    </div>
-                )}
-
-                {/* ── Close button ── */}
-                <button
-                    onClick={onClose}
-                    style={{
-                        position: 'absolute', top: 20, right: 20, zIndex: 10,
-                        background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)',
-                        borderRadius: '50%', width: 40, height: 40,
-                        color: 'white', cursor: 'pointer',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        backdropFilter: 'blur(12px)',
-                        transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
-                    }}
-                    onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.2)')}
-                    onMouseLeave={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.1)')}
-                >
-                    <span className="material-symbols-outlined" style={{ fontSize: 22 }}>close</span>
-                </button>
-
-                <iframe
-                    width="100%"
-                    height="100%"
-                    src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&rel=0&modestbranding=1&enablejsapi=1&origin=${typeof window !== 'undefined' ? window.location.origin : ''}`}
-                    title={title}
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    referrerPolicy="strict-origin-when-cross-origin"
-                    allowFullScreen
-                    style={{ border: 'none', display: 'block', opacity: isIframeLoaded ? 1 : 0, transition: 'opacity 0.5s ease' }}
-                    onLoad={() => setIsIframeLoaded(true)}
-                    loading="eager"
-                />
-            </div>
-
-            <style jsx>{`
-                @keyframes vg-modalIn {
-                    from { opacity: 0; transform: translateY(20px) scale(0.95); }
-                    to { opacity: 1; transform: translateY(0) scale(1); }
-                }
-                .vg-loader-spinner {
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                }
-                .vg-spinner-inner {
-                    width: 48px;
-                    height: 48px;
-                    border: 3px solid rgba(255,255,255,0.1);
-                    border-top-color: var(--vg-accent);
-                    border-radius: 50%;
-                    animation: vg-spin 1s infinite linear;
-                }
-                @keyframes vg-spin {
-                    to { transform: rotate(360deg); }
-                }
-            `}</style>
-        </div>
-    );
-}
 
 /* ================================================================
    SKELETON LOADER CARDS
@@ -475,13 +239,6 @@ export default function VideoGalleryPage() {
     const [activeYouTube, setActiveYouTube] = useState<{ id: string; title: string } | null>(null);
     const [activeTrack, setActiveTrack] = useState(0);
 
-    const KNOWLEDGE_TRACKS = [
-        { title: 'Quran Sciences', desc: 'Dive deep into the sciences of the Quran – from Tajweed rules and Makharij al-Huruf to the occasions of revelation (Asbab an-Nuzul). Learn from certified scholars and enhance your understanding of the divine text.', img: '/images/video-posters/arabic-calligraphy.png' },
-        { title: 'Arabic Language', desc: 'Master the foundation of the divine text with comprehensive Nahw and Sarf courses. Transition from the basic alphabet to complex grammar to understand the Quran in its original language.', img: '/images/video-posters/islamic-lectures.png' },
-        { title: 'Fiqh', desc: 'Understand the practical application of Islamic law in daily life, covering Salah, Zakat, fasting, and contemporary issues. Essential rules for every Muslim to live by.', img: '/images/video-posters/prophet-stories.png' },
-        { title: 'Hadith Sciences', desc: 'Explore the preservation and authenticity of the sayings of the Prophet ﷺ. Study the 40 Hadith and the complex sciences of Mustalah al-Hadith (Hadith Terminology).', img: '/images/video-posters/islamic-history.png' },
-        { title: 'Islamic History', desc: 'From the Seerah of the Prophet ﷺ to the Golden Age and beyond – discover the rich legacy, contributions, and remarkable civilization of Islam across the centuries.', img: '/images/video-posters/quran-recitation.png' },
-    ];
 
     // Controlled loading duration to ensure smooth font loading and premium entry
     useEffect(() => {
@@ -684,7 +441,7 @@ export default function VideoGalleryPage() {
                             is added to curated collections and each featured scholar
                             reaches millions of learners worldwide.
                         </p>
-                        <button className="vg-spotlight-cta" onClick={() => playVideo('mishary-r', 'Mishary Rashid Recitation')}>Listen Now</button>
+                        <button className="vg-spotlight-cta" onClick={() => playVideo('mishary-rashid', 'Mishary Rashid Recitation')}>Listen Now</button>
                     </div>
                 </div>
             </section>
@@ -705,13 +462,13 @@ export default function VideoGalleryPage() {
                 {!filterData(FEATURED_RECITERS).length ? null : (
                     <div className="vg-reciters-row" ref={reciterScrollRef}>
                         {filterData(FEATURED_RECITERS).map(reciter => (
-                            <div key={reciter.id} className="vg-reciter-card" onClick={() => playVideo(reciter.id, reciter.name)}>
+                            <Link href={`/video-gallery/reciter/${reciter.id}`} key={reciter.id} className="vg-reciter-card">
                                 <div className="vg-reciter-avatar">
                                     <img src={reciter.poster} alt={reciter.name} />
                                 </div>
                                 <p className="vg-reciter-name">{reciter.name}</p>
                                 <p className="vg-reciter-label">{reciter.label}</p>
-                            </div>
+                            </Link>
                         ))}
                     </div>
                 )}
@@ -732,13 +489,13 @@ export default function VideoGalleryPage() {
                 </div>
                 <div className="vg-reciters-row" ref={scholarScrollRef}>
                     {filterData(FEATURED_SCHOLARS).map(scholar => (
-                        <div key={scholar.id} className="vg-reciter-card" onClick={() => playVideo(scholar.id, scholar.name)}>
+                        <Link href={`/video-gallery/scholar/${scholar.id}`} key={scholar.id} className="vg-reciter-card">
                             <div className="vg-reciter-avatar" style={{ border: '3px solid var(--vg-accent-glow)' }}>
                                 <img src={scholar.poster} alt={scholar.name} />
                             </div>
                             <p className="vg-reciter-name">{scholar.name}</p>
                             <p className="vg-reciter-label">{scholar.label}</p>
-                        </div>
+                        </Link>
                     ))}
                     {!filterData(FEATURED_SCHOLARS).length && <p style={{ color: 'var(--vg-text-muted)', fontSize: 13 }}>No scholars found matching your search.</p>}
                 </div>
