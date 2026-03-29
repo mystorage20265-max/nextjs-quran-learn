@@ -18,8 +18,8 @@
 }
 
 .dark .gsb-root {
-  background: #111f16;
-  border-right-color: #1e3a2a;
+  background: var(--bg-surface);
+  border-right-color: var(--border-default);
 }
 
 /* ── Hide Scrollbar ── */
