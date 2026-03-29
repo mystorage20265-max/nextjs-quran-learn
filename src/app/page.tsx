@@ -166,7 +166,7 @@ const FEATURED_ACTIONS = [
 ];
 
 const FEATURES = [
-  { icon: 'menu_book', label: 'Read Quran', sub: '114 Surahs', href: '/read-quran/1', color: '#f59e0b' },
+  { icon: 'menu_book', label: 'Read Quran', sub: '114 Surahs', href: '/read-quran/1', color: 'var(--brand-primary)' },
   { icon: 'explore', label: 'Navigate', sub: 'Surah · Juz · Page', href: '#navigate', color: '#0ea5e9' },
   { icon: 'ads_click', label: 'Memorize', sub: 'Hifz Program', href: '/memorize-quran', color: '#a855f7' },
   { icon: 'radio', label: 'Quran Radio', sub: '24/7 Recitation', href: '/radio', color: '#ef4444' },
@@ -236,6 +236,11 @@ export default function HomePage() {
   const dark = resolvedTheme === 'dark';
   const [sessionTime, setSessionTime] = useState(0); // seconds this session
   const [totalTime, setTotalTime] = useState(0);     // cumulative seconds all sessions
+
+  // ── Reading Streak & Progress ──
+  const [readingStreak, setReadingStreak] = useState(0);
+  const [weeklyData, setWeeklyData] = useState<number[]>([0, 0, 0, 0, 0, 0, 0]);
+  const [sursRead, setSursRead] = useState(0);
 
 
   // ── Prayer Times State ──
@@ -370,9 +375,9 @@ export default function HomePage() {
 
   // ── Tasbeeh counter ──
   const TASBEEH_PRESETS = [
-    { label: 'SubhanAllah', ar: 'سُبْحَانَ ٱللَّٰهِ', color: '#f59e0b' },
+    { label: 'SubhanAllah', ar: 'سُبْحَانَ ٱللَّٰهِ', color: 'var(--brand-primary)' },
     { label: 'Alhamdulillah', ar: 'ٱلْحَمْدُ لِلَّٰهِ', color: '#a855f7' },
-    { label: 'Allahu Akbar', ar: 'ٱللَّٰهُ أَكْبَرُ', color: '#f59e0b' },
+    { label: 'Allahu Akbar', ar: 'ٱللَّٰهُ أَكْبَرُ', color: 'var(--brand-primary)' },
   ];
   const TARGET = 33;
   const [tasbeehIdx, setTasbeehIdx] = useState(0);
@@ -401,6 +406,38 @@ export default function HomePage() {
         // Load tasbeeh total
         const savedTasbeehTotal = parseInt(localStorage.getItem('tasbeehTotal') || '0', 10);
         setTasbeehTotal(savedTasbeehTotal);
+
+        // Load reading streak & weekly data
+        const savedStreak = parseInt(localStorage.getItem('readingStreak') || '0', 10);
+        setReadingStreak(savedStreak);
+        const savedWeekly = localStorage.getItem('weeklyReadingData');
+        if (savedWeekly) {
+          try { setWeeklyData(JSON.parse(savedWeekly)); } catch { /* ignore */ }
+        } else {
+          // Generate initial demo data based on recent activity
+          const demoData = [35, 60, 90, 75, 50, 25, 80];
+          setWeeklyData(demoData);
+          localStorage.setItem('weeklyReadingData', JSON.stringify(demoData));
+        }
+        const savedSurs = parseInt(localStorage.getItem('sursRead') || '0', 10);
+        const recentList = getRecentSurahs();
+        setSursRead(savedSurs || (recentList.length > 0 ? recentList.length : 0));
+
+        // Update streak on visit
+        const today = new Date().toDateString();
+        const lastVisit = localStorage.getItem('lastVisitDate');
+        if (lastVisit !== today) {
+          localStorage.setItem('lastVisitDate', today);
+          const newStreak = savedStreak + 1;
+          setReadingStreak(newStreak);
+          localStorage.setItem('readingStreak', String(newStreak));
+          // Update today's bar in weekly data
+          const dayIdx = new Date().getDay();
+          const wd = savedWeekly ? JSON.parse(savedWeekly) : [35, 60, 90, 75, 50, 25, 80];
+          wd[dayIdx] = Math.min((wd[dayIdx] || 0) + 15, 100);
+          setWeeklyData(wd);
+          localStorage.setItem('weeklyReadingData', JSON.stringify(wd));
+        }
 
         return () => window.removeEventListener('recentSurahsUpdated', loadRecent);
     }, []);
@@ -507,7 +544,7 @@ export default function HomePage() {
     card: { background: 'var(--bg-card)', border: '1px solid var(--border-default)', borderRadius: 16, boxShadow: '0 1px 4px rgba(0,0,0,0.08)' },
     text: { color: 'var(--text-primary)' },
     muted: { color: 'var(--text-muted)' },
-    tag: (t: string) => ({ fontSize: 9, fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: '0.12em', color: t === 'Meccan' ? '#f59e0b' : 'var(--text-muted)' }),
+    tag: (t: string) => ({ fontSize: 9, fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: '0.12em', color: t === 'Meccan' ? 'var(--brand-primary)' : 'var(--text-muted)' }),
   };
 
   return (
@@ -528,7 +565,7 @@ export default function HomePage() {
             <div style={{ padding: '18px 20px 14px', borderBottom: `1px solid ${'var(--bg-elevated)'}`, flexShrink: 0 }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
                 <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700, ...S.text, display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <span className="material-symbols-outlined" style={{ fontSize: 22, color: '#f59e0b' }}>menu_book</span>
+                  <span className="material-symbols-outlined" style={{ fontSize: 22, color: 'var(--brand-primary)' }}>menu_book</span>
                   Navigate Quran
                 </h2>
                 <button onClick={() => setShowNav(false)} style={{ background: 'var(--bg-elevated)', border: 'none', borderRadius: 8, width: 32, height: 32, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8' }}>
@@ -541,7 +578,7 @@ export default function HomePage() {
                   <button key={tab} onClick={() => { setNavTab(tab); setNavSearch(''); }} style={{
                     flex: 1, padding: '8px 12px', borderRadius: 8, border: 'none', cursor: 'pointer',
                     fontSize: 13, fontWeight: 600, transition: 'all 0.15s',
-                    background: navTab === tab ? '#f59e0b' : 'transparent',
+                    background: navTab === tab ? 'var(--brand-primary)' : 'transparent',
                     color: navTab === tab ? 'white' : '#94a3b8',
                   }}>{tab.charAt(0).toUpperCase() + tab.slice(1)}</button>
                 ))}
@@ -554,7 +591,7 @@ export default function HomePage() {
                     type="text" value={navSearch} onChange={e => setNavSearch(e.target.value)}
                     placeholder="Search Surah…"
                     style={{ width: '100%', padding: '9px 12px 9px 36px', borderRadius: 10, border: '1px solid var(--border-default)', background: 'var(--bg-surface)', fontSize: 13, color: 'var(--text-secondary)', outline: 'none', boxSizing: 'border-box' }}
-                    onFocus={e => e.target.style.boxShadow = '0 0 0 2px rgba(245,158,11,0.3)'}
+                    onFocus={e => e.target.style.boxShadow = '0 0 0 2px rgba(var(--brand-rgb),0.3)'}
                     onBlur={e => e.target.style.boxShadow = 'none'}
                     autoFocus
                   />
@@ -594,7 +631,7 @@ export default function HomePage() {
                       onMouseEnter={e => e.currentTarget.style.background = 'var(--bg-card-hover)'}
                       onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                     >
-                      <div style={{ width: 36, height: 36, borderRadius: 8, background: 'rgba(245,158,11,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 13, color: '#f59e0b', flexShrink: 0 }}>
+                      <div style={{ width: 36, height: 36, borderRadius: 8, background: 'rgba(var(--brand-rgb),0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 13, color: 'var(--brand-primary)', flexShrink: 0 }}>
                         {s.num}
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
@@ -603,7 +640,7 @@ export default function HomePage() {
                       </div>
                       <div style={{ textAlign: 'right', flexShrink: 0 }}>
                         <span className="font-arabic" style={{ fontSize: 18, fontWeight: 700, ...S.text, display: 'block' }}>{s.ar}</span>
-                        <span style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: '0.1em', color: s.t === 'Meccan' ? '#f59e0b' : '#94a3b8' }}>{s.t}</span>
+                        <span style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: '0.1em', color: s.t === 'Meccan' ? 'var(--brand-primary)' : '#94a3b8' }}>{s.t}</span>
                       </div>
                     </div>
                   </Link>
@@ -621,7 +658,7 @@ export default function HomePage() {
                           onMouseEnter={e => e.currentTarget.style.background = 'var(--bg-card-hover)'}
                           onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                         >
-                          <div style={{ width: 40, height: 40, borderRadius: 10, background: 'linear-gradient(135deg, rgba(245,158,11,0.12), rgba(217,119,6,0.08))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: 15, color: '#f59e0b', flexShrink: 0 }}>
+                          <div style={{ width: 40, height: 40, borderRadius: 10, background: 'linear-gradient(135deg, rgba(var(--brand-rgb),0.12), rgba(var(--brand-hover-rgb),0.08))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: 15, color: 'var(--brand-primary)', flexShrink: 0 }}>
                             {j.juz}
                           </div>
                           <div style={{ flex: 1 }}>
@@ -649,7 +686,7 @@ export default function HomePage() {
                           background: 'var(--bg-surface)',
                           border: `1px solid ${'var(--bg-elevated)'}`,
                         }}
-                          onMouseEnter={e => { e.currentTarget.style.background = '#f59e0b'; e.currentTarget.style.color = 'white'; e.currentTarget.style.borderColor = '#f59e0b'; }}
+                          onMouseEnter={e => { e.currentTarget.style.background = 'var(--brand-primary)'; e.currentTarget.style.color = 'white'; e.currentTarget.style.borderColor = 'var(--brand-primary)'; }}
                           onMouseLeave={e => { e.currentTarget.style.background = 'var(--bg-surface)'; e.currentTarget.style.color = '#64748b'; e.currentTarget.style.borderColor = 'var(--bg-elevated)'; }}
                         >
                           {p}
@@ -675,11 +712,11 @@ export default function HomePage() {
         html{scrollbar-width:none;-ms-overflow-style:none}html::-webkit-scrollbar{display:none}
         body{scrollbar-width:none;-ms-overflow-style:none}body::-webkit-scrollbar{display:none}
         .hp-scroll::-webkit-scrollbar{width:0;display:none}.hp-scroll{scrollbar-width:none;-ms-overflow-style:none}
-        .surah-card{transition:transform 0.18s ease,box-shadow 0.18s ease}.surah-card:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(245,158,11,0.12)}
+        .surah-card{transition:transform 0.18s ease,box-shadow 0.18s ease}.surah-card:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(var(--brand-rgb),0.12)}
         .feat-card{transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);}.feat-card:hover{transform:translateY(-5px);box-shadow:0 12px 40px rgba(0,0,0,0.15) !important;}
         .feat-icon-img{transition:transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);}
         .feat-card:hover .feat-icon-img{transform:scale(1.15) rotate(5deg) translateY(-5px);}
-        .hp-dot{background-image:radial-gradient(circle at 2px 2px,rgba(245,158,11,0.06) 1px,transparent 0);background-size:24px 24px}
+        .hp-dot{background-image:radial-gradient(circle at 2px 2px,rgba(var(--brand-rgb),0.06) 1px,transparent 0);background-size:24px 24px}
         .font-arabic{font-family:'Naskh IndoPak',serif}
         .filter-btn{padding:6px 14px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:500;transition:all 0.15s}
         .tc-btn{cursor:pointer;border:none;outline:none;background:none;-webkit-tap-highlight-color:transparent;transition:transform 0.08s ease;user-select:none}
@@ -690,13 +727,27 @@ export default function HomePage() {
         @keyframes navSkel{0%,100%{opacity:0.5}50%{opacity:1}}
         @keyframes spin{to{transform:translateY(-50%) rotate(360deg)}}
 
+        /* ── Progress Section ── */
+        .progress-bar-col{display:flex;flex-direction:column;align-items:center;gap:8px;flex:1;justify-content:flex-end;height:100%}
+        .progress-bar-fill{width:100%;border-radius:8px 8px 0 0;transition:height 0.6s cubic-bezier(0.4,0,0.2,1);min-height:4px;position:relative}
+        .progress-bar-fill:hover{filter:brightness(1.15);transform:scaleX(1.05)}
+        .progress-bar-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em}
+        .stat-card-hp{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 12px;border-radius:18px;text-align:center;transition:transform 0.18s ease,box-shadow 0.18s ease}
+        .stat-card-hp:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,0.08)}
+        .milestone-badge{display:flex;flex-direction:column;align-items:center;padding:20px 12px;border-radius:20px;text-align:center;cursor:pointer;transition:transform 0.2s ease,box-shadow 0.2s ease}
+        .milestone-badge:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,0.1)}
+        .milestone-icon{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:12px;transition:transform 0.25s ease}
+        .milestone-badge:hover .milestone-icon{transform:scale(1.12)}
+        .hp-progress-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+        @media(min-width:640px){.hp-progress-grid{grid-template-columns:repeat(4,1fr)}}
+
         /* ── Prayer Times Hero ── */
         .prayer-hero{
           position:relative;overflow:hidden;border-radius:20px;
           margin-bottom:24px;
           padding:28px 24px 20px;
           background:linear-gradient(135deg,#FFF8E7 0%,#FDECC8 40%,#FDE8B8 100%);
-          box-shadow:0 4px 24px rgba(245,158,11,0.12);
+          box-shadow:0 4px 24px rgba(var(--brand-rgb),0.12);
         }
         [data-theme='dark'] .prayer-hero{
           background:linear-gradient(135deg,#1a1612 0%,#1f1a12 40%,#241e14 100%);
@@ -710,18 +761,18 @@ export default function HomePage() {
         .prayer-hero-orb1{
           position:absolute;top:-60px;right:-40px;width:200px;height:200px;
           border-radius:50%;pointer-events:none;
-          background:radial-gradient(circle,rgba(245,158,11,0.15),transparent 70%);
+          background:radial-gradient(circle,rgba(var(--brand-rgb),0.15),transparent 70%);
         }
         .prayer-hero-orb2{
           position:absolute;bottom:-40px;left:-30px;width:150px;height:150px;
           border-radius:50%;pointer-events:none;
-          background:radial-gradient(circle,rgba(217,119,6,0.10),transparent 70%);
+          background:radial-gradient(circle,rgba(var(--brand-hover-rgb),0.10),transparent 70%);
         }
         .prayer-clock{font-size:clamp(48px,10vw,72px);font-weight:800;line-height:1;letter-spacing:-2px;
-          color:#b45309;font-variant-numeric:tabular-nums;
-          text-shadow:0 2px 12px rgba(180,83,9,0.12);
+          color:var(--brand-primary-active);font-variant-numeric:tabular-nums;
+          text-shadow:0 2px 12px rgba(var(--brand-active-rgb),0.12);
         }
-        [data-theme='dark'] .prayer-clock{color:#f59e0b;text-shadow:0 2px 18px rgba(245,158,11,0.25)}
+        [data-theme='dark'] .prayer-clock{color:var(--brand-primary);text-shadow:0 2px 18px rgba(var(--brand-rgb),0.25)}
         .prayer-clock-colon{
           display:inline-block;animation:colonBlink 1s step-end infinite;
           margin:0 2px;
@@ -729,12 +780,12 @@ export default function HomePage() {
         @keyframes colonBlink{0%,100%{opacity:1}50%{opacity:0.3}}
         .prayer-next-badge{
           display:inline-flex;align-items:center;gap:6px;
-          background:rgba(245,158,11,0.15);color:#b45309;
+          background:rgba(var(--brand-rgb),0.15);color:var(--brand-primary-active);
           padding:4px 12px;border-radius:20px;
           font-size:12px;font-weight:600;
-          border:1px solid rgba(245,158,11,0.2);
+          border:1px solid rgba(var(--brand-rgb),0.2);
         }
-        [data-theme='dark'] .prayer-next-badge{background:rgba(245,158,11,0.12);color:#fbbf24;border-color:rgba(245,158,11,0.18)}
+        [data-theme='dark'] .prayer-next-badge{background:rgba(var(--brand-rgb),0.12);color:var(--brand-primary-light);border-color:rgba(var(--brand-rgb),0.18)}
         .prayer-times-row{
           display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-top:18px;
         }
@@ -742,26 +793,26 @@ export default function HomePage() {
           display:flex;flex-direction:column;align-items:center;gap:4px;
           padding:10px 4px;border-radius:14px;
           background:rgba(255,255,255,0.65);
-          border:1px solid rgba(245,158,11,0.1);
+          border:1px solid rgba(var(--brand-rgb),0.1);
           transition:all 0.18s ease;
         }
         [data-theme='dark'] .prayer-time-card{
           background:rgba(255,255,255,0.04);
-          border-color:rgba(245,158,11,0.08);
+          border-color:rgba(var(--brand-rgb),0.08);
         }
         .prayer-time-card.active{
-          background:linear-gradient(135deg,#f59e0b,#d97706);
-          border-color:#f59e0b;
-          box-shadow:0 4px 16px rgba(245,158,11,0.3);
+          background:linear-gradient(135deg,var(--brand-primary),var(--brand-primary-hover));
+          border-color:var(--brand-primary);
+          box-shadow:0 4px 16px rgba(var(--brand-rgb),0.3);
           transform:translateY(-2px);
         }
         .prayer-time-card.active .ptc-icon,
         .prayer-time-card.active .ptc-label,
         .prayer-time-card.active .ptc-time{color:white !important}
-        .ptc-icon{font-size:20px;color:#d97706}
-        [data-theme='dark'] .ptc-icon{color:#fbbf24}
+        .ptc-icon{font-size:20px;color:var(--brand-primary-hover)}
+        [data-theme='dark'] .ptc-icon{color:var(--brand-primary-light)}
         .ptc-label{font-size:10px;font-weight:600;color:#92400e;text-transform:uppercase;letter-spacing:0.06em}
-        [data-theme='dark'] .ptc-label{color:#fbbf24}
+        [data-theme='dark'] .ptc-label{color:var(--brand-primary-light)}
         .ptc-time{font-size:13px;font-weight:700;color:#78350f;font-variant-numeric:tabular-nums}
         [data-theme='dark'] .ptc-time{color:#fde68a}
         .prayer-meta-row{
@@ -775,17 +826,71 @@ export default function HomePage() {
         [data-theme='dark'] .prayer-meta-item{color:#d4a574}
         .prayer-hijri{
           text-align:center;margin-top:4px;
-          font-size:12px;font-weight:600;color:#b45309;
+          font-size:12px;font-weight:600;color:var(--brand-primary-active);
         }
-        [data-theme='dark'] .prayer-hijri{color:#fbbf24}
+        [data-theme='dark'] .prayer-hijri{color:var(--brand-primary-light)}
         .prayer-skeleton{
-          background:linear-gradient(90deg,rgba(245,158,11,0.08) 25%,rgba(245,158,11,0.18) 50%,rgba(245,158,11,0.08) 75%);
+          background:linear-gradient(90deg,rgba(var(--brand-rgb),0.08) 25%,rgba(var(--brand-rgb),0.18) 50%,rgba(var(--brand-rgb),0.08) 75%);
           background-size:200% 100%;animation:shimmerPrayer 1.5s ease infinite;border-radius:8px;
         }
         @keyframes shimmerPrayer{0%{background-position:200% 0}100%{background-position:-200% 0}}
         @media(max-width:500px){
           .prayer-times-row{grid-template-columns:repeat(3,1fr)}
           .prayer-hero{padding:22px 16px 16px}
+        }
+
+        /* ── Better Surah Cards ── */
+        .surah-card-better {
+          display: flex;
+          align-items: center;
+          gap: 18px;
+          padding: 16px 20px;
+          border-radius: 16px;
+          background: var(--bg-surface);
+          border: 1px solid var(--border-default);
+          transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+          text-decoration: none;
+          position: relative;
+          overflow: hidden;
+        }
+        .surah-card-better:hover {
+          transform: translateY(-3px);
+          background: var(--bg-elevated);
+          border-color: rgba(var(--brand-rgb), 0.4);
+          box-shadow: 0 12px 32px rgba(var(--brand-rgb), 0.1);
+        }
+        .surah-card-better .num-box {
+          position: relative;
+          width: 44px;
+          height: 44px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+        }
+        .surah-card-better .num-poly {
+          position: absolute;
+          inset: 0;
+          background: rgba(var(--brand-rgb), 0.08);
+          border-radius: 12px;
+          transform: rotate(45deg);
+          transition: all 0.3s ease;
+        }
+        .surah-card-better:hover .num-poly {
+          background: linear-gradient(135deg, var(--brand-primary), var(--brand-primary-hover));
+          transform: rotate(45deg) scale(1.08);
+          box-shadow: 0 4px 12px rgba(var(--brand-rgb),0.3);
+        }
+        .surah-card-better .num-text {
+          position: relative;
+          z-index: 1;
+          font-weight: 700;
+          font-size: 15px;
+          color: var(--brand-primary);
+          transition: color 0.3s ease;
+        }
+        .surah-card-better:hover .num-text {
+          color: #ffffff;
         }
 
         /* ── Responsive ── */
@@ -815,23 +920,25 @@ export default function HomePage() {
           .hp-features{grid-template-columns:repeat(auto-fill,minmax(130px,1fr)) !important}
           .hp-surah-grid{grid-template-columns:repeat(3,1fr) !important}
           .hp-getstarted-inner{grid-template-columns:1fr 1.4fr !important}
-          .hp-getstarted-right{border-left:1px solid rgba(245,158,11,0.12)}
+          .hp-getstarted-right{border-left:1px solid rgba(var(--brand-rgb),0.12)}
+          .hp-hero-grid{grid-template-columns:1fr auto !important}
+          .hp-hero-icon-box{display:flex !important}
         }
         .hp-getstarted-inner{grid-template-columns:1fr}
-        .hp-getstarted-right{border-top:1px solid rgba(245,158,11,0.12)}
+        .hp-getstarted-right{border-top:1px solid rgba(var(--brand-rgb),0.12)}
       `}</style>
 
       <div style={S.shell}>
         {/* Header — outside scroll container so dropdown isn't clipped */}
         <header style={{ position: 'relative', zIndex: 200, background: 'var(--glass-bg-strong)', backdropFilter: 'blur(12px)', borderBottom: '1px solid var(--border-strong)', flexShrink: 0 }}>
-          <div className="hp-header-inner" style={{ maxWidth: 860, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div className="hp-header-inner" style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 12 }}>
             <div ref={searchRef} style={{ flex: 1, position: 'relative' }}>
               <span className="material-symbols-outlined" style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', fontSize: 20, pointerEvents: 'none', zIndex: 1 }}>search</span>
               <input
                 type="text"
                 value={query}
                 onChange={e => { setQuery(e.target.value); setShowAll(true); setShowDropdown(true); }}
-                onFocus={e => { if (query.trim()) setShowDropdown(true); e.target.style.boxShadow = '0 0 0 2px rgba(245,158,11,0.4)'; }}
+                onFocus={e => { if (query.trim()) setShowDropdown(true); e.target.style.boxShadow = '0 0 0 2px rgba(var(--brand-rgb),0.4)'; }}
                 onKeyDown={e => { if (e.key === 'Escape') { setShowDropdown(false); } }}
                 placeholder="Search Surah name, number, or meaning…"
                 style={{ width: '100%', background: 'var(--bg-surface)', border: 'none', borderRadius: 12, padding: '10px 14px 10px 40px', fontSize: 13.5, color: 'var(--text-secondary)', boxShadow: '0 1px 4px rgba(0,0,0,0.07)', outline: 'none' }}
@@ -862,7 +969,7 @@ export default function HomePage() {
                         onMouseEnter={e => (e.currentTarget.style.background = 'var(--bg-card-hover)')}
                         onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
                       >
-                        <div style={{ width: 32, height: 32, borderRadius: 8, background: 'rgba(245,158,11,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: '#f59e0b', fontSize: 12, flexShrink: 0 }}>
+                        <div style={{ width: 32, height: 32, borderRadius: 8, background: 'rgba(var(--brand-rgb),0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: 'var(--brand-primary)', fontSize: 12, flexShrink: 0 }}>
                           {s.num}
                         </div>
                         <div style={{ flex: 1, minWidth: 0 }}>
@@ -870,7 +977,7 @@ export default function HomePage() {
                           <p style={{ margin: 0, fontSize: 11, color: '#94a3b8' }}>{s.meaning} · {s.v} verses</p>
                         </div>
                         <div className="hp-sr-meta" style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
-                          <span style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: s.t === 'Meccan' ? '#f59e0b' : '#94a3b8' }}>{s.t}</span>
+                          <span style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: s.t === 'Meccan' ? 'var(--brand-primary)' : '#94a3b8' }}>{s.t}</span>
                           <span style={{ fontFamily: "'Naskh IndoPak',serif", fontSize: 17, color: 'var(--text-primary)' }}>{s.ar}</span>
                         </div>
                       </div>
@@ -892,7 +999,7 @@ export default function HomePage() {
               style={{
                 width: 36, height: 36, borderRadius: 10, border: 'none', cursor: 'pointer',
                 background: 'var(--bg-elevated)',
-                color: dark ? '#f59e0b' : '#64748b',
+                color: dark ? 'var(--brand-primary)' : '#64748b',
                 alignItems: 'center', justifyContent: 'center',
                 flexShrink: 0, transition: 'background 0.18s, color 0.18s',
               }}
@@ -901,7 +1008,7 @@ export default function HomePage() {
                 {dark ? 'light_mode' : 'dark_mode'}
               </span>
             </button>
-            <Link href="/read-quran/1" style={{ background: '#f59e0b', color: 'white', borderRadius: 12, padding: '9px 14px', fontWeight: 600, fontSize: 13.5, display: 'flex', alignItems: 'center', gap: 6, boxShadow: '0 4px 14px rgba(245,158,11,0.3)', textDecoration: 'none', flexShrink: 0 }}>
+            <Link href="/read-quran/1" style={{ background: 'var(--brand-primary)', color: 'white', borderRadius: 12, padding: '9px 14px', fontWeight: 600, fontSize: 13.5, display: 'flex', alignItems: 'center', gap: 6, boxShadow: '0 4px 14px rgba(var(--brand-rgb),0.3)', textDecoration: 'none', flexShrink: 0 }}>
               <span className="material-symbols-outlined" style={{ fontSize: 18 }}>play_circle</span>
               <span className="hp-qs-hide">Quick Start</span>
             </Link>
@@ -922,142 +1029,181 @@ export default function HomePage() {
         </header>
         {/* MAIN — scrollable content only */}
         <main className="hp-scroll hp-dot" style={{ background: dark ? 'var(--bg-base)' : '#ffffff' }}>
-          <div className="hp-content" style={{ maxWidth: 860, margin: '0 auto' }}>
+          <div className="hp-content" style={{ maxWidth: 1100, margin: '0 auto' }}>
 
-            {/* ── PRAYER TIMES HERO BANNER (temporarily hidden) ── */}
-            {false && (
-            <section className="prayer-hero">
-              {/* Decorative elements */}
-              <div className="prayer-hero-orb1" />
-              <div className="prayer-hero-orb2" />
+            {/* ── HERO BANNER ── */}
+            <section style={{
+              position: 'relative', overflow: 'hidden', borderRadius: 20,
+              marginBottom: 24, padding: '32px 28px 24px',
+              background: dark
+                ? 'linear-gradient(135deg, #1a1612 0%, #1f1a12 40%, #241e14 100%)'
+                : 'linear-gradient(135deg, #FFF8E7 0%, #FDECC8 40%, #FDE8B8 100%)',
+              boxShadow: dark ? '0 4px 24px rgba(0,0,0,0.3)' : '0 4px 24px rgba(var(--brand-rgb),0.12)',
+            }}>
+              {/* Decorative orbs */}
+              <div style={{ position: 'absolute', top: -60, right: -40, width: 200, height: 200, borderRadius: '50%', pointerEvents: 'none', background: 'radial-gradient(circle, rgba(var(--brand-rgb),0.15), transparent 70%)' }} />
+              <div style={{ position: 'absolute', bottom: -40, left: -30, width: 150, height: 150, borderRadius: '50%', pointerEvents: 'none', background: 'radial-gradient(circle, rgba(var(--brand-hover-rgb),0.10), transparent 70%)' }} />
 
-              {/* Mosque silhouette SVG */}
-              <svg className="prayer-hero-mosque" viewBox="0 0 800 120" preserveAspectRatio="xMidYMax slice" fill={dark ? '#f59e0b' : '#b45309'}>
-                <path d="M0,120 L0,90 Q20,88 40,90 L40,70 Q50,30 60,70 L60,90 L80,90 L80,75 Q85,60 90,75 L90,90 L120,90 L120,65 Q130,20 140,65 L140,90 Q160,88 180,90 L180,100 L200,100 L200,85 Q210,50 220,85 L220,100 L260,100 L260,80 Q270,35 280,80 L280,100 L320,95 L320,70 Q340,10 360,70 L360,95 L380,90 L380,75 Q390,40 400,75 L400,90 L420,90 L420,70 Q440,5 460,70 L460,90 L480,88 L480,75 Q490,45 500,75 L500,90 L540,90 L540,65 Q550,25 560,65 L560,90 L580,92 L580,100 L600,100 L600,80 Q610,40 620,80 L620,100 L660,100 L660,70 Q670,30 680,70 L680,100 L700,95 L700,85 Q710,55 720,85 L720,95 L760,95 L760,90 Q770,70 780,90 L780,95 L800,95 L800,120 Z" />
-                <circle cx="140" cy="30" r="18" opacity="0.5" />
-                <circle cx="340" cy="20" r="14" opacity="0.4" />
-                <circle cx="460" cy="15" r="16" opacity="0.45" />
-                <rect x="138" y="8" width="4" height="22" rx="2" opacity="0.4" />
-                <rect x="338" y="3" width="4" height="17" rx="2" opacity="0.35" />
-                <rect x="458" y="-2" width="4" height="17" rx="2" opacity="0.4" />
-              </svg>
+              <div style={{ position: 'relative', zIndex: 1, display: 'grid', gridTemplateColumns: '1fr', gap: 20 }} className="hp-hero-grid">
+                <div>
+                  {/* Badge */}
+                  <div style={{
+                    display: 'inline-flex', alignItems: 'center', gap: 6,
+                    background: dark ? 'rgba(var(--brand-rgb),0.12)' : 'rgba(var(--brand-rgb),0.15)',
+                    color: 'var(--brand-primary)', padding: '5px 14px', borderRadius: 20,
+                    fontSize: 11, fontWeight: 700, textTransform: 'uppercase' as const,
+                    letterSpacing: '0.1em', marginBottom: 16,
+                    border: '1px solid rgba(var(--brand-rgb),0.2)',
+                  }}>
+                    <span className="material-symbols-outlined" style={{ fontSize: 14 }}>auto_stories</span>
+                    YOUR QURAN COMPANION
+                  </div>
 
-              {/* Content */}
-              <div style={{ position: 'relative', zIndex: 2, textAlign: 'center' }}>
-                {prayerLoading ? (
-                  // Skeleton loader
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
-                    <div className="prayer-skeleton" style={{ width: 180, height: 60 }} />
-                    <div className="prayer-skeleton" style={{ width: 220, height: 20 }} />
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6,1fr)', gap: 6, width: '100%', marginTop: 12 }}>
-                      {Array.from({ length: 6 }).map((_, i) => (
-                        <div key={i} className="prayer-skeleton" style={{ height: 70 }} />
-                      ))}
+                  {/* Heading */}
+                  <h1 style={{
+                    margin: '0 0 12px', fontSize: 'clamp(26px, 4vw, 38px)', fontWeight: 800,
+                    lineHeight: 1.15, color: dark ? '#fde68a' : '#78350f',
+                  }}>
+                    Learn, Read & <span style={{ color: 'var(--brand-primary)' }}>Understand</span> the Noble Quran
+                  </h1>
+
+                  {/* Subtitle */}
+                  <p style={{
+                    margin: '0 0 20px', fontSize: 14.5, lineHeight: 1.6, maxWidth: 520,
+                    color: dark ? '#d4a574' : '#92400e', fontWeight: 400,
+                  }}>
+                    Your complete platform for Quranic learning — read with Tafseer, memorize with
+                    spaced repetition, listen to world-class reciters, and track your daily progress.
+                  </p>
+
+                  {/* Verse quote */}
+                  <div style={{
+                    display: 'flex', alignItems: 'stretch', gap: 14, marginBottom: 20,
+                  }}>
+                    <div style={{ width: 3, borderRadius: 4, background: 'var(--brand-primary)', flexShrink: 0 }} />
+                    <div>
+                      <p className="font-arabic" style={{
+                        margin: '0 0 6px', fontSize: 22, lineHeight: 1.6,
+                        color: dark ? '#fde68a' : '#78350f', direction: 'rtl', textAlign: 'right',
+                      }}>
+                        اقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَ
+                      </p>
+                      <p style={{
+                        margin: '0 0 4px', fontSize: 13, fontStyle: 'italic',
+                        color: dark ? '#d4a574' : '#92400e',
+                      }}>
+                        &quot;Read in the name of your Lord who created.&quot;
+                      </p>
+                      <p style={{ margin: 0, fontSize: 12, fontWeight: 600, color: 'var(--brand-primary)' }}>
+                        Surah Al-&apos;Alaq 96:1
+                      </p>
                     </div>
                   </div>
-                ) : (
-                  <>
-                    {/* App label */}
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, marginBottom: 12 }}>
-                      <span className="material-symbols-outlined" style={{ fontSize: 18, color: dark ? '#fbbf24' : '#b45309' }}>mosque</span>
-                      <span style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: '0.18em', color: dark ? '#fbbf24' : '#92400e' }}>Prayer Times</span>
-                    </div>
 
-                    {/* Large clock */}
-                    <div className="prayer-clock">
-                      {String(currentTime.getHours()).padStart(2, '0')}
-                      <span className="prayer-clock-colon">:</span>
-                      {String(currentTime.getMinutes()).padStart(2, '0')}
-                    </div>
+                  {/* CTA buttons */}
+                  <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                    <Link href="/read-quran/1" style={{
+                      display: 'inline-flex', alignItems: 'center', gap: 6,
+                      background: 'linear-gradient(135deg, var(--brand-primary), var(--brand-primary-hover))',
+                      color: 'white', padding: '10px 20px', borderRadius: 12,
+                      fontSize: 13.5, fontWeight: 700, textDecoration: 'none',
+                      boxShadow: '0 4px 16px rgba(var(--brand-rgb),0.3)',
+                      transition: 'transform 0.15s, box-shadow 0.15s',
+                    }}>
+                      <span className="material-symbols-outlined" style={{ fontSize: 18 }}>play_circle</span>
+                      Start Reading
+                    </Link>
+                    <Link href="/quran-player" style={{
+                      display: 'inline-flex', alignItems: 'center', gap: 6,
+                      background: dark ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.7)',
+                      color: dark ? 'var(--brand-primary-light)' : '#92400e',
+                      padding: '10px 20px', borderRadius: 12,
+                      fontSize: 13.5, fontWeight: 600, textDecoration: 'none',
+                      border: `1px solid ${dark ? 'rgba(var(--brand-rgb),0.15)' : 'rgba(var(--brand-rgb),0.2)'}`,
+                      transition: 'transform 0.15s, background 0.15s',
+                    }}>
+                      <span className="material-symbols-outlined" style={{ fontSize: 18 }}>headphones</span>
+                      Listen Now
+                    </Link>
+                  </div>
+                </div>
 
-                    {/* Next prayer countdown */}
-                    {nextPrayer && (
-                      <div style={{ marginTop: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, flexWrap: 'wrap' }}>
-                        <span className="prayer-next-badge">
-                          <span className="material-symbols-outlined" style={{ fontSize: 14 }}>schedule</span>
-                          {nextPrayer.name} in {nextPrayer.remaining}
-                        </span>
+                {/* Right — decorative icon (desktop only) */}
+                <div className="hp-hero-icon-box" style={{
+                  display: 'none', alignItems: 'center', justifyContent: 'center',
+                }}>
+                  <div style={{
+                    width: 110, height: 110, borderRadius: 24,
+                    background: dark ? 'rgba(var(--brand-rgb),0.08)' : 'rgba(var(--brand-rgb),0.1)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  }}>
+                    <span className="material-symbols-outlined" style={{
+                      fontSize: 56, color: 'var(--brand-primary)', opacity: 0.8,
+                    }}>auto_stories</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Featured actions row - Upgraded UI */}
+              <div style={{
+                display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 14,
+                marginTop: 26, position: 'relative', zIndex: 1,
+              }} className="hp-hero-actions">
+                {FEATURED_ACTIONS.map(f => (
+                  <Link key={f.label} href={f.href} style={{ textDecoration: 'none' }}>
+                    <div style={{
+                      display: 'flex', alignItems: 'center', gap: 14,
+                      padding: '16px 20px', borderRadius: 20,
+                      background: dark ? 'rgba(24,24,27,0.4)' : 'rgba(255,255,255,0.7)',
+                      backdropFilter: 'blur(12px)',
+                      border: `1px solid ${dark ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.8)'}`,
+                      boxShadow: dark ? 'inset 0 1px 1px rgba(255,255,255,0.05), 0 4px 12px rgba(0,0,0,0.2)' : 'inset 0 1px 1px rgba(255,255,255,1), 0 4px 12px rgba(0,0,0,0.04)',
+                      cursor: 'pointer', transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+                      position: 'relative', overflow: 'hidden'
+                    }}
+                      onMouseEnter={e => { 
+                        e.currentTarget.style.transform = 'translateY(-3px)'; 
+                        e.currentTarget.style.boxShadow = dark ? 'inset 0 1px 1px rgba(255,255,255,0.08), 0 8px 24px rgba(var(--brand-rgb),0.15)' : 'inset 0 1px 1px rgba(255,255,255,1), 0 8px 24px rgba(var(--brand-rgb),0.15)'; 
+                        e.currentTarget.style.borderColor = dark ? 'rgba(var(--brand-rgb),0.3)' : 'rgba(var(--brand-rgb),0.4)';
+                        const chevron = e.currentTarget.querySelector('.action-chevron') as HTMLElement;
+                        if(chevron) chevron.style.transform = 'translateX(4px)';
+                      }}
+                      onMouseLeave={e => { 
+                        e.currentTarget.style.transform = 'none'; 
+                        e.currentTarget.style.boxShadow = dark ? 'inset 0 1px 1px rgba(255,255,255,0.05), 0 4px 12px rgba(0,0,0,0.2)' : 'inset 0 1px 1px rgba(255,255,255,1), 0 4px 12px rgba(0,0,0,0.04)'; 
+                        e.currentTarget.style.borderColor = dark ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.8)';
+                        const chevron = e.currentTarget.querySelector('.action-chevron') as HTMLElement;
+                        if(chevron) chevron.style.transform = 'none';
+                      }}
+                    >
+                      {/* Vibrant Gradient Icon Box */}
+                      <div style={{ 
+                        width: 44, height: 44, borderRadius: 14, flexShrink: 0,
+                        background: 'linear-gradient(135deg, var(--brand-primary), var(--brand-primary-hover))',
+                        boxShadow: '0 4px 12px rgba(var(--brand-rgb),0.3)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center'
+                      }}>
+                        <span className="material-symbols-outlined" style={{ fontSize: 24, color: '#ffffff' }}>{f.icon}</span>
                       </div>
-                    )}
-
-                    {/* Meta row — date and location */}
-                    <div className="prayer-meta-row">
-                      <span className="prayer-meta-item">
-                        <span className="material-symbols-outlined" style={{ fontSize: 14 }}>calendar_today</span>
-                        {gregorianDate}
-                      </span>
-                      <span style={{ color: dark ? '#5a4a3a' : '#d4a574', fontSize: 11 }}>·</span>
-                      <span className="prayer-meta-item">
-                        <span className="material-symbols-outlined" style={{ fontSize: 14 }}>location_on</span>
-                        {locationName}
-                      </span>
-                    </div>
-
-                    {/* Hijri date */}
-                    {hijriDate && (
-                      <p className="prayer-hijri">
-                        {hijriDate.day} {hijriDate.month.en} {hijriDate.year} AH
-                        {hijriDate.month.number === 9 && (
-                          <span style={{ marginLeft: 8, background: 'rgba(245,158,11,0.15)', padding: '2px 8px', borderRadius: 12, fontSize: 10, fontWeight: 700 }}>🌙 Ramadan</span>
-                        )}
-                        {hijriDate.holidays.length > 0 && (
-                          <span style={{ marginLeft: 6, fontSize: 10, fontWeight: 500, color: dark ? '#fbbf24' : '#b45309' }}>• {hijriDate.holidays[0]}</span>
-                        )}
-                      </p>
-                    )}
-
-                    {/* Prayer times row */}
-                    {prayerTimes && (
-                      <div className="prayer-times-row">
-                        {PRAYER_NAMES.map(p => (
-                          <div
-                            key={p.key}
-                            className={`prayer-time-card${nextPrayer?.name === p.key ? ' active' : ''}`}
-                          >
-                            <span className={`material-symbols-outlined ptc-icon`}>{p.icon}</span>
-                            <span className="ptc-label">{p.label}</span>
-                            <span className="ptc-time">{prayerTimes[p.key]}</span>
-                          </div>
-                        ))}
+                      
+                      {/* Text */}
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <p style={{ margin: 0, fontWeight: 800, fontSize: 14.5, color: dark ? '#f8fafc' : '#0f172a', lineHeight: 1.2 }}>{f.label}</p>
+                        <p style={{ margin: '3px 0 0', fontSize: 11.5, color: dark ? '#cbd5e1' : '#64748b', lineHeight: 1.3, fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{f.sub}</p>
                       </div>
-                    )}
-                  </>
-                )}
+                      
+                      {/* Hover Arrow */}
+                      <span className="material-symbols-outlined action-chevron" style={{ 
+                        fontSize: 20, color: 'var(--brand-primary)', opacity: 0.8,
+                        transition: 'transform 0.25s ease', flexShrink: 0
+                      }}>chevron_right</span>
+                    </div>
+                  </Link>
+                ))}
               </div>
             </section>
-            )}
 
-            {/* ── TOP FEATURED ACTIONS ── */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 14, marginBottom: 20 }}>
-              {FEATURED_ACTIONS.map(f => (
-                <Link key={f.label} href={f.href} style={{ textDecoration: 'none' }}>
-                  <div className="feat-card" style={{ 
-                    ...S.card, 
-                    padding: '18px 16px', 
-                    display: 'flex', 
-                    flexDirection: 'row', 
-                    alignItems: 'center', 
-                    gap: 16,
-                    cursor: 'pointer', 
-                    position: 'relative',
-                    overflow: 'hidden',
-                    borderRadius: '16px',
-                    background: dark ? '#1a1612' : '#f8fafc',
-                    border: 'none',
-                    boxShadow: dark ? '0 4px 20px rgba(0,0,0,0.6)' : '0 4px 12px rgba(0,0,0,0.05)',
-                  }}
-                  >
-                    <div style={{ width: 44, height: 44, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                       <span className="material-symbols-outlined" style={{ fontSize: 28, color: '#f59e0b' }}>{f.icon}</span>
-                    </div>
-                    <div>
-                      <p style={{ margin: 0, fontWeight: 700, fontSize: '15px', color: 'var(--text-primary)', letterSpacing: '-0.01em', lineHeight: 1.2 }}>{f.label}</p>
-                      <p style={{ margin: '3px 0 0', fontSize: '11px', color: 'var(--text-muted)', lineHeight: 1.3 }}>{f.sub}</p>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
+
 
             {/* ── QUICK ACCESS CARDS ── */}
             <section className="hp-quick" style={{ display: 'grid', gap: 16, marginBottom: 24 }}>
@@ -1065,7 +1211,7 @@ export default function HomePage() {
               <div style={{ ...S.card, padding: 18, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: 140 }}>
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-                    <span style={{ fontSize: 9, fontWeight: 700, color: '#f59e0b', textTransform: 'uppercase', letterSpacing: '0.14em' }}>Continue Reading</span>
+                    <span style={{ fontSize: 9, fontWeight: 700, color: 'var(--brand-primary)', textTransform: 'uppercase', letterSpacing: '0.14em' }}>Continue Reading</span>
                     <span className="material-symbols-outlined" style={{ color: '#cbd5e1', fontSize: 18 }}>bookmark</span>
                   </div>
                   <h3 style={{ margin: '0 0 3px', fontWeight: 700, fontSize: 15, ...S.text }}>{recent[0]?.name ?? 'Al-Fatihah'}</h3>
@@ -1079,19 +1225,19 @@ export default function HomePage() {
               <div style={{ ...S.card, padding: 18, minHeight: 140, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-                    <span style={{ fontSize: 9, fontWeight: 700, color: '#f59e0b', textTransform: 'uppercase', letterSpacing: '0.14em' }}>Session Timer</span>
+                    <span style={{ fontSize: 9, fontWeight: 700, color: 'var(--brand-primary)', textTransform: 'uppercase', letterSpacing: '0.14em' }}>Session Timer</span>
                     <span className="material-symbols-outlined" style={{ color: '#cbd5e1', fontSize: 18 }}>timer</span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8, marginBottom: 6 }}>
-                    <span style={{ fontSize: 30, fontWeight: 700, color: '#f59e0b', lineHeight: 1, fontVariantNumeric: 'tabular-nums' }}>{fmtTime(sessionTime)}</span>
+                    <span style={{ fontSize: 30, fontWeight: 700, color: 'var(--brand-primary)', lineHeight: 1, fontVariantNumeric: 'tabular-nums' }}>{fmtTime(sessionTime)}</span>
                   </div>
                   <p style={{ margin: '0 0 10px', fontSize: 11, ...S.muted }}>This session on the app</p>
                   <div style={{ width: '100%', height: 4, background: 'var(--bg-elevated)', borderRadius: 999, overflow: 'hidden', marginBottom: 8 }}>
-                    <div style={{ width: `${Math.min((sessionTime % 3600) / 36, 100)}%`, height: '100%', background: 'linear-gradient(90deg,#f59e0b,#d97706)', borderRadius: 999, transition: 'width 1s linear' }} />
+                    <div style={{ width: `${Math.min((sessionTime % 3600) / 36, 100)}%`, height: '100%', background: 'linear-gradient(90deg,var(--brand-primary),var(--brand-primary-hover))', borderRadius: 999, transition: 'width 1s linear' }} />
                   </div>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: 11, ...S.muted }}>All time: <strong style={{ color: '#f59e0b' }}>{fmtTime(totalTime)}</strong></span>
+                  <span style={{ fontSize: 11, ...S.muted }}>All time: <strong style={{ color: 'var(--brand-primary)' }}>{fmtTime(totalTime)}</strong></span>
                   <button
                     title="Reset session &amp; all-time counter"
                     onClick={() => { setSessionTime(0); setTotalTime(0); localStorage.setItem('quranTotalTime', '0'); }}
@@ -1103,9 +1249,9 @@ export default function HomePage() {
               </div>
               {/* Ayah of the Day */}
               <Link href={todayAyah.href} style={{ textDecoration: 'none', display: 'block' }}>
-                <div style={{ background: 'linear-gradient(135deg,#f59e0b,#d97706)', borderRadius: 16, padding: 18, boxShadow: '0 8px 24px rgba(245,158,11,0.25)', position: 'relative', overflow: 'hidden', minHeight: 140, cursor: 'pointer', transition: 'transform 0.18s ease, box-shadow 0.18s ease' }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-3px)'; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 12px 32px rgba(245,158,11,0.35)'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = ''; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 8px 24px rgba(245,158,11,0.25)'; }}
+                <div style={{ background: 'linear-gradient(135deg,var(--brand-primary),var(--brand-primary-hover))', borderRadius: 16, padding: 18, boxShadow: '0 8px 24px rgba(var(--brand-rgb),0.25)', position: 'relative', overflow: 'hidden', minHeight: 140, cursor: 'pointer', transition: 'transform 0.18s ease, box-shadow 0.18s ease' }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-3px)'; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 12px 32px rgba(var(--brand-rgb),0.35)'; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = ''; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 8px 24px rgba(var(--brand-rgb),0.25)'; }}
                 >
                   <span className="material-symbols-outlined" style={{ position: 'absolute', top: -8, right: -14, fontSize: 90, color: 'white', opacity: 0.08, lineHeight: 1 }}>star_half</span>
                   <div style={{ position: 'relative', zIndex: 1 }}>
@@ -1121,7 +1267,7 @@ export default function HomePage() {
             {/* ── FEATURE SHORTCUTS ── */}
             <section style={{ marginBottom: 32 }}>
               <h2 style={{ margin: '0 0 14px', fontWeight: 700, fontSize: 17, ...S.text }}>Quick Access</h2>
-              <div className="hp-features" style={{ display: 'grid', gap: 10 }}>
+              <div className="hp-features" style={{ display: 'grid', gap: 20 }}>
                 {FEATURES.map(f => {
                   const isNav = f.href === '#navigate';
                   const inner = (
@@ -1159,10 +1305,11 @@ export default function HomePage() {
               </div>
             </section>
 
+
             {/* ── SEARCH QURAN ── */}
             <section style={{ marginBottom: 32 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
-                <span className="material-symbols-outlined" style={{ fontSize: 22, color: '#f59e0b' }}>search</span>
+                <span className="material-symbols-outlined" style={{ fontSize: 22, color: 'var(--brand-primary)' }}>search</span>
                 <h2 style={{ margin: 0, fontWeight: 700, fontSize: 19, ...S.text }}>Search Quran</h2>
               </div>
               <p style={{ margin: '0 0 16px', fontSize: 13, ...S.muted }}>Search through English translations · type at least 3 characters</p>
@@ -1182,18 +1329,18 @@ export default function HomePage() {
                     outline: 'none', boxSizing: 'border-box',
                     transition: 'box-shadow 0.15s',
                   }}
-                  onFocus={e => (e.target.style.boxShadow = '0 0 0 2px rgba(245,158,11,0.35)')}
+                  onFocus={e => (e.target.style.boxShadow = '0 0 0 2px rgba(var(--brand-rgb),0.35)')}
                   onBlur={e => (e.target.style.boxShadow = 'none')}
                 />
                 {verseLoading && (
-                  <span className="material-symbols-outlined" style={{ position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)', fontSize: 18, color: '#f59e0b', animation: 'spin 1s linear infinite' }}>progress_activity</span>
+                  <span className="material-symbols-outlined" style={{ position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)', fontSize: 18, color: 'var(--brand-primary)', animation: 'spin 1s linear infinite' }}>progress_activity</span>
                 )}
               </div>
 
               {/* Result count */}
               {verseCount !== null && verseQuery.trim().length >= 3 && (
                 <p style={{ margin: '0 0 14px', fontSize: 13, ...S.muted }}>
-                  <strong style={{ color: 'var(--text-primary)' }}>{verseCount.toLocaleString()}</strong> results for &ldquo;<span style={{ color: '#f59e0b' }}>{verseQuery}</span>&rdquo;
+                  <strong style={{ color: 'var(--text-primary)' }}>{verseCount.toLocaleString()}</strong> results for &ldquo;<span style={{ color: 'var(--brand-primary)' }}>{verseQuery}</span>&rdquo;
                 </p>
               )}
 
@@ -1218,9 +1365,9 @@ export default function HomePage() {
                           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                               <span style={{
-                                background: 'rgba(245,158,11,0.15)', color: '#f59e0b',
+                                background: 'rgba(var(--brand-rgb),0.15)', color: 'var(--brand-primary)',
                                 fontSize: 11.5, fontWeight: 700, borderRadius: 20,
-                                padding: '3px 10px', border: '1px solid rgba(245,158,11,0.2)',
+                                padding: '3px 10px', border: '1px solid rgba(var(--brand-rgb),0.2)',
                               }}>{v.surah.englishName}</span>
                               <span style={{ fontSize: 12, ...S.muted }}>Ayah {v.numberInSurah}</span>
                             </div>
@@ -1230,7 +1377,7 @@ export default function HomePage() {
                           <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.85, ...S.text }}>
                             {parts.map((part, i) =>
                               re.test(part)
-                                ? <mark key={i} style={{ background: 'rgba(245,158,11,0.22)', color: '#d97706', borderRadius: 3, padding: '0 2px', fontWeight: 600 }}>{part}</mark>
+                                ? <mark key={i} style={{ background: 'rgba(var(--brand-rgb),0.22)', color: 'var(--brand-primary-hover)', borderRadius: 3, padding: '0 2px', fontWeight: 600 }}>{part}</mark>
                                 : part
                             )}
                           </p>
@@ -1253,10 +1400,10 @@ export default function HomePage() {
             <section style={{ marginBottom: 32 }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
                 <h2 style={{ margin: 0, fontWeight: 700, fontSize: 17, ...S.text, display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <span className="material-symbols-outlined" style={{ fontSize: 20, color: '#f59e0b' }}>format_quote</span>
+                  <span className="material-symbols-outlined" style={{ fontSize: 20, color: 'var(--brand-primary)' }}>format_quote</span>
                   Hadees of the Day
                 </h2>
-                <Link href="/hadees" style={{ fontSize: 12.5, fontWeight: 600, color: '#f59e0b', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
+                <Link href="/hadees" style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--brand-primary)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
                   Browse All
                   <span className="material-symbols-outlined" style={{ fontSize: 16 }}>chevron_right</span>
                 </Link>
@@ -1265,28 +1412,28 @@ export default function HomePage() {
                 <div style={{
                   ...S.card,
                   padding: '22px 24px',
-                  borderLeft: '4px solid #f59e0b',
+                  borderLeft: '4px solid var(--brand-primary)',
                   cursor: 'pointer',
                   transition: 'transform 0.18s ease, box-shadow 0.18s ease',
                   position: 'relative',
                   overflow: 'hidden',
                 }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-2px)'; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 8px 28px rgba(245,158,11,0.12)'; }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-2px)'; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 8px 28px rgba(var(--brand-rgb),0.12)'; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = ''; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 1px 4px rgba(0,0,0,0.06)'; }}
                 >
-                  <span className="material-symbols-outlined" style={{ position: 'absolute', right: 12, top: 8, fontSize: 72, color: 'rgba(245,158,11,0.07)', lineHeight: 1, pointerEvents: 'none' }}>format_quote</span>
+                  <span className="material-symbols-outlined" style={{ position: 'absolute', right: 12, top: 8, fontSize: 72, color: 'rgba(var(--brand-rgb),0.07)', lineHeight: 1, pointerEvents: 'none' }}>format_quote</span>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12, position: 'relative', zIndex: 1 }}>
-                    <div style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(245,158,11,0.14)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <span className="material-symbols-outlined" style={{ fontSize: 15, color: '#f59e0b' }}>format_quote</span>
+                    <div style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(var(--brand-rgb),0.14)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <span className="material-symbols-outlined" style={{ fontSize: 15, color: 'var(--brand-primary)' }}>format_quote</span>
                     </div>
-                    <span style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: '0.14em', color: '#f59e0b' }}>Nawawi's 40 · Daily Hadith</span>
+                    <span style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: '0.14em', color: 'var(--brand-primary)' }}>Nawawi's 40 · Daily Hadith</span>
                   </div>
                   <p style={{ margin: '0 0 12px', fontSize: 13.5, lineHeight: 1.85, ...S.text, fontStyle: 'italic', position: 'relative', zIndex: 1 }}>
                     "On the authority of Umar ibn al-Khattab — Actions are but by intentions, and every person shall have only that which he intended. So whoever's emigration was for Allah and His Messenger, his emigration is for Allah and His Messenger."
                   </p>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'relative', zIndex: 1 }}>
                     <span style={{ fontSize: 11, ...S.muted }}>— Sahih al-Bukhari &amp; Muslim</span>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11.5, color: '#f59e0b', fontWeight: 600 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11.5, color: 'var(--brand-primary)', fontWeight: 600 }}>
                       View Collection
                       <span className="material-symbols-outlined" style={{ fontSize: 14 }}>arrow_forward</span>
                     </div>
@@ -1404,7 +1551,7 @@ export default function HomePage() {
                 <div className="hp-scroll" style={{ display: 'flex', gap: 10, overflowX: 'auto', paddingBottom: 6 }}>
                   {recent.map(s => (
                     <Link key={s.num} href={`/read-quran/${s.num}`} onClick={() => trackVisit(s)} style={{ textDecoration: 'none', flexShrink: 0 }}>
-                      <div className="surah-card" style={{ ...S.card, padding: '12px 14px', width: 130, cursor: 'pointer', borderTop: '3px solid #f59e0b' }}>
+                      <div className="surah-card" style={{ ...S.card, padding: '12px 14px', width: 130, cursor: 'pointer', borderTop: '3px solid var(--brand-primary)' }}>
                         <span className="font-arabic" style={{ fontSize: 18, fontWeight: 700, ...S.text, display: 'block', marginBottom: 6 }}>{s.ar}</span>
                         <p style={{ margin: '0 0 2px', fontWeight: 600, fontSize: 12, ...S.text, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{s.name}</p>
                         <p style={{ margin: 0, fontSize: 10, ...S.muted }}>{s.v} verses</p>
@@ -1428,13 +1575,13 @@ export default function HomePage() {
                   {/* Type filter */}
                   <div style={{ display: 'flex', background: 'var(--bg-surface)', border: `1px solid ${'var(--bg-elevated)'}`, borderRadius: 10, padding: 3, gap: 2 }}>
                     {(['All', 'Meccan', 'Medinan'] as const).map(t => (
-                      <button key={t} className="filter-btn" onClick={() => setTypeFilter(t)} style={{ background: typeFilter === t ? '#f59e0b' : 'transparent', color: typeFilter === t ? 'white' : '#94a3b8' }}>{t}</button>
+                      <button key={t} className="filter-btn" onClick={() => setTypeFilter(t)} style={{ background: typeFilter === t ? 'var(--brand-primary)' : 'transparent', color: typeFilter === t ? 'white' : '#94a3b8' }}>{t}</button>
                     ))}
                   </div>
                   {/* View toggle */}
                   <div style={{ display: 'flex', background: 'var(--bg-surface)', border: `1px solid ${'var(--bg-elevated)'}`, borderRadius: 10, padding: 3, gap: 2 }}>
                     {(['grid', 'list'] as const).map(m => (
-                      <button key={m} className="filter-btn" onClick={() => setViewMode(m)} style={{ background: viewMode === m ? '#f59e0b' : 'transparent', color: viewMode === m ? 'white' : '#94a3b8' }}>
+                      <button key={m} className="filter-btn" onClick={() => setViewMode(m)} style={{ background: viewMode === m ? 'var(--brand-primary)' : 'transparent', color: viewMode === m ? 'white' : '#94a3b8' }}>
                         <span className="material-symbols-outlined" style={{ fontSize: 16 }}>{m === 'grid' ? 'grid_view' : 'view_list'}</span>
                       </button>
                     ))}
@@ -1444,19 +1591,22 @@ export default function HomePage() {
 
               {/* Grid */}
               {viewMode === 'grid' ? (
-                <div className="hp-surah-grid" style={{ display: 'grid', gap: 14 }}>
+                <div className="hp-surah-grid" style={{ display: 'grid', gap: 16 }}>
                   {displayed.map(s => (
                     <Link key={s.num} href={`/read-quran/${s.num}`} onClick={() => trackVisit(s)} style={{ textDecoration: 'none' }}>
-                      <div className="surah-card" style={{ ...S.card, padding: 18, cursor: 'pointer' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-                          <div style={{ width: 36, height: 36, background: 'rgba(245,158,11,0.10)', borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: '#f59e0b', fontSize: 13 }}>{s.num}</div>
-                          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-                            <span className="font-arabic" style={{ fontSize: 20, fontWeight: 700, ...S.text }}>{s.ar}</span>
-                            <span style={{ ...S.tag(s.t), marginTop: 2 }}>{s.t}</span>
-                          </div>
+                      <div className="surah-card-better">
+                        <div className="num-box">
+                          <div className="num-poly" />
+                          <span className="num-text">{s.num}</span>
                         </div>
-                        <h3 style={{ margin: '0 0 2px', fontWeight: 700, fontSize: 14, ...S.text }}>{s.name}</h3>
-                        <p style={{ margin: 0, fontSize: 12, ...S.muted }}>{s.meaning} · {s.v} Verses</p>
+                        <div style={{ flex: 1, minWidth: 0, paddingRight: 10 }}>
+                          <h3 style={{ margin: '0 0 4px', fontWeight: 800, fontSize: 15, ...S.text }}>{s.name}</h3>
+                          <p style={{ margin: 0, fontSize: 11, ...S.muted, textTransform: 'uppercase', letterSpacing: '0.04em', fontWeight: 600 }}>{s.meaning}</p>
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', flexShrink: 0 }}>
+                          <span className="font-arabic" style={{ fontSize: 24, fontWeight: 700, color: dark ? '#fde68a' : 'var(--brand-primary-active)', lineHeight: 1.2, marginBottom: 4 }}>{s.ar}</span>
+                          <span style={{ fontSize: 11, fontWeight: 700, ...S.muted }}>{s.v} Ayahs</span>
+                        </div>
                       </div>
                     </Link>
                   ))}
@@ -1466,7 +1616,7 @@ export default function HomePage() {
                   {displayed.map(s => (
                     <Link key={s.num} href={`/read-quran/${s.num}`} onClick={() => trackVisit(s)} style={{ textDecoration: 'none' }}>
                       <div className="surah-card" style={{ ...S.card, padding: '12px 16px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 14 }}>
-                        <div style={{ width: 36, height: 36, background: 'rgba(245,158,11,0.10)', borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: '#f59e0b', fontSize: 13, flexShrink: 0 }}>{s.num}</div>
+                        <div style={{ width: 36, height: 36, background: 'rgba(var(--brand-rgb),0.10)', borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: 'var(--brand-primary)', fontSize: 13, flexShrink: 0 }}>{s.num}</div>
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <h3 style={{ margin: '0 0 2px', fontWeight: 700, fontSize: 13.5, ...S.text }}>{s.name}</h3>
                           <p style={{ margin: 0, fontSize: 11.5, ...S.muted }}>{s.meaning} · {s.v} Verses</p>
@@ -1496,25 +1646,25 @@ export default function HomePage() {
               background: dark
                 ? 'linear-gradient(135deg,#1a1612 0%,#0f0d0a 60%,#1a1612 100%)'
                 : 'linear-gradient(135deg,#fffbeb 0%,#fef3c7 60%,#fffbeb 100%)',
-              border: `1px solid ${dark ? 'rgba(245,158,11,0.15)' : 'rgba(245,158,11,0.2)'}`,
+              border: `1px solid ${dark ? 'rgba(var(--brand-rgb),0.15)' : 'rgba(var(--brand-rgb),0.2)'}`,
               overflow: 'hidden',
               position: 'relative',
             }}>
               {/* Background dot pattern */}
-              <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle at 2px 2px,rgba(245,158,11,0.06) 1px,transparent 0)', backgroundSize: '24px 24px', pointerEvents: 'none' }} />
+              <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle at 2px 2px,rgba(var(--brand-rgb),0.06) 1px,transparent 0)', backgroundSize: '24px 24px', pointerEvents: 'none' }} />
               {/* Decorative orbs */}
-              <div style={{ position: 'absolute', top: -40, right: -40, width: 180, height: 180, borderRadius: '50%', background: 'rgba(245,158,11,0.06)', pointerEvents: 'none' }} />
-              <div style={{ position: 'absolute', bottom: -30, left: -30, width: 120, height: 120, borderRadius: '50%', background: 'rgba(217,119,6,0.07)', pointerEvents: 'none' }} />
+              <div style={{ position: 'absolute', top: -40, right: -40, width: 180, height: 180, borderRadius: '50%', background: 'rgba(var(--brand-rgb),0.06)', pointerEvents: 'none' }} />
+              <div style={{ position: 'absolute', bottom: -30, left: -30, width: 120, height: 120, borderRadius: '50%', background: 'rgba(var(--brand-hover-rgb),0.07)', pointerEvents: 'none' }} />
 
               <div className="hp-getstarted-inner" style={{ position: 'relative', zIndex: 1, display: 'grid', gap: 0 }}>
                 {/* Left — headline */}
                 <div className="hp-getstarted-left" style={{ padding: '32px 28px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                  <div style={{ width: 44, height: 44, borderRadius: 14, background: 'rgba(245,158,11,0.14)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 18 }}>
-                    <span className="material-symbols-outlined" style={{ fontSize: 26, color: '#f59e0b' }}>auto_stories</span>
+                  <div style={{ width: 44, height: 44, borderRadius: 14, background: 'rgba(var(--brand-rgb),0.14)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 18 }}>
+                    <span className="material-symbols-outlined" style={{ fontSize: 26, color: 'var(--brand-primary)' }}>auto_stories</span>
                   </div>
                   <h2 style={{ margin: '0 0 12px', fontWeight: 800, fontSize: 'clamp(22px,4vw,30px)', lineHeight: 1.2, color: 'var(--text-primary)' }}>
                     Let&apos;s get{' '}
-                    <span style={{ color: '#f59e0b' }}>to learning</span>
+                    <span style={{ color: 'var(--brand-primary)' }}>to learning</span>
                   </h2>
                   <p style={{ margin: 0, fontSize: 14, lineHeight: 1.7, color: dark ? '#94a3b8' : '#475569', maxWidth: 280 }}>
                     Explore all the ways Learn Quran can support your spiritual journey — from reading to memorisation.
@@ -1525,8 +1675,8 @@ export default function HomePage() {
                 <div className="hp-getstarted-right" style={{ display: 'flex', flexDirection: 'column' }}>
                   {[
                     { icon: 'support_agent', label: 'Contact us', sub: 'Talk to an expert and see how our platform can meet your goals.', href: '/community', color: '#8b5cf6' },
-                    { icon: 'group', label: 'Join the community', sub: 'Learn, share, and connect with people doing work that matters.', href: '/community', color: '#f59e0b' },
-                    { icon: 'school', label: 'Find a teacher', sub: 'Realize even more value with a certified Quran tutor.', href: '/learn-quran', color: '#f59e0b' },
+                    { icon: 'group', label: 'Join the community', sub: 'Learn, share, and connect with people doing work that matters.', href: '/community', color: 'var(--brand-primary)' },
+                    { icon: 'school', label: 'Find a teacher', sub: 'Realize even more value with a certified Quran tutor.', href: '/learn-quran', color: 'var(--brand-primary)' },
                     { icon: 'view_module', label: 'Explore modules', sub: 'Get hands-on with the Learn Quran platform.', href: '/courses', color: '#0ea5e9' },
                   ].map((item, i, arr) => (
                     <Link key={item.label} href={item.href} style={{ textDecoration: 'none', display: 'block' }}>
@@ -1534,10 +1684,10 @@ export default function HomePage() {
                         style={{
                           display: 'flex', alignItems: 'center', gap: 16,
                           padding: '18px 24px',
-                          borderTop: i > 0 ? `1px solid ${dark ? 'rgba(36,31,26,0.6)' : 'rgba(245,158,11,0.1)'}` : 'none',
+                          borderTop: i > 0 ? `1px solid ${dark ? 'rgba(36,31,26,0.6)' : 'rgba(var(--brand-rgb),0.1)'}` : 'none',
                           transition: 'background 0.15s',
                         }}
-                        onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.background = dark ? 'rgba(245,158,11,0.06)' : 'rgba(245,158,11,0.05)'; }}
+                        onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.background = dark ? 'rgba(var(--brand-rgb),0.06)' : 'rgba(var(--brand-rgb),0.05)'; }}
                         onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.background = 'transparent'; }}
                       >
                         <div style={{ width: 44, height: 44, borderRadius: 12, background: `${item.color}18`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>

@@ -924,12 +924,18 @@ textarea::placeholder {
 }
 
 /* ============ GLOBAL SIDEBAR ============ */
-/* Desktop sidebar kept hidden — mobile bottom nav is active */
+/* Hidden on mobile — visible on desktop */
 .gsb-root {
-  display: none !important;
+  display: none;
 }
 
-/* App shell wrapper: full-width when no sidebar */
+@media (min-width: 768px) {
+  .gsb-root {
+    display: flex;
+  }
+}
+
+/* App shell wrapper */
 .app-shell {
   display: block;
   min-height: 100vh;
@@ -937,9 +943,16 @@ textarea::placeholder {
   transition: background 0.2s;
 }
 
-/* Sidebar-less variant — top padding for fixed navbar */
+/* Top padding for fixed navbar */
 .app-shell.no-sidebar {
   padding-top: 66px;
+}
+
+/* On desktop, use flex layout so sidebar + main sit side-by-side */
+@media (min-width: 768px) {
+  .app-shell.no-sidebar {
+    display: flex;
+  }
 }
 
 /* Pad content on mobile so fixed bottom nav doesn't overlap */
