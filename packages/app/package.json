@@ -1,0 +1,16 @@
+{
+  "name": "@quran/app",
+  "version": "0.1.0",
+  "main": "index.ts",
+  "dependencies": {
+    "solito": "^4.4.1",
+    "nativewind": "^4.1.23",
+    "moti": "^0.29.0",
+    "react-native-reanimated": "^4.2.1",
+    "framer-motion": "latest",
+    "lucide-react": "^0.544.0"
+  },
+  "devDependencies": {
+    "typescript": "latest"
+  }
+}

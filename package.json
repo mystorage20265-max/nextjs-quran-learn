@@ -1,35 +1,40 @@
 {
-  "name": "quran-learn-next",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "@radix-ui/react-slider": "^1.3.6",
-    "framer-motion": "^12.23.24",
-    "lucide-react": "^0.544.0",
-    "next": "15.4.10",
-    "node-fetch": "^3.3.2",
-    "react": "latest",
-    "react-dom": "latest",
-    "react-icons": "^5.5.0",
-    "react-swipeable": "^7.0.2",
-    "react-use": "^17.6.0",
-    "wavesurfer.js": "^7.12.1"
-  },
-  "devDependencies": {
-    "@tailwindcss/postcss": "^4.1.14",
-    "@types/node": "24.6.2",
-    "@types/react": "19.2.0",
-    "autoprefixer": "^10.4.21",
-    "eslint": "9.37.0",
-    "eslint-config-next": "15.5.4",
-    "postcss": "^8.5.6",
-    "tailwindcss": "^4.1.14",
-    "typescript": "5.9.3"
-  }
+    "name":  "quran-learn-monorepo",
+    "version":  "0.1.0",
+    "private":  true,
+    "scripts":  {
+                    "dev":  "next dev",
+                    "build":  "next build",
+                    "start":  "next start",
+                    "lint":  "next lint",
+                    "dev:native":  "npm run start --workspace=apps/native"
+                },
+    "dependencies":  {
+                         "@radix-ui/react-slider":  "^1.3.6",
+                         "framer-motion":  "^12.23.24",
+                         "lucide-react":  "^0.544.0",
+                         "next":  "15.4.10",
+                         "node-fetch":  "^3.3.2",
+                         "react":  "latest",
+                         "react-dom":  "latest",
+                         "react-icons":  "^5.5.0",
+                         "react-swipeable":  "^7.0.2",
+                         "react-use":  "^17.6.0",
+                         "wavesurfer.js":  "^7.12.1"
+                     },
+    "devDependencies":  {
+                            "@tailwindcss/postcss":  "^4.1.14",
+                            "@types/node":  "24.6.2",
+                            "@types/react":  "19.2.0",
+                            "autoprefixer":  "^10.4.21",
+                            "eslint":  "9.37.0",
+                            "eslint-config-next":  "15.5.4",
+                            "postcss":  "^8.5.6",
+                            "tailwindcss":  "^4.1.14",
+                            "typescript":  "5.9.3"
+                        },
+    "workspaces":  [
+                       "apps/*",
+                       "packages/*"
+                   ]
 }
