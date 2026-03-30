@@ -171,25 +171,21 @@ export async function getChapter(chapterId: number): Promise<Chapter> {
 /**
  * Get verses for a chapter with translations.
  * Fetches Indo-Pak text from QuranCDN (full diacritics incl. sukun) and
- * translation from alquran.cloud in parallel — same approach as the Juz page.
+ * translation from api.quran.com in parallel. Maps via verse_key directly.
  */
 export async function getVerses(
     chapterId: number,
-    translationId: string = 'en.sahih', // Sahih International
+    resourceId: string = '131', // Sahih International resource ID
     page: number = 1,
-    perPage: number = 50
+    perPage: number = 300
 ): Promise<VersesResponse> {
-    const cacheKey = `verses-${chapterId}-${translationId}`;
+    const cacheKey = `verses-${chapterId}-${resourceId}-${page}`;
     if (clientCache.has(cacheKey)) return clientCache.get(cacheKey);
     try {
-        const ALQURAN_API = 'https://api.alquran.cloud/v1';
-
-        // Parallel: Indo-Pak text (QuranCDN) + Arabic+translation (alquran.cloud)
-        // QuranCDN gives the authentic Indo-Pak Nastaliq text with all diacritics
-        // including sukun (U+0652) which alquran.cloud's quran-indopak edition omits.
+        // Parallel: Indo-Pak text (QuranCDN) + Arabic+translation (quran.com)
         const [indopakRes, translationRes] = await Promise.all([
-            fetchWithRetry(`https://api.qurancdn.com/api/v4/quran/verses/indopak?chapter_number=${chapterId}&per_page=300`),
-            fetchWithRetry(`${ALQURAN_API}/surah/${chapterId}/editions/quran-simple-enhanced,${translationId}`),
+            fetchWithRetry(`https://api.qurancdn.com/api/v4/quran/verses/indopak?chapter_number=${chapterId}&per_page=${perPage}`),
+            fetchWithRetry(`${API_BASE}/verses/by_chapter/${chapterId}?language=en&translations=${resourceId}&fields=text_uthmani&per_page=${perPage}`),
         ]);
 
         const [indopakJson, translationJson] = await Promise.all([
@@ -197,45 +193,38 @@ export async function getVerses(
             translationRes.json(),
         ]);
 
-        if (translationJson.code !== 200 || !translationJson.data) {
+        if (!translationJson.verses) {
             throw new Error('Failed to fetch verses');
         }
 
-        // Build verse_key → indopak text map (e.g. "2:1" → "...")
+        // Build verse_key → indopak text map
         const indopakMap = new Map<string, string>();
         (indopakJson?.verses || []).forEach((v: { verse_key: string; text_indopak: string }) => {
             indopakMap.set(v.verse_key, v.text_indopak);
         });
 
-        const arabicData = translationJson.data[0];
-        const translationData = translationJson.data[1];
-
-        const verses: VerseWithTranslation[] = arabicData.ayahs.map((ayah: any, index: number) => {
-            const verseKey = `${chapterId}:${ayah.numberInSurah}`;
-            const indopakText = indopakMap.get(verseKey) || ayah.text;
+        const verses: VerseWithTranslation[] = translationJson.verses.map((verse: any) => {
+            const indopakText = indopakMap.get(verse.verse_key) || verse.text_uthmani;
             return {
-                id: ayah.number,
-                verse_key: verseKey,
-                verse_number: ayah.numberInSurah,
-                hizb_number: ayah.hizbQuarter || 1,
-                rub_el_hizb_number: 1,
-                ruku_number: ayah.ruku || 1,
-                manzil_number: ayah.manzil || 1,
-                sajdah_number: ayah.sajda ? ayah.number : null,
-                page_number: ayah.page || 1,
-                juz_number: ayah.juz || 1,
+                id: verse.id,
+                verse_key: verse.verse_key,
+                verse_number: verse.verse_number,
+                hizb_number: verse.hizb_number || 1,
+                rub_el_hizb_number: verse.rub_el_hizb_number || 1,
+                ruku_number: verse.ruku_number || 1,
+                manzil_number: verse.manzil_number || 1,
+                sajdah_number: verse.sajdah_number || null,
+                page_number: verse.page_number || 1,
+                juz_number: verse.juz_number || 1,
                 text_uthmani: indopakText,   // use Indo-Pak as primary text
-                text_indopak: indopakText,   // explicit alias
-                translations: [{
-                    resource_id: 20,
-                    text: translationData?.ayahs?.[index]?.text || 'Translation not available'
-                }]
+                text_indopak: indopakText,
+                translations: verse.translations || []
             };
         });
 
         const result = {
             verses,
-            pagination: {
+            pagination: translationJson.pagination || {
                 per_page: perPage,
                 current_page: page,
                 next_page: null,
@@ -256,9 +245,9 @@ export async function getVerses(
  */
 export async function getAllVerses(
     chapterId: number,
-    translationId: string = 'en.sahih'
+    resourceId: string = '131'
 ): Promise<VerseWithTranslation[]> {
-    const data = await getVerses(chapterId, translationId);
+    const data = await getVerses(chapterId, resourceId);
     return data.verses;
 }
 

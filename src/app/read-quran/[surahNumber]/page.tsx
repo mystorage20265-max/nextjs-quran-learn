@@ -92,7 +92,7 @@ const removeBismillah = (text: string): string => {
         (code >= 0xFBB2 && code <= 0xFBC2);
     const strip = (s: string) => Array.from(s).filter(c => !isStrippable(c.charCodeAt(0))).join('');
     const stripped = strip(text);
-    const bismillahPattern = /^بسم\s+[اٱ]لله\s+[اٱ]لرحمن\s+[اٱ]لرحيم\s*/u;
+    const bismillahPattern = /^بسم\s+[اٱ]?لله\s+[اٱ]?لرحمن\s+[اٱ]?لرحيم\s*/u;
     const match = stripped.match(bismillahPattern);
     if (match) {
         const matchedLen = match[0].length;
@@ -619,7 +619,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 // Fetch data
                 const versesData = needsWords 
                     ? await getVersesWithWords(surahNumber, resourceId)
-                    : (await getAllVerses(surahNumber, selectedTranslation));
+                    : (await getAllVerses(surahNumber, resourceId));
                 
                 if (isCancelled) return;
 
