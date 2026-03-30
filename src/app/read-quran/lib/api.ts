@@ -142,6 +142,9 @@ export async function getChapters(): Promise<Chapter[]> {
     try {
         const response = await fetchWithRetry(`${API_BASE}/chapters?language=en`);
         const data: ChaptersResponse = await response.json();
+        data.chapters.forEach(c => {
+            if (c.name_simple === "Ali 'Imran") c.name_simple = "Al 'Imran";
+        });
         clientCache.set(cacheKey, data.chapters);
         return data.chapters;
     } catch (error) {
@@ -160,6 +163,7 @@ export async function getChapter(chapterId: number): Promise<Chapter> {
     try {
         const response = await fetchWithRetry(`${API_BASE}/chapters/${chapterId}?language=en`);
         const data: ChapterResponse = await response.json();
+        if (data.chapter.name_simple === "Ali 'Imran") data.chapter.name_simple = "Al 'Imran";
         clientCache.set(cacheKey, data.chapter);
         return data.chapter;
     } catch (error) {

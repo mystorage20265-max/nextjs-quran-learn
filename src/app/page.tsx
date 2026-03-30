@@ -195,7 +195,7 @@ const JUZ_DATA = [
   { juz: 1, start: '1:1', surah: 'Al-Fatihah', page: 1 },
   { juz: 2, start: '2:142', surah: 'Al-Baqarah', page: 22 },
   { juz: 3, start: '2:253', surah: 'Al-Baqarah', page: 42 },
-  { juz: 4, start: '3:93', surah: "Ali 'Imran", page: 62 },
+  { juz: 4, start: '3:93', surah: "Al 'Imran", page: 62 },
   { juz: 5, start: '4:24', surah: 'An-Nisa', page: 82 },
   { juz: 6, start: '4:148', surah: 'An-Nisa', page: 102 },
   { juz: 7, start: '5:83', surah: "Al-Ma'idah", page: 121 },
@@ -385,62 +385,62 @@ export default function HomePage() {
   const [tasbeehTotal, setTasbeehTotal] = useState(0);
   const [tasbeehFlash, setTasbeehFlash] = useState(false);
 
-    useEffect(() => {
-        const loadRecent = () => {
-            const saved = getRecentSurahs();
-            // Map to local structure if needed, but our RecentSurah interface now matches what the UI expects (mostly)
-            // The UI expects properties that might be missing if we only saved num/name/ar/v
-            // However, SURAHS constant has the full data.
-            setRecent(saved.map(s => {
-                const full = SURAHS.find(f => f.num === s.num);
-                return full || { ...s, t: 'Meccan' as const }; // Fallback
-            }));
-        };
+  useEffect(() => {
+    const loadRecent = () => {
+      const saved = getRecentSurahs();
+      // Map to local structure if needed, but our RecentSurah interface now matches what the UI expects (mostly)
+      // The UI expects properties that might be missing if we only saved num/name/ar/v
+      // However, SURAHS constant has the full data.
+      setRecent(saved.map(s => {
+        const full = SURAHS.find(f => f.num === s.num);
+        return full || { ...s, t: 'Meccan' as const }; // Fallback
+      }));
+    };
 
-        loadRecent();
-        window.addEventListener('recentSurahsUpdated', loadRecent);
+    loadRecent();
+    window.addEventListener('recentSurahsUpdated', loadRecent);
 
-        // Load cumulative time
-        const savedTotal = parseInt(localStorage.getItem('quranTotalTime') || '0', 10);
-        setTotalTime(savedTotal);
-        // Load tasbeeh total
-        const savedTasbeehTotal = parseInt(localStorage.getItem('tasbeehTotal') || '0', 10);
-        setTasbeehTotal(savedTasbeehTotal);
+    // Load cumulative time
+    const savedTotal = parseInt(localStorage.getItem('quranTotalTime') || '0', 10);
+    setTotalTime(savedTotal);
+    // Load tasbeeh total
+    const savedTasbeehTotal = parseInt(localStorage.getItem('tasbeehTotal') || '0', 10);
+    setTasbeehTotal(savedTasbeehTotal);
 
-        // Load reading streak & weekly data
-        const savedStreak = parseInt(localStorage.getItem('readingStreak') || '0', 10);
-        setReadingStreak(savedStreak);
-        const savedWeekly = localStorage.getItem('weeklyReadingData');
-        if (savedWeekly) {
-          try { setWeeklyData(JSON.parse(savedWeekly)); } catch { /* ignore */ }
-        } else {
-          // Generate initial demo data based on recent activity
-          const demoData = [35, 60, 90, 75, 50, 25, 80];
-          setWeeklyData(demoData);
-          localStorage.setItem('weeklyReadingData', JSON.stringify(demoData));
-        }
-        const savedSurs = parseInt(localStorage.getItem('sursRead') || '0', 10);
-        const recentList = getRecentSurahs();
-        setSursRead(savedSurs || (recentList.length > 0 ? recentList.length : 0));
+    // Load reading streak & weekly data
+    const savedStreak = parseInt(localStorage.getItem('readingStreak') || '0', 10);
+    setReadingStreak(savedStreak);
+    const savedWeekly = localStorage.getItem('weeklyReadingData');
+    if (savedWeekly) {
+      try { setWeeklyData(JSON.parse(savedWeekly)); } catch { /* ignore */ }
+    } else {
+      // Generate initial demo data based on recent activity
+      const demoData = [35, 60, 90, 75, 50, 25, 80];
+      setWeeklyData(demoData);
+      localStorage.setItem('weeklyReadingData', JSON.stringify(demoData));
+    }
+    const savedSurs = parseInt(localStorage.getItem('sursRead') || '0', 10);
+    const recentList = getRecentSurahs();
+    setSursRead(savedSurs || (recentList.length > 0 ? recentList.length : 0));
 
-        // Update streak on visit
-        const today = new Date().toDateString();
-        const lastVisit = localStorage.getItem('lastVisitDate');
-        if (lastVisit !== today) {
-          localStorage.setItem('lastVisitDate', today);
-          const newStreak = savedStreak + 1;
-          setReadingStreak(newStreak);
-          localStorage.setItem('readingStreak', String(newStreak));
-          // Update today's bar in weekly data
-          const dayIdx = new Date().getDay();
-          const wd = savedWeekly ? JSON.parse(savedWeekly) : [35, 60, 90, 75, 50, 25, 80];
-          wd[dayIdx] = Math.min((wd[dayIdx] || 0) + 15, 100);
-          setWeeklyData(wd);
-          localStorage.setItem('weeklyReadingData', JSON.stringify(wd));
-        }
+    // Update streak on visit
+    const today = new Date().toDateString();
+    const lastVisit = localStorage.getItem('lastVisitDate');
+    if (lastVisit !== today) {
+      localStorage.setItem('lastVisitDate', today);
+      const newStreak = savedStreak + 1;
+      setReadingStreak(newStreak);
+      localStorage.setItem('readingStreak', String(newStreak));
+      // Update today's bar in weekly data
+      const dayIdx = new Date().getDay();
+      const wd = savedWeekly ? JSON.parse(savedWeekly) : [35, 60, 90, 75, 50, 25, 80];
+      wd[dayIdx] = Math.min((wd[dayIdx] || 0) + 15, 100);
+      setWeeklyData(wd);
+      localStorage.setItem('weeklyReadingData', JSON.stringify(wd));
+    }
 
-        return () => window.removeEventListener('recentSurahsUpdated', loadRecent);
-    }, []);
+    return () => window.removeEventListener('recentSurahsUpdated', loadRecent);
+  }, []);
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -1161,23 +1161,23 @@ export default function HomePage() {
                       cursor: 'pointer', transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
                       position: 'relative', overflow: 'hidden'
                     }}
-                      onMouseEnter={e => { 
-                        e.currentTarget.style.transform = 'translateY(-3px)'; 
-                        e.currentTarget.style.boxShadow = dark ? 'inset 0 1px 1px rgba(255,255,255,0.08), 0 8px 24px rgba(var(--brand-rgb),0.15)' : 'inset 0 1px 1px rgba(255,255,255,1), 0 8px 24px rgba(var(--brand-rgb),0.15)'; 
+                      onMouseEnter={e => {
+                        e.currentTarget.style.transform = 'translateY(-3px)';
+                        e.currentTarget.style.boxShadow = dark ? 'inset 0 1px 1px rgba(255,255,255,0.08), 0 8px 24px rgba(var(--brand-rgb),0.15)' : 'inset 0 1px 1px rgba(255,255,255,1), 0 8px 24px rgba(var(--brand-rgb),0.15)';
                         e.currentTarget.style.borderColor = dark ? 'rgba(var(--brand-rgb),0.3)' : 'rgba(var(--brand-rgb),0.4)';
                         const chevron = e.currentTarget.querySelector('.action-chevron') as HTMLElement;
-                        if(chevron) chevron.style.transform = 'translateX(4px)';
+                        if (chevron) chevron.style.transform = 'translateX(4px)';
                       }}
-                      onMouseLeave={e => { 
-                        e.currentTarget.style.transform = 'none'; 
-                        e.currentTarget.style.boxShadow = dark ? 'inset 0 1px 1px rgba(255,255,255,0.05), 0 4px 12px rgba(0,0,0,0.2)' : 'inset 0 1px 1px rgba(255,255,255,1), 0 4px 12px rgba(0,0,0,0.04)'; 
+                      onMouseLeave={e => {
+                        e.currentTarget.style.transform = 'none';
+                        e.currentTarget.style.boxShadow = dark ? 'inset 0 1px 1px rgba(255,255,255,0.05), 0 4px 12px rgba(0,0,0,0.2)' : 'inset 0 1px 1px rgba(255,255,255,1), 0 4px 12px rgba(0,0,0,0.04)';
                         e.currentTarget.style.borderColor = dark ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.8)';
                         const chevron = e.currentTarget.querySelector('.action-chevron') as HTMLElement;
-                        if(chevron) chevron.style.transform = 'none';
+                        if (chevron) chevron.style.transform = 'none';
                       }}
                     >
                       {/* Vibrant Gradient Icon Box */}
-                      <div style={{ 
+                      <div style={{
                         width: 44, height: 44, borderRadius: 14, flexShrink: 0,
                         background: 'linear-gradient(135deg, var(--brand-primary), var(--brand-primary-hover))',
                         boxShadow: '0 4px 12px rgba(var(--brand-rgb),0.3)',
@@ -1185,15 +1185,15 @@ export default function HomePage() {
                       }}>
                         <span className="material-symbols-outlined" style={{ fontSize: 24, color: '#ffffff' }}>{f.icon}</span>
                       </div>
-                      
+
                       {/* Text */}
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <p style={{ margin: 0, fontWeight: 800, fontSize: 14.5, color: dark ? '#f8fafc' : '#0f172a', lineHeight: 1.2 }}>{f.label}</p>
                         <p style={{ margin: '3px 0 0', fontSize: 11.5, color: dark ? '#cbd5e1' : '#64748b', lineHeight: 1.3, fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{f.sub}</p>
                       </div>
-                      
+
                       {/* Hover Arrow */}
-                      <span className="material-symbols-outlined action-chevron" style={{ 
+                      <span className="material-symbols-outlined action-chevron" style={{
                         fontSize: 20, color: 'var(--brand-primary)', opacity: 0.8,
                         transition: 'transform 0.25s ease', flexShrink: 0
                       }}>chevron_right</span>
@@ -1271,25 +1271,25 @@ export default function HomePage() {
                 {FEATURES.map(f => {
                   const isNav = f.href === '#navigate';
                   const inner = (
-                    <div className="feat-card" style={{ 
-                      ...S.card, 
-                      padding: '20px 16px', 
-                      display: 'flex', 
-                      flexDirection: 'column', 
-                      alignItems: 'center', 
+                    <div className="feat-card" style={{
+                      ...S.card,
+                      padding: '20px 16px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
                       justifyContent: 'center',
                       textAlign: 'center',
-                      cursor: 'pointer', 
+                      cursor: 'pointer',
                       borderRadius: '16px',
                       background: dark ? '#1a1612' : '#f8fafc',
                       border: 'none',
                       boxShadow: dark ? '0 4px 20px rgba(0,0,0,0.6)' : '0 4px 12px rgba(0,0,0,0.05)',
                     }}>
-                      <div style={{ 
-                        width: 48, height: 48, borderRadius: '50%', 
-                        background: `${f.color}20`, 
+                      <div style={{
+                        width: 48, height: 48, borderRadius: '50%',
+                        background: `${f.color}20`,
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        marginBottom: 12 
+                        marginBottom: 12
                       }}>
                         <span className="material-symbols-outlined" style={{ fontSize: 24, color: f.color }}>{f.icon}</span>
                       </div>

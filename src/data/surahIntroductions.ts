@@ -98,7 +98,7 @@ const surahIntroductions: Record<number, SurahIntroduction> = {
   3: {
     number: 3,
     name: "آل عمران",
-    englishName: "Ali 'Imran",
+    englishName: "Al 'Imran",
     revelationType: "Madani",
     numberOfAyahs: 200,
     meta: {
@@ -106,7 +106,7 @@ const surahIntroductions: Record<number, SurahIntroduction> = {
       verses: 200,
       type: "Madani"
     },
-    overview: "Surah Ali 'Imran, revealed after the Battle of Uhud, focuses on strengthening the faith of Muslims through lessons from previous prophets and their communities.",
+    overview: "Surah Al 'Imran, revealed after the Battle of Uhud, focuses on strengthening the faith of Muslims through lessons from previous prophets and their communities.",
     historicalContext: {
       title: "Historical Context",
       content: [
@@ -124,7 +124,7 @@ const surahIntroductions: Record<number, SurahIntroduction> = {
       ]
     },
     virtues: [
-      "The Prophet ﷺ said about Al-Baqarah and Ali 'Imran: 'They will come on the Day of Resurrection like two clouds or two shades, or two flocks of birds in ranks, pleading for those who recited them' (Sahih Muslim).",
+      "The Prophet ﷺ said about Al-Baqarah and Al 'Imran: 'They will come on the Day of Resurrection like two clouds or two shades, or two flocks of birds in ranks, pleading for those who recited them' (Sahih Muslim).",
       "Known as 'Az-Zahrawain' (The Two Luminous Ones) along with Al-Baqarah."
     ],
     context: "This Surah strengthened Muslim morale after military setbacks and clarified theological positions."
@@ -2153,7 +2153,7 @@ const surahIntroductions: Record<number, SurahIntroduction> = {
       ]
     },
     virtues: [
-      "The Prophet ﷺ said: 'Surah As-Saff and Al-Mujadilah are two sisters, and I love them as I love Surah Al-Baqarah and Ali 'Imran' (Al-Durr al-Manthur).",
+      "The Prophet ﷺ said: 'Surah As-Saff and Al-Mujadilah are two sisters, and I love them as I love Surah Al-Baqarah and Al 'Imran' (Al-Durr al-Manthur).",
       "Contains the call to 'help Allah' meaning help His religion.",
       "Known for its emphasis on unity and consistency in faith."
     ],
