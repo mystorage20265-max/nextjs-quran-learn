@@ -138,19 +138,7 @@ export function Sidebar({
           ))}
         </div>
 
-        {/* CTA */}
-        <div className="sp-sidebar-cta">
-          <h4>Discover Quran Recitations</h4>
-          <p>Listen to beautiful recitations from world-renowned reciters.</p>
-          <button
-            className="sp-sidebar-cta-btn"
-            onClick={() => { 
-                setSelectedReciterPlaylist(null); 
-                setSearchQuery(''); 
-                if (mainRef.current) mainRef.current.scrollTo({ top: 9999, behavior: 'smooth' }); 
-            }}
-          >Explore</button>
-        </div>
+
       </div>
     </aside>
   );

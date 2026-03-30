@@ -1,4 +1,4 @@
-﻿/* ── GlobalSidebar.css ── */
+/* ── GlobalSidebar.css ── */
 
 /* ── Root aside ── */
 .gsb-root {
@@ -18,8 +18,8 @@
 }
 
 .dark .gsb-root {
-  background: #111f16;
-  border-right-color: #1e3a2a;
+  background: var(--bg-surface);
+  border-right-color: var(--border-default);
 }
 
 /* ── Hide Scrollbar ── */
@@ -59,7 +59,7 @@
 }
 
 .gsb-logo-icon {
-  background: rgba(245, 158, 11, 0.15);
+  background: rgba(var(--brand-rgb), 0.15);
   border-radius: 10px;
   padding: 7px;
 }
@@ -78,7 +78,7 @@
 
 .gsb-logo-sub {
   margin: 0;
-  color: #f59e0b;
+  color: var(--brand-primary);
   font-size: 9px;
   font-weight: 600;
   text-transform: uppercase;
@@ -99,17 +99,18 @@
 
 .dark .gsb-theme-btn {
   background: #1e3a2a;
-  color: #f59e0b;
+  color: var(--brand-primary);
 }
 
 /* ── Nav ── */
 .gsb-nav {
   display: flex;
   flex-direction: column;
+  gap: 1px;
 }
 
 .gsb-divider {
-  margin: 8px 0;
+  margin: 6px 0;
   border: none;
   border-top: 1px solid #f1f5f9;
 }
@@ -122,24 +123,24 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 9px 12px;
+  padding: 8px 12px;
   border-radius: 10px;
   text-decoration: none;
   font-weight: 500;
   font-size: 13.5px;
   color: #64748b;
-  transition: background 0.15s, color 0.15s;
-  margin: 1px 0;
+  transition: background 0.15s, color 0.15s, transform 0.15s;
+  margin: 0;
 }
 
 .gsb-link:hover {
-  background: rgba(245, 158, 11, 0.08);
-  color: #f59e0b;
+  background: rgba(var(--brand-rgb), 0.08);
+  color: var(--brand-primary);
 }
 
 .gsb-link.active {
-  background: rgba(245, 158, 11, 0.12);
-  color: #f59e0b;
+  background: rgba(var(--brand-rgb), 0.12);
+  color: var(--brand-primary);
   font-weight: 600;
 }
 
@@ -148,13 +149,57 @@
 }
 
 .dark .gsb-link:hover {
-  background: rgba(245, 158, 11, 0.08);
-  color: #f59e0b;
+  background: rgba(var(--brand-rgb), 0.08);
+  color: var(--brand-primary);
 }
 
 .dark .gsb-link.active {
-  background: rgba(245, 158, 11, 0.14);
-  color: #f59e0b;
+  background: rgba(var(--brand-rgb), 0.14);
+  color: var(--brand-primary);
+}
+
+/* ── Link text wrapper ── */
+.gsb-link-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.gsb-link-label {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.gsb-link-sub {
+  font-size: 10px;
+  font-weight: 400;
+  color: #94a3b8;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gsb-link:hover .gsb-link-sub {
+  color: rgba(var(--brand-rgb), 0.7);
+}
+
+.gsb-link.active .gsb-link-sub {
+  color: rgba(var(--brand-rgb), 0.65);
+}
+
+.dark .gsb-link-sub {
+  color: #64748b;
+}
+
+.dark .gsb-link:hover .gsb-link-sub {
+  color: rgba(var(--brand-rgb), 0.6);
+}
+
+.dark .gsb-link.active .gsb-link-sub {
+  color: rgba(var(--brand-rgb), 0.55);
 }
 
 /* ── Recently Visited ── */
@@ -175,7 +220,7 @@
   margin: 0;
   font-size: 10px;
   font-weight: 700;
-  color: #f59e0b;
+  color: var(--brand-primary);
   text-transform: uppercase;
   letter-spacing: 0.12em;
   padding: 0 4px;
@@ -229,14 +274,14 @@
 .gsb-recent-num {
   width: 26px;
   height: 26px;
-  background: rgba(245, 158, 11, 0.12);
+  background: rgba(var(--brand-rgb), 0.12);
   border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 11px;
   font-weight: 700;
-  color: #f59e0b;
+  color: var(--brand-primary);
   flex-shrink: 0;
 }
 
@@ -308,7 +353,7 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #f59e0b, #d97706);
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-primary-hover));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -391,11 +436,11 @@
 }
 
 .gsb-mob-item:hover {
-  color: #f59e0b;
+  color: var(--brand-primary);
 }
 
 .gsb-mob-item.active {
-  color: #f59e0b;
+  color: var(--brand-primary);
 }
 
 .dark .gsb-mob-item {
@@ -404,7 +449,7 @@
 
 .dark .gsb-mob-item:hover,
 .dark .gsb-mob-item.active {
-  color: #f59e0b;
+  color: var(--brand-primary);
 }
 
 /* Active indicator dot above icon */
@@ -414,7 +459,7 @@
   top: 0;
   width: 24px;
   height: 2px;
-  background: #f59e0b;
+  background: var(--brand-primary);
   border-radius: 0 0 2px 2px;
 }
 
@@ -434,7 +479,7 @@
 }
 
 .gsb-mob-item.active .gsb-mob-icon {
-  background: rgba(245, 158, 11, 0.1);
+  background: rgba(var(--brand-rgb), 0.1);
 }
 
 /* Add padding to page content on mobile so it doesn't hide behind the nav */

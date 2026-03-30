@@ -7,26 +7,31 @@ import { getRecentSurahs, clearRecentSurahs, RecentSurah } from '@/lib/recentSur
 import './GlobalSidebar.css';
 
 // ── Nav items shared between sidebar and mobile bottom nav ──
-const NAV_LINKS = [
-    { icon: 'home', label: 'Home', href: '/' },
-    { icon: 'menu_book', label: 'Read Quran', href: '/read-quran/1' },
-    { icon: 'ads_click', label: 'Memorize', href: '/memorize-quran' },
-    { icon: 'radio', label: 'Radio', href: '/quran-player' },
-    { icon: 'music_note', label: 'Audio', href: '/audio-quran' },
+const NAV_LINKS: (null | { icon: string; label: string; sub?: string; href: string })[] = [
+    // ── Main ──
+    { icon: 'dashboard', label: 'Dashboard', sub: 'Overview & stats', href: '/' },
+    { icon: 'menu_book', label: 'Read Quran', sub: '114 Surahs', href: '/read-quran/1' },
+    { icon: 'headphones', label: 'Quran Player', sub: 'Listen & recite', href: '/quran-player' },
     null, // divider
-    { icon: 'star', label: 'Duas', href: '/dua' },
-    { icon: 'science', label: 'Quran & Science', href: '/quran-science' },
+    // ── Learn ──
+    { icon: 'psychology', label: 'Memorize', sub: 'Hifz program', href: '/memorize-quran' },
+    { icon: 'book_2', label: 'Tafseer', sub: 'Verse explanations', href: '/tafseer' },
     null, // divider
-    { icon: 'login', label: 'Login', href: '/login' },
+    // ── Explore ──
+    { icon: 'volunteer_activism', label: 'Duas', sub: 'Daily supplications', href: '/dua' },
+    { icon: 'format_quote', label: 'Hadees', sub: "Prophet's sayings ﷺ", href: '/hadees' },
+    null, // divider
+    // ── Account ──
+    { icon: 'login', label: 'Sign In', sub: 'Sync your progress', href: '/login' },
 ];
 
 // Primary tabs shown in the mobile bottom nav (max 5 for comfortably tappable targets)
 const MOBILE_TABS = [
-    { icon: 'home', label: 'Home', href: '/' },
+    { icon: 'dashboard', label: 'Home', href: '/' },
     { icon: 'menu_book', label: 'Quran', href: '/read-quran/1' },
-    { icon: 'ads_click', label: 'Memorize', href: '/memorize-quran' },
-    { icon: 'radio', label: 'Radio', href: '/quran-player' },
-    { icon: 'star', label: 'Duas', href: '/dua' },
+    { icon: 'psychology', label: 'Memorize', href: '/memorize-quran' },
+    { icon: 'headphones', label: 'Player', href: '/quran-player' },
+    { icon: 'volunteer_activism', label: 'Duas', href: '/dua' },
 ];
 
 /** Human-readable relative time label */
@@ -54,6 +59,7 @@ function useIsExcluded(pathname: string): boolean {
 export default function GlobalSidebar() {
     const pathname = usePathname();
     const [dark, setDark] = useState(false);
+    const [colorTheme, setColorTheme] = useState<'green' | 'amber'>('green');
     const [recent, setRecent] = useState<RecentSurah[]>([]);
 
     const loadRecent = () => setRecent(getRecentSurahs());
@@ -67,6 +73,15 @@ export default function GlobalSidebar() {
             setDark(document.documentElement.classList.contains('dark'))
         );
         darkObs.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+
+        // Sync color theme state
+        const storedTheme = localStorage.getItem('color-theme') as 'green' | 'amber' | null;
+        if (storedTheme) {
+            setColorTheme(storedTheme);
+            document.documentElement.setAttribute('data-color-theme', storedTheme);
+        } else {
+            document.documentElement.setAttribute('data-color-theme', 'green');
+        }
 
         // Same-tab recent updates
         window.addEventListener('recentSurahsUpdated', loadRecent);
@@ -90,6 +105,14 @@ export default function GlobalSidebar() {
         setDark(next);
     };
 
+    const toggleColorTheme = (e: React.MouseEvent) => {
+        e.preventDefault();
+        const nextTheme = colorTheme === 'green' ? 'amber' : 'green';
+        setColorTheme(nextTheme);
+        document.documentElement.setAttribute('data-color-theme', nextTheme);
+        localStorage.setItem('color-theme', nextTheme);
+    };
+
     const isActive = (href: string) => {
         const p = pathname ?? '';
         if (href === '/') return p === '/';
@@ -110,7 +133,7 @@ export default function GlobalSidebar() {
                     <div className="gsb-logo-row">
                         <Link href="/" className="gsb-logo-link" aria-label="Go to homepage">
                             <div className="gsb-logo-icon">
-                                <span className="material-symbols-outlined" style={{ color: '#f59e0b', fontSize: 24, display: 'block' }}>
+                                <span className="material-symbols-outlined" style={{ color: 'var(--brand-primary)', fontSize: 24, display: 'block' }}>
                                     auto_stories
                                 </span>
                             </div>
@@ -119,15 +142,28 @@ export default function GlobalSidebar() {
                                 <p className="gsb-logo-sub">Learning Hub</p>
                             </div>
                         </Link>
-                        <button
-                            className="gsb-theme-btn"
-                            onClick={toggleDark}
-                            aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
-                        >
-                            <span className="material-symbols-outlined" style={{ fontSize: 18 }}>
-                                {dark ? 'light_mode' : 'dark_mode'}
-                            </span>
-                        </button>
+                        <div style={{ display: 'flex', gap: 6 }}>
+                            <button
+                                className="gsb-theme-btn"
+                                onClick={toggleColorTheme}
+                                title={colorTheme === 'green' ? 'Switch to Amber theme' : 'Switch to Green theme'}
+                                aria-label="Toggle Color Theme"
+                            >
+                                <span className="material-symbols-outlined" style={{ fontSize: 18, color: 'var(--brand-primary)' }}>
+                                    palette
+                                </span>
+                            </button>
+                            <button
+                                className="gsb-theme-btn"
+                                onClick={(e) => { e.preventDefault(); toggleDark(); }}
+                                aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
+                                title="Toggle Dark Mode"
+                            >
+                                <span className="material-symbols-outlined" style={{ fontSize: 18 }}>
+                                    {dark ? 'light_mode' : 'dark_mode'}
+                                </span>
+                            </button>
+                        </div>
                     </div>
 
                     {/* Nav links */}
@@ -145,7 +181,10 @@ export default function GlobalSidebar() {
                                     <span className="material-symbols-outlined" style={{ fontSize: 20 }}>
                                         {link.icon}
                                     </span>
-                                    {link.label}
+                                    <div className="gsb-link-text">
+                                        <span className="gsb-link-label">{link.label}</span>
+                                        {link.sub && <span className="gsb-link-sub">{link.sub}</span>}
+                                    </div>
                                 </Link>
                             )
                         )}
@@ -194,12 +233,12 @@ export default function GlobalSidebar() {
                 <div className="gsb-profile-wrap">
                     <div className="gsb-profile-card" style={{ flexDirection: 'column', gap: 10, alignItems: 'flex-start' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                            <div className="gsb-profile-avatar" style={{ background: 'linear-gradient(135deg,#475569,#334155)', fontSize: 16 }}>
+                            <div className="gsb-profile-avatar" style={{ background: 'linear-gradient(135deg,var(--brand-primary),var(--brand-primary-hover))', fontSize: 16 }}>
                                 <span className="material-symbols-outlined" style={{ fontSize: 18, color: 'white' }}>person</span>
                             </div>
                             <div style={{ minWidth: 0 }}>
-                                <p className="gsb-profile-name">Browsing Anonymously</p>
-                                <p className="gsb-profile-role">Guest User</p>
+                                <p className="gsb-profile-name">Assalamu Alaikum</p>
+                                <p className="gsb-profile-role">Sign in to save progress</p>
                             </div>
                         </div>
                         <Link
@@ -207,12 +246,12 @@ export default function GlobalSidebar() {
                             style={{
                                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5,
                                 width: '100%', padding: '7px 0', borderRadius: 8, textDecoration: 'none',
-                                background: 'linear-gradient(135deg,#f59e0b,#d97706)',
+                                background: 'linear-gradient(135deg,var(--brand-primary),var(--brand-primary-hover))',
                                 color: 'white', fontSize: 11.5, fontWeight: 700, letterSpacing: '0.03em',
                             }}
                         >
-                            <span className="material-symbols-outlined" style={{ fontSize: 14 }}>star</span>
-                            Subscribe Now
+                            <span className="material-symbols-outlined" style={{ fontSize: 14 }}>person_add</span>
+                            Create Free Account
                         </Link>
                     </div>
                 </div>

@@ -19,6 +19,7 @@ import { Sidebar } from "@/components/quran-player/Sidebar";
 import { BottomPlayerBar } from "@/components/quran-player/BottomPlayerBar";
 import { MobilePlayer } from "@/components/quran-player/MobilePlayer";
 import { QueuePanel } from "@/components/quran-player/QueuePanel";
+import { SoundCloudHeroPlayer } from "@/components/quran-player/SoundCloudHeroPlayer";
 
 export default function QuranPlayerPage() {
   const [currentReciter, setCurrentReciter] = useState<Reciter>(RECITERS[0]);
@@ -424,10 +425,13 @@ export default function QuranPlayerPage() {
             );
           })() : (
             <>
-              {/* Hero Gradient */}
-              <div className="sp-hero-gradient">
-                <h1 className="sp-hero-greeting">{greeting}</h1>
-              </div>
+              {/* Hero Player */}
+              <SoundCloudHeroPlayer 
+                currentTrack={currentTrack || tracks[0]} 
+                audioRef={audioRef} 
+                isPlaying={isPlaying} 
+                togglePlay={togglePlay} 
+              />
 
               {/* Quick Play Grid */}
               <div className="sp-quickplay-grid">

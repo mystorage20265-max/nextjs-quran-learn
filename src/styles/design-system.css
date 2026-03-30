@@ -83,12 +83,14 @@
   --text-arabic: #fdfbf7;
   --text-arabic-secondary: #f5edd8;
 
-  /* Brand colors - Warm amber gold */
-  --brand-primary: #f59e0b;
-  --brand-primary-hover: #d97706;
-  --brand-primary-active: #b45309;
-  --brand-primary-soft: rgba(245, 158, 11, 0.12);
-  --brand-primary-glow: rgba(245, 158, 11, 0.2);
+  /* Brand colors - Default Green */
+  --brand-primary: #10b981;
+  --brand-primary-hover: #059669;
+  --brand-primary-active: #047857;
+  --brand-primary-soft: rgba(16, 185, 129, 0.12);
+  --brand-primary-glow: rgba(16, 185, 129, 0.2);
+  --brand-rgb: 16, 185, 129;
+  --brand-hover-rgb: 5, 150, 105;
 
   /* Accent colors */
   --accent-teal: #2dd4bf;
@@ -156,12 +158,14 @@
   --text-arabic: #1a1612;
   --text-arabic-secondary: #292524;
 
-  /* Brand colors - Deeper amber for contrast */
-  --brand-primary: #d97706;
-  --brand-primary-hover: #b45309;
-  --brand-primary-active: #92400e;
-  --brand-primary-soft: rgba(217, 119, 6, 0.1);
-  --brand-primary-glow: rgba(217, 119, 6, 0.15);
+  /* Brand colors - Default Green */
+  --brand-primary: #059669;
+  --brand-primary-hover: #047857;
+  --brand-primary-active: #064e3b;
+  --brand-primary-soft: rgba(5, 150, 105, 0.1);
+  --brand-primary-glow: rgba(5, 150, 105, 0.15);
+  --brand-rgb: 5, 150, 105;
+  --brand-hover-rgb: 4, 120, 87;
 
   /* Accent colors */
   --accent-teal: #0d9488;
@@ -548,4 +552,50 @@
   background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0L60 30L30 60L0 30L30 0z' fill='none' stroke='%23f59e0b' stroke-opacity='0.03' stroke-width='1'/%3E%3C/svg%3E");
   pointer-events: none;
   opacity: 0.5;
+}
+
+/* ============ COLOR THEMES ============ */
+
+/* -- THEME: AMBER -- */
+[data-color-theme="amber"] {
+  --brand-primary: #f59e0b;
+  --brand-primary-hover: #d97706;
+  --brand-primary-active: #b45309;
+  --brand-primary-soft: rgba(245, 158, 11, 0.12);
+  --brand-primary-glow: rgba(245, 158, 11, 0.2);
+  --brand-rgb: 245, 158, 11;
+  --brand-hover-rgb: 217, 119, 6;
+}
+
+[data-theme="light"][data-color-theme="amber"],
+[data-color-theme="amber"] [data-theme="light"] {
+  --brand-primary: #d97706;
+  --brand-primary-hover: #b45309;
+  --brand-primary-active: #92400e;
+  --brand-primary-soft: rgba(217, 119, 6, 0.1);
+  --brand-primary-glow: rgba(217, 119, 6, 0.15);
+  --brand-rgb: 217, 119, 6;
+  --brand-hover-rgb: 180, 83, 9;
+}
+
+/* -- THEME: GREEN -- */
+[data-color-theme="green"] {
+  --brand-primary: #10b981;
+  --brand-primary-hover: #059669;
+  --brand-primary-active: #047857;
+  --brand-primary-soft: rgba(16, 185, 129, 0.12);
+  --brand-primary-glow: rgba(16, 185, 129, 0.2);
+  --brand-rgb: 16, 185, 129;
+  --brand-hover-rgb: 5, 150, 105;
+}
+
+[data-theme="light"][data-color-theme="green"],
+[data-color-theme="green"] [data-theme="light"] {
+  --brand-primary: #059669;
+  --brand-primary-hover: #047857;
+  --brand-primary-active: #064e3b;
+  --brand-primary-soft: rgba(5, 150, 105, 0.1);
+  --brand-primary-glow: rgba(5, 150, 105, 0.15);
+  --brand-rgb: 5, 150, 105;
+  --brand-hover-rgb: 4, 120, 87;
 }
