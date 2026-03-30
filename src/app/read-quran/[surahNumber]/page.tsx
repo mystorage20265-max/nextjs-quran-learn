@@ -281,15 +281,6 @@ const RightSidebar = ({
     );
 };
 
-/**
- * Returns true if `verse` is the last verse of its Ruku.
- */
-const isRukuEnd = (verse: { verse_number: number; ruku_number: number }, verses: Array<{ verse_number: number; ruku_number: number }>): boolean => {
-    const idx = verses.findIndex(v => v.verse_number === verse.verse_number);
-    if (idx === -1) return false;
-    return idx === verses.length - 1 || verses[idx + 1].ruku_number !== verse.ruku_number;
-};
-
 // Memoized Word Item component to prevent expensive re-renders of the entire word list
 const WordItem = memo(({ 
     word, 
@@ -1436,7 +1427,6 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                                 if (!displayText.trim()) return null;
                                                                 
                                                                 const isActive = currentVerse === verse.verse_number;
-                                                                const showRuku = isRukuEnd(verse, verses);
 
                                                                 return (
                                                                     <span key={verse.id}>
@@ -1455,13 +1445,8 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                                             {displayText}
                                                                         </span>
                                                                         {' '}
-                                                                        <span style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', verticalAlign: 'middle', gap: 0 }}>
-                                                                            {showRuku && (
-                                                                                <span style={{ fontSize: Math.round(ayahSize * 0.55), fontFamily: "'Naskh IndoPak', 'Scheherazade New', 'Amiri', serif", color: 'var(--brand-primary)', fontWeight: 700, lineHeight: 1, userSelect: 'none' }}>ع</span>
-                                                                            )}
-                                                                            <span style={{ cursor: 'pointer', lineHeight: 1 }} onClick={() => playVerse(verse.verse_number)}>
-                                                                                <AyahMarker number={verse.verse_number} size={ayahSize} />
-                                                                            </span>
+                                                                        <span style={{ cursor: 'pointer', lineHeight: 1 }} onClick={() => playVerse(verse.verse_number)}>
+                                                                            <AyahMarker number={verse.verse_number} size={ayahSize} />
                                                                         </span>
                                                                         {' '}
                                                                     </span>
