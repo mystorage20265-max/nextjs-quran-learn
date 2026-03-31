@@ -13,7 +13,6 @@ import {
     Volume2,
     ChevronDown,
     BookOpen,
-    Info,
     Hash,
     MapPin,
     ListOrdered,
@@ -51,20 +50,7 @@ const cleanIndopakText = (text: string): string => {
     return text.trim();
 };
 
-// Remove zero-width/invisible characters that can slip through
-// Only remove truly invisible Unicode - preserve spaces and word structure
-const stripInvisibleChars = (text: string): string => {
-    if (!text) return '';
-    return text
-        .replace(/[\u200B-\u200D]/g, '')  // Zero-width space, joiner, non-joiner
-        .replace(/[\uFEFF]/g, '')         // Zero-width no-break space
-        .replace(/[\u061C]/g, '')         // Arabic letter mark
-        .replace(/[\u180E]/g, '')         // Mongolian vowel separator
-        .replace(/[\u00A0]/g, ' ')        // Non-breaking space → regular space
-        .replace(/[\u2000-\u200A]/g, ' ') // Various Unicode spaces → regular space
-        .replace(/[\u3000]/g, ' ')        // Ideographic space → regular space
-        .trim();
-};
+
 
 // Ultra-strict: check if text has at least one visible/meaningful character
 
@@ -97,10 +83,6 @@ const removeBismillah = (text: string): string => {
     return text;
 };
 
-const isBismillahWord = (word: string): boolean => {
-    const stripped = word.replace(/[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06ED\u0640\u06EE\u06EF\uFBB2-\uFBC2]/g, '');
-    return ['بسم', 'الله', 'ٱلله', 'الرحمن', 'ٱلرحمن', 'الرحيم', 'ٱلرحيم'].includes(stripped);
-};
 
 const toArabicNumeral = (num: number): string => {
     const d = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
@@ -130,6 +112,7 @@ const AyahMarker = memo(({ number, size = 30 }: { number: number; size?: number 
         </svg>
     );
 });
+AyahMarker.displayName = 'AyahMarker';
 
 // Right Sidebar component for Desktop
 const RightSidebar = ({ 
@@ -171,9 +154,9 @@ const RightSidebar = ({
                     </p>
                 </div>
                 <div className="surah-meaning-box">
-                    <span className="quote-icon-left">"</span>
+                    <span className="quote-icon-left">&quot;</span>
                     <p className="surah-meaning-text">{chapter.translated_name.name}</p>
-                    <span className="quote-icon-right">"</span>
+                    <span className="quote-icon-right">&quot;</span>
                 </div>
             </div>
 
@@ -295,6 +278,7 @@ const WordItem = memo(({
         </div>
     );
 });
+WordItem.displayName = 'WordItem';
 
 
 interface SurahPageProps {
@@ -306,7 +290,7 @@ type ReadingMode = 'translation' | 'reading' | 'word-by-word';
 const ALL_SURAHS = [
     { number: 1, name: 'Al-Fatiha', translation: 'The Opening', arabic: 'الفاتحة' },
     { number: 2, name: 'Al-Baqarah', translation: 'The Cow', arabic: 'البقرة' },
-    { number: 3, name: 'Ali \u2018Imran', translation: 'Family of Imran', arabic: 'آل عمران' },
+    { number: 3, name: 'Al \u2018Imran', translation: 'Family of Imran', arabic: 'آل عمران' },
     { number: 4, name: 'An-Nisa', translation: 'The Women', arabic: 'النساء' },
     { number: 5, name: 'Al-Ma\u2019idah', translation: 'The Table Spread', arabic: 'المائدة' },
     { number: 6, name: 'Al-An\u2018am', translation: 'The Cattle', arabic: 'الأنعام' },
@@ -553,19 +537,8 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [selectedWord]);
 
-    const [audioVolume, setAudioVolume] = useState(100);  // 0-100
-    const [isAudioMuted, setIsAudioMuted] = useState(false);
-    const [isShuffled, setIsShuffled] = useState(false);
-    const [isRepeating, setIsRepeating] = useState(false);
-    const [audioProgress, setAudioProgress] = useState(0);    // 0-100%
-    const [audioDuration, setAudioDuration] = useState(0);    // seconds
-    const [audioCurrentTime, setAudioCurrentTime] = useState(0); // seconds
-    const audioProgressRef = useRef<HTMLDivElement | null>(null);
-    const audioVolumeRef = useRef<HTMLDivElement | null>(null);
-
-
     // Mushaf page pagination for reading mode
-    const [mushafPageIndex, setMushafPageIndex] = useState(0);
+    const [, setMushafPageIndex] = useState(0);
 
     // Unified Data Loader - Fetches everything needed in one go and pre-calculates contexts
     useEffect(() => {
@@ -789,8 +762,6 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
         setCurrentVerse(null);
     }, []);
 
-    const playPrev = useCallback(() => { if (currentVerse && currentVerse > 1) playVerse(currentVerse - 1); }, [currentVerse, playVerse]);
-    const playNext = useCallback(() => { if (currentVerse && currentVerse < verses.length) playVerse(currentVerse + 1); }, [currentVerse, verses.length, playVerse]);
 
     const jumpToVerse = useCallback((verseNumber: number) => {
         setShowVerseNav(false);
@@ -1657,7 +1628,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                 
                                 <button
                                     className="nq-ab-play-btn"
-                                    onClick={() => { isPlaying ? stopAudio() : playVerse(currentVerse || 1, true); }}
+                                    onClick={() => { if (isPlaying) stopAudio(); else playVerse(currentVerse || 1, true); }}
                                     title={isPlaying ? 'Pause' : 'Play'}
                                 >
                                     {isPlaying
