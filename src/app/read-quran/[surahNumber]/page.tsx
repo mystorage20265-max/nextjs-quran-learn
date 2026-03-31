@@ -43,22 +43,12 @@ import '../styles/tafseer-modal.css';
 // Core Arabic letters and standard tashkeel (U+0621–U+06D5) are preserved.
 const cleanIndopakText = (text: string): string => {
     if (!text) return '';
-    // First strip invisible characters globally
-    let cleaned = text
-        .replace(/[\u200B-\u200D\uFEFF\u061C\u180E\u00A0]/g, ' ')
-        .replace(/[\n\r\t]+/g, ' ');
-
-    return cleaned
-        .replace(/[\u0610-\u061A]/g, '') // Arabic Quran-specific phonetic marks
-        .replace(/\u06E1/g, '\u0652')     // IndoPak sukun (ۡ U+06E1) → standard sukun (ْ U+0652)
-        .replace(/[\u06D6-\u06FF]/g, '') // waqf marks, annotation glyphs, Indo-Pak marks
-        .replace(/[\uFBB2-\uFBC2]/g, '') // Arabic Presentation Forms
-        .replace(/[\uE000-\uF8FF]/g, '') // Private Use Area glyphs (ruku/pause markers in IndoPak fonts)
-        // Strip everything that isn't a primary letter or vowel from the end of the string
-        // Includes: ع, digits, Ayah markers (۝), Hizb markers (۞), Sajda (۩), and misc marks
-        .replace(/[\u0639\u064B-\u065F\u0670\u0610-\u061A\u0660-\u0669\u06F0-\u06F9\u06DD\u06DE\u06E9\u06D6-\u06ED\s]+$/, '')
-        .replace(/\s{2,}/g, ' ')
-        .trim();
+    // We strictly avoid regex that deletes Arabic letters, diacritics, or punctuation.
+    // The text from trusted APIs (api.quran.com / api.qurancdn.com) is prestine.
+    // Deleting ranges like \u06D6-\u06FF destroys Waqf marks, Ayat markers, and valid vowels, 
+    // which leads to missing letters, broken morphology, and severe UI glitches.
+    // We only perform basic trim to ensure HTML doesn't inherit unnecessary trailing newlines.
+    return text.trim();
 };
 
 // Remove zero-width/invisible characters that can slip through
@@ -1540,7 +1530,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                                     key={word.id || idx}
                                                                     word={word}
                                                                     verseKey={verse.verse_key}
-                                                                    verseWords={verse.words}
+                                                                    verseWords={verse.words || []}
                                                                     isSelected={selectedWord?.location === location}
                                                                     onClick={openWordDetail}
                                                                 />
