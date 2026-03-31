@@ -140,17 +140,25 @@ export default function TafseerSurahPage({ params }: PageProps) {
     const [showSurahPicker, setShowSurahPicker] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
 
+    const toArabicNumeral = (num: number): string => {
+        const d = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+        return num.toString().split('').map(c => d[parseInt(c)]).join('');
+    };
+
     // Same text cleaner as read-quran — strips annotation marks unsupported by Naskh IndoPak font
     const cleanIndopakText = (text: string): string => {
         if (!text) return '';
-        return text
+        let processed = text
             .replace(/[\n\r\t]+/g, ' ')
-            .replace(/[\u0610-\u061A]/g, '')
             .replace(/\u06E1/g, '\u0652')
-            .replace(/[\u06D6-\u06FF]/g, '')
             .replace(/[\uFBB2-\uFBC2]/g, '')
-            .replace(/\s{2,}/g, ' ')
-            .trim();
+            .replace(/\s{2,}/g, ' ');
+            
+        // Explicit fix for Surah Al-Fatiha according to standard Indo-Pak counting,
+        // where alayhim forms the end of Verse 6 visually, forcing the Ayah Marker (۝) mid-string.
+        processed = processed.replace('اَنۡعَمۡتَ عَلَيۡهِمۡ ۙ غَيۡرِ', 'اَنۡعَمۡتَ عَلَيۡهِمۡ \u06DD٦ ۙ غَيۡرِ');
+        
+        return processed.trim();
     };
 
     // Strip the Bismillah prefix from verse 1 text for surahs that have it shown separately
@@ -410,7 +418,9 @@ export default function TafseerSurahPage({ params }: PageProps) {
                                         <div className="ts-verse-top">
                                             <div className="ts-verse-num" aria-label={`Verse ${verse.num}`}>{verse.num}</div>
                                             <div className="ts-arabic-block">
-                                                <p className="ts-arabic">{verse.arabic}</p>
+                                                <p className="ts-arabic">
+                                                    {verse.arabic} {'\u06DD' + toArabicNumeral(verse.num)}
+                                                </p>
                                             </div>
                                         </div>
 
@@ -519,7 +529,7 @@ export default function TafseerSurahPage({ params }: PageProps) {
                                         <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: s.num === surahNum ? '#f59e0b' : '#1e293b', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{s.name}</p>
                                         <p style={{ margin: 0, fontSize: 11, color: '#94a3b8' }}>{s.meaning} · {s.v} verses</p>
                                     </div>
-                                    <span style={{ fontFamily: "'Naskh IndoPak',serif", fontSize: 16, color: '#475569', direction: 'rtl', flexShrink: 0 }}>{s.ar}</span>
+                                    <span style={{ fontFamily: "'Naskh IndoPak','Scheherazade New','Noto Naskh Arabic','KFGQPC','Amiri',serif", fontSize: 16, color: '#475569', direction: 'rtl', flexShrink: 0 }}>{s.ar}</span>
                                 </Link>
                             ))}
                         </div>

@@ -1,4 +1,4 @@
-.scrollReadContainer {.container { max-width: 1200px; margin: 0 auto; padding: 2rem; }.scrollReadContainer {.scrollReadContainer {/* ScrollReadView.css *//* ScrollReadView.css *//* ScrollReadView.css *//* ScrollReadView.css *//* ScrollReadView.css *//* ScrollReadView.css *//* ScrollReadView.css *//* ScrollReadView.css *//* Enhanced Quran Reader Styles */
+﻿.scrollReadContainer {.container { max-width: 1200px; margin: 0 auto; padding: 2rem; }.scrollReadContainer {.scrollReadContainer {/* ScrollReadView.css *//* ScrollReadView.css *//* ScrollReadView.css *//* ScrollReadView.css *//* ScrollReadView.css *//* ScrollReadView.css *//* ScrollReadView.css *//* ScrollReadView.css *//* Enhanced Quran Reader Styles */
 
   max-width: 1200px;
 
@@ -2488,7 +2488,7 @@
 
     font-size: 0.95rem;
 
-    line-height: 1.6;    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);    font-size: 1rem;  font-family: 'Naskh IndoPak', serif;
+    line-height: 1.6;    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);    font-size: 1rem;  font-family: 'Naskh IndoPak', 'Scheherazade New', 'Noto Naskh Arabic', 'KFGQPC', 'Amiri', 'Traditional Arabic', serif;
 
   }
 
@@ -2926,7 +2926,7 @@
 
     }
 
-    transform-style: preserve-3d;  font-family: 'Naskh IndoPak', serif;
+    transform-style: preserve-3d;  font-family: 'Naskh IndoPak', 'Scheherazade New', 'Noto Naskh Arabic', 'KFGQPC', 'Amiri', 'Traditional Arabic', serif;
 
     .navigationControls {
 

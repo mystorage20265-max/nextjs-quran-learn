@@ -1,4 +1,4 @@
-.pageWrapper {
+﻿.pageWrapper {
   min-height: 100vh;
   background: linear-gradient(135deg, #f6f8fc 0%, #f0f4f8 100%);
   padding: 2rem 1rem;
@@ -209,7 +209,7 @@
 }
 
 .duaArabic {
-  font-family: 'Naskh IndoPak', serif;
+  font-family: 'Naskh IndoPak', 'Scheherazade New', 'Noto Naskh Arabic', 'KFGQPC', 'Amiri', 'Traditional Arabic', serif;
   font-size: 1.75rem;
   text-align: right;
   margin: 1.5rem 0;

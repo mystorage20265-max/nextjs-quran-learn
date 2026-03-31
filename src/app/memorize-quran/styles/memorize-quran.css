@@ -61,7 +61,7 @@
 }
 
 .memorize-title-arabic {
-    font-family: 'Naskh IndoPak', serif;
+    font-family: 'Naskh IndoPak', 'Scheherazade New', 'Noto Naskh Arabic', 'KFGQPC', 'Amiri', 'Traditional Arabic', serif;
     color: var(--mq-primary);
     font-weight: 400;
 }
@@ -273,7 +273,7 @@
 }
 
 .mq-surah-name-ar {
-    font-family: 'Naskh IndoPak', serif;
+    font-family: 'Naskh IndoPak', 'Scheherazade New', 'Noto Naskh Arabic', 'KFGQPC', 'Amiri', 'Traditional Arabic', serif;
     font-size: 1.3rem;
     color: var(--mq-primary);
     flex-shrink: 0;
@@ -609,7 +609,7 @@
 }
 
 .verse-arabic {
-    font-family: 'Naskh IndoPak', serif;
+    font-family: 'Naskh IndoPak', 'Scheherazade New', 'Noto Naskh Arabic', 'KFGQPC', 'Amiri', 'Traditional Arabic', serif;
     font-size: 2.2rem;
     text-align: right;
     direction: rtl;
@@ -1179,7 +1179,7 @@
 }
 
 .focus-mode-verse {
-    font-family: 'Naskh IndoPak', serif;
+    font-family: 'Naskh IndoPak', 'Scheherazade New', 'Noto Naskh Arabic', 'KFGQPC', 'Amiri', 'Traditional Arabic', serif;
     font-size: clamp(2rem, 5vw, 3.5rem);
     line-height: 2.2;
     text-align: center;

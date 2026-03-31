@@ -1,4 +1,4 @@
-.surah-view {
+﻿.surah-view {
   position: fixed;
   top: 0;
   left: 0;
@@ -126,7 +126,7 @@
 }
 
 .arabic-text {
-  font-family: 'Naskh IndoPak', serif;
+  font-family: 'Naskh IndoPak', 'Scheherazade New', 'Noto Naskh Arabic', 'KFGQPC', 'Amiri', 'Traditional Arabic', serif;
   direction: rtl;
   font-size: 5rem;
   font-weight: bold;

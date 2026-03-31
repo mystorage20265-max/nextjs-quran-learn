@@ -1,4 +1,4 @@
-/* Prevent body scroll when slide view is active - only when slide view exists */
+﻿/* Prevent body scroll when slide view is active - only when slide view exists */
 body:has(.slide-view) {
   overflow: hidden !important;
 }
@@ -246,7 +246,7 @@ body:has(.slide-view) {
 }
 
 .arabic-text {
-  font-family: 'Naskh IndoPak', serif;
+  font-family: 'Naskh IndoPak', 'Scheherazade New', 'Noto Naskh Arabic', 'KFGQPC', 'Amiri', 'Traditional Arabic', serif;
   font-size: clamp(2.5rem, 8vmin, 5.5rem);
   line-height: 1.8;
   direction: rtl;

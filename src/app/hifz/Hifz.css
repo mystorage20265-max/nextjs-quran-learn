@@ -1,4 +1,4 @@
-/* Hifz Interactive Intro Styles */
+﻿/* Hifz Interactive Intro Styles */
 .hifz-intro {
   margin: 1.5rem auto 2.5rem auto;
   padding: 1.5rem 2rem;
@@ -15,7 +15,7 @@
   transform: translateY(-2px) scale(1.01);
 }
 .hifz-heading-arabic {
-  font-family: 'Naskh IndoPak', serif;
+  font-family: 'Naskh IndoPak', 'Scheherazade New', 'Noto Naskh Arabic', 'KFGQPC', 'Amiri', 'Traditional Arabic', serif;
   font-size: 2.1rem;
   color: #007f3d;
   margin-bottom: 0.7rem;
@@ -45,7 +45,7 @@
   align-items: center;
 }
 .hifz-intro-arabic {
-  font-family: 'Naskh IndoPak', serif;
+  font-family: 'Naskh IndoPak', 'Scheherazade New', 'Noto Naskh Arabic', 'KFGQPC', 'Amiri', 'Traditional Arabic', serif;
   font-size: 1.15rem;
   color: #00662e;
   margin-bottom: 0.2rem;
@@ -374,7 +374,7 @@
 }
 
 .arabic-name {
-  font-family: 'Naskh IndoPak', serif;
+  font-family: 'Naskh IndoPak', 'Scheherazade New', 'Noto Naskh Arabic', 'KFGQPC', 'Amiri', 'Traditional Arabic', serif;
   font-size: 1.8rem;
   color: var(--text-primary);
   font-weight: 600;
@@ -756,7 +756,7 @@
 }
 
 .verse-arabic-text {
-  font-family: 'Naskh IndoPak', serif;
+  font-family: 'Naskh IndoPak', 'Scheherazade New', 'Noto Naskh Arabic', 'KFGQPC', 'Amiri', 'Traditional Arabic', serif;
   font-size: 1.6rem;
   line-height: 1.8;
   text-align: right;

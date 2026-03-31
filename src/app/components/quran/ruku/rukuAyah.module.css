@@ -86,7 +86,7 @@
   gap: 2rem;
 }
 .ruku-arabic {
-  font-family: 'Naskh IndoPak', serif;
+  font-family: 'Naskh IndoPak', 'Scheherazade New', 'Noto Naskh Arabic', 'KFGQPC', 'Amiri', 'Traditional Arabic', serif;
   font-size: 1.5rem;
   line-height: 2.2;
   text-align: right;

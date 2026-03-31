@@ -46,8 +46,14 @@ const cleanIndopakText = (text: string): string => {
     // The text from trusted APIs (api.quran.com / api.qurancdn.com) is prestine.
     // Deleting ranges like \u06D6-\u06FF destroys Waqf marks, Ayat markers, and valid vowels, 
     // which leads to missing letters, broken morphology, and severe UI glitches.
+    
+    // Explicit fix for Surah Al-Fatiha according to standard Indo-Pak counting,
+    // where alayhim forms the end of Verse 6 visually, forcing the Ayah Marker (۝) mid-string.
+    // Use standard digit ٦ (U+0666) so the font composes it inside the circle.
+    let processed = text.replace('اَنۡعَمۡتَ عَلَيۡهِمۡ ۙ غَيۡرِ', 'اَنۡعَمۡتَ عَلَيۡهِمۡ \u06DD٦ ۙ غَيۡرِ');
+    
     // We only perform basic trim to ensure HTML doesn't inherit unnecessary trailing newlines.
-    return text.trim();
+    return processed.trim();
 };
 
 
@@ -85,34 +91,11 @@ const removeBismillah = (text: string): string => {
 
 
 const toArabicNumeral = (num: number): string => {
+    // Standard Arabic digits (U+0660-U+0669) must be used here because font shaping engines
+    // specifically expect standard digits to compose them inside the Ayah End marker (۝ U+06DD).
     const d = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
     return num.toString().split('').map(c => d[parseInt(c)]).join('');
 };
-
-const AyahMarker = memo(({ number, size = 30 }: { number: number; size?: number }) => {
-    const numStr = toArabicNumeral(number);
-    // Increased base font sizes for the inner text
-    const fs = numStr.length > 2 ? size * 0.45 : numStr.length > 1 ? size * 0.52 : size * 0.58;
-    const c = '#333';
-    return (
-        <svg width={size} height={size} viewBox="0 0 50 50" style={{ display: 'inline-block', verticalAlign: 'middle', flexShrink: 0 }}>
-            <circle cx="25" cy="25" r="17.5" fill="none" stroke={c} strokeWidth="1" />
-            <circle cx="25" cy="25" r="21.5" fill="none" stroke={c} strokeWidth="0.5" />
-            <circle cx="25" cy="2.5" r="2.5" fill="none" stroke={c} strokeWidth="0.7" />
-            <circle cx="25" cy="47.5" r="2.5" fill="none" stroke={c} strokeWidth="0.7" />
-            <circle cx="2.5" cy="25" r="2.5" fill="none" stroke={c} strokeWidth="0.7" />
-            <circle cx="47.5" cy="25" r="2.5" fill="none" stroke={c} strokeWidth="0.7" />
-            <circle cx="9.5" cy="9.5" r="1" fill={c} />
-            <circle cx="40.5" cy="9.5" r="1" fill={c} />
-            <circle cx="9.5" cy="40.5" r="1" fill={c} />
-            <circle cx="40.5" cy="40.5" r="1" fill={c} />
-            <text x="25" y="27" textAnchor="middle" dominantBaseline="central"
-                fontFamily="'Scheherazade New', 'Amiri', 'Traditional Arabic', 'Arial', sans-serif"
-                fontSize={fs * 1.5} fontWeight="700" fill={c}>{numStr}</text>
-        </svg>
-    );
-});
-AyahMarker.displayName = 'AyahMarker';
 
 // Right Sidebar component for Desktop
 const RightSidebar = ({ 
@@ -844,7 +827,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 .nq-arabic-text{font-family:var(--rq-font-arabic);font-size:var(--nq-fs,26px);line-height:2;text-align:right;flex:1;color:#1e293b;direction:rtl}
                 @media(min-width:640px){.nq-arabic-text{font-size:var(--nq-fs,36px)}}
                 .dark .nq-arabic-text{color:#e2e8f0}
-                .nq-shell .word-arabic,.nq-shell .reader-verse-arabic,.nq-shell .reader-bismillah-text,.nq-shell .nq-bismillah-text,.nq-shell .nq-arabic-text{font-family:'Naskh IndoPak',serif!important}
+                .nq-shell .word-arabic,.nq-shell .reader-verse-arabic,.nq-shell .reader-bismillah-text,.nq-shell .nq-bismillah-text,.nq-shell .nq-arabic-text{font-family:'Naskh IndoPak','Scheherazade New','Noto Naskh Arabic','KFGQPC','Amiri','Traditional Arabic',serif!important}
                 .nq-verse-badge{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;border:1px solid rgba(245,158,11,0.4);font-size:12px;font-weight:700;color:#f59e0b;margin-right:6px;font-family:'Lexend',sans-serif;cursor:pointer;vertical-align:middle;transition:background 0.15s}
                 @media(min-width:640px){.nq-verse-badge{width:40px;height:40px;font-size:14px;margin-right:8px}}
                 .nq-verse-badge:hover{background:rgba(245,158,11,0.1)}
@@ -915,7 +898,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                   background:linear-gradient(135deg,#f59e0b,#d97706);
                   display:flex;align-items:center;justify-content:center;
                   box-shadow:0 4px 12px rgba(245,158,11,0.25);
-                  font-family:'Naskh IndoPak',serif;font-size:20px;color:white;font-weight:700;
+                  font-family:'Naskh IndoPak','Scheherazade New','Noto Naskh Arabic','KFGQPC','Amiri',serif;font-size:20px;color:white;font-weight:700;
                 }
                 .nq-ab-art-num{font-family:'Figtree','Inter',sans-serif;font-size:14px;font-weight:700;color:rgba(255,255,255,0.9)}
                 .nq-ab-track{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
@@ -1407,7 +1390,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                                         </span>
                                                                         {' '}
                                                                         <span style={{ cursor: 'pointer', lineHeight: 1 }} onClick={() => playVerse(verse.verse_number)}>
-                                                                            <AyahMarker number={verse.verse_number} size={ayahSize} />
+                                                                            {'\u06DD' + toArabicNumeral(verse.verse_number)}
                                                                         </span>
                                                                         {' '}
                                                                     </span>
@@ -1554,7 +1537,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                             {' '}
                                                             <span className="nq-ayah-end-marker-wrapper" style={{ position: 'relative', display: 'inline-block' }}>
                                                                 <span className="nq-ayah-end-marker" onClick={() => playVerse(verse.verse_number)}>
-                                                                    <AyahMarker number={verse.verse_number} size={isMobile ? 26 : 32} />
+                                                                    {'\u06DD' + toArabicNumeral(verse.verse_number)}
                                                                 </span>
                                                             </span>
                                                         </span>

@@ -20,7 +20,7 @@
 }
 
 .ruku-arabic-title {
-  font-family: 'Naskh IndoPak', serif;
+  font-family: 'Naskh IndoPak', 'Scheherazade New', 'Noto Naskh Arabic', 'KFGQPC', 'Amiri', 'Traditional Arabic', serif;
   font-size: 2.5rem;
   color: #0e9f6e;
   margin-bottom: 0.5rem;

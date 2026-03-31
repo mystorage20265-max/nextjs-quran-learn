@@ -1,4 +1,4 @@
-﻿/* Read Quran - Premium Cinematic Theme */
+/* Read Quran - Premium Cinematic Theme */
 /* Fully Responsive, Animated, Glassmorphism Design */
 
 /* ============ FONTS ============ */
@@ -45,7 +45,7 @@
 
   /* Typography */
   --rq-font-sans: "Outfit", "Inter", system-ui, sans-serif;
-  --rq-font-arabic: "Naskh IndoPak", serif;
+  --rq-font-arabic: "Naskh IndoPak", "Scheherazade New", "Noto Naskh Arabic", "KFGQPC", "Amiri", "Traditional Arabic", serif;
 
   /* Layout */
   --rq-radius-lg: 20px;

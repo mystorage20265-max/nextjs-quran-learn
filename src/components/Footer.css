@@ -1,4 +1,4 @@
-/* ============================================================
+﻿/* ============================================================
    FOOTER — Premium Green/Islamic Theme
    ============================================================ */
 
@@ -44,7 +44,7 @@
 }
 
 .ftr-verse-ar {
-  font-family: 'Naskh IndoPak', serif;
+  font-family: 'Naskh IndoPak', 'Scheherazade New', 'Noto Naskh Arabic', 'KFGQPC', 'Amiri', 'Traditional Arabic', serif;
   font-size: clamp(16px, 2.2vw, 22px);
   font-weight: 700;
   color: white;

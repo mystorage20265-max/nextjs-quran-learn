@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import GlobalLoader from '@/components/Loader/GlobalLoader';
@@ -27,7 +27,7 @@ interface Dua {
 }
 
 /* ─── Constants ──────────────────────────────────────────────── */
-const ARABIC_FONT = "'Naskh IndoPak', serif";
+const ARABIC_FONT = "'Naskh IndoPak', 'Scheherazade New', 'Noto Naskh Arabic', 'KFGQPC', 'Amiri', 'Traditional Arabic', serif";
 
 const DUA_OF_THE_DAY = {
   arabic: 'رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ',

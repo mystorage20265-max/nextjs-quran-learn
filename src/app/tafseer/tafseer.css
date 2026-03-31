@@ -1,4 +1,4 @@
-/* =====================================================
+﻿/* =====================================================
    TAFSEER PAGE — Quran Explanation Section
    Amber/Gold Theme Matching Dua Design System
    ===================================================== */
@@ -62,7 +62,7 @@
 }
 
 .tafseer-hero-arabic {
-  font-family: 'Naskh IndoPak', serif;
+  font-family: 'Naskh IndoPak', 'Scheherazade New', 'Noto Naskh Arabic', 'KFGQPC', 'Amiri', 'Traditional Arabic', serif;
   font-size: clamp(1.4rem, 3.5vw, 2.2rem);
   line-height: 2;
   direction: rtl;
@@ -461,7 +461,7 @@
 }
 
 .tafseer-card-arabic {
-  font-family: 'Naskh IndoPak', serif;
+  font-family: 'Naskh IndoPak', 'Scheherazade New', 'Noto Naskh Arabic', 'KFGQPC', 'Amiri', 'Traditional Arabic', serif;
   font-size: 22px;
   color: var(--text-arabic);
   direction: rtl;

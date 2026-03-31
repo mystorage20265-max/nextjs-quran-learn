@@ -811,7 +811,7 @@ input:checked+.lq-slider-round:before {
 
 /* Arabic character */
 .lq-item-text {
-    font-family: 'Naskh IndoPak', serif;
+    font-family: 'Naskh IndoPak', 'Scheherazade New', 'Noto Naskh Arabic', 'KFGQPC', 'Amiri', 'Traditional Arabic', serif;
     font-size: var(--lq-char-size, 4rem);
     color: var(--lq-text-main);
     direction: rtl;

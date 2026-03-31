@@ -909,7 +909,7 @@
 }
 
 .arabic-title {
-    font-family: 'Naskh IndoPak', serif;
+    font-family: 'Naskh IndoPak', 'Scheherazade New', 'Noto Naskh Arabic', 'KFGQPC', 'Amiri', 'Traditional Arabic', serif;
     font-size: clamp(2.4rem, 4vw, 3.5rem);
     color: #0f172a;
     direction: rtl;
@@ -1158,7 +1158,7 @@
 }
 
 .arabic-text {
-    font-family: 'Naskh IndoPak', serif;
+    font-family: 'Naskh IndoPak', 'Scheherazade New', 'Noto Naskh Arabic', 'KFGQPC', 'Amiri', 'Traditional Arabic', serif;
     font-size: 1.3rem;
     color: #0f172a;
     direction: rtl;
@@ -1212,7 +1212,7 @@
 }
 
 .reflection-title {
-    font-family: 'Naskh IndoPak', serif;
+    font-family: 'Naskh IndoPak', 'Scheherazade New', 'Noto Naskh Arabic', 'KFGQPC', 'Amiri', 'Traditional Arabic', serif;
     font-size: clamp(1.8rem, 3.5vw, 2.8rem);
     color: #ffffff;
     margin: 0;

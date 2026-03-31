@@ -1,7 +1,7 @@
-/* @import removed - using Naskh IndoPak */
+﻿/* @import removed - using Naskh IndoPak */
 
 .font-arabic {
-  font-family: 'Naskh IndoPak', serif;
+  font-family: 'Naskh IndoPak', 'Scheherazade New', 'Noto Naskh Arabic', 'KFGQPC', 'Amiri', 'Traditional Arabic', serif;
 }
 
 /* Dua Page Specific Styles */
@@ -17,7 +17,7 @@
 }
 
 .dua-arabic {
-  font-family: 'Naskh IndoPak', serif;
+  font-family: 'Naskh IndoPak', 'Scheherazade New', 'Noto Naskh Arabic', 'KFGQPC', 'Amiri', 'Traditional Arabic', serif;
   font-size: 1.75rem;
   line-height: 2.5;
   text-align: right;

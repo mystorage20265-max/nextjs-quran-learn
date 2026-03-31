@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -70,7 +70,7 @@ export default function QuranSciencePage() {
         .qs-card{transition:transform 0.25s ease,box-shadow 0.25s ease}.qs-card:hover{transform:translateY(-5px);box-shadow:0 12px 36px rgba(245,158,11,0.12) !important}
         .qs-icon-float{animation:qs-float 3s ease-in-out infinite}.qs-icon-float-d{animation:qs-float 3s ease-in-out 0.3s infinite}
         @keyframes qs-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-        .font-arabic{font-family:'Naskh IndoPak',serif}
+        .font-arabic{font-family:'Naskh IndoPak','Scheherazade New','Noto Naskh Arabic','KFGQPC','Amiri','Traditional Arabic',serif}
         @media(max-width:768px){.qs-hero-flex{flex-direction:column !important;text-align:center !important}.qs-stats-grid{grid-template-columns:repeat(2,1fr) !important}.qs-topics-grid{grid-template-columns:1fr !important}.qs-insight-flex{flex-direction:column !important}.qs-insight-divider{display:none !important}.qs-cta-row{flex-direction:column !important}}
         @media(max-width:480px){.qs-stats-grid{grid-template-columns:1fr !important}}
       `}</style>

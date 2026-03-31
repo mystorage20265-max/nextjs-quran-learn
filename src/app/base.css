@@ -1,4 +1,4 @@
-@tailwind base;
+﻿@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
@@ -6,7 +6,7 @@
 @import './responsive.css';
 
 :root {
-  --font-arabic: 'Naskh IndoPak', serif;
+  --font-arabic: 'Naskh IndoPak', 'Scheherazade New', 'Noto Naskh Arabic', 'KFGQPC', 'Amiri', 'Traditional Arabic', serif;
   --bg: #f7f7fb;
   --card: #fff;
   --accent: #0066cc;

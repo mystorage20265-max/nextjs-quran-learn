@@ -1,4 +1,4 @@
-.scrollReadView {
+﻿.scrollReadView {
   background-size: cover;
   background-position: center;
   min-height: 100vh;
@@ -63,7 +63,7 @@
   color: white;
   margin-bottom: 0.75rem;
   line-height: 2;
-  font-family: 'Naskh IndoPak', serif;
+  font-family: 'Naskh IndoPak', 'Scheherazade New', 'Noto Naskh Arabic', 'KFGQPC', 'Amiri', 'Traditional Arabic', serif;
 }
 
 .translationText {

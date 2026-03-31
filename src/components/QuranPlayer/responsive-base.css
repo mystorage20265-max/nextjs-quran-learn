@@ -1,4 +1,4 @@
-/* Base CSS variables for consistent spacing and sizing */
+﻿/* Base CSS variables for consistent spacing and sizing */
 :root {
   --header-height: clamp(60px, 8vh, 80px);
   --sidebar-width: clamp(240px, 25vw, 320px);
@@ -86,7 +86,7 @@
 
 /* Text content styling */
 .arabic-text {
-  font-family: 'Naskh IndoPak', serif;
+  font-family: 'Naskh IndoPak', 'Scheherazade New', 'Noto Naskh Arabic', 'KFGQPC', 'Amiri', 'Traditional Arabic', serif;
   text-align: center;
   direction: rtl;
   line-height: 1.8;

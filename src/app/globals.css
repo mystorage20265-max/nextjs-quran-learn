@@ -18,6 +18,16 @@
   font-display: swap;
 }
 
+/* KFGQPC Uthmanic - Saudi official Quran font, proper sukun/jazam rendering */
+@font-face {
+  font-family: "KFGQPC";
+  src: url("/fonts/kfgqpc-uthmanic.otf") format("opentype"),
+       url("/fonts/uthmanic.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* ============ BASE STYLES ============ */
 html {
   scroll-behavior: smooth;

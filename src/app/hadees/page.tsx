@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import './hadees.css';
@@ -24,7 +24,7 @@ interface Collection {
 }
 
 /* ─── Constants ──────────────────────────────────────────────── */
-const ARABIC_FONT = "'Naskh IndoPak', serif";
+const ARABIC_FONT = "'Naskh IndoPak', 'Scheherazade New', 'Noto Naskh Arabic', 'KFGQPC', 'Amiri', 'Traditional Arabic', serif";
 
 const COLLECTIONS: Collection[] = [
   { id: 'bukhari',   name: 'Sahih Bukhari',  ar: 'صحيح البخاري',    description: 'Most Authentic Collection',  color: '#f59e0b', icon: 'verified'       },

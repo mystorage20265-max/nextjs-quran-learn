@@ -717,7 +717,7 @@ export default function HomePage() {
         .feat-icon-img{transition:transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);}
         .feat-card:hover .feat-icon-img{transform:scale(1.15) rotate(5deg) translateY(-5px);}
         .hp-dot{background-image:radial-gradient(circle at 2px 2px,rgba(var(--brand-rgb),0.06) 1px,transparent 0);background-size:24px 24px}
-        .font-arabic{font-family:'Naskh IndoPak',serif}
+        .font-arabic{font-family:'Naskh IndoPak','Scheherazade New','Noto Naskh Arabic','KFGQPC','Amiri','Traditional Arabic',serif}
         .filter-btn{padding:6px 14px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:500;transition:all 0.15s}
         .tc-btn{cursor:pointer;border:none;outline:none;background:none;-webkit-tap-highlight-color:transparent;transition:transform 0.08s ease;user-select:none}
         .tc-btn:active{transform:scale(0.93)}
@@ -978,7 +978,7 @@ export default function HomePage() {
                         </div>
                         <div className="hp-sr-meta" style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
                           <span style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: s.t === 'Meccan' ? 'var(--brand-primary)' : '#94a3b8' }}>{s.t}</span>
-                          <span style={{ fontFamily: "'Naskh IndoPak',serif", fontSize: 17, color: 'var(--text-primary)' }}>{s.ar}</span>
+                          <span style={{ fontFamily: "'Naskh IndoPak','Scheherazade New','Noto Naskh Arabic','KFGQPC','Amiri',serif", fontSize: 17, color: 'var(--text-primary)' }}>{s.ar}</span>
                         </div>
                       </div>
                     </Link>

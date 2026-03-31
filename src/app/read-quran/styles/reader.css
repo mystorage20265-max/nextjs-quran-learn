@@ -36,7 +36,7 @@
   --reader-border-light: var(--border-strong);
 
   /* Typography */
-  --font-arabic: 'Naskh IndoPak', serif;
+  --font-arabic: 'Naskh IndoPak', 'Scheherazade New', 'Noto Naskh Arabic', 'KFGQPC', 'Amiri', 'Traditional Arabic', serif;
   --font-ui: var(--font-sans);
 
   /* Spacing */
@@ -2226,7 +2226,7 @@
 .nq-shell .reader-bismillah-text,
 .nq-shell .nq-arabic-text,
 .nq-shell .nq-bismillah-text {
-  font-family: 'Naskh IndoPak', serif !important;
+  font-family: 'Naskh IndoPak', 'Scheherazade New', 'Noto Naskh Arabic', 'KFGQPC', 'Amiri', 'Traditional Arabic', serif !important;
 }
 
 /* ============ ENHANCED WORD-BY-WORD CARDS ============ */
@@ -2391,7 +2391,7 @@
 
 .wdm-arabic {
   display: block;
-  font-family: 'Naskh IndoPak', 'Scheherazade New', 'Amiri', 'Traditional Arabic', serif !important;
+  font-family: 'Naskh IndoPak', 'Scheherazade New', 'Noto Naskh Arabic', 'KFGQPC', 'Amiri', 'Traditional Arabic', serif !important;
   font-size: clamp(38px, 8vw, 56px);
   color: var(--reader-text-arabic, #1e293b);
   line-height: 1.5;
@@ -2462,7 +2462,7 @@
 }
 
 .wdm-context-text {
-  font-family: 'Naskh IndoPak', 'Scheherazade New', 'Amiri', serif !important;
+  font-family: 'Naskh IndoPak', 'Scheherazade New', 'Noto Naskh Arabic', 'KFGQPC', 'Amiri', serif !important;
   font-size: 18px;
   line-height: 1.9;
   color: var(--reader-text-secondary, #475569);

@@ -1,4 +1,4 @@
-.audio_slide_overlay {
+﻿.audio_slide_overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -175,7 +175,7 @@
   font-size: 2rem;
   line-height: 2;
   margin: 1rem 0;
-  font-family: 'Naskh IndoPak', serif;
+  font-family: 'Naskh IndoPak', 'Scheherazade New', 'Noto Naskh Arabic', 'KFGQPC', 'Amiri', 'Traditional Arabic', serif;
 }
 
 .translation_text {

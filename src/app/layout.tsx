@@ -91,6 +91,16 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap"
           rel="stylesheet"
         />
+        {/* Scheherazade New – SIL font designed for Quranic text, full Arabic diacritic coverage including jazam/sukun */}
+        <link
+          href="https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;700&display=swap"
+          rel="stylesheet"
+        />
+        {/* Noto Naskh Arabic – Google's comprehensive Arabic Naskh font, excellent diacritic rendering */}
+        <link
+          href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&display=swap"
+          rel="stylesheet"
+        />
         <link
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
           rel="stylesheet"
