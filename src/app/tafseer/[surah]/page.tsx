@@ -148,17 +148,12 @@ export default function TafseerSurahPage({ params }: PageProps) {
     // Same text cleaner as read-quran — strips annotation marks unsupported by Naskh IndoPak font
     const cleanIndopakText = (text: string): string => {
         if (!text) return '';
-        let processed = text
+        return text
             .replace(/[\n\r\t]+/g, ' ')
             .replace(/\u06E1/g, '\u0652')
             .replace(/[\uFBB2-\uFBC2]/g, '')
-            .replace(/\s{2,}/g, ' ');
-            
-        // Explicit fix for Surah Al-Fatiha according to standard Indo-Pak counting,
-        // where alayhim forms the end of Verse 6 visually, forcing the Ayah Marker (۝) mid-string.
-        processed = processed.replace('اَنۡعَمۡتَ عَلَيۡهِمۡ ۙ غَيۡرِ', 'اَنۡعَمۡتَ عَلَيۡهِمۡ \u06DD٦ ۙ غَيۡرِ');
-        
-        return processed.trim();
+            .replace(/\s{2,}/g, ' ')
+            .trim();
     };
 
     // Strip the Bismillah prefix from verse 1 text for surahs that have it shown separately

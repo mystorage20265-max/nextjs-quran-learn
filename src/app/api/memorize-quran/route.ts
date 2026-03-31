@@ -140,17 +140,11 @@ async function getVerses(params: URLSearchParams): Promise<NextResponse> {
     // Core Arabic letters and standard tashkeel (U+0621–U+06D5) are preserved.
     const cleanIndopakText = (text: string): string => {
         if (!text) return '';
-        let processed = text
+        return text
             .replace(/\u06E1/g, '\u0652')     // IndoPak sukun (ۡ U+06E1) → standard sukun (ْ U+0652)
             .replace(/[\uFBB2-\uFBC2]/g, '') // Arabic Presentation Forms (Quran edition marks)
             .replace(/\s{2,}/g, ' ')
             .trim();
-            
-        // Explicit fix for Surah Al-Fatiha according to standard Indo-Pak counting,
-        // where alayhim forms the end of Verse 6 visually, forcing the Ayah Marker (۝) mid-string.
-        processed = processed.replace('اَنۡعَمۡتَ عَلَيۡهِمۡ ۙ غَيۡرِ', 'اَنۡعَمۡتَ عَلَيۡهِمۡ \u06DD٦ ۙ غَيۡرِ');
-        
-        return processed;
     };
 
     // Process verses with Uthmani text as primary (matching /read-quran)

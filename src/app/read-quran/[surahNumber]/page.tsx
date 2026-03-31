@@ -47,13 +47,9 @@ const cleanIndopakText = (text: string): string => {
     // Deleting ranges like \u06D6-\u06FF destroys Waqf marks, Ayat markers, and valid vowels, 
     // which leads to missing letters, broken morphology, and severe UI glitches.
     
-    // Explicit fix for Surah Al-Fatiha according to standard Indo-Pak counting,
-    // where alayhim forms the end of Verse 6 visually, forcing the Ayah Marker (۝) mid-string.
-    // Use standard digit ٦ (U+0666) so the font composes it inside the circle.
-    let processed = text.replace('اَنۡعَمۡتَ عَلَيۡهِمۡ ۙ غَيۡرِ', 'اَنۡعَمۡتَ عَلَيۡهِمۡ \u06DD٦ ۙ غَيۡرِ');
-    
-    // We only perform basic trim to ensure HTML doesn't inherit unnecessary trailing newlines.
-    return processed.trim();
+    // We leave the raw text alone here, avoiding destructive character stripping.
+    // Display injection of the Fatiha 1:7 marker will be handled securely in the JSX components.
+    return text.trim();
 };
 
 
@@ -91,11 +87,35 @@ const removeBismillah = (text: string): string => {
 
 
 const toArabicNumeral = (num: number): string => {
-    // Standard Arabic digits (U+0660-U+0669) must be used here because font shaping engines
-    // specifically expect standard digits to compose them inside the Ayah End marker (۝ U+06DD).
-    const d = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+    // Extended Arabic-Indic digits used in Indo-Pak script (Urdu/Persian)
+    const d = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
     return num.toString().split('').map(c => d[parseInt(c)]).join('');
 };
+
+const AyahMarker = memo(({ number, size = 30 }: { number: number; size?: number }) => {
+    const numStr = toArabicNumeral(number);
+    // Increased base font sizes for the inner text
+    const fs = numStr.length > 2 ? size * 0.45 : numStr.length > 1 ? size * 0.52 : size * 0.58;
+    const c = '#8a6e45'; // Changed to a nice golden brown to match scholarly feel
+    return (
+        <svg width={size} height={size} viewBox="0 0 50 50" style={{ display: 'inline-block', verticalAlign: 'middle', flexShrink: 0 }}>
+            <circle cx="25" cy="25" r="17.5" fill="none" stroke={c} strokeWidth="1" />
+            <circle cx="25" cy="25" r="21.5" fill="none" stroke={c} strokeWidth="0.5" />
+            <circle cx="25" cy="2.5" r="2.5" fill="none" stroke={c} strokeWidth="0.7" />
+            <circle cx="25" cy="47.5" r="2.5" fill="none" stroke={c} strokeWidth="0.7" />
+            <circle cx="2.5" cy="25" r="2.5" fill="none" stroke={c} strokeWidth="0.7" />
+            <circle cx="47.5" cy="25" r="2.5" fill="none" stroke={c} strokeWidth="0.7" />
+            <circle cx="9.5" cy="9.5" r="1" fill={c} />
+            <circle cx="40.5" cy="9.5" r="1" fill={c} />
+            <circle cx="9.5" cy="40.5" r="1" fill={c} />
+            <circle cx="40.5" cy="40.5" r="1" fill={c} />
+            <text x="25" y="27" textAnchor="middle" dominantBaseline="central"
+                fontFamily="'Scheherazade New', 'Amiri', 'Traditional Arabic', 'Arial', sans-serif"
+                fontSize={fs * 1.5} fontWeight="700" fill={c}>{numStr}</text>
+        </svg>
+    );
+});
+AyahMarker.displayName = 'AyahMarker';
 
 // Right Sidebar component for Desktop
 const RightSidebar = ({ 
@@ -1371,26 +1391,59 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                                 if (!displayText.trim()) return null;
                                                                 
                                                                 const isActive = currentVerse === verse.verse_number;
+                                                                
+                                                                let fatihaPart1 = '';
+                                                                let fatihaPart2 = '';
+                                                                if (surahNumber === 1 && verse.verse_number === 7) {
+                                                                    const parts = displayText.split('اَنۡعَمۡتَ عَلَيۡهِمۡ ۙ ');
+                                                                    if (parts.length === 2) {
+                                                                        fatihaPart1 = parts[0] + 'اَنۡعَمۡتَ عَلَيۡهِمۡ ۙ ';
+                                                                        fatihaPart2 = parts[1];
+                                                                    }
+                                                                }
+
+                                                                const renderSpan = (content: React.ReactNode, id?: string) => (
+                                                                    <span
+                                                                        id={id}
+                                                                        style={{
+                                                                            cursor: 'pointer',
+                                                                            borderRadius: 4,
+                                                                            padding: '0 4px',
+                                                                            transition: 'background 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                                                                            background: isActive ? 'var(--brand-primary-light)' : 'transparent',
+                                                                            color: isActive ? 'var(--brand-primary)' : 'inherit',
+                                                                        }}
+                                                                        onClick={() => playVerse(verse.verse_number)}
+                                                                    >
+                                                                        {content}
+                                                                    </span>
+                                                                );
+
+                                                                if (fatihaPart1 && fatihaPart2) {
+                                                                    return (
+                                                                        <span key={verse.id}>
+                                                                            {renderSpan(fatihaPart1)}
+                                                                            {' '}
+                                                                            <span style={{ cursor: 'pointer', lineHeight: 1 }} onClick={() => playVerse(6)}>
+                                                                                <AyahMarker number={6} size={Math.round(fontSize * 0.9)} />
+                                                                            </span>
+                                                                            {' '}
+                                                                            {renderSpan(fatihaPart2, `verse-${verse.verse_number}`)}
+                                                                            {' '}
+                                                                            <span style={{ cursor: 'pointer', lineHeight: 1 }} onClick={() => playVerse(verse.verse_number)}>
+                                                                                <AyahMarker number={7} size={Math.round(fontSize * 0.9)} />
+                                                                            </span>
+                                                                            {' '}
+                                                                        </span>
+                                                                    );
+                                                                }
 
                                                                 return (
                                                                     <span key={verse.id}>
-                                                                        <span
-                                                                            id={`verse-${verse.verse_number}`}
-                                                                            style={{
-                                                                                cursor: 'pointer',
-                                                                                borderRadius: 4,
-                                                                                padding: '0 4px',
-                                                                                transition: 'background 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-                                                                                background: isActive ? 'var(--brand-primary-light)' : 'transparent',
-                                                                                color: isActive ? 'var(--brand-primary)' : 'inherit',
-                                                                            }}
-                                                                            onClick={() => playVerse(verse.verse_number)}
-                                                                        >
-                                                                            {displayText}
-                                                                        </span>
+                                                                        {renderSpan(displayText, `verse-${verse.verse_number}`)}
                                                                         {' '}
                                                                         <span style={{ cursor: 'pointer', lineHeight: 1 }} onClick={() => playVerse(verse.verse_number)}>
-                                                                            {'\u06DD' + toArabicNumeral(verse.verse_number)}
+                                                                            <AyahMarker number={verse.verse_number} size={Math.round(fontSize * 0.9)} />
                                                                         </span>
                                                                         {' '}
                                                                     </span>
@@ -1533,11 +1586,32 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                     {/* Arabic text with ayah marker at end */}
                                                     <div className="nq-arabic-row">
                                                         <span className="nq-arabic-text">
-                                                            {verse.verse_number === 1 && chapter.bismillah_pre ? cleanIndopakText(removeBismillah(verse.text_indopak ?? verse.text_uthmani)) : cleanIndopakText(verse.text_indopak ?? verse.text_uthmani)}
+                                                            {(() => {
+                                                                let dt = verse.verse_number === 1 && chapter.bismillah_pre ? cleanIndopakText(removeBismillah(verse.text_indopak ?? verse.text_uthmani)) : cleanIndopakText(verse.text_indopak ?? verse.text_uthmani);
+                                                                if (surahNumber === 1 && verse.verse_number === 7) {
+                                                                    const parts = dt.split('اَنۡعَمۡتَ عَلَيۡهِمۡ ۙ ');
+                                                                    if (parts.length === 2) {
+                                                                        return (
+                                                                            <>
+                                                                                {parts[0]}اَنۡعَمۡتَ عَلَيۡهِمۡ ۙ 
+                                                                                {' '}
+                                                                                <span className="nq-ayah-end-marker-wrapper" style={{ position: 'relative', display: 'inline-block' }}>
+                                                                                    <span className="nq-ayah-end-marker" onClick={() => playVerse(6)}>
+                                                                                        <AyahMarker number={6} size={isMobile ? 26 : 32} />
+                                                                                    </span>
+                                                                                </span>
+                                                                                {' '}
+                                                                                {parts[1]}
+                                                                            </>
+                                                                        );
+                                                                    }
+                                                                }
+                                                                return dt;
+                                                            })()}
                                                             {' '}
                                                             <span className="nq-ayah-end-marker-wrapper" style={{ position: 'relative', display: 'inline-block' }}>
                                                                 <span className="nq-ayah-end-marker" onClick={() => playVerse(verse.verse_number)}>
-                                                                    {'\u06DD' + toArabicNumeral(verse.verse_number)}
+                                                                    <AyahMarker number={verse.verse_number} size={isMobile ? 26 : 32} />
                                                                 </span>
                                                             </span>
                                                         </span>
