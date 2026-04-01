@@ -92,6 +92,14 @@ const toArabicNumeral = (num: number): string => {
     return num.toString().split('').map(c => d[parseInt(c)]).join('');
 };
 
+// Check if a verse is Bismillah (should not be numbered)
+const isBismillahVerse = (verseNumber: number, verseText: string): boolean => {
+    if (verseNumber === 0) return true; // Explicitly marked as Bismillah
+    // Also check for Bismillah text pattern (as safeguard)
+    const normalizedText = normalizeIndopakText(verseText).toLowerCase();
+    return /^بسم\s*الله\s*الرحمن\s*الرحيم\s*$/.test(normalizedText);
+};
+
 const AyahEnding = memo(({ number, size = 28 }: { number: number; size?: number }) => (
     <span
         className="nq-ayah-end-marker"
@@ -1389,6 +1397,9 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                                 const displayText = cleanIndopakText(sourceText);
                                                                 if (!displayText.trim()) return null;
                                                                 
+                                                                // Skip rendering Bismillah verses (they are shown separately without numbering)
+                                                                if (isBismillahVerse(verse.verse_number, displayText)) return null;
+                                                                
                                                                 const isActive = currentVerse === verse.verse_number;
                                                                 return (
                                                                     <span
@@ -1534,6 +1545,8 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                         )}
                                         {verses.map((verse, idx) => (
                                             <div key={verse.id}>
+                                                {/* Skip rendering Bismillah verses (they are shown separately without numbering) */}
+                                                {!isBismillahVerse(verse.verse_number, verse.text_indopak ?? verse.text_uthmani) && (
                                                 <div id={`verse-${verse.verse_number}`} className={`nq-ayah-card ${currentVerse === verse.verse_number ? 'nq-playing' : ''}`}>
                                                     {currentVerse === verse.verse_number && <div className="nq-active-accent" />}
                                                     {/* Verse meta row: reference pill + play button */}
@@ -1576,8 +1589,9 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                         <button className={`nq-bar-btn ${tafseerModalVerse === verse.verse_number ? 'nq-bar-active' : ''}`} onClick={() => openTafseer(verse.verse_number)} title="Tafsir"><BookOpen size={13} /><span>Tafsir</span></button>
                                                     </div>
                                                 </div>
+                                                )}
                                                 {/* After the card: simple decorative separator */}
-                                                {idx < verses.length - 1 && (
+                                                {idx < verses.length - 1 && !isBismillahVerse(verses[idx + 1].verse_number, verses[idx + 1].text_indopak ?? verses[idx + 1].text_uthmani) && (
                                                     <div className="nq-ayah-sep">
                                                         <div className="nq-sep-line" />
                                                         <span className="nq-sep-icon">۞</span>
