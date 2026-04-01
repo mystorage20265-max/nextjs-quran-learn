@@ -46,13 +46,19 @@ const normalizeIndopakText = (text: string): string => {
 };
 
 const cleanIndopakText = (text: string): string => {
-    return normalizeIndopakText(text).replace(/[\uE000-\uF8FF]/g, '').trim();
+    return normalizeIndopakText(text)
+        .replace(/[\u200E\u200F]/g, ' ')
+        .replace(/\uE021/g, ' ۞ ')
+        .replace(/\uE022/g, ' ۝ ')
+        .replace(/[\uE000-\uF8FF]/g, ' ')
+        .replace(/\s{2,}/g, ' ')
+        .trim();
 };
 
 type InlineAyahPart = { text?: string; marker?: number };
 
 const splitByEmbeddedAyahMarkers = (text: string, currentVerse: number): InlineAyahPart[] | null => {
-    const normalized = normalizeIndopakText(text);
+    const normalized = normalizeIndopakText(text).replace(/[\u200E\u200F]/g, '');
     const markerMatches = normalized.match(/[\uE000-\uF8FF]/gu);
     if (!markerMatches || markerMatches.length === 0) return null;
 
