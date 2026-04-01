@@ -34,22 +34,15 @@ import TafseerModal from '../components/TafseerModal';
 import '../styles/reader.css';
 import '../styles/tafseer-modal.css';
 
-// Clean Indo-Pak text — strips all annotation/mark characters that render as boxes.
-// Three ranges are stripped:
-//   U+0610–U+061A: Arabic phonetic annotation marks (sallallaahu, alayhe, etc.)
-//   U+06D6–U+06FF: Indo-Pak waqf / pause / sajda annotation glyphs
-//   U+FBB2–U+FBC2: Arabic Presentation Forms used in some Quran editions
-// Core Arabic letters and standard tashkeel (U+0621–U+06D5) are preserved.
+// Same Indo-Pak cleaner used in tafseer route.
 const cleanIndopakText = (text: string): string => {
     if (!text) return '';
-    // We strictly avoid regex that deletes Arabic letters, diacritics, or punctuation.
-    // The text from trusted APIs (api.quran.com / api.qurancdn.com) is prestine.
-    // Deleting ranges like \u06D6-\u06FF destroys Waqf marks, Ayat markers, and valid vowels, 
-    // which leads to missing letters, broken morphology, and severe UI glitches.
-    
-    // We leave the raw text alone here, avoiding destructive character stripping.
-    // Display injection of the Fatiha 1:7 marker will be handled securely in the JSX components.
-    return text.trim();
+    return text
+        .replace(/[\n\r\t]+/g, ' ')
+        .replace(/\u06E1/g, '\u0652')
+        .replace(/[\uFBB2-\uFBC2]/g, '')
+        .replace(/\s{2,}/g, ' ')
+        .trim();
 };
 
 
