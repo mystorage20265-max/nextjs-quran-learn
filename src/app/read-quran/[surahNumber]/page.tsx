@@ -46,31 +46,10 @@ const normalizeIndopakText = (text: string): string => {
 };
 
 const cleanIndopakText = (text: string): string => {
-    return normalizeIndopakText(text).replace(/[\uE000-\uF8FF]/g, '').trim();
-};
-
-type InlineAyahPart = { text?: string; marker?: number };
-
-const splitByEmbeddedAyahMarkers = (text: string, currentVerse: number): InlineAyahPart[] | null => {
-    const normalized = normalizeIndopakText(text);
-    const markerMatches = normalized.match(/[\uE000-\uF8FF]/gu);
-    if (!markerMatches || markerMatches.length === 0) return null;
-
-    const pieces = normalized.split(/[\uE000-\uF8FF]+/u);
-    const markerCount = markerMatches.length;
-    const parts: InlineAyahPart[] = [];
-
-    for (let i = 0; i < pieces.length; i++) {
-        const segment = pieces[i].replace(/\s{2,}/g, ' ').trim();
-        if (segment) parts.push({ text: segment });
-
-        if (i < markerCount) {
-            const markerNumber = currentVerse - (markerCount - 1 - i);
-            if (markerNumber > 0) parts.push({ marker: markerNumber });
-        }
-    }
-
-    return parts.length > 0 ? parts : null;
+    return normalizeIndopakText(text)
+        .replace(/[\uE000-\uF8FF]/g, '')
+        .replace(/\s{2,}/g, ' ')
+        .trim();
 };
 
 
@@ -113,30 +92,25 @@ const toArabicNumeral = (num: number): string => {
     return num.toString().split('').map(c => d[parseInt(c)]).join('');
 };
 
-const AyahMarker = memo(({ number, size = 30 }: { number: number; size?: number }) => {
-    const numStr = toArabicNumeral(number);
-    // Increased base font sizes for the inner text
-    const fs = numStr.length > 2 ? size * 0.45 : numStr.length > 1 ? size * 0.52 : size * 0.58;
-    const c = '#8a6e45'; // Changed to a nice golden brown to match scholarly feel
-    return (
-        <svg width={size} height={size} viewBox="0 0 50 50" style={{ display: 'inline-block', verticalAlign: 'middle', flexShrink: 0 }}>
-            <circle cx="25" cy="25" r="17.5" fill="none" stroke={c} strokeWidth="1" />
-            <circle cx="25" cy="25" r="21.5" fill="none" stroke={c} strokeWidth="0.5" />
-            <circle cx="25" cy="2.5" r="2.5" fill="none" stroke={c} strokeWidth="0.7" />
-            <circle cx="25" cy="47.5" r="2.5" fill="none" stroke={c} strokeWidth="0.7" />
-            <circle cx="2.5" cy="25" r="2.5" fill="none" stroke={c} strokeWidth="0.7" />
-            <circle cx="47.5" cy="25" r="2.5" fill="none" stroke={c} strokeWidth="0.7" />
-            <circle cx="9.5" cy="9.5" r="1" fill={c} />
-            <circle cx="40.5" cy="9.5" r="1" fill={c} />
-            <circle cx="9.5" cy="40.5" r="1" fill={c} />
-            <circle cx="40.5" cy="40.5" r="1" fill={c} />
-            <text x="25" y="27" textAnchor="middle" dominantBaseline="central"
-                fontFamily="'Scheherazade New', 'Amiri', 'Traditional Arabic', 'Arial', sans-serif"
-                fontSize={fs * 1.5} fontWeight="700" fill={c}>{numStr}</text>
-        </svg>
-    );
-});
-AyahMarker.displayName = 'AyahMarker';
+const AyahEnding = memo(({ number, size = 28 }: { number: number; size?: number }) => (
+    <span
+        className="nq-ayah-end-marker"
+        style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 4,
+            whiteSpace: 'nowrap',
+            fontSize: Math.max(18, Math.round(size * 0.72)),
+            lineHeight: 1,
+            direction: 'rtl',
+            unicodeBidi: 'isolate',
+        }}
+    >
+        <span aria-hidden="true">۝</span>
+        <span>{toArabicNumeral(number)}</span>
+    </span>
+));
+AyahEnding.displayName = 'AyahEnding';
 
 // Right Sidebar component for Desktop
 const RightSidebar = ({ 
@@ -465,6 +439,11 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
 
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentVerse, setCurrentVerse] = useState<number | null>(null);
+    const [audioProgress, setAudioProgress] = useState(0);
+    const [audioCurrentTime, setAudioCurrentTime] = useState(0);
+    const [audioDuration, setAudioDuration] = useState(0);
+    const audioCurrentTimeLabel = `${Math.floor(audioCurrentTime / 60)}:${String(Math.floor(audioCurrentTime % 60)).padStart(2, '0')}`;
+    const audioDurationLabel = `${Math.floor(audioDuration / 60)}:${String(Math.floor(audioDuration % 60)).padStart(2, '0')}`;
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const playbackIdRef = useRef(0);
     const isMountedRef = useRef(true);
@@ -1307,7 +1286,6 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
 
 
 
-                                        const ayahSize = isMobile ? Math.max(20, Math.round(fontSize * 0.72)) : Math.max(26, Math.round(fontSize * 0.95));
                                         const surahInfo = ALL_SURAHS.find(s => s.number === surahNumber);
 
                                         // Optimization: Instead of complex paging that triggers re-renders on every page turn,
@@ -1409,14 +1387,13 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                                         ? removeBismillah(rawText)
                                                                         : rawText;
                                                                 const displayText = cleanIndopakText(sourceText);
-                                                                const embeddedParts = splitByEmbeddedAyahMarkers(sourceText, verse.verse_number);
                                                                 if (!displayText.trim()) return null;
                                                                 
                                                                 const isActive = currentVerse === verse.verse_number;
-
-                                                                const renderSpan = (content: React.ReactNode, id?: string) => (
+                                                                return (
                                                                     <span
-                                                                        id={id}
+                                                                        key={verse.id}
+                                                                        id={`verse-${verse.verse_number}`}
                                                                         style={{
                                                                             cursor: 'pointer',
                                                                             borderRadius: 4,
@@ -1427,33 +1404,9 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                                         }}
                                                                         onClick={() => playVerse(verse.verse_number)}
                                                                     >
-                                                                        {content}
-                                                                    </span>
-                                                                );
-
-                                                                if (embeddedParts) {
-                                                                    return (
-                                                                        <span key={verse.id} id={`verse-${verse.verse_number}`}>
-                                                                            {embeddedParts.map((part, idx) => part.marker ? (
-                                                                                <span key={`m-${verse.id}-${idx}`} style={{ cursor: 'pointer', lineHeight: 1, display: 'inline-flex', verticalAlign: 'middle' }} onClick={() => playVerse(part.marker!)}>
-                                                                                    <AyahMarker number={part.marker!} size={Math.round(fontSize * 0.9)} />
-                                                                                </span>
-                                                                            ) : (
-                                                                                <span key={`t-${verse.id}-${idx}`}>{renderSpan(part.text || '')}</span>
-                                                                            ))}
-                                                                            {' '}
-                                                                        </span>
-                                                                    );
-                                                                }
-
-                                                                return (
-                                                                    <span key={verse.id}>
-                                                                        {renderSpan(displayText, `verse-${verse.verse_number}`)}
+                                                                        {displayText}
                                                                         {' '}
-                                                                        <span style={{ cursor: 'pointer', lineHeight: 1 }} onClick={() => playVerse(verse.verse_number)}>
-                                                                            <AyahMarker number={verse.verse_number} size={Math.round(fontSize * 0.9)} />
-                                                                        </span>
-                                                                        {' '}
+                                                                        <AyahEnding number={verse.verse_number} size={Math.round(fontSize * 0.9)} />
                                                                     </span>
                                                                 );
                                                             })}
@@ -1599,30 +1552,14 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                                     ? removeBismillah(verse.text_indopak ?? verse.text_uthmani)
                                                                     : (verse.text_indopak ?? verse.text_uthmani);
                                                                 const dt = cleanIndopakText(sourceText);
-                                                                const embeddedParts = splitByEmbeddedAyahMarkers(sourceText, verse.verse_number);
-                                                                if (embeddedParts) {
-                                                                        return (
-                                                                            <>
-                                                                                {embeddedParts.map((part, idx) => part.marker ? (
-                                                                                    <span key={`m-${verse.id}-${idx}`} className="nq-ayah-end-marker-wrapper" style={{ position: 'relative', display: 'inline-block' }}>
-                                                                                        <span className="nq-ayah-end-marker" onClick={() => playVerse(part.marker!)}>
-                                                                                            <AyahMarker number={part.marker!} size={isMobile ? 26 : 32} />
-                                                                                        </span>
-                                                                                    </span>
-                                                                                ) : (
-                                                                                    <span key={`t-${verse.id}-${idx}`}>{part.text}</span>
-                                                                                ))}
-                                                                            </>
-                                                                        );
-                                                                }
-                                                                return dt;
+                                                                return (
+                                                                    <span onClick={() => playVerse(verse.verse_number)} style={{ cursor: 'pointer' }}>
+                                                                        {dt}
+                                                                        {' '}
+                                                                        <AyahEnding number={verse.verse_number} size={isMobile ? 26 : 32} />
+                                                                    </span>
+                                                                );
                                                             })()}
-                                                            {' '}
-                                                            <span className="nq-ayah-end-marker-wrapper" style={{ position: 'relative', display: 'inline-block' }}>
-                                                                <span className="nq-ayah-end-marker" onClick={() => playVerse(verse.verse_number)}>
-                                                                    <AyahMarker number={verse.verse_number} size={isMobile ? 26 : 32} />
-                                                                </span>
-                                                            </span>
                                                         </span>
                                                     </div>
                                                     {/* Translation */}
@@ -1675,6 +1612,17 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                         {POPULAR_RECITERS.find(r => r.id === selectedReciter)?.name ?? 'Reciter'}
                                         {currentVerse ? ` · Verse ${currentVerse}` : ''}
                                     </span>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 6 }}>
+                                        <span style={{ fontSize: 10, color: '#94a3b8', minWidth: 28 }}>
+                                            {audioCurrentTimeLabel}
+                                        </span>
+                                        <div style={{ flex: 1, height: 4, borderRadius: 999, background: 'rgba(255,255,255,0.12)', overflow: 'hidden' }}>
+                                            <div style={{ width: `${audioProgress}%`, height: '100%', background: 'linear-gradient(90deg, #f59e0b, #fbbf24)' }} />
+                                        </div>
+                                        <span style={{ fontSize: 10, color: '#94a3b8', minWidth: 28, textAlign: 'right' }}>
+                                            {audioDurationLabel}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
 
