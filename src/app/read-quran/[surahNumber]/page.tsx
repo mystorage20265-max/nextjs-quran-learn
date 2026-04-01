@@ -35,7 +35,7 @@ import '../styles/reader.css';
 import '../styles/tafseer-modal.css';
 
 // Same Indo-Pak cleaner used in tafseer route.
-const cleanIndopakText = (text: string): string => {
+const normalizeIndopakText = (text: string): string => {
     if (!text) return '';
     return text
         .replace(/[\n\r\t]+/g, ' ')
@@ -43,6 +43,34 @@ const cleanIndopakText = (text: string): string => {
         .replace(/[\uFBB2-\uFBC2]/g, '')
         .replace(/\s{2,}/g, ' ')
         .trim();
+};
+
+const cleanIndopakText = (text: string): string => {
+    return normalizeIndopakText(text).replace(/[\uE000-\uF8FF]/g, '').trim();
+};
+
+type InlineAyahPart = { text?: string; marker?: number };
+
+const splitByEmbeddedAyahMarkers = (text: string, currentVerse: number): InlineAyahPart[] | null => {
+    const normalized = normalizeIndopakText(text);
+    const markerMatches = normalized.match(/[\uE000-\uF8FF]/gu);
+    if (!markerMatches || markerMatches.length === 0) return null;
+
+    const pieces = normalized.split(/[\uE000-\uF8FF]+/u);
+    const markerCount = markerMatches.length;
+    const parts: InlineAyahPart[] = [];
+
+    for (let i = 0; i < pieces.length; i++) {
+        const segment = pieces[i].replace(/\s{2,}/g, ' ').trim();
+        if (segment) parts.push({ text: segment });
+
+        if (i < markerCount) {
+            const markerNumber = currentVerse - (markerCount - 1 - i);
+            if (markerNumber > 0) parts.push({ marker: markerNumber });
+        }
+    }
+
+    return parts.length > 0 ? parts : null;
 };
 
 
@@ -1376,24 +1404,15 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                         }}>
                                                             {visibleVerses.map((verse) => {
                                                                 const rawText = verse.text_indopak || verse.text_uthmani || '';
-                                                                const displayText = cleanIndopakText(
+                                                                const sourceText =
                                                                     verse.verse_number === 1 && chapter.bismillah_pre && surahNumber !== 1
                                                                         ? removeBismillah(rawText)
-                                                                        : rawText
-                                                                );
+                                                                        : rawText;
+                                                                const displayText = cleanIndopakText(sourceText);
+                                                                const embeddedParts = splitByEmbeddedAyahMarkers(sourceText, verse.verse_number);
                                                                 if (!displayText.trim()) return null;
                                                                 
                                                                 const isActive = currentVerse === verse.verse_number;
-                                                                
-                                                                let fatihaPart1 = '';
-                                                                let fatihaPart2 = '';
-                                                                if (surahNumber === 1 && verse.verse_number === 7) {
-                                                                    const parts = displayText.split('اَنۡعَمۡتَ عَلَيۡهِمۡ ۙ ');
-                                                                    if (parts.length === 2) {
-                                                                        fatihaPart1 = parts[0] + 'اَنۡعَمۡتَ عَلَيۡهِمۡ ۙ ';
-                                                                        fatihaPart2 = parts[1];
-                                                                    }
-                                                                }
 
                                                                 const renderSpan = (content: React.ReactNode, id?: string) => (
                                                                     <span
@@ -1412,20 +1431,16 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                                     </span>
                                                                 );
 
-                                                                if (fatihaPart1 && fatihaPart2) {
+                                                                if (embeddedParts) {
                                                                     return (
-                                                                        <span key={verse.id}>
-                                                                            {renderSpan(fatihaPart1)}
-                                                                            {' '}
-                                                                            <span style={{ cursor: 'pointer', lineHeight: 1 }} onClick={() => playVerse(6)}>
-                                                                                <AyahMarker number={6} size={Math.round(fontSize * 0.9)} />
-                                                                            </span>
-                                                                            {' '}
-                                                                            {renderSpan(fatihaPart2, `verse-${verse.verse_number}`)}
-                                                                            {' '}
-                                                                            <span style={{ cursor: 'pointer', lineHeight: 1 }} onClick={() => playVerse(verse.verse_number)}>
-                                                                                <AyahMarker number={7} size={Math.round(fontSize * 0.9)} />
-                                                                            </span>
+                                                                        <span key={verse.id} id={`verse-${verse.verse_number}`}>
+                                                                            {embeddedParts.map((part, idx) => part.marker ? (
+                                                                                <span key={`m-${verse.id}-${idx}`} style={{ cursor: 'pointer', lineHeight: 1, display: 'inline-flex', verticalAlign: 'middle' }} onClick={() => playVerse(part.marker!)}>
+                                                                                    <AyahMarker number={part.marker!} size={Math.round(fontSize * 0.9)} />
+                                                                                </span>
+                                                                            ) : (
+                                                                                <span key={`t-${verse.id}-${idx}`}>{renderSpan(part.text || '')}</span>
+                                                                            ))}
                                                                             {' '}
                                                                         </span>
                                                                     );
@@ -1580,24 +1595,25 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                     <div className="nq-arabic-row">
                                                         <span className="nq-arabic-text">
                                                             {(() => {
-                                                                let dt = verse.verse_number === 1 && chapter.bismillah_pre ? cleanIndopakText(removeBismillah(verse.text_indopak ?? verse.text_uthmani)) : cleanIndopakText(verse.text_indopak ?? verse.text_uthmani);
-                                                                if (surahNumber === 1 && verse.verse_number === 7) {
-                                                                    const parts = dt.split('اَنۡعَمۡتَ عَلَيۡهِمۡ ۙ ');
-                                                                    if (parts.length === 2) {
+                                                                const sourceText = verse.verse_number === 1 && chapter.bismillah_pre
+                                                                    ? removeBismillah(verse.text_indopak ?? verse.text_uthmani)
+                                                                    : (verse.text_indopak ?? verse.text_uthmani);
+                                                                const dt = cleanIndopakText(sourceText);
+                                                                const embeddedParts = splitByEmbeddedAyahMarkers(sourceText, verse.verse_number);
+                                                                if (embeddedParts) {
                                                                         return (
                                                                             <>
-                                                                                {parts[0]}اَنۡعَمۡتَ عَلَيۡهِمۡ ۙ 
-                                                                                {' '}
-                                                                                <span className="nq-ayah-end-marker-wrapper" style={{ position: 'relative', display: 'inline-block' }}>
-                                                                                    <span className="nq-ayah-end-marker" onClick={() => playVerse(6)}>
-                                                                                        <AyahMarker number={6} size={isMobile ? 26 : 32} />
+                                                                                {embeddedParts.map((part, idx) => part.marker ? (
+                                                                                    <span key={`m-${verse.id}-${idx}`} className="nq-ayah-end-marker-wrapper" style={{ position: 'relative', display: 'inline-block' }}>
+                                                                                        <span className="nq-ayah-end-marker" onClick={() => playVerse(part.marker!)}>
+                                                                                            <AyahMarker number={part.marker!} size={isMobile ? 26 : 32} />
+                                                                                        </span>
                                                                                     </span>
-                                                                                </span>
-                                                                                {' '}
-                                                                                {parts[1]}
+                                                                                ) : (
+                                                                                    <span key={`t-${verse.id}-${idx}`}>{part.text}</span>
+                                                                                ))}
                                                                             </>
                                                                         );
-                                                                    }
                                                                 }
                                                                 return dt;
                                                             })()}
