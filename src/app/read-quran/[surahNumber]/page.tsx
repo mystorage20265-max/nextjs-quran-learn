@@ -56,21 +56,27 @@ const cleanIndopakText = (text: string): string => {
 type InlineAyahPart = { text?: string; marker?: number };
 
 const splitByEmbeddedAyahMarkers = (text: string, currentVerse: number): InlineAyahPart[] | null => {
-    const normalized = normalizeIndopakText(text).replace(/[\u200E\u200F]/g, '');
-    const markerMatches = normalized.match(/[\uE000-\uF8FF]/gu);
+    const prepared = text
+        .replace(/[\n\r\t]+/g, ' ')
+        .replace(/\u06E1/g, '\u0652')
+        .replace(/[\uFBB2-\uFBC2]/g, '')
+        .replace(/[\u200E\u200F]/g, '');
+
+    const markerMatches = prepared.match(/[\uE000-\uF8FF]/gu);
     if (!markerMatches || markerMatches.length === 0) return null;
 
-    const pieces = normalized.split(/[\uE000-\uF8FF]+/u);
+    const pieces = prepared.split(/([\uE000-\uF8FF])/u).filter(Boolean);
     const markerCount = markerMatches.length;
     const parts: InlineAyahPart[] = [];
+    let markerIndex = 0;
 
-    for (let i = 0; i < pieces.length; i++) {
-        const segment = pieces[i].replace(/\s{2,}/g, ' ').trim();
-        if (segment) parts.push({ text: segment });
-
-        if (i < markerCount) {
-            const markerNumber = currentVerse - (markerCount - 1 - i);
+    for (const piece of pieces) {
+        if (/^[\uE000-\uF8FF]$/u.test(piece)) {
+            const markerNumber = currentVerse - (markerCount - 1 - markerIndex);
+            markerIndex++;
             if (markerNumber > 0) parts.push({ marker: markerNumber });
+        } else if (piece) {
+            parts.push({ text: piece });
         }
     }
 
@@ -1439,13 +1445,12 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                                     return (
                                                                         <span key={verse.id} id={`verse-${verse.verse_number}`}>
                                                                             {embeddedParts.map((part, idx) => part.marker ? (
-                                                                                <span key={`m-${verse.id}-${idx}`} style={{ cursor: 'pointer', lineHeight: 1, display: 'inline-flex', verticalAlign: 'middle', margin: '0 0.14em', whiteSpace: 'nowrap' }} onClick={() => playVerse(part.marker!)}>
+                                                                                <span key={`m-${verse.id}-${idx}`} style={{ cursor: 'pointer', lineHeight: 1, display: 'inline-flex', verticalAlign: 'middle', whiteSpace: 'nowrap' }} onClick={() => playVerse(part.marker!)}>
                                                                                     <AyahMarker number={part.marker!} size={Math.round(fontSize * 0.9)} />
                                                                                 </span>
                                                                             ) : (
                                                                                 <span key={`t-${verse.id}-${idx}`}>{renderSpan(part.text || '')}</span>
                                                                             ))}
-                                                                            {' '}
                                                                         </span>
                                                                     );
                                                                 }
@@ -1608,7 +1613,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                             {embeddedParts ? (
                                                                 <>
                                                                     {embeddedParts.map((part, partIdx) => part.marker ? (
-                                                                        <span key={`m-${verse.id}-${partIdx}`} className="nq-ayah-end-marker-wrapper" style={{ position: 'relative', display: 'inline-flex', verticalAlign: 'middle', margin: '0 0.14em', whiteSpace: 'nowrap' }}>
+                                                                        <span key={`m-${verse.id}-${partIdx}`} className="nq-ayah-end-marker-wrapper" style={{ position: 'relative', display: 'inline-flex', verticalAlign: 'middle', whiteSpace: 'nowrap' }}>
                                                                             <span className="nq-ayah-end-marker" onClick={() => playVerse(part.marker!)}>
                                                                                 <AyahMarker number={part.marker!} size={isMobile ? 26 : 32} />
                                                                             </span>
