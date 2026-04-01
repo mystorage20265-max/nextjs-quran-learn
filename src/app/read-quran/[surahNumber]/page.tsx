@@ -100,24 +100,47 @@ const isBismillahVerse = (verseNumber: number, verseText: string): boolean => {
     return /^بسم\s*الله\s*الرحمن\s*الرحيم\s*$/.test(normalizedText);
 };
 
-const AyahEnding = memo(({ number, size = 28 }: { number: number; size?: number }) => (
-    <span
-        className="nq-ayah-end-marker"
-        style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 4,
-            whiteSpace: 'nowrap',
-            fontSize: Math.max(18, Math.round(size * 0.72)),
-            lineHeight: 1,
-            direction: 'rtl',
-            unicodeBidi: 'isolate',
-        }}
-    >
-        <span aria-hidden="true">۝</span>
-        <span>{toArabicNumeral(number)}</span>
-    </span>
-));
+const AyahEnding = memo(({ number, size = 28 }: { number: number; size?: number }) => {
+    const circleSize = Math.max(32, Math.round(size * 1.1));
+    const numSize = Math.max(14, Math.round(size * 0.6));
+    
+    return (
+        <svg
+            className="nq-ayah-circle-marker"
+            width={circleSize}
+            height={circleSize}
+            viewBox="0 0 36 36"
+            style={{
+                display: 'inline-block',
+                marginLeft: 4,
+                marginRight: 2,
+                whiteSpace: 'nowrap',
+                verticalAlign: 'middle',
+                flexShrink: 0,
+            }}
+            aria-hidden="false"
+        >
+            {/* Outer circle border */}
+            <circle cx="18" cy="18" r="17" fill="none" stroke="currentColor" strokeWidth="1.5" opacity="0.3" />
+            {/* Inner decorative circle */}
+            <circle cx="18" cy="18" r="14" fill="none" stroke="currentColor" strokeWidth="1" opacity="0.2" />
+            {/* Center number text */}
+            <text
+                x="18"
+                y="18"
+                textAnchor="middle"
+                dy="0.35em"
+                fontSize={numSize}
+                fontWeight="600"
+                fill="currentColor"
+                fontFamily="'Noto Sans Arabic', 'Traditional Arabic', serif"
+                style={{ direction: 'ltr', unicodeBidi: 'isolate' }}
+            >
+                {toArabicNumeral(number)}
+            </text>
+        </svg>
+    );
+});
 AyahEnding.displayName = 'AyahEnding';
 
 // Right Sidebar component for Desktop
@@ -647,6 +670,11 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
             const saved = localStorage.getItem('quran-bookmarks');
             if (saved) setBookmarks(JSON.parse(saved));
         }
+    }, []);
+
+    // Alert to verify code is loaded
+    useEffect(() => {
+        alert(`✅ Quran Reader Initialized! Surah ${surahNumber} loaded with refactored AyahEnding component (SVG circles with centered numbers)`);
     }, []);
 
     // Cleanup
