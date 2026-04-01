@@ -1378,26 +1378,6 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                         </div>
                                                     </div>
 
-                                                    {/* Bismillah - for surahs with bismillah_pre (except Surah 9) */}
-                                                    {chapter.bismillah_pre && surahNumber !== 1 && surahNumber !== 9 && (
-                                                        <div style={{
-                                                            textAlign: 'center',
-                                                            padding: isMobile ? '14px 12px' : '20px 24px',
-                                                            borderBottom: '1px solid var(--border-subtle)',
-                                                        }}>
-                                                            <span style={{
-                                                                fontFamily: "'Naskh IndoPak', 'KFGQPC Uthmanic Script HAFS Regular', 'Scheherazade New', 'Amiri', 'Traditional Arabic', serif",
-                                                                fontSize: isMobile ? Math.round(fontSize * 0.82) : Math.round(fontSize * 1.05),
-                                                                color: 'var(--text-primary)',
-                                                                lineHeight: 1.8,
-                                                                fontFeatureSettings: '"liga" 1, "calt" 1',
-                                                                textRendering: 'optimizeLegibility',
-                                                            }}>
-                                                                بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
-                                                            </span>
-                                                        </div>
-                                                    )}
-
                                                     {/* ===== VERSE CONTENT AREA ===== */}
                                                     <div style={{
                                                         padding: isMobile ? '24px 20px' : '32px 40px',
@@ -1416,6 +1396,23 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                             letterSpacing: 'normal',
                                                             WebkitFontSmoothing: 'antialiased',
                                                         }}>
+                                                            {/* Bismillah line without number */}
+                                                            {chapter.bismillah_pre && surahNumber !== 1 && surahNumber !== 9 && (
+                                                                <>
+                                                                    <span style={{
+                                                                        fontFamily: "'Naskh IndoPak', 'KFGQPC Uthmanic Script HAFS Regular', 'Scheherazade New', 'Amiri', 'Traditional Arabic', serif",
+                                                                        fontSize: isMobile ? Math.round(fontSize * 0.82) : Math.round(fontSize * 1.05),
+                                                                        color: 'var(--text-primary)',
+                                                                        lineHeight: 1.8,
+                                                                        fontFeatureSettings: '"liga" 1, "calt" 1',
+                                                                        textRendering: 'optimizeLegibility',
+                                                                        display: 'block',
+                                                                        marginBottom: '1.5em',
+                                                                    }}>
+                                                                        بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+                                                                    </span>
+                                                                </>
+                                                            )}
                                                             {visibleVerses.map((verse) => {
                                                                 const rawText = verse.text_indopak || verse.text_uthmani || '';
                                                                 const sourceText =
@@ -1565,12 +1562,26 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                             <span className="nq-surah-header-arabic" style={{ fontSize: isMobile ? 28 : 42 }}>{chapter.name_arabic}</span>
                                             <p className="nq-surah-header-sub">{chapter.translated_name.name} &bull; {chapter.verses_count} Verses</p>
                                         </div>
-                                        {/* Bismillah */}
-                                        {chapter.bismillah_pre && surahNumber !== 9 && (
-                                            <div className="nq-bismillah-header" style={{ fontSize: isMobile ? 22 : 32, marginBottom: 36 }}>
-                                                بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+                                        
+                                        {/* Bismillah as separate line without number */}
+                                        {chapter.bismillah_pre && surahNumber !== 1 && surahNumber !== 9 && (
+                                            <div style={{
+                                                textAlign: 'center',
+                                                padding: isMobile ? '16px 12px' : '24px 24px',
+                                                marginBottom: '24px',
+                                            }}>
+                                                <span className="nq-arabic-text" style={{
+                                                    fontSize: isMobile ? 22 : 32,
+                                                    fontFamily: "'Naskh IndoPak', 'KFGQPC Uthmanic Script HAFS Regular', 'Scheherazade New', 'Amiri', 'Traditional Arabic', serif",
+                                                    lineHeight: 1.8,
+                                                    color: 'var(--text-primary)',
+                                                    fontFeatureSettings: '"liga" 1, "calt" 1',
+                                                }}>
+                                                    بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+                                                </span>
                                             </div>
                                         )}
+                                        
                                         {verses.map((verse, idx) => (
                                             <div key={verse.id}>
                                                 {/* Skip rendering Bismillah verses (they are shown separately without numbering) */}
