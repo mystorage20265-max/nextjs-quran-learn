@@ -29,7 +29,7 @@ export const usePrefetch = () => {
 
       const quranRoutes = [
         'https://api.quran.com/api/v4/chapters?language=en',
-        ...popularSurahs.map(id => `https://api.quran.com/api/v4/verses/by_chapter/${id}?language=en&words=true&translations=131&fields=text_uthmani,text_indopak&word_fields=text_uthmani,text_imlaei,translation,transliteration&translation_fields=text,resource_name&per_page=300`)
+        ...popularSurahs.map(id => `https://api.quran.com/api/v4/verses/by_chapter/${id}?language=en&words=true&translations=131&fields=text_uthmani,text_indopak&word_fields=text_uthmani,text_indopak,text_imlaei,translation,transliteration&translation_fields=text,resource_name&per_page=300`)
       ];
 
       const routes = [
@@ -45,7 +45,7 @@ export const usePrefetch = () => {
       const remainingSurahs = allSurahIds.filter(id => !popularSurahs.includes(id));
       
       const backgroundRoutes = remainingSurahs.map(id => 
-        `https://api.quran.com/api/v4/verses/by_chapter/${id}?language=en&words=true&translations=131&fields=text_uthmani,text_indopak&word_fields=text_uthmani,text_imlaei,translation,transliteration&translation_fields=text,resource_name&per_page=300`
+        `https://api.quran.com/api/v4/verses/by_chapter/${id}?language=en&words=true&translations=131&fields=text_uthmani,text_indopak&word_fields=text_uthmani,text_indopak,text_imlaei,translation,transliteration&translation_fields=text,resource_name&per_page=300`
       );
 
       // Process remaining surahs in background with even more delay to not affect actual user experience

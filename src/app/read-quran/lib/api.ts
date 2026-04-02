@@ -269,7 +269,7 @@ export async function getVersesWithWords(
     try {
         // Fetch Quran.com words data AND QuranCDN IndoPak text in parallel.
         // Quran.com's text_indopak omits sukun (U+0652); QuranCDN has the full diacritics.
-        const url = `${API_BASE}/verses/by_chapter/${chapterId}?language=${wordLanguage}&words=true&translations=${translationId}&fields=text_uthmani,text_indopak&word_fields=text_uthmani,text_imlaei,translation,transliteration&translation_fields=text,resource_name&per_page=300`;
+        const url = `${API_BASE}/verses/by_chapter/${chapterId}?language=${wordLanguage}&words=true&translations=${translationId}&fields=text_uthmani,text_indopak&word_fields=text_uthmani,text_indopak,text_imlaei,translation,transliteration&translation_fields=text,resource_name&per_page=300`;
 
         const [response, indopakRes] = await Promise.all([
             fetchWithRetry(url),

@@ -113,7 +113,7 @@ async function getVerses(params: URLSearchParams): Promise<NextResponse> {
     }
 
     // Build the API URL with Uthmanic script
-    let apiUrl = `${QURAN_API_BASE}/verses/by_chapter/${chapterId}?language=en&words=true&translations=${translationId}&fields=text_uthmani,text_indopak&word_fields=text_uthmani,translation`;
+    let apiUrl = `${QURAN_API_BASE}/verses/by_chapter/${chapterId}?language=en&words=true&translations=${translationId}&fields=text_uthmani,text_indopak&word_fields=text_uthmani,text_indopak,translation`;
 
     // Pagination for verse range
     if (toVerse) {
@@ -157,7 +157,7 @@ async function getVerses(params: URLSearchParams): Promise<NextResponse> {
         arabicText: cleanIndopakText(v.text_uthmani),                      // convenient alias - Uthmani
         translation: v.translations?.[0]?.text || '',
         words: v.words?.map(w => ({
-            arabic: cleanIndopakText(w.text_uthmani),
+            arabic: cleanIndopakText(w.text_indopak || w.text_uthmani),
             translation: w.translation?.text || ''
         }))
     }));

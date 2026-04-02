@@ -143,6 +143,33 @@ const AyahEnding = memo(({ number, size = 28 }: { number: number; size?: number 
 });
 AyahEnding.displayName = 'AyahEnding';
 
+// Hollow circle marker for Bismillah (no verse number)
+const BismillahMarker = memo(({ size = 28 }: { size?: number }) => {
+    const circleSize = Math.max(28, Math.round(size * 1.0));
+    return (
+        <svg
+            className="nq-bismillah-marker"
+            width={circleSize}
+            height={circleSize}
+            viewBox="0 0 36 36"
+            style={{
+                display: 'inline-block',
+                marginLeft: 4,
+                marginRight: 2,
+                whiteSpace: 'nowrap',
+                verticalAlign: 'middle',
+                flexShrink: 0,
+                opacity: 0.45,
+            }}
+            aria-hidden="true"
+        >
+            <circle cx="18" cy="18" r="16" fill="none" stroke="currentColor" strokeWidth="1.5" />
+            <circle cx="18" cy="18" r="11" fill="none" stroke="currentColor" strokeWidth="0.8" />
+        </svg>
+    );
+});
+BismillahMarker.displayName = 'BismillahMarker';
+
 // Right Sidebar component for Desktop
 const RightSidebar = ({ 
     chapter, 
@@ -672,10 +699,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
         }
     }, []);
 
-    // Alert to verify code is loaded
-    useEffect(() => {
-        alert(`✅ Quran Reader Initialized! Surah ${surahNumber} loaded with refactored AyahEnding component (SVG circles with centered numbers)`);
-    }, []);
+    const [showSurahInfo, setShowSurahInfo] = useState(false);
 
     // Cleanup
     useEffect(() => {
@@ -1331,52 +1355,153 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
 
                                         return (
                                             <div style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? 16 : 24 }}>
-                                                {/* ===== MUSHAF CONTAINER ===== */}
+                                                {/* ===== QURAN.COM-STYLE SURAH HEADER ===== */}
                                                 <div style={{
                                                     background: 'var(--bg-surface)',
                                                     border: '1.5px solid var(--border-subtle)',
-                                                    borderRadius: 12,
-                                                    position: 'relative',
+                                                    borderRadius: 16,
                                                     overflow: 'hidden',
-                                                    boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
-                                                    willChange: 'transform' // GPU acceleration
+                                                    boxShadow: '0 2px 16px rgba(0,0,0,0.06)',
                                                 }}>
-                                                    {/* Juz Header */}
+                                                    {/* ===== QURAN.COM-STYLE HEADER: Arabic LEFT + Info RIGHT ===== */}
                                                     <div style={{
-                                                        textAlign: 'center',
-                                                        padding: isMobile ? '10px 8px' : '14px 16px',
-                                                        borderBottom: '1.5px solid var(--border-subtle)',
-                                                        background: 'var(--bg-muted)',
-                                                    }}>
-                                                        <span style={{
-                                                            fontFamily: "'Naskh IndoPak', 'KFGQPC Uthmanic Script HAFS Regular', 'Scheherazade New', 'Amiri', 'Traditional Arabic', serif",
-                                                            fontSize: isMobile ? 20 : 28,
-                                                            color: 'var(--text-primary)',
-                                                            fontWeight: 700,
-                                                            fontFeatureSettings: '"liga" 1, "calt" 1',
-                                                        }}>
-                                                            جُزْءٌ - {toArabicNumeral(verses[0]?.juz_number || 1)}
-                                                        </span>
-                                                    </div>
-
-                                                    {/* Surah Title Header */}
-                                                    <div style={{
-                                                        textAlign: 'center',
-                                                        padding: isMobile ? '14px 8px' : '18px 16px',
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        gap: isMobile ? 16 : 28,
+                                                        padding: isMobile ? '20px 20px 16px' : '28px 40px 24px',
                                                         borderBottom: '1px solid var(--border-subtle)',
-                                                        background: 'var(--bg-surface)',
                                                     }}>
+                                                        {/* Left: Large Arabic Calligraphy */}
                                                         <div style={{
-                                                            fontFamily: "'Naskh IndoPak', 'KFGQPC Uthmanic Script HAFS Regular', 'Scheherazade New', 'Amiri', 'Traditional Arabic', serif",
-                                                            fontSize: isMobile ? 24 : 36,
+                                                            fontFamily: "'Naskh IndoPak','KFGQPC Uthmanic Script HAFS Regular','Scheherazade New','Amiri','Traditional Arabic',serif",
+                                                            fontSize: isMobile ? 44 : 72,
                                                             fontWeight: 700,
                                                             color: 'var(--text-primary)',
-                                                            lineHeight: 1.5,
+                                                            lineHeight: 1.3,
+                                                            flexShrink: 0,
                                                             fontFeatureSettings: '"liga" 1, "calt" 1',
                                                         }}>
-                                                            سُورَةُ {chapter.name_arabic}
+                                                            {chapter.name_arabic}
+                                                        </div>
+
+                                                        {/* Vertical Divider */}
+                                                        <div style={{ width: 1, alignSelf: 'stretch', background: 'var(--border-subtle)', flexShrink: 0 }} />
+
+                                                        {/* Right: Info */}
+                                                        <div style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 0 }}>
+                                                            {/* Number + Name + teal info badge */}
+                                                            <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                                                                <h2 style={{
+                                                                    margin: 0,
+                                                                    fontSize: isMobile ? 17 : 22,
+                                                                    fontWeight: 700,
+                                                                    color: 'var(--text-primary)',
+                                                                    fontFamily: "'Lexend','Inter',sans-serif",
+                                                                    letterSpacing: '-0.02em',
+                                                                }}>
+                                                                    {surahNumber}. {surahInfo?.name || chapter.name_simple}
+                                                                </h2>
+                                                                <button
+                                                                    onClick={() => setShowSurahInfo(v => !v)}
+                                                                    style={{
+                                                                        display: 'inline-flex', alignItems: 'center',
+                                                                        padding: '2px 8px', borderRadius: 4,
+                                                                        border: '1px solid #0d9488',
+                                                                        background: showSurahInfo ? '#0d9488' : 'rgba(13,148,136,0.12)',
+                                                                        color: showSurahInfo ? 'white' : '#0d9488',
+                                                                        fontSize: 11, fontWeight: 600,
+                                                                        fontFamily: "'Lexend',sans-serif",
+                                                                        cursor: 'pointer',
+                                                                        transition: 'all 0.2s',
+                                                                    }}
+                                                                >info</button>
+                                                            </div>
+                                                            {/* Translation */}
+                                                            <p style={{
+                                                                margin: 0,
+                                                                fontSize: isMobile ? 13 : 15,
+                                                                color: 'var(--text-muted)',
+                                                                fontFamily: "'Lexend','Inter',sans-serif",
+                                                                fontWeight: 400,
+                                                            }}>{chapter.translated_name.name}</p>
                                                         </div>
                                                     </div>
+
+                                                    {/* ===== COLLAPSIBLE INFO PANEL ===== */}
+                                                    {showSurahInfo && (
+                                                        <div style={{
+                                                            borderTop: '1px solid var(--border-subtle)',
+                                                            background: 'var(--bg-muted)',
+                                                            padding: isMobile ? '20px 20px' : '24px 48px',
+                                                            animation: 'nqInfoIn 0.25s ease-out',
+                                                        }}>
+                                                            <style>{`@keyframes nqInfoIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}`}</style>
+                                                            <p style={{
+                                                                margin: '0 0 20px', fontSize: 12, fontWeight: 700,
+                                                                color: '#f59e0b', textTransform: 'uppercase',
+                                                                letterSpacing: '0.1em', fontFamily: "'Lexend',sans-serif"
+                                                            }}>Surah Analysis</p>
+                                                            <div style={{
+                                                                display: 'grid',
+                                                                gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(4, 1fr)',
+                                                                gap: 12,
+                                                                marginBottom: 20,
+                                                            }}>
+                                                                {[
+                                                                    { label: 'Surah No.', value: `#${surahNumber}`, icon: '🔢' },
+                                                                    { label: 'Revelation', value: chapter.revelation_place === 'makkah' ? 'Meccan' : 'Medinan', icon: chapter.revelation_place === 'makkah' ? '☀️' : '🌙' },
+                                                                    { label: 'Total Verses', value: chapter.verses_count.toString(), icon: '📖' },
+                                                                    { label: 'Revelation Order', value: `#${chapter.revelation_order}`, icon: '📊' },
+                                                                    { label: 'Starts at Juz', value: `Juz ${verses[0]?.juz_number || 1}`, icon: '📚' },
+                                                                    { label: 'Arabic Name', value: chapter.name_arabic, icon: '🕌', arabic: true },
+                                                                    { label: 'Meaning', value: chapter.translated_name.name, icon: '💡' },
+                                                                    { label: 'Type', value: chapter.verses_count > 50 ? 'Long Surah' : chapter.verses_count > 20 ? 'Medium Surah' : 'Short Surah', icon: '📏' },
+                                                                ].map(({ label, value, icon, arabic }) => (
+                                                                    <div key={label} style={{
+                                                                        background: 'var(--bg-surface)',
+                                                                        border: '1px solid var(--border-subtle)',
+                                                                        borderRadius: 10,
+                                                                        padding: '12px 14px',
+                                                                        display: 'flex',
+                                                                        flexDirection: 'column',
+                                                                        gap: 4,
+                                                                    }}>
+                                                                        <span style={{ fontSize: 18 }}>{icon}</span>
+                                                                        <span style={{ fontSize: 11, color: 'var(--text-muted)', fontFamily: "'Lexend',sans-serif", fontWeight: 500 }}>{label}</span>
+                                                                        <span style={{
+                                                                            fontSize: arabic ? 18 : 14,
+                                                                            fontWeight: 700,
+                                                                            color: 'var(--text-primary)',
+                                                                            fontFamily: arabic ? "'Naskh IndoPak','Traditional Arabic',serif" : "'Lexend','Inter',sans-serif",
+                                                                            lineHeight: arabic ? 1.8 : 1.3,
+                                                                        }}>{value}</span>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                            {/* Notable facts section */}
+                                                            <div style={{
+                                                                background: 'linear-gradient(135deg, rgba(245,158,11,0.06) 0%, rgba(245,158,11,0.02) 100%)',
+                                                                border: '1px solid rgba(245,158,11,0.2)',
+                                                                borderRadius: 10, padding: '14px 16px',
+                                                            }}>
+                                                                <p style={{ margin: '0 0 8px', fontSize: 12, fontWeight: 700, color: '#f59e0b', fontFamily: "'Lexend',sans-serif" }}>📌 Notable Facts</p>
+                                                                <ul style={{ margin: 0, paddingLeft: 18, display: 'flex', flexDirection: 'column', gap: 4 }}>
+                                                                    {surahNumber === 1 && <li style={{ fontSize: 13, color: 'var(--text-secondary)', fontFamily: "'Inter',sans-serif" }}>Al-Fatihah is recited in every unit of prayer (Salah)</li>}
+                                                                    {surahNumber === 2 && <li style={{ fontSize: 13, color: 'var(--text-secondary)', fontFamily: "'Inter',sans-serif" }}>The longest surah in the Quran with 286 verses</li>}
+                                                                    {surahNumber === 36 && <li style={{ fontSize: 13, color: 'var(--text-secondary)', fontFamily: "'Inter',sans-serif" }}>Often called the "Heart of the Quran"</li>}
+                                                                    {surahNumber === 55 && <li style={{ fontSize: 13, color: 'var(--text-secondary)', fontFamily: "'Inter',sans-serif" }}>Known for its repeated verse: "Which of your Lord's favours will you deny?"</li>}
+                                                                    {surahNumber === 67 && <li style={{ fontSize: 13, color: 'var(--text-secondary)', fontFamily: "'Inter',sans-serif" }}>Al-Mulk intercedes for its reciter on the Day of Judgment</li>}
+                                                                    {surahNumber === 112 && <li style={{ fontSize: 13, color: 'var(--text-secondary)', fontFamily: "'Inter',sans-serif" }}>Equivalent to one-third of the Quran in reward</li>}
+                                                                    <li style={{ fontSize: 13, color: 'var(--text-secondary)', fontFamily: "'Inter',sans-serif" }}>
+                                                                        {chapter.revelation_place === 'makkah' ? 'Revealed in Makkah — typically focuses on faith, afterlife, and stories of prophets' : 'Revealed in Madinah — typically focuses on laws, community, and social guidance'}
+                                                                    </li>
+                                                                    <li style={{ fontSize: 13, color: 'var(--text-secondary)', fontFamily: "'Inter',sans-serif" }}>
+                                                                        Revelation order #{chapter.revelation_order} out of 114 surahs
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    )}
 
                                                     {/* ===== VERSE CONTENT AREA ===== */}
                                                     <div style={{
@@ -1422,8 +1547,18 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                                 const displayText = cleanIndopakText(sourceText);
                                                                 if (!displayText.trim()) return null;
                                                                 
-                                                                // Skip rendering Bismillah verses (they are shown separately without numbering)
-                                                                if (isBismillahVerse(verse.verse_number, displayText)) return null;
+                                                                // Bismillah detection
+                                                                const isThisBismillah = 
+                                                                    verse.verse_number === 0 ||
+                                                                    (surahNumber === 1 && verse.verse_number === 1) ||
+                                                                    isBismillahVerse(verse.verse_number, displayText);
+                                                                // For surahs OTHER than Al-Fatihah, bismillah is shown separately above
+                                                                if (isThisBismillah && surahNumber !== 1) return null;
+                                                                
+                                                                // For surah 1: display number is verse_number - 1 (bismillah is verse 1 but unnumbered)
+                                                                const displayNumber = (surahNumber === 1 && !isThisBismillah)
+                                                                    ? verse.verse_number - 1
+                                                                    : verse.verse_number;
                                                                 
                                                                 const isActive = currentVerse === verse.verse_number;
                                                                 return (
@@ -1442,7 +1577,11 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                                     >
                                                                         {displayText}
                                                                         {' '}
-                                                                        <AyahEnding number={verse.verse_number} size={Math.round(fontSize * 0.9)} />
+                                                                        {/* Bismillah: hollow circle ○. Other verses: numbered circle */}
+                                                                        {isThisBismillah
+                                                                            ? <BismillahMarker size={Math.round(fontSize * 0.9)} />
+                                                                            : <AyahEnding number={displayNumber} size={Math.round(fontSize * 0.9)} />
+                                                                        }
                                                                     </span>
                                                                 );
                                                             })}
