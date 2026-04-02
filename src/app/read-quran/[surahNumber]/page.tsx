@@ -494,6 +494,13 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
         return () => window.removeEventListener('resize', check);
     }, []);
 
+    useEffect(() => {
+        if (surahNumber === 2 && readingMode === 'reading' && !fontAlertShownRef.current) {
+            fontAlertShownRef.current = true;
+            window.alert('PDMS Saleem AC Quran font is active on this page.');
+        }
+    }, [surahNumber, readingMode]);
+
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentVerse, setCurrentVerse] = useState<number | null>(null);
     const [audioProgress, setAudioProgress] = useState(0);
@@ -504,6 +511,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const playbackIdRef = useRef(0);
     const isMountedRef = useRef(true);
+    const fontAlertShownRef = useRef(false);
     const surahBtnRef = useRef<HTMLButtonElement | null>(null);
     const verseBtnRef = useRef<HTMLButtonElement | null>(null);
 
@@ -906,7 +914,7 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                 .nq-arabic-text{font-family:var(--rq-font-arabic);font-size:var(--nq-fs,26px);line-height:2;text-align:right;flex:1;color:#1e293b;direction:rtl}
                 @media(min-width:640px){.nq-arabic-text{font-size:var(--nq-fs,36px)}}
                 .dark .nq-arabic-text{color:#e2e8f0}
-                .nq-shell .word-arabic,.nq-shell .reader-verse-arabic,.nq-shell .reader-bismillah-text,.nq-shell .nq-bismillah-text,.nq-shell .nq-arabic-text{font-family:'Naskh IndoPak','Scheherazade New','Noto Naskh Arabic','KFGQPC','Amiri','Traditional Arabic',serif!important}
+                .nq-shell .word-arabic,.nq-shell .reader-verse-arabic,.nq-shell .reader-bismillah-text,.nq-shell .nq-bismillah-text,.nq-shell .nq-arabic-text{font-family:'PDMS Saleem AC Quran','KFGQPC','Naskh IndoPak','Scheherazade New','Noto Naskh Arabic','Amiri','Traditional Arabic',serif!important;font-feature-settings:'liga' 1,'calt' 1,'mark' 1,'mkmk' 1}
                 .nq-verse-badge{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;border:1px solid rgba(245,158,11,0.4);font-size:12px;font-weight:700;color:#f59e0b;margin-right:6px;font-family:'Lexend',sans-serif;cursor:pointer;vertical-align:middle;transition:background 0.15s}
                 @media(min-width:640px){.nq-verse-badge{width:40px;height:40px;font-size:14px;margin-right:8px}}
                 .nq-verse-badge:hover{background:rgba(245,158,11,0.1)}
@@ -1507,14 +1515,14 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                         padding: isMobile ? '24px 20px' : '32px 40px',
                                                     }}>
                                                         <div style={{
-                                                            fontFamily: "'Naskh IndoPak', 'KFGQPC Uthmanic Script HAFS Regular', 'Scheherazade New', 'Amiri', 'Traditional Arabic', serif",
+                                                            fontFamily: "'PDMS Saleem AC Quran', 'KFGQPC', 'Naskh IndoPak', 'Scheherazade New', 'Amiri', 'Traditional Arabic', serif",
                                                             fontSize: isMobile ? `${Math.round(fontSize * 0.72)}px` : `${fontSize}px`,
                                                             lineHeight: isMobile ? 2.0 : 2.4,
                                                             textAlign: 'center',
                                                             direction: 'rtl' as const,
                                                             color: 'var(--text-primary)',
                                                             margin: 0,
-                                                            fontFeatureSettings: '"liga" 1, "calt" 1',
+                                                            fontFeatureSettings: '"liga" 1, "calt" 1, "mark" 1, "mkmk" 1',
                                                             textRendering: 'optimizeLegibility',
                                                             wordSpacing: '0.1em',
                                                             letterSpacing: 'normal',
@@ -1524,11 +1532,11 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                                             {chapter.bismillah_pre && surahNumber !== 1 && surahNumber !== 9 && (
                                                                 <>
                                                                     <span style={{
-                                                                        fontFamily: "'Naskh IndoPak', 'KFGQPC Uthmanic Script HAFS Regular', 'Scheherazade New', 'Amiri', 'Traditional Arabic', serif",
+                                                                        fontFamily: "'PDMS Saleem AC Quran', 'KFGQPC', 'Naskh IndoPak', 'Scheherazade New', 'Amiri', 'Traditional Arabic', serif",
                                                                         fontSize: isMobile ? Math.round(fontSize * 0.82) : Math.round(fontSize * 1.05),
                                                                         color: 'var(--text-primary)',
                                                                         lineHeight: 1.8,
-                                                                        fontFeatureSettings: '"liga" 1, "calt" 1',
+                                                                        fontFeatureSettings: '"liga" 1, "calt" 1, "mark" 1, "mkmk" 1',
                                                                         textRendering: 'optimizeLegibility',
                                                                         display: 'block',
                                                                         marginBottom: '1.5em',
@@ -1710,10 +1718,10 @@ export default function SurahReadingPage({ params }: SurahPageProps) {
                                             }}>
                                                 <span className="nq-arabic-text" style={{
                                                     fontSize: isMobile ? 22 : 32,
-                                                    fontFamily: "'Naskh IndoPak', 'KFGQPC Uthmanic Script HAFS Regular', 'Scheherazade New', 'Amiri', 'Traditional Arabic', serif",
+                                                    fontFamily: "'KFGQPC', 'Naskh IndoPak', 'Scheherazade New', 'Amiri', 'Traditional Arabic', serif",
                                                     lineHeight: 1.8,
                                                     color: 'var(--text-primary)',
-                                                    fontFeatureSettings: '"liga" 1, "calt" 1',
+                                                    fontFeatureSettings: '"liga" 1, "calt" 1, "mark" 1, "mkmk" 1',
                                                 }}>
                                                     بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
                                                 </span>

@@ -45,7 +45,7 @@
 
   /* Typography */
   --rq-font-sans: "Outfit", "Inter", system-ui, sans-serif;
-  --rq-font-arabic: "Naskh IndoPak", "Scheherazade New", "Noto Naskh Arabic", "KFGQPC", "Amiri", "Traditional Arabic", serif;
+  --rq-font-arabic: "PDMS Saleem AC Quran", "KFGQPC", "Naskh IndoPak", "Scheherazade New", "Noto Naskh Arabic", "Amiri", "Traditional Arabic", serif;
 
   /* Layout */
   --rq-radius-lg: 20px;

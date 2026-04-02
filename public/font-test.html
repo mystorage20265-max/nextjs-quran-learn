@@ -2,25 +2,541 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Font Test</title>
     <style>
+        :root {
+                    --bg: #faf7f0;
+            --panel: #ffffff;
+                    --text: #111111;
+            --muted: #6b7280;
+            --brand: #d97706;
+            --brand-soft: rgba(217, 119, 6, 0.12);
+            --border: rgba(17, 24, 39, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: #ffffff;
+            color: var(--text);
+            font-family: "Inter", "Segoe UI", sans-serif;
+        }
+
+        .page {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 24px 16px 40px;
+        }
+
+        .hero {
+            display: grid;
+            gap: 14px;
+            margin-bottom: 20px;
+            padding: 20px 22px;
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            background: rgba(255, 255, 255, 0.78);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 18px 50px rgba(17, 24, 39, 0.08);
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            width: fit-content;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: var(--brand-soft);
+            color: var(--brand);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(28px, 4vw, 44px);
+            line-height: 1.1;
+        }
+
+        .subtext {
+            margin: 0;
+            color: var(--muted);
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .status-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .status {
+            padding: 10px 14px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: #fff;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .status.loading {
+            color: #92400e;
+            background: rgba(251, 191, 36, 0.14);
+        }
+
+        .status.ok {
+            color: #065f46;
+            background: rgba(16, 185, 129, 0.14);
+        }
+
+        .status.error {
+            color: #991b1b;
+            background: rgba(239, 68, 68, 0.12);
+        }
+
+        .source-controls {
+            display: grid;
+            gap: 10px;
+            margin-top: 6px;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: #fff;
+        }
+
+        .control-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .control-row label {
+            font-size: 12px;
+            color: var(--muted);
+            font-weight: 600;
+            min-width: 82px;
+        }
+
+        .control-row input,
+        .control-row select {
+            flex: 1;
+            min-width: 220px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 8px 10px;
+            font-size: 13px;
+        }
+
+        .source-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 8px 12px;
+            background: #fff;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn.primary {
+            background: var(--brand);
+            color: #fff;
+            border-color: var(--brand);
+        }
+
+        .verse-list {
+            display: grid;
+            gap: 14px;
+        }
+
+        .verse-card {
+            padding: 18px 20px;
+            border-radius: 18px;
+            border: 1px solid var(--border);
+            background: var(--panel);
+            box-shadow: 0 8px 24px rgba(17, 24, 39, 0.06);
+        }
+
+        .verse-card.focus {
+            padding: 20px 22px 24px;
+            border-color: rgba(0, 0, 0, 0.35);
+            background: #ffffff;
+        }
+
+        .verse-meta {
+            display: flex;
+            gap: 12px;
+            align-items: baseline;
+            justify-content: space-between;
+            margin-bottom: 14px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .verse-meta.small {
+            margin-bottom: 10px;
+            font-size: 12px;
+        }
+
+        .verse-key {
+            color: var(--brand);
+            font-weight: 700;
+        }
+
+        .arabic {
+            font-family: "Naskh IndoPak", "KFGQPC", "Scheherazade New", "Noto Naskh Arabic", serif;
+            direction: rtl;
+            text-align: right;
+            font-size: clamp(34px, 4vw, 58px);
+            line-height: 2;
+            word-spacing: 0.02em;
+            letter-spacing: 0;
+        }
+
+        .arabic.big {
+            font-family: "KFGQPC", "Naskh IndoPak", "Scheherazade New", serif;
+            color: #000000;
+            font-size: clamp(42px, 5vw, 74px);
+            padding: 8px 0 0;
+            line-height: 1.55;
+        }
+
+        .sample-line {
+            display: block;
+            text-align: right;
+        }
+
+        .latin {
+            direction: ltr;
+            text-align: left;
+            font-family: "Inter", "Segoe UI", sans-serif;
+            font-size: 13px;
+            color: var(--muted);
+            margin-top: 10px;
+            word-break: break-word;
+        }
+
+        .api-raw {
+            margin: 10px 0 0;
+            padding: 12px 14px;
+            border-radius: 14px;
+            background: #fafafa;
+            border: 1px dashed rgba(17, 24, 39, 0.16);
+            direction: rtl;
+            text-align: right;
+            font-family: "Naskh IndoPak", "KFGQPC", "Scheherazade New", "Noto Naskh Arabic", serif;
+            font-size: 28px;
+            line-height: 1.9;
+            white-space: pre-wrap;
+            unicode-bidi: plaintext;
+        }
+
+        .footer-note {
+            margin-top: 18px;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
         @font-face {
             font-family: 'Naskh IndoPak';
-            src: url('./public/fonts/Naskh-Nastaleeq-IndoPak-QWBW.woff2') format('woff2');
+            src: url('fonts/Naskh-Nastaleeq-IndoPak-QWBW.woff2') format('woff2'), url('/fonts/Naskh-Nastaleeq-IndoPak-QWBW.woff2') format('woff2');
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'KFGQPC';
+            src: url('fonts/kfgqpc-uthmanic.otf') format('opentype'), url('/fonts/kfgqpc-uthmanic.otf') format('opentype'), url('fonts/uthmanic.otf') format('opentype'), url('/fonts/uthmanic.otf') format('opentype');
+            font-display: swap;
         }
         @font-face {
             font-family: 'Scheherazade New';
             src: url('https://fonts.gstatic.com/s/scheherazadenew/v13/46k1b_04EZvJqPGE1u0677-Yw1qK2w.woff2') format('woff2');
-        }
-        body {
-            font-family: "Naskh IndoPak", "Scheherazade New", sans-serif;
-            font-size: 48px;
-            direction: rtl;
+            font-display: swap;
         }
     </style>
 </head>
 <body>
-    <p>صِرَاطَ الَّذِيۡنَ اَنۡعَمۡتَ عَلَيۡهِمۡ &#x06DD;&#x06F6; &#x06D9; غَيۡرِ</p>
-    <p>صِرَاطَ الَّذِيۡنَ اَنۡعَمۡتَ عَلَيۡهِمۡ &#x06DD;&#x0666; &#x06D9; غَيۡرِ</p>
+    <div class="page">
+        <section class="hero">
+            <div class="eyebrow">Font Test</div>
+            <h1>Surah Al-Fatihah font check</h1>
+            <p class="subtext">
+                This page fetches Surah Al-Fatihah from Quran.com API and shows the verse line in a plain Quran-style layout.
+                The target is the verse 7 line ending after <span dir="rtl">صِرَاطَ الَّذِيْنَ اَنْعَمْتَ عَلَيْهِمْ</span>.
+            </p>
+            <div class="status-row" id="statusRow">
+                <div class="status loading">Loading verses…</div>
+            </div>
+
+            <div class="source-controls">
+                <div class="control-row">
+                    <label for="sourceSelect">Source</label>
+                    <select id="sourceSelect">
+                        <option value="legacy">Legacy api.quran.com (no auth)</option>
+                        <option value="foundation">Quran Foundation (auth required)</option>
+                    </select>
+                </div>
+                <div class="control-row">
+                    <label for="clientIdInput">Client ID</label>
+                    <input id="clientIdInput" type="text" placeholder="Only for Quran Foundation mode" autocomplete="off" />
+                </div>
+                <div class="control-row">
+                    <label for="tokenInput">Auth Token</label>
+                    <input id="tokenInput" type="text" placeholder="x-auth-token (OAuth2 access token)" autocomplete="off" />
+                </div>
+                <div class="source-actions">
+                    <button class="btn primary" id="reloadBtn" type="button">Reload from selected source</button>
+                    <button class="btn" id="clearAuthBtn" type="button">Clear auth fields</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="verse-list" id="verseList"></section>
+
+        <p class="footer-note" id="footerNote">Waiting for API response.</p>
+    </div>
+
+    <script>
+        const statusRow = document.getElementById('statusRow');
+        const verseList = document.getElementById('verseList');
+        const footerNote = document.getElementById('footerNote');
+        const sourceSelect = document.getElementById('sourceSelect');
+        const clientIdInput = document.getElementById('clientIdInput');
+        const tokenInput = document.getElementById('tokenInput');
+        const reloadBtn = document.getElementById('reloadBtn');
+        const clearAuthBtn = document.getElementById('clearAuthBtn');
+        let fontStatus = null;
+        const SOURCES = {
+            legacy: {
+                label: 'api.quran.com (legacy public)',
+                url: 'https://api.quran.com/api/v4/verses/by_chapter/1?language=en&fields=text_indopak,text_uthmani&per_page=10',
+                needsAuth: false,
+            },
+            foundation: {
+                label: 'apis.quran.foundation (content v4)',
+                url: 'https://apis.quran.foundation/content/api/v4/quran/verses/indopak?chapter_number=1',
+                needsAuth: true,
+            },
+        };
+        let currentSource = localStorage.getItem('font-test-source') || 'legacy';
+        sourceSelect.value = currentSource;
+        clientIdInput.value = localStorage.getItem('font-test-client-id') || '';
+        tokenInput.value = localStorage.getItem('font-test-token') || '';
+
+        function setStatus(type, text) {
+            statusRow.innerHTML = '';
+            const pill = document.createElement('div');
+            pill.className = `status ${type}`;
+            pill.textContent = text;
+            statusRow.appendChild(pill);
+        }
+
+        function appendStatus(type, text) {
+            const pill = document.createElement('div');
+            pill.className = `status ${type}`;
+            pill.textContent = text;
+            statusRow.appendChild(pill);
+        }
+
+        function normalizeText(text) {
+            return (text || '')
+                .replace(/[\n\r\t]+/g, ' ')
+                .replace(/\u06E1/g, '\u0652')
+                .replace(/[\uFBB2-\uFBC2]/g, '')
+                .replace(/\s{2,}/g, ' ')
+                .trim();
+        }
+
+        function getFocusSnippet(text) {
+            const cleaned = normalizeText(text).replace(/[\uE000-\uF8FF]/g, '').replace(/[\u06D6-\u06ED]/g, '').replace(/\s{2,}/g, ' ').trim();
+            const match = cleaned.match(/^(.*?\bغ\S*)/u);
+            return match ? match[1].trim() : cleaned;
+        }
+
+        function renderVerse(verse) {
+            const card = document.createElement('article');
+            card.className = 'verse-card';
+
+            const meta = document.createElement('div');
+            meta.className = 'verse-meta';
+            meta.innerHTML = `
+                <span class="verse-key">${verse.verse_key}</span>
+                <span>Verse ${verse.verse_key.split(':')[1]}</span>
+            `;
+
+            const arabic = document.createElement('div');
+            arabic.className = 'arabic';
+            arabic.textContent = normalizeText(verse.text_indopak);
+
+            const raw = document.createElement('div');
+            raw.className = 'latin';
+            raw.textContent = verse.text_indopak;
+
+            card.appendChild(meta);
+            card.appendChild(arabic);
+            card.appendChild(raw);
+            return card;
+        }
+
+        function renderFocusVerse(verse) {
+            const card = document.createElement('article');
+            card.className = 'verse-card focus';
+
+            const meta = document.createElement('div');
+            meta.className = 'verse-meta small';
+            meta.innerHTML = `
+                <span class="verse-key">Focused test: ${verse.verse_key}</span>
+                <span>Should match sample style</span>
+            `;
+
+            const arabic = document.createElement('div');
+            arabic.className = 'arabic big';
+
+            const sample = document.createElement('div');
+            sample.className = 'sample-line';
+            sample.innerHTML = `
+                <span dir="rtl">${getFocusSnippet(verse.text_indopak)}</span>
+            `;
+
+            const raw = document.createElement('div');
+            raw.className = 'latin';
+            raw.textContent = verse.text_indopak;
+
+            const apiRaw = document.createElement('pre');
+            apiRaw.className = 'api-raw';
+            apiRaw.textContent = verse.text_indopak;
+
+            arabic.appendChild(sample);
+            card.appendChild(meta);
+            card.appendChild(arabic);
+            card.appendChild(apiRaw);
+            card.appendChild(raw);
+            return card;
+        }
+
+        function normalizeVersesPayload(sourceKey, payload) {
+            const rawVerses = payload && Array.isArray(payload.verses)
+                ? payload.verses
+                : payload && payload.data && Array.isArray(payload.data.verses)
+                    ? payload.data.verses
+                    : [];
+
+            return rawVerses.map((v, idx) => {
+                const verseNumber = v.verse_number || v.number || v.numberInSurah || idx + 1;
+                const verseKey = v.verse_key || v.verseKey || `1:${verseNumber}`;
+                const textIndopak = v.text_indopak || v.text || '';
+                return {
+                    verse_key: verseKey,
+                    verse_number: verseNumber,
+                    text_indopak: textIndopak,
+                    _source: sourceKey,
+                };
+            });
+        }
+
+        function getAuthHeadersForFoundation() {
+            const clientId = clientIdInput.value.trim();
+            const token = tokenInput.value.trim();
+            if (!clientId || !token) {
+                throw new Error('Quran Foundation mode requires both x-client-id and x-auth-token.');
+            }
+            localStorage.setItem('font-test-client-id', clientId);
+            localStorage.setItem('font-test-token', token);
+            return {
+                'x-client-id': clientId,
+                'x-auth-token': token,
+            };
+        }
+
+        async function fetchVersesFromSource(sourceKey) {
+            const source = SOURCES[sourceKey];
+            const headers = source.needsAuth ? getAuthHeadersForFoundation() : {};
+            const response = await fetch(source.url, { headers });
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status} from ${source.label}`);
+            }
+            const data = await response.json();
+            const verses = normalizeVersesPayload(sourceKey, data);
+            return { verses, label: source.label };
+        }
+
+        async function loadFatihah() {
+            try {
+                setStatus('loading', 'Loading verses…');
+                localStorage.setItem('font-test-source', currentSource);
+                const { verses, label } = await fetchVersesFromSource(currentSource);
+                verseList.innerHTML = '';
+                appendStatus('ok', `Source: ${label}`);
+
+                verses.forEach((verse) => {
+                    verseList.appendChild(renderVerse(verse));
+                });
+
+                const verseSeven = verses.find((verse) => verse.verse_key === '1:7');
+                if (verseSeven) {
+                    verseList.prepend(renderFocusVerse(verseSeven));
+                }
+
+                setStatus('ok', `Loaded ${verses.length} verses from API`);
+                appendStatus('ok', `Source: ${label}`);
+                footerNote.textContent = 'The dashed box shows the exact API string. The styled line below shows the same text as rendered by the font.';
+            } catch (error) {
+                setStatus('error', 'API load failed');
+                verseList.innerHTML = '<div class="verse-card"><strong>Failed to load Surah Al-Fatihah.</strong><div class="latin">Check the network request and API access.</div></div>';
+                footerNote.textContent = error && error.message ? error.message : 'Unknown API error';
+                console.error('Font test API error:', error);
+            }
+        }
+
+        async function checkFonts() {
+            try {
+                await Promise.all([
+                    document.fonts.load('48px "Naskh IndoPak"'),
+                    document.fonts.load('48px "KFGQPC"')
+                ]);
+                await document.fonts.ready;
+                fontStatus = document.fonts.check('48px "Naskh IndoPak"') || document.fonts.check('48px "KFGQPC"');
+                appendStatus(fontStatus ? 'ok' : 'error', fontStatus ? 'Fonts loaded' : 'Fonts not available');
+            } catch (error) {
+                appendStatus('error', 'Font check failed');
+                console.error('Font check error:', error);
+            }
+        }
+
+        sourceSelect.addEventListener('change', () => {
+            currentSource = sourceSelect.value;
+            localStorage.setItem('font-test-source', currentSource);
+            loadFatihah();
+        });
+
+        reloadBtn.addEventListener('click', () => {
+            currentSource = sourceSelect.value;
+            loadFatihah();
+        });
+
+        clearAuthBtn.addEventListener('click', () => {
+            clientIdInput.value = '';
+            tokenInput.value = '';
+            localStorage.removeItem('font-test-client-id');
+            localStorage.removeItem('font-test-token');
+        });
+
+        checkFonts();
+        loadFatihah();
+    </script>
 </body>
 </html>

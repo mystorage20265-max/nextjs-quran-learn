@@ -18,6 +18,15 @@
   font-display: swap;
 }
 
+/* PDMS Saleem AC Quran - Quran reading font from attached asset */
+@font-face {
+  font-family: "PDMS Saleem AC Quran";
+  src: url("/fonts/PDMS_Saleem_ACQuranFont_shipped.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* KFGQPC Uthmanic - Saudi official Quran font, proper sukun/jazam rendering */
 @font-face {
   font-family: "KFGQPC";
