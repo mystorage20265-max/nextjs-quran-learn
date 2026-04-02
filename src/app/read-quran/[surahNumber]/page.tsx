@@ -47,7 +47,6 @@ const normalizeIndopakText = (text: string): string => {
 
 const cleanIndopakText = (text: string): string => {
     return normalizeIndopakText(text)
-        .replace(/[\uE000-\uF8FF]/g, '')
         .replace(/\s{2,}/g, ' ')
         .trim();
 };
@@ -87,8 +86,8 @@ const removeBismillah = (text: string): string => {
 
 
 const toArabicNumeral = (num: number): string => {
-    // Extended Arabic-Indic digits used in Indo-Pak script (Urdu/Persian)
-    const d = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+    // Arabic-Indic digits used in Quran verse markers
+    const d = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
     return num.toString().split('').map(c => d[parseInt(c)]).join('');
 };
 

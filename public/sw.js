@@ -1,10 +1,10 @@
 // QuranLearn Service Worker
 // Provides offline support, caching, and notifications
 
-const CACHE_NAME = 'quranlearn-v2';
-const STATIC_CACHE = 'quranlearn-static-v2';
-const API_CACHE = 'quranlearn-api-v2';
-const AUDIO_CACHE = 'quranlearn-audio-v2';
+const CACHE_NAME = 'quranlearn-v3';
+const STATIC_CACHE = 'quranlearn-static-v3';
+const API_CACHE = 'quranlearn-api-v3';
+const AUDIO_CACHE = 'quranlearn-audio-v3';
 
 // Files to cache immediately on install
 const STATIC_FILES = [
