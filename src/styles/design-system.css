@@ -140,43 +140,43 @@
 /* Warm cream/parchment theme - like reading on aged paper */
 [data-theme="light"] {
   /* Background layers - Warm cream/parchment */
-  --bg-base: #faf6ed;
-  --bg-surface: #fdfbf7;
-  --bg-elevated: #ffffff;
-  --bg-card: #ffffff;
-  --bg-card-hover: #f5edd8;
-  --bg-overlay: rgba(253, 251, 247, 0.9);
+  --bg-base: #F7F3E9;
+  --bg-surface: #FFFFFF;
+  --bg-elevated: #FFFFFF;
+  --bg-card: #FFFFFF;
+  --bg-card-hover: #F2EBDD;
+  --bg-overlay: rgba(247, 243, 233, 0.9);
 
   /* Text hierarchy - Warm dark browns */
-  --text-primary: #1a1612;
-  --text-secondary: #44403c;
-  --text-muted: #78716c;
+  --text-primary: #0F3D2E;
+  --text-secondary: #4E5B54;
+  --text-muted: #7A847F;
   --text-disabled: #a8a29e;
-  --text-inverse: #faf6ed;
+  --text-inverse: #F7F3E9;
 
   /* Arabic text - Deep brown for contrast */
-  --text-arabic: #1a1612;
-  --text-arabic-secondary: #292524;
+  --text-arabic: #0F3D2E;
+  --text-arabic-secondary: #2E3B35;
 
   /* Brand colors - Default Green */
-  --brand-primary: #059669;
-  --brand-primary-hover: #047857;
-  --brand-primary-active: #064e3b;
-  --brand-primary-soft: rgba(5, 150, 105, 0.1);
-  --brand-primary-glow: rgba(5, 150, 105, 0.15);
-  --brand-rgb: 5, 150, 105;
-  --brand-hover-rgb: 4, 120, 87;
+  --brand-primary: #0F3D2E;
+  --brand-primary-hover: #0C3125;
+  --brand-primary-active: #09261D;
+  --brand-primary-soft: rgba(15, 61, 46, 0.1);
+  --brand-primary-glow: rgba(15, 61, 46, 0.15);
+  --brand-rgb: 15, 61, 46;
+  --brand-hover-rgb: 12, 49, 37;
 
   /* Accent colors */
-  --accent-teal: #0d9488;
-  --accent-teal-soft: rgba(13, 148, 136, 0.1);
-  --accent-gold: #b45309;
-  --accent-gold-soft: rgba(180, 83, 9, 0.1);
+  --accent-teal: #2B6B57;
+  --accent-teal-soft: rgba(43, 107, 87, 0.1);
+  --accent-gold: #C8A96B;
+  --accent-gold-soft: rgba(200, 169, 107, 0.12);
 
   /* Borders - Subtle warm tones */
-  --border-subtle: rgba(26, 22, 18, 0.05);
-  --border-default: rgba(26, 22, 18, 0.1);
-  --border-strong: rgba(26, 22, 18, 0.15);
+  --border-subtle: rgba(15, 61, 46, 0.06);
+  --border-default: rgba(15, 61, 46, 0.12);
+  --border-strong: rgba(15, 61, 46, 0.18);
   --border-focus: var(--brand-primary);
 
   /* Shadows - Softer for light mode */

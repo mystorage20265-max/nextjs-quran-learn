@@ -7,6 +7,7 @@ import { getChapters, getTafsirs, Chapter, Tafsir } from './lib/api';
 import { getLastRead, getProgressPercentage, getProgress, LastReadPosition } from './lib/progress';
 import './styles/reader.css';
 import GlobalLoader from '@/components/Loader/GlobalLoader';
+import ReadQuranFeatures from './components/ReadQuranFeatures';
 
 
 
@@ -88,6 +89,9 @@ export default function ReadQuranPage() {
                         Beautiful Arabic text with translations and audio recitations from world-renowned Qaris.
                     </p>
                 </header>
+
+                {/* Premium feature section (mobile composition) */}
+                <ReadQuranFeatures />
 
                 {/* Continue Reading Card */}
                 {lastRead && (
